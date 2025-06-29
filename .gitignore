@@ -1,0 +1,23 @@
+# Ignore everything
+*
+
+# But not these files...
+!/.gitignore
+
+!*.go
+!go.sum
+!go.mod
+
+!*.yaml
+!*.json
+!*.atom
+!*.rss
+!*.xml
+!*.rdf
+
+!README.md
+!LICENSE
+!.devcontainer/*
+
+# ...even if they are in subdirectories
+!*/
