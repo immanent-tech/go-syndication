@@ -7,7 +7,7 @@ package atom
 import (
 	"fmt"
 
-	"github.com/joshuar/go-feed-me/models/feeds/sanitization"
+	"github.com/joshuar/go-syndication/sanitization"
 )
 
 // String returns string-ified format of the PersonConstruct. This will be the format "name (email)". The email part is

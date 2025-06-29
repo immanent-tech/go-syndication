@@ -11,5 +11,5 @@ output-options:
   # to make sure that all types are generated
   skip-prune: true
 import-mapping:
-  dc.yaml: "github.com/joshuar/go-feed-me/models/feeds/dc"
-  types.yaml: "github.com/joshuar/go-feed-me/models/feeds/types"
+  dc.yaml: "github.com/joshuar/go-syndication/dc"
+  types.yaml: "github.com/joshuar/go-syndication/types"

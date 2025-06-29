@@ -19,11 +19,11 @@ import (
 	"golang.org/x/net/html"
 	htmlatom "golang.org/x/net/html/atom"
 
-	"github.com/joshuar/go-feed-me/models/feeds/atom"
-	"github.com/joshuar/go-feed-me/models/feeds/jsonfeed"
-	"github.com/joshuar/go-feed-me/models/feeds/rss"
-	"github.com/joshuar/go-feed-me/models/feeds/types"
-	"github.com/joshuar/go-feed-me/models/feeds/validation"
+	"github.com/joshuar/go-syndication/atom"
+	"github.com/joshuar/go-syndication/jsonfeed"
+	"github.com/joshuar/go-syndication/rss"
+	"github.com/joshuar/go-syndication/types"
+	"github.com/joshuar/go-syndication/validation"
 )
 
 var (

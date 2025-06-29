@@ -11,8 +11,8 @@ output-options:
   # to make sure that all types are generated
   skip-prune: true
 import-mapping:
-  dc.yaml: "github.com/joshuar/go-feed-me/models/feeds/dc"
+  dc.yaml: "github.com/joshuar/go-syndication/dc"
   rss-ext.yaml: "-"
-  media-rss.yaml: "github.com/joshuar/go-feed-me/models/feeds/mrss"
-  atom.yaml: "github.com/joshuar/go-feed-me/models/feeds/atom"
-  types.yaml: "github.com/joshuar/go-feed-me/models/feeds/types"
+  media-rss.yaml: "github.com/joshuar/go-syndication/mrss"
+  atom.yaml: "github.com/joshuar/go-syndication/atom"
+  types.yaml: "github.com/joshuar/go-syndication/types"

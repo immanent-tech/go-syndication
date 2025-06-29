@@ -7,9 +7,9 @@ import (
 	"slices"
 	"time"
 
-	"github.com/joshuar/go-feed-me/models/feeds/atom"
-	"github.com/joshuar/go-feed-me/models/feeds/sanitization"
-	"github.com/joshuar/go-feed-me/models/feeds/types"
+	"github.com/joshuar/go-syndication/atom"
+	"github.com/joshuar/go-syndication/sanitization"
+	"github.com/joshuar/go-syndication/types"
 )
 
 var _ types.FeedSource = (*Channel)(nil)

@@ -4,7 +4,7 @@
 // Package mrss contains objects and methods defining the MediaRSS extension.
 package mrss
 
-import "github.com/joshuar/go-feed-me/models/feeds/types"
+import "github.com/joshuar/go-syndication/types"
 
 // AsImage returns the <media:thumbnail> object as a types.Image object.
 func (t *MediaThumbnail) AsImage() *types.Image {

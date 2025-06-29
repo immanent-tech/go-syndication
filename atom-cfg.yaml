@@ -13,6 +13,6 @@ output-options:
 compatibility:
   always-prefix-enum-values: true
 import-mapping:
-  types.yaml: "github.com/joshuar/go-feed-me/models/feeds/types"
-  media-rss.yaml: "github.com/joshuar/go-feed-me/models/feeds/mrss"
-  dc.yaml: "github.com/joshuar/go-feed-me/models/feeds/dc"
+  types.yaml: "github.com/joshuar/go-syndication/types"
+  media-rss.yaml: "github.com/joshuar/go-syndication/mrss"
+  dc.yaml: "github.com/joshuar/go-syndication/dc"

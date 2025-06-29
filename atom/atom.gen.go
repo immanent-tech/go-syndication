@@ -6,10 +6,10 @@ package atom
 import (
 	"encoding/xml"
 
-	externalRef0 "github.com/joshuar/go-feed-me/models/feeds/dc"
-	externalRef1 "github.com/joshuar/go-feed-me/models/feeds/mrss"
-	"github.com/joshuar/go-feed-me/models/feeds/types"
-	externalRef2 "github.com/joshuar/go-feed-me/models/feeds/types"
+	externalRef0 "github.com/joshuar/go-syndication/dc"
+	externalRef1 "github.com/joshuar/go-syndication/mrss"
+	"github.com/joshuar/go-syndication/types"
+	externalRef2 "github.com/joshuar/go-syndication/types"
 )
 
 // Defines values for LinkRel.

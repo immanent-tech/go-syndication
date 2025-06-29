@@ -4,7 +4,7 @@
 package mrss
 
 import (
-	externalRef0 "github.com/joshuar/go-feed-me/models/feeds/types"
+	externalRef0 "github.com/joshuar/go-syndication/types"
 )
 
 // Defines values for Expression.

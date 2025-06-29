@@ -4,8 +4,8 @@
 package dc
 
 import (
-	"github.com/joshuar/go-feed-me/models/feeds/types"
-	externalRef0 "github.com/joshuar/go-feed-me/models/feeds/types"
+	"github.com/joshuar/go-syndication/types"
+	externalRef0 "github.com/joshuar/go-syndication/types"
 )
 
 // DCContributor is an entity responsible for making contributions to the resource.

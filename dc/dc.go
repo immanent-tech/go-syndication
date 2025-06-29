@@ -4,7 +4,7 @@
 // Package dc contains objects and methods defining the Dublin Core extension used by RSS/Atom syndication formats.
 package dc
 
-import "github.com/joshuar/go-feed-me/models/feeds/sanitization"
+import "github.com/joshuar/go-syndication/sanitization"
 
 func (c *DCCreator) String() string {
 	return sanitization.SanitizeString(c.Value)

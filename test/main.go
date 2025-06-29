@@ -12,7 +12,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	"github.com/joshuar/go-feed-me/models/feeds"
+	feeds "github.com/joshuar/go-syndication"
 )
 
 func main() {

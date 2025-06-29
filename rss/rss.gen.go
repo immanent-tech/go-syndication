@@ -6,11 +6,11 @@ package rss
 import (
 	"encoding/xml"
 
-	externalRef0 "github.com/joshuar/go-feed-me/models/feeds/atom"
-	externalRef1 "github.com/joshuar/go-feed-me/models/feeds/dc"
-	externalRef2 "github.com/joshuar/go-feed-me/models/feeds/mrss"
-	"github.com/joshuar/go-feed-me/models/feeds/types"
-	externalRef3 "github.com/joshuar/go-feed-me/models/feeds/types"
+	externalRef0 "github.com/joshuar/go-syndication/atom"
+	externalRef1 "github.com/joshuar/go-syndication/dc"
+	externalRef2 "github.com/joshuar/go-syndication/mrss"
+	"github.com/joshuar/go-syndication/types"
+	externalRef3 "github.com/joshuar/go-syndication/types"
 )
 
 // Defines values for CloudProtocol.

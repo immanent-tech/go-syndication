@@ -4,8 +4,8 @@
 package rss
 
 import (
-	"github.com/joshuar/go-feed-me/models/feeds/types"
-	externalRef1 "github.com/joshuar/go-feed-me/models/feeds/types"
+	"github.com/joshuar/go-syndication/types"
+	externalRef1 "github.com/joshuar/go-syndication/types"
 )
 
 // Defines values for SYUpdatePeriodValue.
