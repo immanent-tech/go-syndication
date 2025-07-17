@@ -10,15 +10,20 @@ import (
 
 // String returns any title (alt tag) for the Image.
 func (i *Image) String() string {
-	if i.Title != nil && *i.Title != "" {
-		return *i.Title
+	if i != nil {
+		if i.Title != nil && *i.Title != "" {
+			return *i.Title
+		}
 	}
 	return ""
 }
 
 // URL returns the URL to the Image.
 func (i *Image) URL() string {
-	return i.Value
+	if i != nil {
+		return i.Value
+	}
+	return ""
 }
 
 // IsImage will return a boolean indicating whether the given mimetype represents an image.
