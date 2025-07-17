@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"mime"
 	"net/url"
 	"slices"
@@ -218,7 +219,18 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	}
 	// If the feed source did not define an image, try to find and set an appropriate one.
 	if feed.GetImage() == nil {
-		image, _ := discoverFeedImage(ctx, client, url)
+		slog.Debug("Feed does not provide image, finding one...",
+			slog.String("feed", feed.GetTitle()),
+			slog.String("source", url),
+			slog.String("link", feed.GetLink()),
+		)
+		image, err := discoverFeedImage(ctx, client, feed.GetLink())
+		if err != nil {
+			slog.Error("Failed to discover an image for the feed.",
+				slog.String("feed", feed.GetTitle()),
+				slog.Any("error", err),
+			)
+		}
 		if image != nil {
 			feed.SetImage(image)
 		}
@@ -270,18 +282,27 @@ func discoverImages(content []byte) (string, error) {
 			return "", fmt.Errorf("unable to determine feed url: %w", page.Err())
 		case html.StartTagToken:
 			tkn := page.Token()
-			if tkn.DataAtom != htmlatom.Link {
+			switch tkn.DataAtom {
+			case htmlatom.Link:
+				// "rel" attribute must contain "icon" string.
+				if !slices.ContainsFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "icon" }) {
+					continue
+				}
+				// "href" attribute must contain "icon" string.
+				if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
+					return a.Key == "href" && strings.Contains(a.Val, "icon")
+				}); idx != -1 {
+					return tkn.Attr[idx].Val, nil
+				}
+			case htmlatom.Image:
+				// "class" attribute must contain "icon" string.
+				if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
+					return a.Key == "class" && strings.Contains(a.Val, "icon")
+				}); idx != -1 {
+					return tkn.Attr[idx].Val, nil
+				}
+			default:
 				continue
-			}
-			// "rel" attribute must contain "icon" string.
-			if !slices.ContainsFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "icon" }) {
-				continue
-			}
-			// "href" attribute must contain "icon" string.
-			if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
-				return a.Key == "href" && strings.Contains(a.Val, "icon")
-			}); idx != -1 {
-				return tkn.Attr[idx].Val, nil
 			}
 		}
 	}
