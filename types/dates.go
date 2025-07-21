@@ -28,7 +28,12 @@ var DateTimeFormats = []string{
 	"Mon, 2 Jan 2006 15:04 -0700",    // RFC1123Z without leading zero on day or seconds
 	"Mon, 2 Jan 2006 15:04 MST",      // RFC1123 without leading zero on day or seconds
 	time.RFC3339,
+	"2006-01-02T15:04:05.00Z07:00", // DC Date with fractional seconds.
 	time.DateTime,
+	time.DateOnly,                       // DC Date only.
+	time.DateOnly + "T" + "15:04-07:00", // DC no seconds.
+	"2006-01",                           // DC year and month only.
+	"2006",                              // DC year only.
 }
 
 // UnixEpoch is the time.Time value of Unix epoch.

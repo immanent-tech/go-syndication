@@ -184,7 +184,7 @@ type Entry struct {
 	MediaCategory *externalRef1.MediaCategory `json:"MediaCategory,omitempty" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef1.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ comments>comment,omitempty"`
+	MediaComments externalRef1.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ >comment,omitempty"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef1.MediaCommunity `json:"MediaCommunity,omitempty" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -355,7 +355,7 @@ type Feed struct {
 	MediaCategory *externalRef1.MediaCategory `json:"MediaCategory,omitempty" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef1.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ comments>comment,omitempty"`
+	MediaComments externalRef1.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ >comment,omitempty"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef1.MediaCommunity `json:"MediaCommunity,omitempty" xml:"http://search.yahoo.com/mrss/ community,omitempty"`

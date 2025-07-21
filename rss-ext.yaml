@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/schemas/v3.0/schema.yaml
 # Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
-openapi: "3.0.3"
+openapi: '3.0.3'
 info:
   version: 1.0.0
   title: RSS Extensions Schema
@@ -25,33 +25,40 @@ components:
         - value
       properties:
         XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+          $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        json: "content_encoded,omitempty"
-        xml: "http://purl.org/rss/1.0/modules/content/ encoded,omitempty"
+        json: 'content_encoded,omitempty'
+        xml: 'http://purl.org/rss/1.0/modules/content/ encoded,omitempty'
     SYUpdatePeriod:
       description: >
-         is the period over which the channel format is updated.
+        is the period over which the channel format is updated.
       type: object
       required:
         - XMLName
         - value
       properties:
         XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           type: string
-          default: "daily"
-          enum: ["hourly","daily","weekly","monthly","yearly"]
-          x-enum-varnames: ["UpdatedHourly","UpdatedDaily","UpdatedWeekly","UpdatedMonthly","UpdatedYearly"]
+          default: 'daily'
+          enum: ['hourly', 'daily', 'weekly', 'monthly', 'yearly']
+          x-enum-varnames:
+            [
+              'UpdatedHourly',
+              'UpdatedDaily',
+              'UpdatedWeekly',
+              'UpdatedMonthly',
+              'UpdatedYearly',
+            ]
           x-oapi-codegen-extra-tags:
-            xml: ",chardata"
-            # validate: "required,oneof=hourly daily weekly monthly yearly"
+            xml: ',chardata'
+            validate: 'required,oneof=hourly daily weekly monthly yearly'
       x-oapi-codegen-extra-tags:
-        json: "sy_updatePeriod,omitempty"
-        xml: "http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"
+        json: 'sy_updatePeriod,omitempty'
+        xml: 'http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty'
     SYUpdateFrequency:
       description: >
         describes the frequency of updates in relation to the update period.
@@ -61,18 +68,18 @@ components:
         - value
       properties:
         XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           type: integer
           minimum: 1
           default: 1
           x-oapi-codegen-extra-tags:
-            json: "value"
-            xml: ",chardata"
-            validate: "omitempty,number,gte=1"
+            json: 'value'
+            xml: ',chardata'
+            validate: 'required,number,gte=1'
       x-oapi-codegen-extra-tags:
-        json: "sy_updateFrequency,omitempty"
-        xml: "http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"
+        json: 'sy_updateFrequency,omitempty'
+        xml: 'http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty'
     SYUpdateBase:
       description: >
         is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
@@ -82,24 +89,56 @@ components:
         - value
       properties:
         XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           x-go-type: types.DateTime
           x-oapi-codegen-extra-tags:
-            json: "value"
-            xml: ",chardata"
-            validate: "omitempty"
+            json: 'value'
+            xml: ',chardata'
+            validate: 'omitempty'
       x-oapi-codegen-extra-tags:
-        json: "sy_updateBase,omitempty"
-        xml: "http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"
+        json: 'sy_updateBase,omitempty'
+        xml: 'http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty'
     SyndicationElements:
       description: >
         contains all syndication extension elements.
       type: object
       properties:
         SYUdatePeriod:
-          $ref: "#/components/schemas/SYUpdatePeriod"
+          $ref: '#/components/schemas/SYUpdatePeriod'
         SYUpdateFrequency:
-          $ref: "#/components/schemas/SYUpdateFrequency"
+          $ref: '#/components/schemas/SYUpdateFrequency'
         SYUpdateBase:
-          $ref: "#/components/schemas/SYUpdateBase"
+          $ref: '#/components/schemas/SYUpdateBase'
+    PermaLink:
+      description: >
+        is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through
+        articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available
+        to and should be provided within RSS so that clients can use this instead of a temporary link.
+      type: object
+      properties:
+        type:
+          description: >
+            gives an advisory hint as to the content type of the content available at the link target
+            address. It allows user agents to opt to use a fallback mechanism rather than fetch the content if they are
+            advised that they will get content in a content type they do not support. This also supports any namspace
+            (URI) if a media type for the destination resource has not yet been registered.
+          type: string
+          x-oapi-codegen-extra-tags:
+            json: 'link_type,omitempty'
+            xml: 'http://purl.org/rss/1.0/modules/link/ type,omitempty,attr'
+        resource:
+          description: >
+            provides the URL for the target of this link. The URL given must be absolute, we do not support relative
+            paths. This is due to the presence of caching software which might not be mod_link aware. If the URL given
+            was relative it may break when the cached resource is given to a calling application. Note that mod_link
+            aware caching engines are also encouraged to consider caching the content represented by the target
+            resource.
+          type: string
+          x-oapi-codegen-extra-tags:
+            json: 'rdf_resource,omitempty'
+            xml: 'http://www.w3.org/1999/02/22-rdf-syntax-ns resource,omitempty,attr'
+            validate: 'omitempty,url'
+      x-oapi-codegen-extra-tags:
+        json: 'link_permalink,omitempty'
+        xml: 'http://purl.org/rss/1.0/modules/link/ permalink,omitempty'

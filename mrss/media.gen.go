@@ -192,7 +192,7 @@ type MediaContent struct {
 	Channels *Channels `json:"channels,omitempty" xml:"channels,attr,omitempty"`
 
 	// Comments is a list of comments the media object has received.
-	Comments MediaComments `json:"comments,omitempty" xml:"http://search.yahoo.com/mrss/ comments>comment,omitempty"`
+	Comments MediaComments `json:"comments,omitempty" xml:"http://search.yahoo.com/mrss/ >comment,omitempty"`
 
 	// Community stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	Community *MediaCommunity `json:"community,omitempty" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -348,7 +348,7 @@ type MediaElements struct {
 	MediaCategory *MediaCategory `json:"MediaCategory,omitempty" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ comments>comment,omitempty"`
+	MediaComments MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ >comment,omitempty"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *MediaCommunity `json:"MediaCommunity,omitempty" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -445,7 +445,7 @@ type MediaGroup struct {
 	Channels *Channels `json:"channels,omitempty" xml:"channels,attr,omitempty"`
 
 	// Comments is a list of comments the media object has received.
-	Comments MediaComments `json:"comments,omitempty" xml:"http://search.yahoo.com/mrss/ comments>comment,omitempty"`
+	Comments MediaComments `json:"comments,omitempty" xml:"http://search.yahoo.com/mrss/ >comment,omitempty"`
 
 	// Community stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	Community *MediaCommunity `json:"community,omitempty" xml:"http://search.yahoo.com/mrss/ community,omitempty"`

@@ -153,3 +153,10 @@ func (i *Item) GetContent() *types.Content {
 	}
 	return &types.Content{}
 }
+
+func (i *Item) GetComments() string {
+	if i.Comments != nil {
+		return sanitization.SanitizeString(*i.Comments)
+	}
+	return ""
+}

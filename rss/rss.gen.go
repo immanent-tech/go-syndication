@@ -99,7 +99,7 @@ type Channel struct {
 	MediaCategory *externalRef2.MediaCategory `json:"MediaCategory,omitempty" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ comments>comment,omitempty"`
+	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ >comment,omitempty"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef2.MediaCommunity `json:"MediaCommunity,omitempty" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -233,7 +233,7 @@ type Channel struct {
 	TextInput *TextInput `json:"textInput,omitempty" xml:"textInput,omitempty"`
 
 	// Title the title of the channel.
-	Title Title `json:"title" validate:"required" xml:"title"`
+	Title Title `json:"title" xml:"title"`
 
 	// TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.
 	TTL *TTL `json:"ttl,omitempty" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
@@ -294,7 +294,7 @@ type ChannelElements struct {
 	TextInput *TextInput `json:"textInput,omitempty" xml:"textInput,omitempty"`
 
 	// Title the title of the channel.
-	Title Title `json:"title" validate:"required" xml:"title"`
+	Title Title `json:"title" xml:"title"`
 
 	// TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.
 	TTL *TTL `json:"ttl,omitempty" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
@@ -364,10 +364,10 @@ type Image struct {
 	Link string `json:"link" validate:"omitempty,uri" xml:"link"`
 
 	// Title describes the image, it's used in the ALT attribute of the HTML <img> tag when the channel is rendered in HTML.
-	Title string `json:"title" validate:"required" xml:"title"`
+	Title string `json:"title" xml:"title"`
 
 	// URL is the URL of a GIF, JPEG or PNG image that represents the channel.
-	URL string `json:"url" validate:"required,uri" xml:"url"`
+	URL string `json:"url" validate:"omitempty,uri" xml:"url"`
 
 	// Width indicates the width of the image in pixels.
 	Width *int `json:"width,omitempty" validate:"omitempty,gt=0,lte=144" xml:"width,omitempty"`
@@ -430,7 +430,7 @@ type Item struct {
 	MediaCategory *externalRef2.MediaCategory `json:"MediaCategory,omitempty" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ comments>comment,omitempty"`
+	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty" xml:"http://search.yahoo.com/mrss/ >comment,omitempty"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef2.MediaCommunity `json:"MediaCommunity,omitempty" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -501,6 +501,9 @@ type Item struct {
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *externalRef2.MediaTitle `json:"MediaTitle,omitempty" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
+	// PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
+	PermaLink *PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
+
 	// Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
 	Author *Author `json:"author,omitempty" xml:"author,omitempty"`
 
@@ -508,7 +511,7 @@ type Item struct {
 	Categories []Category `json:"categories,omitempty" xml:"category,omitempty"`
 
 	// Comments is the url of the comments page for the item.
-	Comments *Comments `json:"comments,omitempty" xml:",omitempty"`
+	Comments *Comments `json:"comments,omitempty" xml:"comments,omitempty"`
 
 	// Description is the description of the channel or item.
 	Description *Description `json:"description,omitempty" xml:"description,omitempty"`
@@ -547,7 +550,7 @@ type ItemElements struct {
 	Categories []Category `json:"categories,omitempty" xml:"category,omitempty"`
 
 	// Comments is the url of the comments page for the item.
-	Comments *Comments `json:"comments,omitempty" xml:",omitempty"`
+	Comments *Comments `json:"comments,omitempty" xml:"comments,omitempty"`
 
 	// Description is the description of the channel or item.
 	Description *Description `json:"description,omitempty" xml:"description,omitempty"`
