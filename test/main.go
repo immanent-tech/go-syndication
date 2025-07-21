@@ -20,7 +20,7 @@ func main() {
 	defer cancelFunc()
 
 	results := feeds.NewFeedsFromURLs(ctx, "https://feeds.feedburner.com/9to5Google")
-	spew.Dump(results)
+	// spew.Dump(results)
 	refeed := results[0].Feed
 
 	// for result := range slices.Values(results) {
