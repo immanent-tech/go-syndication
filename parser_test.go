@@ -379,6 +379,23 @@ var rssMedia = map[string]testSuite{
 			}
 		},
 	},
+	"valid_thumbnail_time_hms.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			item := r.Channel.Items[0]
+			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
+			assert.Equal(t, "http://www.foo.com/item1.htm", item.GetLink())
+			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
+			assert.Equal(t, 12216320, *item.MediaContent.FileSize)
+			assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
+			assert.Equal(t, mrss.Sample, *item.MediaContent.Expression)
+			assert.Len(t, item.MediaThumbnails, 1)
+			assert.Equal(t, "http://example.com/thumbnail", item.GetImage().URL())
+			assert.Equal(t, "12:34:56", *item.MediaThumbnails[0].Time)
+		},
+	},
 }
 
 var rssTests = map[string]map[string]testSuite{
