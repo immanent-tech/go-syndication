@@ -316,6 +316,62 @@ var rssMustPass = map[string]testSuite{
 	// xmlversion_11.xml
 }
 
+var rss20 = map[string]testSuite{
+	"element-channel-image-description/image_no_description.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			assert.NotNil(t, r.Channel.Image)
+			assert.Equal(t, "Valid image", r.Channel.Image.Title)
+			assert.Equal(t, "http://purl.org/rss/2.0/", r.Channel.Image.Link)
+			assert.Equal(t, "http://example.com/image.jpg", r.Channel.Image.URL)
+		},
+	},
+	"element-channel/multiple_category.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			assert.Len(t, r.Channel.Categories, 2)
+			assert.Equal(t, "Weblogging", r.Channel.Categories[0].String())
+			assert.Equal(t, "Navel-gazing", r.Channel.Categories[1].String())
+		},
+	},
+	"element-channel/missing_channel_description.xml":               {wantErr: true},
+	"element-channel/missing_channel_link.xml":                      {wantErr: true},
+	"element-channel/missing_channel_title.xml":                     {wantErr: true},
+	"element-channel-item/invalid_item_no_title_or_description.xml": {wantErr: true},
+	"element-channel-link/invalid_link.xml":                         {wantErr: true},
+	"element-channel-link/invalid_link2.xml":                        {wantErr: true},
+	"element-channel-link/link.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			assert.Equal(t, "http://purl.org/rss/2.0/", r.Channel.GetLink())
+		},
+	},
+	"element-channel-link/link_contains_comma.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", r.Channel.GetLink())
+		},
+	},
+	"element-channel-link/link_ftp.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			assert.Equal(t, "ftp://purl.org/rss/2.0/", r.Channel.GetLink())
+		},
+	},
+	"element-rss/missing_channel.xml":           {wantErr: true},
+	"element-rss/missing_version_attribute.xml": {wantErr: true},
+}
+
 var rssMedia = map[string]testSuite{
 	"example1.xml": {
 		wantErr: false,
@@ -401,6 +457,7 @@ var rssMedia = map[string]testSuite{
 var rssTests = map[string]map[string]testSuite{
 	"test/assets/rss/must":  rssMustPass,
 	"test/assets/ext/media": rssMedia,
+	"test/assets/rss20":     rss20,
 }
 
 func toRSS(t *testing.T, source *Feed) *rss.RSS {
