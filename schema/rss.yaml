@@ -400,7 +400,7 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             xml: 'description'
-            validate: 'required'
+            validate: 'omitempty'
         AtomLink:
           allOf:
             - $ref: 'atom.yaml#/components/schemas/Link'
