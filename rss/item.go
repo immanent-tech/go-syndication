@@ -5,6 +5,7 @@ package rss
 
 import (
 	"errors"
+	"fmt"
 	"slices"
 	"time"
 
@@ -13,6 +14,8 @@ import (
 )
 
 var _ types.ItemSource = (*Item)(nil)
+
+var ErrItemValidation = errors.New("item is invalid")
 
 // GetID returns an "id" for the item. This will be the value of the <guid> element, if present, or an empty string if
 // not present.
@@ -155,9 +158,11 @@ func (i *Item) GetComments() string {
 	return ""
 }
 
+// Validate applies custom validation to an item.
 func (i *Item) Validate() error {
+	// Either description or title must be set. Both cannot be empty.
 	if i.Description == "" && i.Title == "" {
-		return errors.New("description or title is required")
+		return fmt.Errorf("%w: description or title is required", ErrItemValidation)
 	}
 	return nil
 }
