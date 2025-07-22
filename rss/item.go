@@ -142,7 +142,7 @@ func (i *Item) GetUpdatedDate() time.Time {
 func (i *Item) GetContent() *types.Content {
 	if i.ContentEncoded != nil {
 		return &types.Content{
-			Value: sanitization.SanitizeString(i.ContentEncoded.Value),
+			Value: i.ContentEncoded.String(),
 		}
 	}
 	return &types.Content{}

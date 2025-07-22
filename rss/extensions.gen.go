@@ -21,9 +21,7 @@ const (
 type ContentEncoded struct {
 	// XMLName represents the XML namespace of an element.
 	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
-
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	Value   string               `json:"value" xml:",chardata"`
 }
 
 // PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
