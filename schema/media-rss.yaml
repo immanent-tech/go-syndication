@@ -116,15 +116,15 @@ components:
       properties:
         url:
           allOf:
-            - $ref: 'types.yaml#/components/schemas/AttrURL'
+            - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
           x-go-name: URL
           x-oapi-codegen-extra-tags:
             xml: 'url,attr'
             validate: 'required,url'
         height:
-          $ref: 'types.yaml#/components/schemas/AttrHeight'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrHeight'
         width:
-          $ref: 'types.yaml#/components/schemas/AttrWidth'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
         time:
           description: >
             specifies the time offset in relation to the media object. Typically this is used when creating multiple
@@ -201,14 +201,14 @@ components:
       properties:
         url:
           allOf:
-            - $ref: 'types.yaml#/components/schemas/AttrURL'
+            - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
           x-oapi-codegen-extra-tags:
             xml: 'url,attr'
             validate: 'required,url'
         height:
-          $ref: 'types.yaml#/components/schemas/AttrHeight'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrHeight'
         width:
-          $ref: 'types.yaml#/components/schemas/AttrWidth'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ player,omitempty'
         json: 'media_player'
@@ -259,7 +259,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         url:
-          $ref: 'types.yaml#/components/schemas/AttrURL'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ copyright,omitempty'
         json: 'media_copyright'
@@ -275,7 +275,7 @@ components:
         type:
           $ref: '#/components/schemas/TextType'
         lang:
-          $ref: 'types.yaml#/components/schemas/AttrLang'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrLang'
         start:
           description: >
             specifies the start time offset that the text starts being relevant to the media object. An example of this
@@ -600,7 +600,7 @@ components:
         type:
           $ref: '#/components/schemas/TextType'
         href:
-          $ref: 'types.yaml#/components/schemas/AttrHref'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ license,omitempty'
         json: 'media_license'
@@ -615,9 +615,9 @@ components:
         type:
           $ref: '#/components/schemas/TextType'
         lang:
-          $ref: 'types.yaml#/components/schemas/AttrLang'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrLang'
         href:
-          $ref: 'types.yaml#/components/schemas/AttrHref'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
         json: 'media_subtitle,omitempty'
         xml: 'http://search.yahoo.com/mrss/ subTitle,omitempty'
@@ -632,7 +632,7 @@ components:
         type:
           $ref: '#/components/schemas/TextType'
         href:
-          $ref: 'types.yaml#/components/schemas/AttrHref'
+          $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ peerLink,omitempty'
         json: 'media_peerlink'
@@ -788,27 +788,27 @@ components:
             - url
           properties:
             url:
-              $ref: 'types.yaml#/components/schemas/AttrURL'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
             fileSize:
-              $ref: 'types.yaml#/components/schemas/AttrFileSize'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrFileSize'
             type:
-              $ref: 'types.yaml#/components/schemas/AttrMimeType'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrMimeType'
             bitrate:
-              $ref: 'types.yaml#/components/schemas/AttrBitrate'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrBitrate'
             framerate:
-              $ref: 'types.yaml#/components/schemas/AttrFramerate'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrFramerate'
             samplingrate:
-              $ref: 'types.yaml#/components/schemas/AttrSamplingrate'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrSamplingrate'
             channels:
-              $ref: 'types.yaml#/components/schemas/AttrChannels'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrChannels'
             duration:
-              $ref: 'types.yaml#/components/schemas/AttrDuration'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrDuration'
             height:
-              $ref: 'types.yaml#/components/schemas/AttrHeight'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrHeight'
             width:
-              $ref: 'types.yaml#/components/schemas/AttrWidth'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
             lang:
-              $ref: 'types.yaml#/components/schemas/AttrLang'
+              $ref: 'types-attributes.yaml#/components/schemas/AttrLang'
             isDefault:
               description: >
                 determines if this is the default object that should be used for the <media:group>. There should only be one

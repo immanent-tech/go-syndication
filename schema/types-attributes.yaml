@@ -1,0 +1,116 @@
+# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
+# SPDX-License-Identifier: 	AGPL-3.0-or-later
+
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Common Attributes
+  description: >
+    Common/shared attributes across different syndication formats.
+  license:
+    name: AGPL-3.0-or-later
+    url: https://spdx.org/licenses/AGPL-3.0-only.html
+components:
+  schemas:
+    AttrURL:
+      description: >
+        is a URL that represents the element content.
+      type: string
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'url,attr,omitempty'
+        validate: 'omitempty,url'
+    AttrHref:
+      $ref: '#/components/schemas/AttrURL'
+    AttrLang:
+      description: >
+        is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
+        This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third
+        Edition).
+      type: string
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'lang,attr'
+        validate: 'omitempty,bcp47_language_tag'
+    AttrFileSize:
+      description: >
+        is the number of bytes of the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'fileSize,attr,omitempty'
+    AttrMimeType:
+      description: >
+        is the standard MIME type of the object.
+      type: string
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'type,attr,omitempty'
+    AttrBitrate:
+      description: >
+        is the kilobits per second rate of media.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'bitrate,attr'
+        validate: 'omitempty,number'
+    AttrFramerate:
+      description: >
+        is the number of frames per second for the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'framerate,attr'
+        validate: 'omitempty,number'
+    AttrSamplingrate:
+      description: >
+        is the number of samples per second taken to create the media object. It is expressed in thousands of
+        samples per second (kHz)
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'samplingrate,attr'
+        validate: 'omitempty,number'
+    AttrChannels:
+      description: >
+        is number of audio channels in the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'channels,attr'
+        validate: 'omitempty,number'
+    AttrDuration:
+      description: >
+        is the number of seconds the media object plays.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'duration,attr'
+        validate: 'omitempty,number'
+    AttrHeight:
+      description: >
+        is the height of the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'height,attr'
+        validate: 'omitempty,number'
+    AttrWidth:
+      description: >
+        is the width of the media object. It is an optional attribute.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'width,attr'
+        validate: 'omitempty,number'

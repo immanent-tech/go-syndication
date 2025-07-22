@@ -4,6 +4,7 @@
 package rss
 
 import (
+	"errors"
 	"slices"
 	"time"
 
@@ -27,19 +28,14 @@ func (i *Item) GetTitle() string {
 	switch {
 	case i.DCTitle != nil:
 		return i.DCTitle.String()
-	case i.Title != nil:
-		return sanitization.SanitizeString(*i.Title)
 	default:
-		return ""
+		return sanitization.SanitizeString(i.Title)
 	}
 }
 
 // GetLink retrieves the <link> (if any) of the Item.
 func (i *Item) GetLink() string {
-	if i.Link != nil {
-		return *i.Link
-	}
-	return ""
+	return i.Link
 }
 
 // GetDescription retrieves the <description> (if any) of the Item.
@@ -47,10 +43,8 @@ func (i *Item) GetDescription() string {
 	switch {
 	case i.DCDescription != nil:
 		return i.DCDescription.String()
-	case i.Description != nil:
-		return sanitization.SanitizeString(*i.Description)
 	default:
-		return ""
+		return sanitization.SanitizeString(i.Description)
 	}
 }
 
@@ -159,4 +153,11 @@ func (i *Item) GetComments() string {
 		return sanitization.SanitizeString(*i.Comments)
 	}
 	return ""
+}
+
+func (i *Item) Validate() error {
+	if i.Description == "" && i.Title == "" {
+		return errors.New("description or title is required")
+	}
+	return nil
 }

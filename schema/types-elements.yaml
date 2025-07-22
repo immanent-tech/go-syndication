@@ -1,0 +1,29 @@
+# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
+# SPDX-License-Identifier: 	AGPL-3.0-or-later
+
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Common Elements
+  description: >
+    Common/shared elements across different syndication formats.
+  license:
+    name: AGPL-3.0-or-later
+    url: https://spdx.org/licenses/AGPL-3.0-only.html
+components:
+  schemas:
+    Language:
+      description: >
+        is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'language,omitempty'
+        validate: 'omitempty,bcp47_language_tag'
+    URL:
+      description: >
+        is a URL link.
+      type: string
+      x-go-name: URL
+      x-oapi-codegen-extra-tags:
+        xml: 'url'
+        validate: 'omitempty,url'

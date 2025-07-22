@@ -5,6 +5,8 @@
 package feeds
 
 //go:generate go tool oapi-codegen -config types-cfg.yaml types.yaml
+//go:generate go tool oapi-codegen -config types-attributes-cfg.yaml types-attributes.yaml
+//go:generate go tool oapi-codegen -config types-elements-cfg.yaml types-elements.yaml
 //go:generate go tool oapi-codegen -config atom-cfg.yaml atom.yaml
 //go:generate go tool oapi-codegen -config dc-cfg.yaml dc.yaml
 //go:generate go tool oapi-codegen -config rss-ext-cfg.yaml rss-ext.yaml

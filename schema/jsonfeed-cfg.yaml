@@ -3,16 +3,12 @@
 # Copyright 2024 Joshua Rich <joshua.rich@gmail.com>.
 # SPDX-License-Identifier: 	AGPL-3.0-or-later
 
-package: atom
-output: atom/atom.gen.go
+package: jsonfeed
+output: ../jsonfeed/jsonfeed.gen.go
 generate:
   models: true
 output-options:
   # to make sure that all types are generated
   skip-prune: true
-compatibility:
-  always-prefix-enum-values: true
 import-mapping:
-  types.yaml: "github.com/joshuar/go-syndication/types"
-  media-rss.yaml: "github.com/joshuar/go-syndication/mrss"
-  dc.yaml: "github.com/joshuar/go-syndication/dc"
+  types.yaml: 'github.com/joshuar/go-syndication/types'
