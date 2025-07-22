@@ -10,7 +10,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/joshuar/go-syndication/atom"
+	"github.com/joshuar/go-syndication/mrss"
 	"github.com/joshuar/go-syndication/rss"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +22,7 @@ type testSuite struct {
 	tests   func(t *testing.T, feed *Feed)
 }
 
-var rssTests = map[string]testSuite{
+var rssMustPass = map[string]testSuite{
 	// "admin_errorReportsTo.xml": {wantErr: false},
 	// "admin_generatorAgent.xml": false,
 	"atom_link2.xml": {
@@ -262,6 +264,16 @@ var rssTests = map[string]testSuite{
 			assert.Equal(t, "dave@userland.com", *r.Channel.WebMaster)
 			assert.Equal(t, 40, *r.Channel.TTL)
 			assert.Len(t, r.Channel.GetItems(), 9)
+			// Check item contents.
+			item := r.Channel.Items[8]
+			// assert.Equal(t,
+			// 	sanitization.SanitizeString("&quot;rssflowersalignright&quot;With any luck we should have one or two more days of namespaces stuff here on Scripting News. It feels like it's winding down. Later in the week I'm going to a &lt;a href=&quot;http://harvardbusinessonline.hbsp.harvard.edu/b02/en/conferences/conf_detail.jhtml?id=s775stg&amp;pid=144XCF&quot;&gt;conference&lt;/a&gt; put on by the Harvard Business School. So that should change the topic a bit. The following week I'm off to Colorado for the &lt;a href=&quot;http://www.digitalidworld.com/conference/2002/index.php&quot;&gt;Digital ID World&lt;/a&gt; conference. We had to go through namespaces, and it turns out that weblogs are a great way to work around mail lists that are clogged with &lt;a href=&quot;http://www.userland.com/whatIsStopEnergy&quot;&gt;stop energy&lt;/a&gt;. I think we solved the problem, have reached a consensus, and will be ready to move forward shortly."),
+			// 	r.Channel.Items[0].GetDescription(),
+			// )
+			assert.Equal(t, "Sun, 29 Sep 2002 11:13:10 GMT", item.GetPublishedDate().Format(time.RFC1123))
+			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GUID.Value)
+			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GetLink())
+			assert.Equal(t, "Really early morning no-coffee notes", item.GetTitle())
 		},
 	},
 	// rss20_trackback_invalid_about.xml
@@ -282,7 +294,7 @@ var rssTests = map[string]testSuite{
 	// thr_children.xml
 	// ulcc_channel_url.xml
 	// ulcc_item_url.xml
-	// unexpected_text.xml
+	"unexpected_text.xml": {wantErr: true},
 	// unknown_element2.xml
 	// unknown_element_in_known_namespace.xml
 	// unknown_element.xml
@@ -304,6 +316,76 @@ var rssTests = map[string]testSuite{
 	// xmlversion_11.xml
 }
 
+var rssMedia = map[string]testSuite{
+	"example1.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			item := r.Channel.Items[0]
+			assert.Equal(t, "Story about something", item.GetTitle())
+			assert.Equal(t, "http://www.foo.com/item1.htm", item.GetLink())
+			assert.Equal(t, "http://www.foo.com/file.mov", item.Enclosure.URL)
+			assert.Equal(t, "video/quicktime", item.Enclosure.Type)
+			assert.Equal(t, 320000, item.Enclosure.Length)
+		},
+	},
+	"example2.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			item := r.Channel.Items[0]
+			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
+			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
+			assert.Equal(t, 12216320, *item.MediaContent.FileSize)
+			assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
+			assert.Equal(t, mrss.Sample, *item.MediaContent.Expression)
+			assert.Equal(t, "nonadult", item.MediaRating.Value)
+		},
+	},
+	"example3.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			r := toRSS(t, feed)
+			item := r.Channel.Items[0]
+			assert.Equal(t, "The latest video from an artist", item.GetTitle())
+			if assert.NotNil(t, item.MediaContent) {
+				assert.Equal(t, "http://www.foo.com/movie.mov", item.MediaContent.Url)
+				assert.Equal(t, 12216320, *item.MediaContent.FileSize)
+				assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
+				assert.Equal(t, mrss.Full, *item.MediaContent.Expression)
+				if assert.NotNil(t, item.MediaContent.MediaPlayer) {
+					assert.Equal(t, "http://www.foo.com/player?id=1111", item.MediaContent.MediaPlayer.Url)
+					assert.Equal(t, 200, *item.MediaContent.MediaPlayer.Height)
+					assert.Equal(t, 400, *item.MediaContent.MediaPlayer.Width)
+				} else {
+					t.Fail()
+				}
+				assert.Len(t, item.MediaContent.MediaHashes, 1)
+				assert.Equal(t, mrss.Md5, *item.MediaContent.MediaHashes[0].Algo)
+				assert.Equal(t, "dfdec888b72151965a34b4b59031290a", item.MediaContent.MediaHashes[0].Value)
+				assert.Len(t, item.MediaContent.MediaCredits, 2)
+				assert.Equal(t, "producer", *item.MediaContent.MediaCredits[0].Role)
+				assert.Equal(t, "producer's name", item.MediaContent.MediaCredits[0].Value)
+				assert.Equal(t, "music/artist \n                name/album/song", item.MediaContent.GetCategory())
+				assert.Equal(t, "http://blah.com/scheme", *item.MediaContent.MediaCategory.Scheme)
+				assert.Len(t, item.MediaContent.MediaTexts, 1)
+				assert.Equal(t, "Oh, say, can you see, by the dawn's early light", item.MediaContent.MediaTexts[0].GetText())
+				assert.Equal(t, "nonadult", item.MediaContent.MediaRating.Value)
+			} else {
+				t.Fail()
+			}
+		},
+	},
+}
+
+var rssTests = map[string]map[string]testSuite{
+	"test/assets/rss/must":  rssMustPass,
+	"test/assets/ext/media": rssMedia,
+}
+
 func toRSS(t *testing.T, source *Feed) *rss.RSS {
 	t.Helper()
 	r, ok := source.FeedSource.(*rss.RSS)
@@ -323,21 +405,24 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 		want  *Feed
 		suite testSuite
 	}{}
-	for file, suite := range rssTests {
-		data, err := os.ReadFile(filepath.Join("test/assets/rss/must", file))
-		if err != nil {
-			t.Error("could not read file: " + file)
-		} else {
-			tests = append(tests, struct {
-				name  string
-				args  args
-				want  *Feed
-				suite testSuite
-			}{
-				name:  file,
-				args:  args{data: data},
-				suite: suite,
-			})
+	for set, testSuites := range rssTests {
+		for name, suite := range testSuites {
+			testFile := filepath.Join(set, name)
+			data, err := os.ReadFile(testFile) // #nosec G304
+			if err != nil {
+				t.Error("could not read file: " + name)
+			} else {
+				tests = append(tests, struct {
+					name  string
+					args  args
+					want  *Feed
+					suite testSuite
+				}{
+					name:  "file:" + testFile,
+					args:  args{data: data},
+					suite: suite,
+				})
+			}
 		}
 	}
 
@@ -346,7 +431,8 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 			feed, err := NewFeedFromBytes[*rss.RSS](tt.args.data)
 			// Check test suite error condition.
 			if (err != nil) != tt.suite.wantErr {
-				t.Errorf("NewFeedFromBytes() error = %v, wantErr %v", err, tt.suite.wantErr)
+				spew.Dump(feed)
+				t.Fatalf("NewFeedFromBytes() error = %v, wantErr %v", err, tt.suite.wantErr)
 				return
 			}
 			// Run test suites.
