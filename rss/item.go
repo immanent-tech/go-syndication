@@ -115,11 +115,11 @@ func (i *Item) GetImage() *types.Image {
 			Value: i.Image.Link,
 			Title: &i.Image.Title,
 		}
-	case len(i.MediaThumbnails) > 0:
-		// Use the first thumbnail found.
-		return i.MediaThumbnails[0].AsImage()
-	case i.MediaContent != nil:
-		return i.MediaContent.GetImage()
+	// case len(i.MediaThumbnails) > 0:
+	// 	// Use the first thumbnail found.
+	// 	return i.MediaThumbnails[0].AsImage()
+	// case i.MediaContent != nil:
+	// 	return i.MediaContent.GetImage()
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
 		return &types.Image{
 			Value: i.Enclosure.URL,

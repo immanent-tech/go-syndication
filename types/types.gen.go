@@ -16,6 +16,42 @@ const (
 	NameSpaceSyndication NameSpace = "http://purl.org/rss/1.0/modules/syndication/"
 )
 
+// AttrBitrate is the kilobits per second rate of media.
+type AttrBitrate = int
+
+// AttrChannels is number of audio channels in the media object.
+type AttrChannels = int
+
+// AttrDuration is the number of seconds the media object plays.
+type AttrDuration = int
+
+// AttrFileSize is the number of bytes of the media object.
+type AttrFileSize = int
+
+// AttrFramerate is the number of frames per second for the media object.
+type AttrFramerate = int
+
+// AttrHeight is the height of the media object.
+type AttrHeight = int
+
+// AttrHref is a URL that represents the element content.
+type AttrHref = AttrURL
+
+// AttrLang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
+type AttrLang = string
+
+// AttrMimeType is the standard MIME type of the object.
+type AttrMimeType = string
+
+// AttrSamplingrate is the number of samples per second taken to create the media object. It is expressed in thousands of samples per second (kHz)
+type AttrSamplingrate = int
+
+// AttrURL is a URL that represents the element content.
+type AttrURL = string
+
+// AttrWidth is the width of the media object. It is an optional attribute.
+type AttrWidth = int
+
 // Attributes are any attributes of the element.
 type Attributes = []xml.Attr
 

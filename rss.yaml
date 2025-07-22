@@ -595,8 +595,8 @@ components:
               $ref: 'media-rss.yaml#/components/schemas/MediaGroup'
             PermaLink:
               $ref: 'rss-ext.yaml#/components/schemas/PermaLink'
-            extensions:
-              $ref: 'types.yaml#/components/schemas/Extensions'
+            # extensions:
+            #   $ref: 'types.yaml#/components/schemas/Extensions'
       x-oapi-codegen-extra-tags:
         xml: 'item,omitemtpy'
     RSS:

@@ -4,7 +4,10 @@
 // Package mrss contains objects and methods defining the MediaRSS extension.
 package mrss
 
-import "github.com/joshuar/go-syndication/types"
+import (
+	"github.com/joshuar/go-syndication/sanitization"
+	"github.com/joshuar/go-syndication/types"
+)
 
 // AsImage returns the <media:thumbnail> object as a types.Image object.
 func (t *MediaThumbnail) AsImage() *types.Image {
@@ -13,12 +16,16 @@ func (t *MediaThumbnail) AsImage() *types.Image {
 	}
 }
 
-// GetImage extracts the first <media:thumbnail> object in the <media:content> as a types.Image object.
-func (t *MediaContent) GetImage() *types.Image {
-	if t.Type != nil && types.IsImage(*t.Type) {
-		if len(t.Thumbnails) > 0 {
-			return t.Thumbnails[0].AsImage()
+func (c *MediaContent) GetCategory() string {
+	if c.MediaCategory != nil {
+		if c.MediaCategory.Label != nil {
+			return *c.MediaCategory.Label
 		}
+		return sanitization.SanitizeString(c.MediaCategory.Value)
 	}
-	return nil
+	return ""
+}
+
+func (t *MediaText) GetText() string {
+	return sanitization.SanitizeString(t.Value)
 }

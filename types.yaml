@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/schemas/v3.0/schema.yaml
 # Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
-openapi: "3.0.3"
+openapi: '3.0.3'
 info:
   version: 1.0.0
   title: Common Types
@@ -17,11 +17,11 @@ components:
         maps namespace URL identifiers to a easy-to-use string type.
       type: string
       enum:
-        - "http://purl.org/dc/elements/1.1/"
-        - "http://search.yahoo.com/mrss/"
-        - "http://purl.org/rss/1.0/modules/syndication/"
-        - "http://purl.org/rss/1.0/modules/content/"
-        - "http://www.w3.org/2005/Atom"
+        - 'http://purl.org/dc/elements/1.1/'
+        - 'http://search.yahoo.com/mrss/'
+        - 'http://purl.org/rss/1.0/modules/syndication/'
+        - 'http://purl.org/rss/1.0/modules/content/'
+        - 'http://www.w3.org/2005/Atom'
       x-enum-varnames:
         - DublinCore
         - MediaRSS
@@ -33,21 +33,21 @@ components:
         is an element value that is required.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: ",chardata"
-        validate: "required"
+        xml: ',chardata'
+        validate: 'required'
     OptionalValue:
       description: >
         is an element value that is optional.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: ",chardata"
+        xml: ',chardata'
     XMLName:
       description: >
         represents the XML namespace of an element.
-      x-go-type: "xml.Name"
+      x-go-type: 'xml.Name'
       x-oapi-codegen-extra-tags:
-        json: "xml"
-        validate: "required"
+        json: 'xml'
+        validate: 'required'
     Attributes:
       description: >
         are any attributes of the element.
@@ -55,8 +55,8 @@ components:
       items:
         x-go-type: xml.Attr
       x-oapi-codegen-extra-tags:
-        xml: ",any,attr"
-        json: "attributes"
+        xml: ',any,attr'
+        json: 'attributes'
       x-go-type-skip-optional-pointer: true
     Extension:
       description: >
@@ -66,30 +66,30 @@ components:
         - XMLName
       properties:
         XMLName:
-          $ref: "#/components/schemas/XMLName"
+          $ref: '#/components/schemas/XMLName'
         value:
-          $ref: "#/components/schemas/OptionalValue"
+          $ref: '#/components/schemas/OptionalValue'
         attributes:
-          $ref: "#/components/schemas/Attributes"
+          $ref: '#/components/schemas/Attributes'
         extensions:
           descriptions: >
             are any child extensions.
           type: array
           items:
-            $ref: "#/components/schemas/Extension"
+            $ref: '#/components/schemas/Extension'
           x-oapi-codegen-extra-tags:
-            json: "extensions,omitempty"
-            xml: ",any"
+            json: 'extensions,omitempty'
+            xml: ',any'
           x-go-type-skip-optional-pointer: true
     Extensions:
       description: >
         records any elements that are unknown extensions to the schema.
       type: array
       items:
-        $ref: "#/components/schemas/Extension"
+        $ref: '#/components/schemas/Extension'
       x-oapi-codegen-extra-tags:
-        json: "extensions,omitempty"
-        xml: ",any"
+        json: 'extensions,omitempty'
+        xml: ',any'
       x-go-type-skip-optional-pointer: true
     CustomTypeBase:
       dscription: >
@@ -99,14 +99,14 @@ components:
         - value
       properties:
         value:
-          $ref: "#/components/schemas/RequiredValue"
+          $ref: '#/components/schemas/RequiredValue'
         attributes:
-          $ref: "#/components/schemas/Attributes"
+          $ref: '#/components/schemas/Attributes'
     Image:
       description: >
         is an abstraction of an Image across different types of specifications.
       allOf:
-        - $ref: "#/components/schemas/CustomTypeBase"
+        - $ref: '#/components/schemas/CustomTypeBase'
         - type: object
           properties:
             title:
@@ -117,4 +117,107 @@ components:
       description: >
         is an abstraction of element content across different types of specifications.
       allOf:
-        - $ref: "#/components/schemas/CustomTypeBase"
+        - $ref: '#/components/schemas/CustomTypeBase'
+    AttrURL:
+      description: >
+        is a URL that represents the element content.
+      type: string
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'url,attr,omitempty'
+        validate: 'omitempty,url'
+    AttrHref:
+      $ref: '#/components/schemas/AttrURL'
+    AttrLang:
+      description: >
+        is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
+        This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third
+        Edition).
+      type: string
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'lang,attr'
+        validate: 'omitempty,bcp47_language_tag'
+    # Common media attributes.
+    AttrFileSize:
+      description: >
+        is the number of bytes of the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'fileSize,attr,omitempty'
+    AttrMimeType:
+      description: >
+        is the standard MIME type of the object.
+      type: string
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'type,attr,omitempty'
+    AttrBitrate:
+      description: >
+        is the kilobits per second rate of media.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'bitrate,attr'
+        validate: 'omitempty,number'
+    AttrFramerate:
+      description: >
+        is the number of frames per second for the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'framerate,attr'
+        validate: 'omitempty,number'
+    AttrSamplingrate:
+      description: >
+        is the number of samples per second taken to create the media object. It is expressed in thousands of
+        samples per second (kHz)
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'samplingrate,attr'
+        validate: 'omitempty,number'
+    AttrChannels:
+      description: >
+        is number of audio channels in the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'channels,attr'
+        validate: 'omitempty,number'
+    AttrDuration:
+      description: >
+        is the number of seconds the media object plays.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'duration,attr'
+        validate: 'omitempty,number'
+    AttrHeight:
+      description: >
+        is the height of the media object.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'height,attr'
+        validate: 'omitempty,number'
+    AttrWidth:
+      description: >
+        is the width of the media object. It is an optional attribute.
+      type: integer
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'width,attr'
+        validate: 'omitempty,number'
