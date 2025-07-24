@@ -214,8 +214,8 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	}
 
 	// If the source URL is not set, set it.
-	if feed.GetSourceURL() == "" {
-		feed.SetSourceURL(url)
+	if feed.GetSourceURL() == "" || feed.GetSourceURL() != url {
+		feed.AddLink(url)
 	}
 	// If the feed source did not define an image, try to find and set an appropriate one.
 	if feed.GetImage() == nil {

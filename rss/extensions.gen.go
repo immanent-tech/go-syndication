@@ -51,7 +51,7 @@ type SYUpdateFrequency struct {
 type SYUpdatePeriod struct {
 	// XMLName represents the XML namespace of an element.
 	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
-	Value   SYUpdatePeriodValue  `json:"value" validate:"required,oneof=hourly daily weekly monthly yearly" xml:",chardata"`
+	Value   SYUpdatePeriodValue  `json:"value" xml:",chardata"`
 }
 
 // SYUpdatePeriodValue defines model for SYUpdatePeriod.Value.

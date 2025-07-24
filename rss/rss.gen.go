@@ -193,9 +193,6 @@ type Channel struct {
 	// Docs A URL that points to the documentation for the format used in the RSS file. It's probably a pointer to this page. It's for people who might stumble across an RSS file on a Web server 25 years from now and wonder what it is.
 	Docs *string `json:"docs,omitempty" validate:"omitempty,uri" xml:"docs,omitempty"`
 
-	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions externalRef3.Extensions `json:"extensions,omitempty" xml:",any"`
-
 	// Generator is a string indicating the program used to generate the channel.
 	Generator *string `json:"generator,omitempty" xml:"generator,omitempty"`
 

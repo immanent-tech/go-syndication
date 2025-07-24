@@ -501,8 +501,8 @@ components:
               $ref: 'media-rss.yaml#/components/schemas/MediaContent'
             MediaGroup:
               $ref: 'media-rss.yaml#/components/schemas/MediaGroup'
-            extensions:
-              $ref: 'types.yaml#/components/schemas/Extensions'
+            # extensions:
+            #   $ref: 'types.yaml#/components/schemas/Extensions'
       x-oapi-codegen-extra-tags:
         xml: 'channel'
         validate: 'required'

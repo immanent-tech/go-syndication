@@ -56,7 +56,7 @@ components:
             ]
           x-oapi-codegen-extra-tags:
             xml: ',chardata'
-            validate: 'required,oneof=hourly daily weekly monthly yearly'
+            # validate: 'required,oneof=hourly daily weekly monthly yearly'
       x-oapi-codegen-extra-tags:
         json: 'sy_updatePeriod,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty'
