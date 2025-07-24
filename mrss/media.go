@@ -16,6 +16,7 @@ func (t *MediaThumbnail) AsImage() *types.Image {
 	}
 }
 
+// GetCategory retrieves the category assigned to the media:content element (if any).
 func (c *MediaContent) GetCategory() string {
 	if c.MediaCategory != nil {
 		if c.MediaCategory.Label != nil {
@@ -26,6 +27,30 @@ func (c *MediaContent) GetCategory() string {
 	return ""
 }
 
+// GetText retrieves the text of media:content element (if any).
 func (t *MediaText) GetText() string {
 	return sanitization.SanitizeString(t.Value)
+}
+
+// IsImage will return a boolean indicating whether the media:content element represents an image, and if it does, also
+// return a generic types.Image object.
+func (c *MediaContent) IsImage() (bool, *types.Image) {
+	// Check if medium attr indicates an image.
+	if c.Medium != nil {
+		if *c.Medium == MediaContentMediumImage {
+			return true, &types.Image{
+				Value: c.Url,
+			}
+		}
+	}
+	// Check if mimetype attr indicates an image.
+	if c.Type != nil {
+		if types.IsImage(*c.Type) {
+			return true, &types.Image{
+				Value: c.Url,
+			}
+		}
+	}
+	// Not an image.
+	return false, nil
 }

@@ -809,11 +809,25 @@ components:
               $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
             lang:
               $ref: 'types-attributes.yaml#/components/schemas/AttrLang'
+            medium:
+              description: >
+                is the type of object (image | audio | video | document | executable). While this attribute can at times
+                seem redundant if type is supplied, it is included because it simplifies decision making on the reader
+                side, as well as flushes out any ambiguities between MIME type and object type.
+              type: string
+              enum: ['image', 'audio', 'video', 'document', 'executable']
+              xml:
+                attribute: true
+              x-oapi-codegen-extra-tags:
+                xml: 'medium,attr'
+                validate: 'omitempty,oneof=image audio video document executable'
             isDefault:
               description: >
                 determines if this is the default object that should be used for the <media:group>. There should only be one
-                default object per <media:group>. It is an optional attribute.
+                default object per <media:group>.
               type: string
+              xml:
+                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'isDefault,attr'
                 validate: 'omitempty,boolean'
@@ -821,6 +835,8 @@ components:
               description: >
                 determines if the object is a sample or the full version of the object, or even if it is a continuous stream.
               type: string
+              xml:
+                attribute: true
               enum: ['sample', 'full', 'nonstop']
               default: 'full'
               x-oapi-codegen-extra-tags:

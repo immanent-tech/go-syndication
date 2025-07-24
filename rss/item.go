@@ -102,9 +102,18 @@ func (i *Item) GetCategories() []string {
 	return categories
 }
 
-// GetImage retrieves the image (if any) for the Item. The image is returned as a types.Image object. The value will be
-// the first found of either any <image> or <media:thumbnail> element (<media:content> elements are searched
-// recursively). Any errors is retrieving the image will result in a nil result being returned.
+// GetImage retrieves the image (if any) for the Item. The image is returned as a types.Image object. There are many
+// places/elements that could represent the item's image, or rather, many ways various feeds indicate an image:
+//
+// - an <image> element in the item.
+//
+// - an <enclosure> element in the item with a mimetype that is an image.
+//
+// - a <media:content> element with medium=image or mimetype indicating an image.
+//
+// - a single <media:thumbnail> element.
+//
+// This method tries to retrieve one of these, first one wins, in the order above.
 func (i *Item) GetImage() *types.Image {
 	switch {
 	case i.Image != nil:
@@ -112,15 +121,19 @@ func (i *Item) GetImage() *types.Image {
 			Value: i.Image.Link,
 			Title: &i.Image.Title,
 		}
-	case len(i.MediaThumbnails) > 0:
-		// Use the first thumbnail found.
-		return i.MediaThumbnails[0].AsImage()
-	// case i.MediaContent != nil:
-	// 	return i.MediaContent.GetImage()
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
 		return &types.Image{
 			Value: i.Enclosure.URL,
 		}
+	case i.MediaContent != nil:
+		isImage, image := i.MediaContent.IsImage()
+		if isImage {
+			return image
+		}
+		return nil
+	case len(i.MediaThumbnails) > 0:
+		// Use the first thumbnail found.
+		return i.MediaThumbnails[0].AsImage()
 	default:
 		return nil
 	}

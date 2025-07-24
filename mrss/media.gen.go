@@ -15,6 +15,15 @@ const (
 	Sample  MediaContentExpression = "sample"
 )
 
+// Defines values for MediaContentMedium.
+const (
+	MediaContentMediumAudio      MediaContentMedium = "audio"
+	MediaContentMediumDocument   MediaContentMedium = "document"
+	MediaContentMediumExecutable MediaContentMedium = "executable"
+	MediaContentMediumImage      MediaContentMedium = "image"
+	MediaContentMediumVideo      MediaContentMedium = "video"
+)
+
 // Defines values for MediaHashAlgo.
 const (
 	Md5  MediaHashAlgo = "md5"
@@ -57,11 +66,11 @@ const (
 
 // Defines values for Medium.
 const (
-	Audio      Medium = "audio"
-	Document   Medium = "document"
-	Executable Medium = "executable"
-	Image      Medium = "image"
-	Video      Medium = "video"
+	MediumAudio      Medium = "audio"
+	MediumDocument   Medium = "document"
+	MediumExecutable Medium = "executable"
+	MediumImage      Medium = "image"
+	MediumVideo      Medium = "video"
 )
 
 // Defines values for TextType.
@@ -275,11 +284,14 @@ type MediaContent struct {
 	// Height is the height of the media object.
 	Height *externalRef1.AttrHeight `json:"height,omitempty" validate:"omitempty,number" xml:"height,attr"`
 
-	// IsDefault determines if this is the default object that should be used for the <media:group>. There should only be one default object per <media:group>. It is an optional attribute.
+	// IsDefault determines if this is the default object that should be used for the <media:group>. There should only be one default object per <media:group>.
 	IsDefault *string `json:"isDefault,omitempty" validate:"omitempty,boolean" xml:"isDefault,attr"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
 	Lang *externalRef1.AttrLang `json:"lang,omitempty" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
+
+	// Medium is the type of object (image | audio | video | document | executable). While this attribute can at times seem redundant if type is supplied, it is included because it simplifies decision making on the reader side, as well as flushes out any ambiguities between MIME type and object type.
+	Medium *MediaContentMedium `json:"medium,omitempty" validate:"omitempty,oneof=image audio video document executable" xml:"medium,attr"`
 
 	// Samplingrate is the number of samples per second taken to create the media object. It is expressed in thousands of samples per second (kHz)
 	Samplingrate *externalRef1.AttrSamplingrate `json:"samplingrate,omitempty" validate:"omitempty,number" xml:"samplingrate,attr"`
@@ -296,6 +308,9 @@ type MediaContent struct {
 
 // MediaContentExpression determines if the object is a sample or the full version of the object, or even if it is a continuous stream.
 type MediaContentExpression string
+
+// MediaContentMedium is the type of object (image | audio | video | document | executable). While this attribute can at times seem redundant if type is supplied, it is included because it simplifies decision making on the reader side, as well as flushes out any ambiguities between MIME type and object type.
+type MediaContentMedium string
 
 // MediaCopyright is copyright information for the media object.
 type MediaCopyright struct {
