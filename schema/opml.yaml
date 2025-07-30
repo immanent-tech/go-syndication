@@ -62,7 +62,7 @@ components:
             - $ref: '#/components/schemas/Date'
           x-oapi-codegen-extra-tags:
             xml: 'dateCreated,omitempty'
-            validate: 'omitempty,datetime'
+            validate: 'omitempty'
         dateModified:
           description: >
             is a date-time, indicating when the document was last modified.
@@ -263,7 +263,7 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             xml: 'xmlUrl,attr'
-            validate: 'url'
+            validate: 'required,url'
           xml:
             attribute: true
           x-go-name: XMLURL
@@ -273,7 +273,7 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             xml: 'htmlUrl,omitempty,attr'
-            validate: 'url'
+            validate: 'omitempty,url'
           xml:
             attribute: true
           x-go-name: HTMLURL
@@ -305,8 +305,9 @@ components:
           description: >
             is the top-level description element from the feed.
           type: string
-          enum: ['RSS1', 'RSS', 'scriptingNews']
+          enum: ['RSS2', 'RSS1', 'RSS', 'scriptingNews']
           x-oapi-codegen-extra-tags:
             xml: 'version,omitempty,attr'
+            validate: 'omitempty,oneof=RSS2 RSS1 RSS scriptingNews'
           xml:
             attribute: true

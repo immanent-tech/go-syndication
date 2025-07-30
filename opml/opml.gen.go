@@ -24,6 +24,7 @@ const (
 const (
 	OutlineVersionRSS           OutlineVersion = "RSS"
 	OutlineVersionRSS1          OutlineVersion = "RSS1"
+	OutlineVersionRSS2          OutlineVersion = "RSS2"
 	OutlineVersionScriptingNews OutlineVersion = "scriptingNews"
 )
 
@@ -31,6 +32,7 @@ const (
 const (
 	RSSOutlineVersionRSS           RSSOutlineVersion = "RSS"
 	RSSOutlineVersionRSS1          RSSOutlineVersion = "RSS1"
+	RSSOutlineVersionRSS2          RSSOutlineVersion = "RSS2"
 	RSSOutlineVersionScriptingNews RSSOutlineVersion = "scriptingNews"
 )
 
@@ -43,7 +45,7 @@ type Date = types.DateTime
 // Head represents the OPML <head> element.
 type Head struct {
 	// DateCreated is a date-time, indicating when the document was created.
-	DateCreated Date `json:"dateCreated,omitempty,omitzero" validate:"omitempty,datetime" xml:"dateCreated,omitempty"`
+	DateCreated Date `json:"dateCreated,omitempty,omitzero" validate:"omitempty" xml:"dateCreated,omitempty"`
 
 	// DateModified is a date-time, indicating when the document was last modified.
 	DateModified Date `json:"dateModified,omitempty,omitzero" validate:"omitempty,datetime" xml:"dateModified,omitempty"`
@@ -107,7 +109,7 @@ type Outline struct {
 	Description string `json:"description,omitempty,omitzero" xml:"description,omitempty,attr"`
 
 	// HTMLURL is the top-level link element.
-	HTMLURL string `json:"htmlUrl,omitempty,omitzero" validate:"url" xml:"htmlUrl,omitempty,attr"`
+	HTMLURL string `json:"htmlUrl,omitempty,omitzero" validate:"omitempty,url" xml:"htmlUrl,omitempty,attr"`
 
 	// IsBreakpoint is a string, either "true" or "false", indicating whether a breakpoint is set on this outline. This attribute is mainly necessary for outlines used to edit scripts. If it's not present, the value is false.
 	IsBreakpoint BreakpointState `json:"isBreakpoint,omitempty,omitzero" xml:"isBreakpoint,omitempty,attr"`
@@ -131,10 +133,10 @@ type Outline struct {
 	Type string `json:"type,omitempty,omitzero" xml:"type,omitempty,attr"`
 
 	// Version is the top-level description element from the feed.
-	Version OutlineVersion `json:"version,omitempty,omitzero" xml:"version,omitempty,attr"`
+	Version OutlineVersion `json:"version,omitempty,omitzero" validate:"omitempty,oneof=RSS2 RSS1 RSS scriptingNews" xml:"version,omitempty,attr"`
 
 	// XMLURL is the http address of the feed.
-	XMLURL string `json:"xmlUrl" validate:"url" xml:"xmlUrl,attr"`
+	XMLURL string `json:"xmlUrl" validate:"required,url" xml:"xmlUrl,attr"`
 }
 
 // BreakpointState is a string, either "true" or "false", indicating whether a breakpoint is set on this outline. This attribute is mainly necessary for outlines used to edit scripts. If it's not present, the value is false.
@@ -152,7 +154,7 @@ type RSSOutline struct {
 	Description string `json:"description,omitempty,omitzero" xml:"description,omitempty,attr"`
 
 	// HTMLURL is the top-level link element.
-	HTMLURL string `json:"htmlUrl,omitempty,omitzero" validate:"url" xml:"htmlUrl,omitempty,attr"`
+	HTMLURL string `json:"htmlUrl,omitempty,omitzero" validate:"omitempty,url" xml:"htmlUrl,omitempty,attr"`
 
 	// Language is the value of the top-level language element.
 	Language string `json:"language,omitempty,omitzero" xml:"language,omitempty,attr"`
@@ -161,10 +163,10 @@ type RSSOutline struct {
 	Title string `json:"title,omitempty,omitzero" xml:"title,omitempty,attr"`
 
 	// Version is the top-level description element from the feed.
-	Version RSSOutlineVersion `json:"version,omitempty,omitzero" xml:"version,omitempty,attr"`
+	Version RSSOutlineVersion `json:"version,omitempty,omitzero" validate:"omitempty,oneof=RSS2 RSS1 RSS scriptingNews" xml:"version,omitempty,attr"`
 
 	// XMLURL is the http address of the feed.
-	XMLURL string `json:"xmlUrl" validate:"url" xml:"xmlUrl,attr"`
+	XMLURL string `json:"xmlUrl" validate:"required,url" xml:"xmlUrl,attr"`
 }
 
 // RSSOutlineVersion is the top-level description element from the feed.

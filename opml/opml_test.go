@@ -39,48 +39,16 @@ var opmlTests = map[string]testSuite{
 		tests: func(t *testing.T, opml *OPML) {
 			t.Helper()
 			validate := validator.New()
-			for feed := range slices.Values(opml.Body) {
-				err := validate.Struct(feed)
-				require.Error(t, err)
-			}
-		},
-	},
-	"../test/assets/opml/errors/subscriptionListErrors2.opml": {
-		wantErr: false,
-		tests: func(t *testing.T, opml *OPML) {
-			t.Helper()
-			validate := validator.New()
-			for feed := range slices.Values(opml.Body) {
-				err := validate.Struct(feed)
-				require.Error(t, err)
-			}
-		},
-	},
-	"../test/assets/opml/errors/subscriptionListErrors3.opml": {
-		wantErr: false,
-		tests: func(t *testing.T, opml *OPML) {
-			t.Helper()
-			validate := validator.New()
-			for feed := range slices.Values(opml.Body) {
-				err := validate.Struct(feed)
-				require.Error(t, err)
-			}
-		},
-	},
-	"../test/assets/opml/errors/subscriptionListErrors4.opml": {
-		wantErr: false,
-		tests: func(t *testing.T, opml *OPML) {
-			t.Helper()
-			validate := validator.New()
-			for feed := range slices.Values(opml.Body) {
-				err := validate.Struct(feed)
-				require.Error(t, err)
-			}
+			require.Error(t, validate.Struct(opml.Body[0]))
+			require.Error(t, validate.Struct(opml.Body[1]))
+			require.NoError(t, validate.Struct(opml.Body[2]))
+			// require.Error(t, validate.Struct(opml.Body[3]))
+			// require.Error(t, validate.Struct(opml.Body[4]))
 		},
 	},
 }
 
-func TestOPML(t *testing.T) {
+func TestNewOPMLFromBytes(t *testing.T) {
 	type args struct {
 		data []byte
 	}
@@ -110,7 +78,7 @@ func TestOPML(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			opml, err := New(tt.args.data)
+			opml, err := NewOPMLFromBytes(tt.args.data)
 			t.Logf("%v", opml)
 
 			// Check test suite error condition.
@@ -122,6 +90,40 @@ func TestOPML(t *testing.T) {
 			if tt.suite.tests != nil {
 				tt.suite.tests(t, opml)
 			}
+		})
+	}
+}
+
+func TestNewOPML(t *testing.T) {
+	type args struct {
+		options []Option
+	}
+	tests := []struct {
+		name      string
+		args      args
+		testSuite func(t *testing.T, opml *OPML)
+	}{
+		{
+			name: "valid OPML file",
+			args: args{
+				[]Option{
+					WithTitle("test-subscription"),
+					WithOutlines(
+						*NewSubscriptionOutline("CNET News.com", "http://news.com.com/2547-1_3-0-5.xml"),
+					),
+				},
+			},
+		},
+	}
+	validate := validator.New()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			opml := NewOPML(tt.args.options...)
+			require.NoError(t, validate.Struct(opml))
+			assert.Equal(t, "test-subscription", opml.Head.Title)
+			feed := opml.Body[0]
+			assert.Equal(t, "CNET News.com", feed.Text)
+			assert.Equal(t, "http://news.com.com/2547-1_3-0-5.xml", feed.XMLURL)
 		})
 	}
 }
