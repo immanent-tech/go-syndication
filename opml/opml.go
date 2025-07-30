@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
-	"slices"
 
 	"golang.org/x/net/html/charset"
 )
@@ -25,41 +24,4 @@ func New(b []byte) (*OPML, error) {
 	}
 
 	return &root, nil
-}
-
-// ExtractRSS extracts all RSS outlines from the OPML.
-func (o *OPML) ExtractRSS() []Outline {
-	return extractRSSOutlines(o.Body...)
-}
-
-// extractRSSOutlines will recursively collect all outlines that are a single
-// RSS feed into a slice.
-func extractRSSOutlines(outlines ...Outline) []Outline {
-	var requests []Outline
-
-	for outline := range slices.Values(outlines) {
-		switch {
-		case outline.isFeed():
-			requests = append(requests, outline)
-		case outline.isGroup():
-			requests = append(requests, extractRSSOutlines(outline.Outlines...)...)
-		}
-	}
-
-	return requests
-}
-
-// isFeed returns a boolean indicating whether this outline represents an RSS
-// feed.
-func (r *Outline) isFeed() bool {
-	if r.Type == nil {
-		return false
-	}
-	return *r.Type == "rss"
-}
-
-// isGroup returns a boolean indicating whether this outline represents a group
-// of RSS feeds (i.e., has children outlines).
-func (r *Outline) isGroup() bool {
-	return len(r.Outlines) > 0
 }
