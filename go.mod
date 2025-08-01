@@ -3,7 +3,6 @@ module github.com/joshuar/go-syndication
 go 1.24.5
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/microcosm-cc/bluemonday v1.0.27
@@ -11,6 +10,7 @@ require (
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/oasdiff/yaml v0.0.0-20250309154309-f31be36b4037 // indirect
 	github.com/oasdiff/yaml3 v0.0.0-20250309153720-d2182401db90 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

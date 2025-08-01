@@ -26,12 +26,15 @@ components:
         XMLName:
           $ref: 'types.yaml#/components/schemas/XMLName'
         value:
-          type: string
+          allOf:
+            - $ref: 'types.yaml#/components/schemas/CharData'
           x-oapi-codegen-extra-tags:
             xml: ',chardata'
+            validate: 'required'
       x-oapi-codegen-extra-tags:
         json: 'content_encoded,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/content/ encoded,omitempty'
+      x-go-type-skip-optional-pointer: false
     SYUpdatePeriod:
       description: >
         is the period over which the channel format is updated.
@@ -43,7 +46,7 @@ components:
         XMLName:
           $ref: 'types.yaml#/components/schemas/XMLName'
         value:
-          type: string
+          x-go-type: types.StringData
           default: 'daily'
           enum: ['hourly', 'daily', 'weekly', 'monthly', 'yearly']
           x-enum-varnames:
@@ -56,10 +59,11 @@ components:
             ]
           x-oapi-codegen-extra-tags:
             xml: ',chardata'
-            # validate: 'required,oneof=hourly daily weekly monthly yearly'
+            validate: 'required,oneof=hourly daily weekly monthly yearly'
       x-oapi-codegen-extra-tags:
         json: 'sy_updatePeriod,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty'
+      x-go-type-skip-optional-pointer: false
     SYUpdateFrequency:
       description: >
         describes the frequency of updates in relation to the update period.
@@ -81,6 +85,7 @@ components:
       x-oapi-codegen-extra-tags:
         json: 'sy_updateFrequency,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty'
+      x-go-type-skip-optional-pointer: false
     SYUpdateBase:
       description: >
         is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
@@ -100,6 +105,7 @@ components:
       x-oapi-codegen-extra-tags:
         json: 'sy_updateBase,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty'
+      x-go-type-skip-optional-pointer: false
     SyndicationElements:
       description: >
         contains all syndication extension elements.

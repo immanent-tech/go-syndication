@@ -30,8 +30,9 @@ type SourceType string
 // Item represents a single item or entry (or article) in a feed.
 type Item struct {
 	types.ItemSource `json:"source"`
-	SourceType       SourceType `json:"type"`
-	FeedTitle        string     `json:"feed_title"`
+
+	SourceType SourceType `json:"type"`
+	FeedTitle  string     `json:"feed_title"`
 }
 
 // UnmarshalJSON handles unmarshaling of an Item from JSON.

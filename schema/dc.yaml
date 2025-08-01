@@ -1,6 +1,6 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/schemas/v3.0/schema.yaml
 # Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
-openapi: "3.0.3"
+# SPDX-License-Identifier: 	AGPL-3.0-or-later
+openapi: '3.0.3'
 info:
   version: 1.0.0
   title: Dublin Core RSS Extension
@@ -11,274 +11,163 @@ info:
   license:
     name: AGPL-3.0-or-later
     url: https://spdx.org/licenses/AGPL-3.0-only.html
-paths: {}
 components:
   schemas:
     DCTitle:
       description: >
         is a name by which the resource is formally known.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_title,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ title,omitempty"
+        json: 'dc_title,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ title,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCDescription:
       description: >
         may include but is not limited to: an abstract, table of contents, reference to a graphical representation of
         content or a free-text account of the content.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_description,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ description,omitempty"
+        json: 'dc_description,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ description,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCContributor:
       description: >
         is an entity responsible for making contributions to the resource.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_contributor,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ contributor,omitempty"
+        json: 'dc_contributor,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ contributor,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCCreator:
       description: >
         is an entity primarily responsible for making the resource.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_creator,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ creator,omitempty"
+        json: 'dc_creator,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ creator,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCCoverage:
       description: >
         is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under
         which the resource is relevant.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_coverage,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ coverage,omitempty"
+        json: 'dc_coverage,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ coverage,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCFormat:
       description: >
         is the file format, physical medium, or dimensions of the resource.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_format,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ format,omitempty"
+        json: 'dc_format,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ format,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCIdentifier:
       description: >
         is an unambiguous reference to the resource within a given context.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_identifier,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ identifier,omitempty"
+        json: 'dc_identifier,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ identifier,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCPublisher:
       description: >
         is an entity responsible for making the resource available.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_publisher,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ publisher,omitempty"
+        json: 'dc_publisher,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ publisher,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCRelation:
       description: >
         is a related resource.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_relation,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ relation,omitempty"
+        json: 'dc_relation,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ relation,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCRights:
       description: >
         is information about rights held in and over the resource.
       type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_rights,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ rights,omitempty"
+        json: 'dc_rights,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ rights,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCSubject:
       description: >
         is the topic of the resource.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_subject,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ subject,omitempty"
+        json: 'dc_subject,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ subject,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCType:
       description: >
         is the nature or genre of the resource.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_type,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ type,omitempty"
+        json: 'dc_type,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ type,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCSource:
       description: >
         is a related resource from which the described resource is derived.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          $ref: "types.yaml#/components/schemas/RequiredValue"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_source,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ source,omitempty"
+        json: 'dc_source,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ source,omitempty'
+      x-go-type-skip-optional-pointer: false
     DCLanguage:
       description: >
         identifies the language used by the related resource using an HTML language code.
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          type: string
-          x-oapi-codegen-extra-tags:
-            xml: ",chardata"
-            validate: "required,bcp47_language_tag"
+      x-go-type: 'types.StringData'
       x-oapi-codegen-extra-tags:
-        json: "dc_language,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ language,omitempty"
+        json: 'dc_language,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ language,omitempty'
+        validate: 'omitempty,bcp47_language_tag'
     DCDate:
       description: >
         is a point or period of time associated with an event in the lifecycle of the resource.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: "types.yaml#/components/schemas/XMLName"
-        value:
-          x-go-type: types.DateTime
-          x-oapi-codegen-extra-tags:
-            xml: ",chardata"
-            validate: "required"
+      x-go-type: types.DateTime
       x-oapi-codegen-extra-tags:
-        json: "dc_date,omitempty"
-        xml: "http://purl.org/dc/elements/1.1/ date,omitempty"
+        json: 'dc_date,omitempty'
+        xml: 'http://purl.org/dc/elements/1.1/ date,omitempty'
+      x-go-type-skip-optional-pointer: false
     DublinCoreElements:
       description: >
         contains Dublin Core extension elements.
       type: object
       properties:
         DCTitle:
-          $ref: "#/components/schemas/DCTitle"
+          $ref: '#/components/schemas/DCTitle'
         DCDescription:
-          $ref: "#/components/schemas/DCDescription"
+          $ref: '#/components/schemas/DCDescription'
         DCContributor:
-          $ref: "#/components/schemas/DCContributor"
+          $ref: '#/components/schemas/DCContributor'
         DCCreator:
-          $ref: "#/components/schemas/DCCreator"
+          $ref: '#/components/schemas/DCCreator'
         DCCoverage:
-          $ref: "#/components/schemas/DCCoverage"
+          $ref: '#/components/schemas/DCCoverage'
         DCFormat:
-          $ref: "#/components/schemas/DCFormat"
+          $ref: '#/components/schemas/DCFormat'
         DCIdentifier:
-          $ref: "#/components/schemas/DCIdentifier"
+          $ref: '#/components/schemas/DCIdentifier'
         DCPublisher:
-          $ref: "#/components/schemas/DCPublisher"
+          $ref: '#/components/schemas/DCPublisher'
         DCRelation:
-          $ref: "#/components/schemas/DCRelation"
+          $ref: '#/components/schemas/DCRelation'
         DCRights:
-          $ref: "#/components/schemas/DCRights"
+          $ref: '#/components/schemas/DCRights'
         DCSubject:
-          $ref: "#/components/schemas/DCSubject"
+          $ref: '#/components/schemas/DCSubject'
         DCType:
-          $ref: "#/components/schemas/DCType"
+          $ref: '#/components/schemas/DCType'
         DCSource:
-          $ref: "#/components/schemas/DCSource"
+          $ref: '#/components/schemas/DCSource'
         DCLanguage:
-          $ref: "#/components/schemas/DCLanguage"
+          $ref: '#/components/schemas/DCLanguage'
         DCDate:
-          $ref: "#/components/schemas/DCDate"
-
+          $ref: '#/components/schemas/DCDate'

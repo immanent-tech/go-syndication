@@ -9,7 +9,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/joshuar/go-syndication/sanitization"
 	"github.com/joshuar/go-syndication/types"
 )
 
@@ -20,10 +19,7 @@ var ErrItemValidation = errors.New("item is invalid")
 // GetID returns an "id" for the item. This will be the value of the <guid> element, if present, or an empty string if
 // not present.
 func (i *Item) GetID() string {
-	if i.GUID != nil {
-		return i.GUID.Value
-	}
-	return ""
+	return i.GUID.Value.String()
 }
 
 // GetTitle retrieves the <title> (if any) of the Item.
@@ -32,7 +28,7 @@ func (i *Item) GetTitle() string {
 	case i.DCTitle != nil:
 		return i.DCTitle.String()
 	default:
-		return sanitization.SanitizeString(i.Title)
+		return i.Title.String()
 	}
 }
 
@@ -47,7 +43,8 @@ func (i *Item) GetDescription() string {
 	case i.DCDescription != nil:
 		return i.DCDescription.String()
 	default:
-		return sanitization.SanitizeString(i.Description)
+		return i.Description.String()
+		// return sanitization.SanitizeString(i.Description)
 	}
 }
 
@@ -55,8 +52,8 @@ func (i *Item) GetDescription() string {
 // <dc:creator> elements.
 func (i *Item) GetAuthors() []string {
 	var authors []string
-	if i.Author != nil {
-		authors = append(authors, *i.Author)
+	if i.Author != "" {
+		authors = append(authors, i.Author.String())
 	}
 	if i.DCCreator != nil {
 		authors = append(authors, i.DCCreator.String())
@@ -86,7 +83,7 @@ func (i *Item) GetRights() string {
 // present.
 func (i *Item) GetLanguage() string {
 	switch {
-	case i.DCLanguage != nil:
+	case i.DCLanguage != "":
 		return i.DCLanguage.String()
 	default:
 		return ""
@@ -155,18 +152,9 @@ func (i *Item) GetUpdatedDate() time.Time {
 }
 
 // GetContent returns the content of the Item (if any). This will be taken from any <content:encoded> element.
-func (i *Item) GetContent() *types.Content {
+func (i *Item) GetContent() string {
 	if i.ContentEncoded != nil {
-		return &types.Content{
-			Value: i.ContentEncoded.String(),
-		}
-	}
-	return &types.Content{}
-}
-
-func (i *Item) GetComments() string {
-	if i.Comments != nil {
-		return sanitization.SanitizeString(*i.Comments)
+		return i.ContentEncoded.Value.String()
 	}
 	return ""
 }
@@ -174,7 +162,7 @@ func (i *Item) GetComments() string {
 // Validate applies custom validation to an item.
 func (i *Item) Validate() error {
 	// Either description or title must be set. Both cannot be empty.
-	if i.Description == "" && i.Title == "" {
+	if i.Description.String() == "" && i.Title.String() == "" {
 		return fmt.Errorf("%w: description or title is required", ErrItemValidation)
 	}
 	return nil

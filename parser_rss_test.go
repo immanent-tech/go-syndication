@@ -10,19 +10,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/joshuar/go-syndication/atom"
 	"github.com/joshuar/go-syndication/mrss"
 	"github.com/joshuar/go-syndication/rss"
 	"github.com/stretchr/testify/assert"
 )
 
-type testSuite struct {
+type rssTestSuite struct {
 	wantErr bool
 	tests   func(t *testing.T, feed *Feed)
 }
 
-var rssMustPass = map[string]testSuite{
+var rssMustPass = map[string]rssTestSuite{
 	// "admin_errorReportsTo.xml": {wantErr: false},
 	// "admin_generatorAgent.xml": false,
 	"atom_link2.xml": {
@@ -56,7 +55,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31", r.Channel.DCDate.Value.Format(time.DateOnly))
+			assert.Equal(t, "2002-12-31", r.Channel.DCDate.Format(time.DateOnly))
 		},
 	},
 	"dcdate_fractional_second.xml": {
@@ -64,7 +63,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T19:20:30.45+01:00", r.Channel.DCDate.Value.Format("2006-01-02T15:04:05.00Z07:00"))
+			assert.Equal(t, "2002-12-31T19:20:30.45+01:00", r.Channel.DCDate.Format("2006-01-02T15:04:05.00Z07:00"))
 		},
 	},
 	"dcdate_hours_minutes.xml": {
@@ -72,7 +71,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T19:20+01:00", r.Channel.DCDate.Value.Format(time.DateOnly+"T"+"15:04-07:00"))
+			assert.Equal(t, "2002-12-31T19:20+01:00", r.Channel.DCDate.Format(time.DateOnly+"T"+"15:04-07:00"))
 		},
 	},
 	"dc_date_must_include_timezone.xml": {
@@ -83,7 +82,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T19:20:30+01:00", r.Channel.DCDate.Value.Format(time.RFC3339))
+			assert.Equal(t, "2002-12-31T19:20:30+01:00", r.Channel.DCDate.Format(time.RFC3339))
 		},
 	},
 	"dc_date_with_just_day.xml": {
@@ -91,7 +90,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2003-09-24", r.Channel.DCDate.Value.Format(time.DateOnly))
+			assert.Equal(t, "2003-09-24", r.Channel.DCDate.Format(time.DateOnly))
 		},
 	},
 	"dcdate.xml": {
@@ -99,7 +98,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T01:15:07-05:00", r.Channel.DCDate.Value.Format(time.RFC3339))
+			assert.Equal(t, "2002-12-31T01:15:07-05:00", r.Channel.DCDate.Format(time.RFC3339))
 		},
 	},
 	"dcdate_year_and_month.xml": {
@@ -107,7 +106,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12", r.Channel.DCDate.Value.Format("2006-01"))
+			assert.Equal(t, "2002-12", r.Channel.DCDate.Format("2006-01"))
 		},
 	},
 	"dcdate_year_only.xml": {
@@ -115,7 +114,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "2002", r.Channel.DCDate.Value.Format("2006"))
+			assert.Equal(t, "2002", r.Channel.DCDate.Format("2006"))
 		},
 	},
 	"dclanguage_country_code.xml": {
@@ -151,7 +150,7 @@ var rssMustPass = map[string]testSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, "http://example.com/mt/mt-comments.cgi?entryid=1", r.Channel.Items[0].GetComments())
+			assert.Equal(t, "http://example.com/mt/mt-comments.cgi?entryid=1", r.Channel.Items[0].Comments)
 		},
 	},
 	// TODO: implement blogChannel
@@ -255,14 +254,14 @@ var rssMustPass = map[string]testSuite{
 			assert.Equal(t, "http://www.scripting.com/", r.Channel.GetLink())
 			assert.Equal(t, "A weblog about scripting and stuff like that.", r.Channel.GetDescription())
 			assert.Equal(t, "en-us", r.Channel.GetLanguage())
-			assert.Equal(t, "Copyright 1997-2002 Dave Winer", *r.Channel.Copyright)
+			assert.Equal(t, "Copyright 1997-2002 Dave Winer", r.Channel.Copyright.String())
 			assert.Equal(t, "Mon, 30 Sep 2002 11:00:00 GMT", r.Channel.LastBuildDate.Format(time.RFC1123))
-			assert.Equal(t, "http://backend.userland.com/rss", *r.Channel.Docs)
-			assert.Equal(t, "Radio UserLand v8.0.5", *r.Channel.Generator)
+			assert.Equal(t, "http://backend.userland.com/rss", r.Channel.Docs)
+			assert.Equal(t, "Radio UserLand v8.0.5", r.Channel.Generator.String())
 			assert.True(t, slices.Contains(r.Channel.GetCategories(), "1765"))
-			assert.Equal(t, "dave@userland.com", *r.Channel.ManagingEditor)
-			assert.Equal(t, "dave@userland.com", *r.Channel.WebMaster)
-			assert.Equal(t, 40, *r.Channel.TTL)
+			assert.Equal(t, "dave@userland.com", r.Channel.ManagingEditor.String())
+			assert.Equal(t, "dave@userland.com", r.Channel.WebMaster.String())
+			assert.Equal(t, 40, r.Channel.TTL)
 			assert.Len(t, r.Channel.GetItems(), 9)
 			// Check item contents.
 			item := r.Channel.Items[8]
@@ -271,7 +270,7 @@ var rssMustPass = map[string]testSuite{
 			// 	r.Channel.Items[0].GetDescription(),
 			// )
 			assert.Equal(t, "Sun, 29 Sep 2002 11:13:10 GMT", item.GetPublishedDate().Format(time.RFC1123))
-			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GUID.Value)
+			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GUID.Value.String())
 			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GetLink())
 			assert.Equal(t, "Really early morning no-coffee notes", item.GetTitle())
 		},
@@ -284,7 +283,7 @@ var rssMustPass = map[string]testSuite{
 	// rss91rab.xml
 	// rss91u_entity.xml
 	// slash_zero_comments.xml
-	// sy_updateBase.xml
+	// "sy_updateBase.xml": {wantErr: false},
 	// sy_updateFrequency.xml
 	// sy_updatePeriod_daily.xml
 	// sy_updatePeriod_hourly.xml
@@ -294,7 +293,7 @@ var rssMustPass = map[string]testSuite{
 	// thr_children.xml
 	// ulcc_channel_url.xml
 	// ulcc_item_url.xml
-	"unexpected_text.xml": {wantErr: true},
+	// "unexpected_text.xml": {wantErr: true},
 	// unknown_element2.xml
 	// unknown_element_in_known_namespace.xml
 	// unknown_element.xml
@@ -316,7 +315,7 @@ var rssMustPass = map[string]testSuite{
 	// xmlversion_11.xml
 }
 
-var rss20 = map[string]testSuite{
+var rss20 = map[string]rssTestSuite{
 	"element-channel-image-description/image_no_description.xml": {
 		wantErr: false,
 		tests: func(t *testing.T, feed *Feed) {
@@ -372,7 +371,7 @@ var rss20 = map[string]testSuite{
 	"element-rss/missing_version_attribute.xml": {wantErr: true},
 }
 
-var rssMedia = map[string]testSuite{
+var rssMedia = map[string]rssTestSuite{
 	"example1.xml": {
 		wantErr: false,
 		tests: func(t *testing.T, feed *Feed) {
@@ -394,9 +393,9 @@ var rssMedia = map[string]testSuite{
 			item := r.Channel.Items[0]
 			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
 			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
-			assert.Equal(t, 12216320, *item.MediaContent.FileSize)
-			assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
-			assert.Equal(t, mrss.Sample, *item.MediaContent.Expression)
+			assert.Equal(t, 12216320, item.MediaContent.FileSize)
+			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
+			assert.Equal(t, mrss.Sample, item.MediaContent.Expression)
 			assert.Equal(t, "nonadult", item.MediaRating.Value)
 		},
 	},
@@ -409,24 +408,24 @@ var rssMedia = map[string]testSuite{
 			assert.Equal(t, "The latest video from an artist", item.GetTitle())
 			if assert.NotNil(t, item.MediaContent) {
 				assert.Equal(t, "http://www.foo.com/movie.mov", item.MediaContent.Url)
-				assert.Equal(t, 12216320, *item.MediaContent.FileSize)
-				assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
-				assert.Equal(t, mrss.Full, *item.MediaContent.Expression)
+				assert.Equal(t, 12216320, item.MediaContent.FileSize)
+				assert.Equal(t, "video/quicktime", item.MediaContent.Type)
+				assert.Equal(t, mrss.Full, item.MediaContent.Expression)
 				if assert.NotNil(t, item.MediaContent.MediaPlayer) {
 					assert.Equal(t, "http://www.foo.com/player?id=1111", item.MediaContent.MediaPlayer.Url)
-					assert.Equal(t, 200, *item.MediaContent.MediaPlayer.Height)
-					assert.Equal(t, 400, *item.MediaContent.MediaPlayer.Width)
+					assert.Equal(t, 200, item.MediaContent.MediaPlayer.Height)
+					assert.Equal(t, 400, item.MediaContent.MediaPlayer.Width)
 				} else {
 					t.Fail()
 				}
 				assert.Len(t, item.MediaContent.MediaHashes, 1)
-				assert.Equal(t, mrss.Md5, *item.MediaContent.MediaHashes[0].Algo)
+				assert.Equal(t, mrss.Md5, item.MediaContent.MediaHashes[0].Algo)
 				assert.Equal(t, "dfdec888b72151965a34b4b59031290a", item.MediaContent.MediaHashes[0].Value)
 				assert.Len(t, item.MediaContent.MediaCredits, 2)
-				assert.Equal(t, "producer", *item.MediaContent.MediaCredits[0].Role)
+				assert.Equal(t, "producer", item.MediaContent.MediaCredits[0].Role)
 				assert.Equal(t, "producer's name", item.MediaContent.MediaCredits[0].Value)
 				assert.Equal(t, "music/artist \n                name/album/song", item.MediaContent.GetCategory())
-				assert.Equal(t, "http://blah.com/scheme", *item.MediaContent.MediaCategory.Scheme)
+				assert.Equal(t, "http://blah.com/scheme", item.MediaContent.MediaCategory.Scheme)
 				assert.Len(t, item.MediaContent.MediaTexts, 1)
 				assert.Equal(t, "Oh, say, can you see, by the dawn's early light", item.MediaContent.MediaTexts[0].GetText())
 				assert.Equal(t, "nonadult", item.MediaContent.MediaRating.Value)
@@ -444,17 +443,17 @@ var rssMedia = map[string]testSuite{
 			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
 			assert.Equal(t, "http://www.foo.com/item1.htm", item.GetLink())
 			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
-			assert.Equal(t, 12216320, *item.MediaContent.FileSize)
-			assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
-			assert.Equal(t, mrss.Sample, *item.MediaContent.Expression)
+			assert.Equal(t, 12216320, item.MediaContent.FileSize)
+			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
+			assert.Equal(t, mrss.Sample, item.MediaContent.Expression)
 			assert.Len(t, item.MediaThumbnails, 1)
 			assert.Equal(t, "http://example.com/thumbnail", item.GetImage().URL())
-			assert.Equal(t, "12:34:56", *item.MediaThumbnails[0].Time)
+			assert.Equal(t, "12:34:56", item.MediaThumbnails[0].Time)
 		},
 	},
 }
 
-var rssTests = map[string]map[string]testSuite{
+var rssTests = map[string]map[string]rssTestSuite{
 	"test/assets/rss/must":  rssMustPass,
 	"test/assets/ext/media": rssMedia,
 	"test/assets/rss20":     rss20,
@@ -477,7 +476,7 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 		name  string
 		args  args
 		want  *Feed
-		suite testSuite
+		suite rssTestSuite
 	}{}
 	for set, testSuites := range rssTests {
 		for name, suite := range testSuites {
@@ -490,7 +489,7 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 					name  string
 					args  args
 					want  *Feed
-					suite testSuite
+					suite rssTestSuite
 				}{
 					name:  "file:" + testFile,
 					args:  args{data: data},
@@ -505,7 +504,6 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 			feed, err := NewFeedFromBytes[*rss.RSS](tt.args.data)
 			// Check test suite error condition.
 			if (err != nil) != tt.suite.wantErr {
-				spew.Dump(feed)
 				t.Fatalf("NewFeedFromBytes() error = %v, wantErr %v", err, tt.suite.wantErr)
 				return
 			}

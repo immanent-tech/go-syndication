@@ -81,7 +81,8 @@ func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
 		FeedSource: source,
 	}
 	feed.SourceType = parseSource(original)
-	if err := validation.ValidateStruct(feed); err != nil {
+	err = validation.ValidateStruct(feed)
+	if err != nil {
 		return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseFeed, err)
 	}
 
@@ -190,9 +191,21 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 		// Likely a feed but mimetype is ambiguous.
 		// Try RSS first...
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
+		if err != nil {
+			slog.Debug("Failed to parse indeterminate feed as RSS.",
+				slog.Any("error", err),
+				slog.String("url", url),
+			)
+		}
 		// Try Atom if that failed...
 		if err != nil {
 			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
+		}
+		if err != nil {
+			slog.Debug("Failed to parse indeterminate feed as Atom.",
+				slog.Any("error", err),
+				slog.String("url", url),
+			)
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
 		// JSONFeed
@@ -200,7 +213,8 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
-		if url, err := discoverFeedURL(resp.Body()); err == nil && url != "" {
+		url, err := discoverFeedURL(resp.Body())
+		if err == nil && url != "" {
 			return parseFeedURL(ctx, client, url)
 		}
 		fallthrough
@@ -208,6 +222,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 		// Cannot determine or unsupported content.
 		err = fmt.Errorf("%w: %s", ErrUnsupportedFormat, content)
 	}
+
 	// (╯°益°)╯彡┻━┻
 	if err != nil {
 		return FeedResult{URL: url, Err: err}

@@ -10,6 +10,8 @@ generate:
 output-options:
   # to make sure that all types are generated
   skip-prune: true
+  prefer-skip-optional-pointer: true
+  prefer-skip-optional-pointer-with-omitzero: true
 import-mapping:
   dc.yaml: 'github.com/joshuar/go-syndication/dc'
   types.yaml: 'github.com/joshuar/go-syndication/types'

@@ -8,29 +8,20 @@ import (
 	externalRef1 "github.com/joshuar/go-syndication/types"
 )
 
-// Defines values for SYUpdatePeriodValue.
-const (
-	UpdatedDaily   SYUpdatePeriodValue = "daily"
-	UpdatedHourly  SYUpdatePeriodValue = "hourly"
-	UpdatedMonthly SYUpdatePeriodValue = "monthly"
-	UpdatedWeekly  SYUpdatePeriodValue = "weekly"
-	UpdatedYearly  SYUpdatePeriodValue = "yearly"
-)
-
 // ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
 type ContentEncoded struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
-	Value   string               `json:"value" xml:",chardata"`
+	XMLName externalRef1.XMLName  `json:"xml" validate:"required"`
+	Value   externalRef1.CharData `json:"value" validate:"required" xml:",chardata"`
 }
 
 // PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
 type PermaLink struct {
 	// Resource provides the URL for the target of this link. The URL given must be absolute, we do not support relative paths. This is due to the presence of caching software which might not be mod_link aware. If the URL given was relative it may break when the cached resource is given to a calling application. Note that mod_link aware caching engines are also encouraged to consider caching the content represented by the target resource.
-	Resource *string `json:"rdf_resource,omitempty" validate:"omitempty,url" xml:"http://www.w3.org/1999/02/22-rdf-syntax-ns resource,omitempty,attr"`
+	Resource string `json:"rdf_resource,omitempty" validate:"omitempty,url" xml:"http://www.w3.org/1999/02/22-rdf-syntax-ns resource,omitempty,attr"`
 
 	// Type gives an advisory hint as to the content type of the content available at the link target address. It allows user agents to opt to use a fallback mechanism rather than fetch the content if they are advised that they will get content in a content type they do not support. This also supports any namspace (URI) if a media type for the destination resource has not yet been registered.
-	Type *string `json:"link_type,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ type,omitempty,attr"`
+	Type string `json:"link_type,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ type,omitempty,attr"`
 }
 
 // SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
@@ -51,11 +42,8 @@ type SYUpdateFrequency struct {
 type SYUpdatePeriod struct {
 	// XMLName represents the XML namespace of an element.
 	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
-	Value   SYUpdatePeriodValue  `json:"value" xml:",chardata"`
+	Value   types.StringData     `json:"value" validate:"required,oneof=hourly daily weekly monthly yearly" xml:",chardata"`
 }
-
-// SYUpdatePeriodValue defines model for SYUpdatePeriod.Value.
-type SYUpdatePeriodValue string
 
 // SyndicationElements contains all syndication extension elements.
 type SyndicationElements struct {

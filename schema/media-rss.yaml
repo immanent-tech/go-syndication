@@ -66,6 +66,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ rating,omitempty'
         json: 'media_rating'
+      x-go-type-skip-optional-pointer: false
     MediaTitle:
       description: >
         is the title of the particular media object.
@@ -80,6 +81,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ title,omitempty'
         json: 'media_title'
+      x-go-type-skip-optional-pointer: false
     MediaDescription:
       description: >
         is a short description describing the media object typically a sentence in length.
@@ -94,6 +96,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ description,omitempty'
         json: 'media_description'
+      x-go-type-skip-optional-pointer: false
     MediaKeywords:
       description: >
         are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and
@@ -107,6 +110,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ keywords,omitempty'
         json: 'media_keywords'
+      x-go-type-skip-optional-pointer: false
     MediaThumbnail:
       description: >
         allows a particular images to be used as a representative image for the media object.
@@ -136,6 +140,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ thumbnail,omitempty'
         json: 'media_thumbnail'
+      x-go-type-skip-optional-pointer: false
     MediaThumbnails:
       description: >
         a list of thumbnails for the object.
@@ -162,6 +167,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ category,omitempty'
         json: 'media_category'
+      x-go-type-skip-optional-pointer: false
     MediaHash:
       type: object
       description: >
@@ -182,6 +188,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ hash,omitempty'
         json: 'media_hash'
+      x-go-type-skip-optional-pointer: false
     MediaHashes:
       description: >
         a list of hashes for the object.
@@ -212,6 +219,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ player,omitempty'
         json: 'media_player'
+      x-go-type-skip-optional-pointer: false
     MediaCredit:
       description: >
         Notable entity and the contribution to the creation of the media object. Current entities can include people,
@@ -237,6 +245,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ credit,omitempty'
         json: 'media_credit'
+      x-go-type-skip-optional-pointer: false
     MediaCredits:
       description: >
         a list of credits for the object.
@@ -263,6 +272,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ copyright,omitempty'
         json: 'media_copyright'
+      x-go-type-skip-optional-pointer: false
     MediaText:
       description: >
         allows the inclusion of a text transcript, closed captioning or lyrics of the media content.
@@ -293,6 +303,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ text,omitempty'
         json: 'media_text'
+      x-go-type-skip-optional-pointer: false
     MediaTexts:
       description: >
         a list of texts for the object.
@@ -331,6 +342,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ restriction,omitempty'
         json: 'media_restriction'
+      x-go-type-skip-optional-pointer: false
     MediaCommunityStarRating:
       description: >
         specifies the rating-related information about a media object.
@@ -360,6 +372,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ starRating,omitemtpy'
         json: 'media_star_rating,omitemtpy'
+      x-go-type-skip-optional-pointer: false
     MediaCommunityStatistics:
       description: >
         specifies various statistics about a media object like the view count and the favorite count.
@@ -379,6 +392,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ statistics,omitemtpy'
         json: 'media_community_statistics,omitemtpy'
+      x-go-type-skip-optional-pointer: false
     MediaCommunityTags:
       description: >
         contains user-generated tags separated by commas in the decreasing order of each tag's weight. Each tag can be
@@ -393,6 +407,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ tags,omitemtpy'
         json: 'media_community_tags,omitemtpy'
+      x-go-type-skip-optional-pointer: false
     MediaCommunity:
       description: >
         stands for the community related content. This allows inclusion of the user perception about a media object in
@@ -408,6 +423,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ community,omitempty'
         json: 'media_community'
+      x-go-type-skip-optional-pointer: false
     MediaComment:
       description: >
         is a comments a media object has received.
@@ -420,6 +436,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ comment,omitempty'
         json: 'media_comment'
+      x-go-type-skip-optional-pointer: false
     MediaComments:
       description: >
         is a list of comments the media object has received.
@@ -449,6 +466,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ param,omitempty'
         json: 'media_param'
+      x-go-type-skip-optional-pointer: false
     MediaEmbed:
       description: >
         allows inclusion of player-specific information in the form of key-value (Param) pairs.
@@ -469,6 +487,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ embed,omitempty'
         json: 'media_embed'
+      x-go-type-skip-optional-pointer: false
     MediaResponse:
       description: >
         is a response a media object has received.
@@ -481,6 +500,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ response,omitempty'
         json: 'media_response'
+      x-go-type-skip-optional-pointer: false
     MediaResponses:
       description: >
         allows inclusion of a list of all media responses a media object has received.
@@ -503,6 +523,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
         json: 'media_backlink,omitempty'
+      x-go-type-skip-optional-pointer: false
     MediaBacklinks:
       description: >
         allows inclusion of all the URLs pointing to a media object.
@@ -542,6 +563,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ status,omitempty'
         json: 'media_status'
+      x-go-type-skip-optional-pointer: false
     MediaPrice:
       description: >
         includes pricing information about a media object. If this tag is not present, the media object is supposed to
@@ -588,6 +610,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ price,omitempty'
         json: 'media_price'
+      x-go-type-skip-optional-pointer: false
     MediaLicense:
       description: >
         link to specify the machine-readable license associated with the content.
@@ -604,6 +627,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ license,omitempty'
         json: 'media_license'
+      x-go-type-skip-optional-pointer: false
     MediaSubTitle:
       description: >
         contains subtitle/CC link.
@@ -621,6 +645,7 @@ components:
       x-oapi-codegen-extra-tags:
         json: 'media_subtitle,omitempty'
         xml: 'http://search.yahoo.com/mrss/ subTitle,omitempty'
+      x-go-type-skip-optional-pointer: false
     MediaPeerLink:
       description: >
         contains P2P link.
@@ -636,6 +661,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ peerLink,omitempty'
         json: 'media_peerlink'
+      x-go-type-skip-optional-pointer: false
     MediaRights:
       description: >
         specifies the rights information of a media object.
@@ -655,6 +681,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ rights,omitempty'
         json: 'media_rights'
+      x-go-type-skip-optional-pointer: false
     SceneTitle:
       type: object
       required:
@@ -711,6 +738,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ scene,omitempty'
         json: 'media_scene'
+      x-go-type-skip-optional-pointer: false
     MediaScenes:
       description: >
         specifies various scenes within a media object.
@@ -845,6 +873,7 @@ components:
       x-oapi-codegen-extra-tags:
         json: 'media_content,omitempty'
         xml: 'http://search.yahoo.com/mrss/ content,omitempty'
+      x-go-type-skip-optional-pointer: false
     MediaGroup:
       description: >
         allows grouping of <media:content> elements that are effectively the same content, yet different
@@ -868,3 +897,4 @@ components:
       x-oapi-codegen-extra-tags:
         json: 'media_group,omitempty'
         xml: 'http://search.yahoo.com/mrss/ group,omitempty'
+      x-go-type-skip-optional-pointer: false

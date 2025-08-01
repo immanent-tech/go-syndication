@@ -19,8 +19,10 @@ const (
 // Attributes are any attributes of the element.
 type Attributes = []xml.Attr
 
-// Content defines model for Content.
-type Content = CustomTypeBase
+// CharData represents character data of an element.
+type CharData struct {
+	Value xml.CharData `json:"CharData"`
+}
 
 // CustomTypeBase defines model for CustomTypeBase.
 type CustomTypeBase struct {

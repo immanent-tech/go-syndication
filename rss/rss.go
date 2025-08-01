@@ -9,7 +9,6 @@ package rss
 import (
 	"time"
 
-	"github.com/joshuar/go-syndication/sanitization"
 	"github.com/joshuar/go-syndication/types"
 )
 
@@ -17,7 +16,7 @@ var _ types.FeedSource = (*RSS)(nil)
 
 // String returns the value of the Category.
 func (c *Category) String() string {
-	return sanitization.SanitizeString(c.Value)
+	return c.Value.String()
 }
 
 func (r *RSS) GetTitle() string {

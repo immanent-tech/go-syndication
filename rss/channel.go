@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/joshuar/go-syndication/atom"
-	"github.com/joshuar/go-syndication/sanitization"
 	"github.com/joshuar/go-syndication/types"
 )
 
@@ -20,7 +19,7 @@ func (c *Channel) GetTitle() string {
 	case c.DCTitle != nil:
 		return c.DCTitle.String()
 	default:
-		return sanitization.SanitizeString(c.Title)
+		return c.Title.String()
 	}
 }
 
@@ -30,7 +29,8 @@ func (c *Channel) GetDescription() string {
 	case c.DCDescription != nil:
 		return c.DCDescription.String()
 	default:
-		return sanitization.SanitizeString(c.Description)
+		return c.Description.String()
+		// return sanitization.SanitizeString(c.Description)
 	}
 }
 
@@ -83,8 +83,8 @@ func (c *Channel) GetRights() string {
 	switch {
 	case c.DCRights != nil:
 		return c.DCRights.String()
-	case c.Copyright != nil:
-		return *c.Copyright
+	case c.Copyright.String() != "":
+		return c.Copyright.String()
 	default:
 		return ""
 	}
@@ -94,10 +94,10 @@ func (c *Channel) GetRights() string {
 // or <lang> elements.
 func (c *Channel) GetLanguage() string {
 	switch {
-	case c.DCLanguage != nil:
+	case c.DCLanguage != "":
 		return c.DCLanguage.String()
-	case c.Language != nil:
-		return *c.Language
+	case c.Language != "":
+		return c.Language
 	default:
 		return ""
 	}
@@ -150,6 +150,9 @@ func (c *Channel) GetPublishedDate() time.Time {
 // GetUpdatedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
 func (c *Channel) GetUpdatedDate() time.Time {
+	if c.LastBuildDate != nil {
+		return c.LastBuildDate.Time
+	}
 	return c.GetPublishedDate()
 }
 

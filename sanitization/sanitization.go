@@ -4,6 +4,7 @@
 package sanitization
 
 import (
+	"bytes"
 	"html"
 	"strings"
 
@@ -17,4 +18,10 @@ var safePrinter = bluemonday.UGCPolicy()
 // content.
 func SanitizeString(str string) string {
 	return html.UnescapeString(safePrinter.Sanitize(strings.TrimSpace(str)))
+}
+
+// SanitizeBytes attempts to "sanitize" a []byte value from a Feed/Item object. It will strip any leading/trailing
+// whitespace and then run the string through bluemonday to remove dangerous components.
+func SanitizeBytes(b []byte) []byte {
+	return safePrinter.SanitizeBytes(bytes.TrimSpace(b))
 }

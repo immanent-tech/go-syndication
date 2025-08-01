@@ -148,7 +148,7 @@ type Entry struct {
 	DCIdentifier *externalRef0.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
-	DCLanguage *externalRef0.DCLanguage `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DCLanguage *externalRef0.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
 	DCPublisher *externalRef0.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
@@ -319,7 +319,7 @@ type Feed struct {
 	DCIdentifier *externalRef0.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
-	DCLanguage *externalRef0.DCLanguage `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DCLanguage *externalRef0.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
 	DCPublisher *externalRef0.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`

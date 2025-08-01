@@ -39,7 +39,7 @@ type HasAttribution interface {
 
 // HasContent contains methods for retrieving any embedded content of the Object.
 type HasContent interface {
-	GetContent() *Content
+	GetContent() string
 }
 
 // HasTaxonomy contains methods for retrieving categorization and taxonomy values of an Object.

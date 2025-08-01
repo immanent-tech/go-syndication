@@ -5,8 +5,13 @@
 package types
 
 import (
+	"encoding/json"
 	"encoding/xml"
+	"fmt"
+	"html"
 	"slices"
+
+	"github.com/joshuar/go-syndication/sanitization"
 )
 
 var (
@@ -45,4 +50,40 @@ func NewXMLAttr(name, value, namespace string) xml.Attr {
 		},
 		Value: value,
 	}
+}
+
+func (c *CharData) UnmarshalText(data []byte) error {
+	c.Value = sanitization.SanitizeBytes(data)
+	return nil
+}
+
+func (c *CharData) UnmarshalJSON(data []byte) error {
+	var chardata struct {
+		CharData []byte `json:"CharData"`
+	}
+
+	err := json.Unmarshal(data, &chardata)
+	if err != nil {
+		return fmt.Errorf("cannot unmarshal chardata: %w", err)
+	}
+
+	c.Value = sanitization.SanitizeBytes(chardata.CharData)
+
+	return nil
+}
+
+func (c *CharData) String() string {
+	return html.UnescapeString(string(c.Value))
+}
+
+type StringData string
+
+func (s *StringData) UnmarshalText(data []byte) error {
+	safeData := sanitization.SanitizeBytes(data)
+	*s = StringData(string(safeData))
+	return nil
+}
+
+func (s *StringData) String() string {
+	return string(*s)
 }

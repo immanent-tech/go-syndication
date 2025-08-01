@@ -20,25 +20,16 @@ const (
 	XmlRpc   CloudProtocol = "xml-rpc"
 )
 
-// Defines values for SkipDaysDay.
-const (
-	SkipFriday    SkipDaysDay = "Friday"
-	SkipMonday    SkipDaysDay = "Monday"
-	SkipSaturday  SkipDaysDay = "Saturday"
-	SkipSunday    SkipDaysDay = "Sunday"
-	SkipThursday  SkipDaysDay = "Thursday"
-	SkipTuesday   SkipDaysDay = "Tuesday"
-	SkipWednesday SkipDaysDay = "Wednesday"
-)
-
 // Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
-type Author = string
+type Author = types.StringData
 
 // Category allows a taxonomy to be set on the channel or item.
 type Category struct {
 	// Domain is a string that identifies a categorization taxonomy.
-	Domain *string `json:"domain,omitempty" xml:"domain,attr,omitempty"`
-	Value  string  `json:"value" validate:"required" xml:",chardata"`
+	Domain string `json:"domain,omitempty,omitzero" xml:"domain,attr,omitempty"`
+
+	// Value represents character data of an element.
+	Value externalRef3.CharData `json:"value" xml:",chardata"`
 }
 
 // Channel defines model for Channel.
@@ -67,7 +58,7 @@ type Channel struct {
 	DCIdentifier *externalRef1.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
-	DCLanguage *externalRef1.DCLanguage `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DCLanguage externalRef1.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
 	DCPublisher *externalRef1.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
@@ -97,7 +88,7 @@ type Channel struct {
 	MediaCategory *externalRef2.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty"`
+	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef2.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -185,58 +176,58 @@ type Channel struct {
 	Cloud *Cloud `json:"cloud,omitempty" xml:"cloud,omitempty"`
 
 	// Copyright Copyright notice for content in the channel.
-	Copyright *string `json:"copyright,omitempty" xml:"copyright,omitempty"`
+	Copyright externalRef3.CharData `json:"copyright,omitempty,omitzero" xml:"copyright,omitempty"`
 
 	// Description the description of the channel.
-	Description string `json:"description" validate:"omitempty" xml:"description"`
+	Description types.StringData `json:"description" validate:"omitempty,required" xml:"description"`
 
 	// Docs A URL that points to the documentation for the format used in the RSS file. It's probably a pointer to this page. It's for people who might stumble across an RSS file on a Web server 25 years from now and wonder what it is.
-	Docs *string `json:"docs,omitempty" validate:"omitempty,uri" xml:"docs,omitempty"`
+	Docs string `json:"docs,omitempty,omitzero" validate:"omitempty,uri" xml:"docs,omitempty"`
 
 	// Generator is a string indicating the program used to generate the channel.
-	Generator *string `json:"generator,omitempty" xml:"generator,omitempty"`
+	Generator externalRef3.CharData `json:"generator,omitempty,omitzero" xml:"generator,omitempty"`
 
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Items is a list of the current items published to the channel.
-	Items []Item `json:"items,omitempty" validate:"dive" xml:"item,omitempty"`
+	Items []Item `json:"items,omitempty,omitzero" validate:"omitempty,dive" xml:"item,omitempty"`
 
 	// Language is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
-	Language *externalRef3.Language `json:"language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"language,omitempty"`
+	Language externalRef3.Language `json:"language,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"language,omitempty"`
 
 	// LastBuildDate is the last time the content of the channel changed.
-	LastBuildDate *types.DateTime `json:"lastBuildDate,omitempty" xml:"lastBuildDate,omitempty"`
+	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`
 
 	// Link is the URL to the HTML website corresponding to the channel.
 	Link string `json:"link" validate:"required,url" xml:"link"`
 
 	// ManagingEditor is the email address for person responsible for editorial content.
-	ManagingEditor *string `json:"managingEditor,omitempty" xml:"managingEditor,omitempty"`
+	ManagingEditor externalRef3.CharData `json:"managingEditor,omitempty,omitzero" xml:"managingEditor,omitempty"`
 
 	// PubDate is the publication date of the content.
 	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
 
 	// Rating contains a rating for the element.
-	Rating *Rating `json:"rating,omitempty" xml:"rating,omitempty"`
+	Rating Rating `json:"rating,omitempty,omitzero" xml:"rating,omitempty"`
 
 	// SkipDays is a hint for aggregators telling them which days they can skip. This
-	SkipDays *SkipDays `json:"skipDays,omitempty" xml:"skipDays,omitempty"`
+	SkipDays SkipDays `json:"skipDays,omitempty,omitzero" xml:"skipDays,omitempty"`
 
 	// SkipHours is a hint for aggregators telling them which hours they can skip.
-	SkipHours *SkipHours `json:"skipHours,omitempty" xml:"skipHours,omitempty"`
+	SkipHours SkipHours `json:"skipHours,omitempty,omitzero" xml:"skipHours,omitempty"`
 
 	// TextInput The purpose of the <textInput> element is something of a mystery. You can use it to specify a search engine box. Or to allow a reader to provide feedback. Most aggregators ignore it.
 	TextInput *TextInput `json:"textInput,omitempty" xml:"textInput,omitempty"`
 
 	// Title is the name of the channel. It's how people refer to your service. If you have an HTML website that contains the same information as your RSS file, the title of your channel should be the same as the title of your website.
-	Title string `json:"title" validate:"required" xml:"title"`
+	Title types.StringData `json:"title" validate:"required" xml:"title"`
 
 	// TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.
-	TTL *TTL `json:"ttl,omitempty" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
+	TTL TTL `json:"ttl,omitempty,omitzero" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
 
 	// WebMaster is the email address for person responsible for technical issues relating to channel.
-	WebMaster *string `json:"webMaster,omitempty" xml:"webMaster,omitempty"`
+	WebMaster externalRef3.CharData `json:"webMaster,omitempty,omitzero" xml:"webMaster,omitempty"`
 }
 
 // ChannelElements contains all Channel elements (i.e., Channel metadata).
@@ -251,55 +242,55 @@ type ChannelElements struct {
 	Cloud *Cloud `json:"cloud,omitempty" xml:"cloud,omitempty"`
 
 	// Copyright Copyright notice for content in the channel.
-	Copyright *string `json:"copyright,omitempty" xml:"copyright,omitempty"`
+	Copyright externalRef3.CharData `json:"copyright,omitempty,omitzero" xml:"copyright,omitempty"`
 
 	// Description the description of the channel.
-	Description string `json:"description" validate:"omitempty" xml:"description"`
+	Description types.StringData `json:"description" validate:"omitempty,required" xml:"description"`
 
 	// Docs A URL that points to the documentation for the format used in the RSS file. It's probably a pointer to this page. It's for people who might stumble across an RSS file on a Web server 25 years from now and wonder what it is.
-	Docs *string `json:"docs,omitempty" validate:"omitempty,uri" xml:"docs,omitempty"`
+	Docs string `json:"docs,omitempty,omitzero" validate:"omitempty,uri" xml:"docs,omitempty"`
 
 	// Generator is a string indicating the program used to generate the channel.
-	Generator *string `json:"generator,omitempty" xml:"generator,omitempty"`
+	Generator externalRef3.CharData `json:"generator,omitempty,omitzero" xml:"generator,omitempty"`
 
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Language is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
-	Language *externalRef3.Language `json:"language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"language,omitempty"`
+	Language externalRef3.Language `json:"language,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"language,omitempty"`
 
 	// LastBuildDate is the last time the content of the channel changed.
-	LastBuildDate *types.DateTime `json:"lastBuildDate,omitempty" xml:"lastBuildDate,omitempty"`
+	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`
 
 	// Link is the URL to the HTML website corresponding to the channel.
 	Link string `json:"link" validate:"required,url" xml:"link"`
 
 	// ManagingEditor is the email address for person responsible for editorial content.
-	ManagingEditor *string `json:"managingEditor,omitempty" xml:"managingEditor,omitempty"`
+	ManagingEditor externalRef3.CharData `json:"managingEditor,omitempty,omitzero" xml:"managingEditor,omitempty"`
 
 	// PubDate is the publication date of the content.
 	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
 
 	// Rating contains a rating for the element.
-	Rating *Rating `json:"rating,omitempty" xml:"rating,omitempty"`
+	Rating Rating `json:"rating,omitempty,omitzero" xml:"rating,omitempty"`
 
 	// SkipDays is a hint for aggregators telling them which days they can skip. This
-	SkipDays *SkipDays `json:"skipDays,omitempty" xml:"skipDays,omitempty"`
+	SkipDays SkipDays `json:"skipDays,omitempty,omitzero" xml:"skipDays,omitempty"`
 
 	// SkipHours is a hint for aggregators telling them which hours they can skip.
-	SkipHours *SkipHours `json:"skipHours,omitempty" xml:"skipHours,omitempty"`
+	SkipHours SkipHours `json:"skipHours,omitempty,omitzero" xml:"skipHours,omitempty"`
 
 	// TextInput The purpose of the <textInput> element is something of a mystery. You can use it to specify a search engine box. Or to allow a reader to provide feedback. Most aggregators ignore it.
 	TextInput *TextInput `json:"textInput,omitempty" xml:"textInput,omitempty"`
 
 	// Title is the name of the channel. It's how people refer to your service. If you have an HTML website that contains the same information as your RSS file, the title of your channel should be the same as the title of your website.
-	Title string `json:"title" validate:"required" xml:"title"`
+	Title types.StringData `json:"title" validate:"required" xml:"title"`
 
 	// TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.
-	TTL *TTL `json:"ttl,omitempty" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
+	TTL TTL `json:"ttl,omitempty,omitzero" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
 
 	// WebMaster is the email address for person responsible for technical issues relating to channel.
-	WebMaster *string `json:"webMaster,omitempty" xml:"webMaster,omitempty"`
+	WebMaster externalRef3.CharData `json:"webMaster,omitempty,omitzero" xml:"webMaster,omitempty"`
 }
 
 // Cloud specifies a web service that supports the rssCloud interface which can be implemented in HTTP-POST, XML-RPC or SOAP 1.1.
@@ -316,7 +307,7 @@ type Cloud struct {
 type CloudProtocol string
 
 // Comments is the url of the comments page for the item.
-type Comments = string
+type Comments = types.StringData
 
 // Enclosure describes a media object.
 type Enclosure struct {
@@ -333,19 +324,19 @@ type Enclosure struct {
 // GUID is a string that uniquely identifies an item.
 type GUID struct {
 	// IsPermaLink If true the guid is assumed to be a URL. If its value is false, the guid may not be assumed to be a url, or a url to anything in particular.
-	IsPermaLink *bool `json:"isPermaLink,omitempty" xml:"isPermaLink,attr,omitempty"`
+	IsPermaLink bool `json:"isPermaLink,omitempty,omitzero" xml:"isPermaLink,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef3.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents character data of an element.
+	Value externalRef3.CharData `json:"value" xml:",chardata"`
 }
 
 // Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 type Image struct {
 	// Description contains text that is included in the TITLE attribute of the link formed around the image in the HTML rendering.
-	Description *string `json:"description,omitempty" xml:"description,omitempty"`
+	Description string `json:"description,omitempty,omitzero" xml:"description,omitempty"`
 
 	// Height indicates the height of the image in pixels.
-	Height *int `json:"height,omitempty" validate:"omitempty,gt=0,lte=400" xml:"height,omitempty"`
+	Height int `json:"height,omitempty,omitzero" validate:"omitempty,gt=0,lte=400" xml:"height,omitempty"`
 
 	// Link is the URL of the site, when the channel is rendered, the image is a link to the site. (Note, in practice the image <title> and <link> should have the same value as the channel's <title> and <link>.
 	Link string `json:"link" validate:"required,url" xml:"link"`
@@ -357,7 +348,7 @@ type Image struct {
 	URL string `json:"url" validate:"required,url" xml:"url"`
 
 	// Width indicates the width of the image in pixels.
-	Width *int `json:"width,omitempty" validate:"omitempty,gt=0,lte=144" xml:"width,omitempty"`
+	Width int `json:"width,omitempty,omitzero" validate:"omitempty,gt=0,lte=144" xml:"width,omitempty"`
 }
 
 // Item defines model for Item.
@@ -387,7 +378,7 @@ type Item struct {
 	DCIdentifier *externalRef1.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
-	DCLanguage *externalRef1.DCLanguage `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DCLanguage externalRef1.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
 	DCPublisher *externalRef1.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
@@ -417,7 +408,7 @@ type Item struct {
 	MediaCategory *externalRef2.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty"`
+	MediaComments externalRef2.MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef2.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -489,25 +480,25 @@ type Item struct {
 	MediaTitle *externalRef2.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
-	PermaLink *PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
+	PermaLink PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
 
 	// Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
-	Author *Author `json:"author,omitempty" xml:"author,omitempty"`
+	Author Author `json:"author,omitempty,omitzero" xml:"author,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
-	Categories []Category `json:"categories,omitempty" xml:"category,omitempty"`
+	Categories []Category `json:"categories,omitempty,omitzero" xml:"category,omitempty"`
 
 	// Comments is the url of the comments page for the item.
-	Comments *Comments `json:"comments,omitempty" xml:"comments,omitempty"`
+	Comments Comments `json:"comments,omitempty,omitzero" xml:"comments,omitempty"`
 
 	// Description is the item synopsis.
-	Description string `json:"description" xml:"description"`
+	Description types.StringData `json:"description" xml:"description"`
 
 	// Enclosure describes a media object.
 	Enclosure *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
 
 	// GUID is a string that uniquely identifies an item.
-	GUID *GUID `json:"guid,omitempty" xml:"guid,omitempty"`
+	GUID GUID `json:"guid,omitempty,omitzero" xml:"guid,omitempty"`
 
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
@@ -519,31 +510,31 @@ type Item struct {
 	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
 
 	// Source The RSS channel that the item came from.
-	Source *Source `json:"source,omitempty" xml:"source,omitempty"`
+	Source Source `json:"source,omitempty,omitzero" xml:"source,omitempty"`
 
 	// Title is the title of the item.
-	Title string `json:"title" xml:"title"`
+	Title types.StringData `json:"title" xml:"title"`
 }
 
 // ItemElements contains all Item elements.
 type ItemElements struct {
 	// Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
-	Author *Author `json:"author,omitempty" xml:"author,omitempty"`
+	Author Author `json:"author,omitempty,omitzero" xml:"author,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
-	Categories []Category `json:"categories,omitempty" xml:"category,omitempty"`
+	Categories []Category `json:"categories,omitempty,omitzero" xml:"category,omitempty"`
 
 	// Comments is the url of the comments page for the item.
-	Comments *Comments `json:"comments,omitempty" xml:"comments,omitempty"`
+	Comments Comments `json:"comments,omitempty,omitzero" xml:"comments,omitempty"`
 
 	// Description is the item synopsis.
-	Description string `json:"description" xml:"description"`
+	Description types.StringData `json:"description" xml:"description"`
 
 	// Enclosure describes a media object.
 	Enclosure *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
 
 	// GUID is a string that uniquely identifies an item.
-	GUID *GUID `json:"guid,omitempty" xml:"guid,omitempty"`
+	GUID GUID `json:"guid,omitempty,omitzero" xml:"guid,omitempty"`
 
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
@@ -555,11 +546,14 @@ type ItemElements struct {
 	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
 
 	// Source The RSS channel that the item came from.
-	Source *Source `json:"source,omitempty" xml:"source,omitempty"`
+	Source Source `json:"source,omitempty,omitzero" xml:"source,omitempty"`
 
 	// Title is the title of the item.
-	Title string `json:"title" xml:"title"`
+	Title types.StringData `json:"title" xml:"title"`
 }
+
+// LastBuildDate is the last time the content of the channel changed.
+type LastBuildDate = types.DateTime
 
 // PubDate is the publication date of the content.
 type PubDate = types.DateTime
@@ -580,27 +574,25 @@ type RSS struct {
 }
 
 // Rating contains a rating for the element.
-type Rating = string
+type Rating = types.StringData
 
 // SkipDays is a hint for aggregators telling them which days they can skip. This
 type SkipDays struct {
-	Day []SkipDaysDay `json:"day,omitempty" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day,omitempty"`
+	Day []types.StringData `json:"day,omitempty,omitzero" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day,omitempty"`
 }
-
-// SkipDaysDay is a day of the week to skip.
-type SkipDaysDay string
 
 // SkipHours is a hint for aggregators telling them which hours they can skip.
 type SkipHours struct {
-	Hour []int `json:"hour,omitempty" validate:"omitempty,dive,gte=0,lte=23" xml:"hour,omitempty"`
+	Hour []int `json:"hour,omitempty,omitzero" validate:"omitempty,dive,gte=0,lte=23" xml:"hour,omitempty"`
 }
 
 // Source The RSS channel that the item came from.
 type Source struct {
-	URL *string `json:"url,omitempty" validate:"uri" xml:"url,attr"`
+	// Url is a URL that represents the element content.
+	Url externalRef3.AttrURL `json:"url,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef3.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents character data of an element.
+	Value externalRef3.CharData `json:"value" xml:",chardata"`
 }
 
 // TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.

@@ -94,10 +94,10 @@ type MediaBacklinks = []MediaBacklink
 // MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
 type MediaCategory struct {
 	// Label is the human readable label that can be displayed in end user applications.
-	Label *Label `json:"label,omitempty" xml:"label,attr,omitempty"`
+	Label Label `json:"label,omitempty,omitzero" xml:"label,attr,omitempty"`
 
 	// Scheme is the URI that identifies the scheme used by the element.
-	Scheme *Scheme `json:"scheme,omitempty" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
+	Scheme Scheme `json:"scheme,omitempty,omitzero" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -168,7 +168,7 @@ type MediaContent struct {
 	DCIdentifier *externalRef0.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
-	DCLanguage *externalRef0.DCLanguage `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DCLanguage externalRef0.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
 	DCPublisher *externalRef0.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
@@ -198,7 +198,7 @@ type MediaContent struct {
 	MediaCategory *MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments MediaComments `json:"MediaComments,omitempty"`
+	MediaComments MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -264,46 +264,46 @@ type MediaContent struct {
 	MediaTitle *MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// Bitrate is the kilobits per second rate of media.
-	Bitrate *externalRef1.AttrBitrate `json:"bitrate,omitempty" validate:"omitempty,number" xml:"bitrate,attr"`
+	Bitrate externalRef1.AttrBitrate `json:"bitrate,omitempty,omitzero" validate:"omitempty,number" xml:"bitrate,attr"`
 
 	// Channels is number of audio channels in the media object.
-	Channels *externalRef1.AttrChannels `json:"channels,omitempty" validate:"omitempty,number" xml:"channels,attr"`
+	Channels externalRef1.AttrChannels `json:"channels,omitempty,omitzero" validate:"omitempty,number" xml:"channels,attr"`
 
 	// Duration is the number of seconds the media object plays.
-	Duration *externalRef1.AttrDuration `json:"duration,omitempty" validate:"omitempty,number" xml:"duration,attr"`
+	Duration externalRef1.AttrDuration `json:"duration,omitempty,omitzero" validate:"omitempty,number" xml:"duration,attr"`
 
 	// Expression determines if the object is a sample or the full version of the object, or even if it is a continuous stream.
-	Expression *MediaContentExpression `json:"expression,omitempty" validate:"omitempty,oneof=sample full nonstop" xml:"expression,attr"`
+	Expression MediaContentExpression `json:"expression,omitempty,omitzero" validate:"omitempty,oneof=sample full nonstop" xml:"expression,attr"`
 
 	// FileSize is the number of bytes of the media object.
-	FileSize *externalRef1.AttrFileSize `json:"fileSize,omitempty" xml:"fileSize,attr,omitempty"`
+	FileSize externalRef1.AttrFileSize `json:"fileSize,omitempty,omitzero" xml:"fileSize,attr,omitempty"`
 
 	// Framerate is the number of frames per second for the media object.
-	Framerate *externalRef1.AttrFramerate `json:"framerate,omitempty" validate:"omitempty,number" xml:"framerate,attr"`
+	Framerate externalRef1.AttrFramerate `json:"framerate,omitempty,omitzero" validate:"omitempty,number" xml:"framerate,attr"`
 
 	// Height is the height of the media object.
-	Height *externalRef1.AttrHeight `json:"height,omitempty" validate:"omitempty,number" xml:"height,attr"`
+	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
 
 	// IsDefault determines if this is the default object that should be used for the <media:group>. There should only be one default object per <media:group>.
-	IsDefault *string `json:"isDefault,omitempty" validate:"omitempty,boolean" xml:"isDefault,attr"`
+	IsDefault string `json:"isDefault,omitempty,omitzero" validate:"omitempty,boolean" xml:"isDefault,attr"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
-	Lang *externalRef1.AttrLang `json:"lang,omitempty" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
+	Lang externalRef1.AttrLang `json:"lang,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
 
 	// Medium is the type of object (image | audio | video | document | executable). While this attribute can at times seem redundant if type is supplied, it is included because it simplifies decision making on the reader side, as well as flushes out any ambiguities between MIME type and object type.
-	Medium *MediaContentMedium `json:"medium,omitempty" validate:"omitempty,oneof=image audio video document executable" xml:"medium,attr"`
+	Medium MediaContentMedium `json:"medium,omitempty,omitzero" validate:"omitempty,oneof=image audio video document executable" xml:"medium,attr"`
 
 	// Samplingrate is the number of samples per second taken to create the media object. It is expressed in thousands of samples per second (kHz)
-	Samplingrate *externalRef1.AttrSamplingrate `json:"samplingrate,omitempty" validate:"omitempty,number" xml:"samplingrate,attr"`
+	Samplingrate externalRef1.AttrSamplingrate `json:"samplingrate,omitempty,omitzero" validate:"omitempty,number" xml:"samplingrate,attr"`
 
 	// Type is the standard MIME type of the object.
-	Type *externalRef1.AttrMimeType `json:"type,omitempty" xml:"type,attr,omitempty"`
+	Type externalRef1.AttrMimeType `json:"type,omitempty,omitzero" xml:"type,attr,omitempty"`
 
 	// Url is a URL that represents the element content.
 	Url externalRef1.AttrURL `json:"url" validate:"omitempty,url" xml:"url,attr,omitempty"`
 
 	// Width is the width of the media object. It is an optional attribute.
-	Width *externalRef1.AttrWidth `json:"width,omitempty" validate:"omitempty,number" xml:"width,attr"`
+	Width externalRef1.AttrWidth `json:"width,omitempty,omitzero" validate:"omitempty,number" xml:"width,attr"`
 }
 
 // MediaContentExpression determines if the object is a sample or the full version of the object, or even if it is a continuous stream.
@@ -315,7 +315,7 @@ type MediaContentMedium string
 // MediaCopyright is copyright information for the media object.
 type MediaCopyright struct {
 	// Url is a URL that represents the element content.
-	Url *externalRef1.AttrURL `json:"url,omitempty" validate:"omitempty,url" xml:"url,attr,omitempty"`
+	Url externalRef1.AttrURL `json:"url,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -324,10 +324,10 @@ type MediaCopyright struct {
 // MediaCredit Notable entity and the contribution to the creation of the media object. Current entities can include people, companies, locations, etc. Specific entities can have multiple roles, and several entities can have the same role.
 type MediaCredit struct {
 	// Role specifies the role the entity played.
-	Role *string `json:"role,omitempty" validate:"omitempty,lowercase" xml:"role,attr,omitempty"`
+	Role string `json:"role,omitempty,omitzero" validate:"omitempty,lowercase" xml:"role,attr,omitempty"`
 
 	// Scheme is the URI that identifies the scheme used by the element.
-	Scheme *Scheme `json:"scheme,omitempty" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
+	Scheme Scheme `json:"scheme,omitempty,omitzero" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -339,7 +339,7 @@ type MediaCredits = []MediaCredit
 // MediaDescription is a short description describing the media object typically a sentence in length.
 type MediaDescription struct {
 	// Type specifies the type of text embedded in the element.
-	Type *TextType `json:"type,omitempty" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
+	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -354,7 +354,7 @@ type MediaElements struct {
 	MediaCategory *MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments MediaComments `json:"MediaComments,omitempty"`
+	MediaComments MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -423,14 +423,14 @@ type MediaElements struct {
 // MediaEmbed defines model for MediaEmbed.
 type MediaEmbed struct {
 	// Height is the height of the media object.
-	Height *externalRef1.AttrHeight `json:"height,omitempty" validate:"omitempty,number" xml:"height,attr"`
+	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
 
 	// Params is a list of player-specific parameters.
 	Params []MediaParam         `json:"param,omitempty" xml:"http://search.yahoo.com/mrss/ param,omitempty"`
 	Url    externalRef1.AttrURL `json:"url" validate:"required,url" xml:"url,attr"`
 
 	// Width is the width of the media object. It is an optional attribute.
-	Width *externalRef1.AttrWidth `json:"width,omitempty" validate:"omitempty,number" xml:"width,attr"`
+	Width externalRef1.AttrWidth `json:"width,omitempty,omitzero" validate:"omitempty,number" xml:"width,attr"`
 }
 
 // MediaGroup defines model for MediaGroup.
@@ -442,7 +442,7 @@ type MediaGroup struct {
 	MediaCategory *MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments MediaComments `json:"MediaComments,omitempty"`
+	MediaComments MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -514,7 +514,7 @@ type MediaGroup struct {
 // MediaHash is the hash of the binary media file. Elements represents hashes in different alogrithms.
 type MediaHash struct {
 	// Algo indicates the algorithm used to create the hash.
-	Algo *MediaHashAlgo `json:"algo,omitempty" xml:"algo,attr,omitempty"`
+	Algo MediaHashAlgo `json:"algo,omitempty,omitzero" xml:"algo,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -535,10 +535,10 @@ type MediaKeywords struct {
 // MediaLicense link to specify the machine-readable license associated with the content.
 type MediaLicense struct {
 	// Href is a URL that represents the element content.
-	Href *externalRef1.AttrHref `json:"href,omitempty" validate:"omitempty,url" xml:"url,attr,omitempty"`
+	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
 
 	// Type specifies the type of text embedded in the element.
-	Type *TextType `json:"type,omitempty" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
+	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -565,26 +565,26 @@ type MediaPeerLink struct {
 // MediaPlayer allows the media object to be accessed through a web browser media player console.
 type MediaPlayer struct {
 	// Height is the height of the media object.
-	Height *externalRef1.AttrHeight `json:"height,omitempty" validate:"omitempty,number" xml:"height,attr"`
-	Url    externalRef1.AttrURL     `json:"url" validate:"required,url" xml:"url,attr"`
+	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
+	Url    externalRef1.AttrURL    `json:"url" validate:"required,url" xml:"url,attr"`
 
 	// Width is the width of the media object. It is an optional attribute.
-	Width *externalRef1.AttrWidth `json:"width,omitempty" validate:"omitempty,number" xml:"width,attr"`
+	Width externalRef1.AttrWidth `json:"width,omitempty,omitzero" validate:"omitempty,number" xml:"width,attr"`
 }
 
 // MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
 type MediaPrice struct {
 	// Currency is the currency code of the price.
-	Currency *string `json:"currency,omitempty" validate:"omitempty,iso4217" xml:"currency,attr,omitempty"`
+	Currency string `json:"currency,omitempty,omitzero" validate:"omitempty,iso4217" xml:"currency,attr,omitempty"`
 
 	// Info is a URL pointing to package or subscription information.
-	Info *string `json:"info,omitempty" validate:"omitempty,url" xml:"info,attr,omitempty"`
+	Info string `json:"info,omitempty,omitzero" validate:"omitempty,url" xml:"info,attr,omitempty"`
 
 	// Price is the price of the media object.
-	Price *float32 `json:"price,omitempty" validate:"omitempty,numeric" xml:"price,attr,omitempty"`
+	Price float32 `json:"price,omitempty,omitzero" validate:"omitempty,numeric" xml:"price,attr,omitempty"`
 
 	// Type is the type of pricing for the media object.
-	Type *MediaPriceType `json:"type,omitempty" validate:"omitempty,oneof=rent purchase package subscription" xml:"type,attr,omitempty"`
+	Type MediaPriceType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=rent purchase package subscription" xml:"type,attr,omitempty"`
 }
 
 // MediaPriceType is the type of pricing for the media object.
@@ -593,7 +593,7 @@ type MediaPriceType string
 // MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
 type MediaRating struct {
 	// Scheme is the URI that identifies the scheme used by the element.
-	Scheme *Scheme `json:"scheme,omitempty" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
+	Scheme Scheme `json:"scheme,omitempty,omitzero" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -614,7 +614,7 @@ type MediaRestriction struct {
 	Relationship MediaRestrictionRelationship `json:"relationship" xml:"relationship,attr"`
 
 	// Type specifies the type of restriction.
-	Type *MediaRestrictionType `json:"type,omitempty" xml:"sharing,attr,omitempty"`
+	Type MediaRestrictionType `json:"type,omitempty,omitzero" xml:"sharing,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -637,10 +637,10 @@ type MediaRightsStatus string
 
 // MediaScene contains information about a particular scene.
 type MediaScene struct {
-	SceneDescription *SceneDescription `json:"sceneDescription,omitempty" xml:"sceneDescription,omitempty"`
-	SceneEndTime     *SceneEndTime     `json:"sceneEndTime,omitempty" xml:"sceneEndTime,omitempty"`
-	SceneStartTime   *SceneStartTime   `json:"sceneStartTime,omitempty" xml:"sceneStartTime,omitempty"`
-	SceneTitle       *SceneTitle       `json:"sceneTitle,omitempty" xml:"sceneTitle,omitempty"`
+	SceneDescription SceneDescription `json:"sceneDescription,omitempty" xml:"sceneDescription,omitempty"`
+	SceneEndTime     SceneEndTime     `json:"sceneEndTime,omitempty" xml:"sceneEndTime,omitempty"`
+	SceneStartTime   SceneStartTime   `json:"sceneStartTime,omitempty" xml:"sceneStartTime,omitempty"`
+	SceneTitle       SceneTitle       `json:"sceneTitle,omitempty" xml:"sceneTitle,omitempty"`
 }
 
 // MediaScenes specifies various scenes within a media object.
@@ -661,7 +661,7 @@ type MediaStatusState string
 // MediaSubTitle contains subtitle/CC link.
 type MediaSubTitle struct {
 	// Href is a URL that represents the element content.
-	Href *externalRef1.AttrHref `json:"href,omitempty" validate:"omitempty,url" xml:"url,attr,omitempty"`
+	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
 	Lang externalRef1.AttrLang `json:"lang" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
@@ -673,16 +673,16 @@ type MediaSubTitle struct {
 // MediaText allows the inclusion of a text transcript, closed captioning or lyrics of the media content.
 type MediaText struct {
 	// End specifies the end time offset that the text ends being relevant to the media object. An example of this would be for closed captioning. It uses the NTP time code format.
-	End *string `json:"end,omitempty" xml:"end,attr,omitempty"`
+	End string `json:"end,omitempty,omitzero" xml:"end,attr,omitempty"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
-	Lang *externalRef1.AttrLang `json:"lang,omitempty" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
+	Lang externalRef1.AttrLang `json:"lang,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
 
 	// Start specifies the start time offset that the text starts being relevant to the media object. An example of this would be for closed captioning. It uses the NTP time code format.
-	Start *string `json:"start,omitempty" xml:"start,attr,omitempty"`
+	Start string `json:"start,omitempty,omitzero" xml:"start,attr,omitempty"`
 
 	// Type specifies the type of text embedded in the element.
-	Type *TextType `json:"type,omitempty" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
+	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -694,14 +694,14 @@ type MediaTexts = []MediaText
 // MediaThumbnail allows a particular images to be used as a representative image for the media object.
 type MediaThumbnail struct {
 	// Height is the height of the media object.
-	Height *externalRef1.AttrHeight `json:"height,omitempty" validate:"omitempty,number" xml:"height,attr"`
+	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
 
 	// Time specifies the time offset in relation to the media object. Typically this is used when creating multiple keyframes within a single video. The format for this attribute should be in the DSM-CC's Normal Play Time (NTP) as used in RTSP
-	Time *string              `json:"time,omitempty" xml:"time,attr,omitempty"`
+	Time string               `json:"time,omitempty,omitzero" xml:"time,attr,omitempty"`
 	URL  externalRef1.AttrURL `json:"url" validate:"required,url" xml:"url,attr"`
 
 	// Width is the width of the media object. It is an optional attribute.
-	Width *externalRef1.AttrWidth `json:"width,omitempty" validate:"omitempty,number" xml:"width,attr"`
+	Width externalRef1.AttrWidth `json:"width,omitempty,omitzero" validate:"omitempty,number" xml:"width,attr"`
 }
 
 // MediaThumbnails a list of thumbnails for the object.
@@ -710,7 +710,7 @@ type MediaThumbnails = []MediaThumbnail
 // MediaTitle is the title of the particular media object.
 type MediaTitle struct {
 	// Type specifies the type of text embedded in the element.
-	Type *TextType `json:"type,omitempty" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
+	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`

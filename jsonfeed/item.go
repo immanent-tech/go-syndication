@@ -112,7 +112,7 @@ func (i *Item) GetUpdatedDate() time.Time {
 
 // GetContent returns the content of the Item (if any). This will be either the html or text content, whichever is found
 // first.
-func (i *Item) GetContent() *types.Content {
+func (i *Item) GetContent() string {
 	var content string
 	switch {
 	case i.ContentHTML != nil:
@@ -121,9 +121,7 @@ func (i *Item) GetContent() *types.Content {
 		content = sanitization.SanitizeString(*i.ContentText)
 	}
 	if content != "" {
-		return &types.Content{
-			Value: content,
-		}
+		return content
 	}
-	return nil
+	return ""
 }

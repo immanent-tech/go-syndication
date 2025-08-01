@@ -7,7 +7,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/joshuar/go-syndication/sanitization"
 	"github.com/joshuar/go-syndication/types"
 )
 
@@ -32,6 +31,9 @@ func (e *Entry) GetTitle() string {
 // retrieved directly from the Links field as needed.
 func (e *Entry) GetLink() string {
 	for link := range slices.Values(e.Links) {
+		if link.Rel == nil {
+			return link.Href
+		}
 		if link.Rel != nil && *link.Rel == LinkRelAlternate {
 			return link.Href
 		}
@@ -144,18 +146,14 @@ func (e *Entry) GetUpdatedDate() time.Time {
 
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
-func (e *Entry) GetContent() *types.Content {
+func (e *Entry) GetContent() string {
 	if e.Content != nil {
 		switch {
 		case e.Content.Value != nil:
-			return &types.Content{
-				Value: sanitization.SanitizeString(*e.Content.Value),
-			}
+			return *e.Content.Value
 		case e.Content.Source != nil:
-			return &types.Content{
-				Value: *e.Content.Source,
-			}
+			return *e.Content.Source
 		}
 	}
-	return nil
+	return ""
 }
