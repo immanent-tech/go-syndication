@@ -1,4 +1,4 @@
-module github.com/joshuar/go-syndication
+module github.com/immanent-tech/go-syndication
 
 go 1.24.5
 

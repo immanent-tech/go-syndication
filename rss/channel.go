@@ -7,8 +7,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/joshuar/go-syndication/atom"
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 var _ types.FeedSource = (*Channel)(nil)

@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 // Attachment is a related resource.

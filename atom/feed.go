@@ -7,8 +7,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/joshuar/go-syndication/mrss"
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/mrss"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 var _ types.FeedSource = (*Feed)(nil)

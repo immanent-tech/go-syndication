@@ -7,8 +7,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/joshuar/go-syndication/sanitization"
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/sanitization"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 var _ types.ItemSource = (*Item)(nil)

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joshuar/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -13,4 +13,4 @@ output-options:
   prefer-skip-optional-pointer: true
   prefer-skip-optional-pointer-with-omitzero: true
 import-mapping:
-  types.yaml: 'github.com/joshuar/go-syndication/types'
+  types.yaml: 'github.com/immanent-tech/go-syndication/types'

@@ -5,8 +5,8 @@
 package mrss
 
 import (
-	"github.com/joshuar/go-syndication/sanitization"
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/sanitization"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 // AsImage returns the <media:thumbnail> object as a types.Image object.

@@ -11,7 +11,7 @@ import (
 	"html"
 	"slices"
 
-	"github.com/joshuar/go-syndication/sanitization"
+	"github.com/immanent-tech/go-syndication/sanitization"
 )
 
 var (

@@ -4,8 +4,8 @@
 package opml
 
 import (
-	"github.com/joshuar/go-syndication/types"
-	externalRef0 "github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/types"
+	externalRef0 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for BreakpointState.

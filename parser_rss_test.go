@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joshuar/go-syndication/atom"
-	"github.com/joshuar/go-syndication/mrss"
-	"github.com/joshuar/go-syndication/rss"
+	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/mrss"
+	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/stretchr/testify/assert"
 )
 

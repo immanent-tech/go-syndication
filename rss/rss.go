@@ -9,7 +9,7 @@ package rss
 import (
 	"time"
 
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 var _ types.FeedSource = (*RSS)(nil)

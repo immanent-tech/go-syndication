@@ -4,8 +4,8 @@
 package rss
 
 import (
-	"github.com/joshuar/go-syndication/types"
-	externalRef1 "github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/types"
+	externalRef1 "github.com/immanent-tech/go-syndication/types"
 )
 
 // ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.

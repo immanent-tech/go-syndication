@@ -6,11 +6,11 @@ package rss
 import (
 	"encoding/xml"
 
-	externalRef0 "github.com/joshuar/go-syndication/atom"
-	externalRef1 "github.com/joshuar/go-syndication/dc"
-	externalRef2 "github.com/joshuar/go-syndication/mrss"
-	"github.com/joshuar/go-syndication/types"
-	externalRef3 "github.com/joshuar/go-syndication/types"
+	externalRef0 "github.com/immanent-tech/go-syndication/atom"
+	externalRef1 "github.com/immanent-tech/go-syndication/dc"
+	externalRef2 "github.com/immanent-tech/go-syndication/mrss"
+	"github.com/immanent-tech/go-syndication/types"
+	externalRef3 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for CloudProtocol.

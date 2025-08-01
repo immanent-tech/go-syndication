@@ -4,8 +4,8 @@
 package mrss
 
 import (
-	externalRef0 "github.com/joshuar/go-syndication/dc"
-	externalRef1 "github.com/joshuar/go-syndication/types"
+	externalRef0 "github.com/immanent-tech/go-syndication/dc"
+	externalRef1 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for MediaContentExpression.

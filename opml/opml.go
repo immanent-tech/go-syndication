@@ -10,7 +10,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/types"
 	"golang.org/x/net/html/charset"
 )
 

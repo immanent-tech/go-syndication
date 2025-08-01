@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/joshuar/go-syndication/atom"
-	"github.com/joshuar/go-syndication/jsonfeed"
-	"github.com/joshuar/go-syndication/rss"
-	"github.com/joshuar/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/jsonfeed"
+	"github.com/immanent-tech/go-syndication/rss"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 const (
