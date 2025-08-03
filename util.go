@@ -5,8 +5,9 @@ package feeds
 
 import (
 	"bytes"
-	"encoding/xml"
 	"fmt"
+
+	"encoding/xml"
 
 	"golang.org/x/net/html/charset"
 )

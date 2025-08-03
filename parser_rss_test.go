@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/immanent-tech/go-syndication/atom"
-	"github.com/immanent-tech/go-syndication/mrss"
+	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/stretchr/testify/assert"
 )
@@ -183,19 +183,12 @@ var rssMustPass = map[string]rssTestSuite{
 	"invalid_sy_updatePeriod_blank.xml":       {wantErr: true},
 	"invalid_sy_updatePeriod.xml":             {wantErr: true},
 	"invalid_xml.xml":                         {wantErr: true},
-	// "l_permalink.xml": {
-	// 	wantErr: false,
-	// 	tests: func(t *testing.T, feed *Feed) {
-	// 		t.Helper()
-	// 		r := toRSS(t, feed)
-	// 		assert.Equal(t, "http://www.example.com/", r.Channel.Items[0].PermaLink.Resource)
-	// 	},
-	// },
-	// missing_namespace2.xml
-	// missing_namespace_attr_only.xml
-	// missing_namespace.xml
-	"missing_rss2.xml": {wantErr: true},
-	"missing_rss.xml":  {wantErr: true},
+	// "l_permalink.xml":
+	"missing_namespace2.xml":          {wantErr: true},
+	"missing_namespace_attr_only.xml": {wantErr: true},
+	"missing_namespace.xml":           {wantErr: true},
+	"missing_rss2.xml":                {wantErr: true},
+	"missing_rss.xml":                 {wantErr: true},
 	// multiple_admin_errorReportsTo.xml
 	// multiple_admin_generatorAgent.xml
 	// multiple_channel1.xml
@@ -395,7 +388,7 @@ var rssMedia = map[string]rssTestSuite{
 			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
 			assert.Equal(t, 12216320, item.MediaContent.FileSize)
 			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
-			assert.Equal(t, mrss.Sample, item.MediaContent.Expression)
+			assert.Equal(t, media.Sample, item.MediaContent.Expression)
 			assert.Equal(t, "nonadult", item.MediaRating.Value)
 		},
 	},
@@ -410,7 +403,7 @@ var rssMedia = map[string]rssTestSuite{
 				assert.Equal(t, "http://www.foo.com/movie.mov", item.MediaContent.Url)
 				assert.Equal(t, 12216320, item.MediaContent.FileSize)
 				assert.Equal(t, "video/quicktime", item.MediaContent.Type)
-				assert.Equal(t, mrss.Full, item.MediaContent.Expression)
+				assert.Equal(t, media.Full, item.MediaContent.Expression)
 				if assert.NotNil(t, item.MediaContent.MediaPlayer) {
 					assert.Equal(t, "http://www.foo.com/player?id=1111", item.MediaContent.MediaPlayer.Url)
 					assert.Equal(t, 200, item.MediaContent.MediaPlayer.Height)
@@ -419,7 +412,7 @@ var rssMedia = map[string]rssTestSuite{
 					t.Fail()
 				}
 				assert.Len(t, item.MediaContent.MediaHashes, 1)
-				assert.Equal(t, mrss.Md5, item.MediaContent.MediaHashes[0].Algo)
+				assert.Equal(t, media.Md5, item.MediaContent.MediaHashes[0].Algo)
 				assert.Equal(t, "dfdec888b72151965a34b4b59031290a", item.MediaContent.MediaHashes[0].Value)
 				assert.Len(t, item.MediaContent.MediaCredits, 2)
 				assert.Equal(t, "producer", item.MediaContent.MediaCredits[0].Role)
@@ -445,7 +438,7 @@ var rssMedia = map[string]rssTestSuite{
 			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
 			assert.Equal(t, 12216320, item.MediaContent.FileSize)
 			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
-			assert.Equal(t, mrss.Sample, item.MediaContent.Expression)
+			assert.Equal(t, media.Sample, item.MediaContent.Expression)
 			assert.Len(t, item.MediaThumbnails, 1)
 			assert.Equal(t, "http://example.com/thumbnail", item.GetImage().URL())
 			assert.Equal(t, "12:34:56", item.MediaThumbnails[0].Time)

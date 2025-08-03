@@ -500,7 +500,7 @@ components:
                 name: item
               x-oapi-codegen-extra-tags:
                 xml: 'item,omitempty'
-                validate: 'omitempty,dive'
+                validate: 'omitempty,dive,validateFn'
               x-go-type-skip-optional-pointer: true
             MediaContent:
               $ref: 'media-rss.yaml#/components/schemas/MediaContent'

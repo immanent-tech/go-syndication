@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: 	AGPL-3.0-or-later
 
 package: rss
-output: ../rss/extensions.gen.go
+output: ../extensions/rss/extensions.gen.go
 generate:
   models: true
 output-options:
@@ -13,5 +13,5 @@ output-options:
   prefer-skip-optional-pointer: true
   prefer-skip-optional-pointer-with-omitzero: true
 import-mapping:
-  dc.yaml: 'github.com/immanent-tech/go-syndication/dc'
+  dc.yaml: 'github.com/immanent-tech/go-syndication/extensions/dc'
   types.yaml: 'github.com/immanent-tech/go-syndication/types'

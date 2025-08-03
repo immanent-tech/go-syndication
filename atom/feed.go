@@ -7,7 +7,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/immanent-tech/go-syndication/mrss"
+	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
 )
 
@@ -145,8 +145,8 @@ func (f *Feed) GetImage() *types.Image {
 
 // SetImage sets an image for the Channel.
 func (f *Feed) SetImage(image *types.Image) {
-	f.MediaThumbnails = mrss.MediaThumbnails{
-		mrss.MediaThumbnail{URL: image.URL()},
+	f.MediaThumbnails = media.MediaThumbnails{
+		media.MediaThumbnail{URL: image.URL()},
 	}
 }
 

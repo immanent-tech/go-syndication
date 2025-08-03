@@ -192,7 +192,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 		// Try RSS first...
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
 		if err != nil {
-			slog.Debug("Failed to parse indeterminate feed as RSS.",
+			slog.DebugContext(ctx, "Failed to parse indeterminate feed as RSS.",
 				slog.Any("error", err),
 				slog.String("url", url),
 			)
@@ -202,7 +202,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
 		}
 		if err != nil {
-			slog.Debug("Failed to parse indeterminate feed as Atom.",
+			slog.DebugContext(ctx, "Failed to parse indeterminate feed as Atom.",
 				slog.Any("error", err),
 				slog.String("url", url),
 			)
@@ -234,14 +234,14 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	}
 	// If the feed source did not define an image, try to find and set an appropriate one.
 	if feed.GetImage() == nil {
-		slog.Debug("Feed does not provide image, finding one...",
+		slog.DebugContext(ctx, "Feed does not provide image, finding one...",
 			slog.String("feed", feed.GetTitle()),
 			slog.String("source", url),
 			slog.String("link", feed.GetLink()),
 		)
 		image, err := discoverFeedImage(ctx, client, feed.GetLink())
 		if err != nil {
-			slog.Error("Failed to discover an image for the feed.",
+			slog.ErrorContext(ctx, "Failed to discover an image for the feed.",
 				slog.String("feed", feed.GetTitle()),
 				slog.Any("error", err),
 			)

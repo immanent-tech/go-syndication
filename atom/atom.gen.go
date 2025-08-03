@@ -6,8 +6,8 @@ package atom
 import (
 	"encoding/xml"
 
-	externalRef0 "github.com/immanent-tech/go-syndication/dc"
-	externalRef1 "github.com/immanent-tech/go-syndication/mrss"
+	externalRef0 "github.com/immanent-tech/go-syndication/extensions/dc"
+	externalRef1 "github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
 	externalRef2 "github.com/immanent-tech/go-syndication/types"
 )

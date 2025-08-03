@@ -13,9 +13,10 @@ output-options:
   prefer-skip-optional-pointer: true
   prefer-skip-optional-pointer-with-omitzero: true
 import-mapping:
-  dc.yaml: 'github.com/immanent-tech/go-syndication/dc'
-  rss-ext.yaml: '-'
-  media-rss.yaml: 'github.com/immanent-tech/go-syndication/mrss'
+  rss-ext.yaml: 'github.com/immanent-tech/go-syndication/extensions/rss'
+  dc.yaml: 'github.com/immanent-tech/go-syndication/extensions/dc'
+  media-rss.yaml: 'github.com/immanent-tech/go-syndication/extensions/media'
+  rdf.yaml: 'github.com/immanent-tech/go-syndication/rdf'
   atom.yaml: 'github.com/immanent-tech/go-syndication/atom'
   types.yaml: 'github.com/immanent-tech/go-syndication/types'
   types-elements.yaml: 'github.com/immanent-tech/go-syndication/types'
