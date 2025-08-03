@@ -15,6 +15,12 @@
 !*.xml
 !*.rdf
 
+!.github/ISSUE_TEMPLATE/*
+!.github/workflows/*.yml
+!.github/CODEOWNERS
+!.github/*.yml
+!.github/*.md
+
 !README.md
 !LICENSE
 !.devcontainer/*
