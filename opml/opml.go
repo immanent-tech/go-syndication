@@ -5,11 +5,10 @@ package opml
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"slices"
 	"time"
-
-	"encoding/xml"
 
 	"github.com/immanent-tech/go-syndication/types"
 	"golang.org/x/net/html/charset"
@@ -33,9 +32,13 @@ func NewOPMLFromBytes(b []byte) (*OPML, error) {
 // NewOPML creates a new OPML object.
 func NewOPML(options ...Option) *OPML {
 	opml := &OPML{
+		XMLName: xml.Name{
+			Local: "opml",
+		},
 		Version: "2.0",
 		Head: Head{
-			DateCreated: types.DateTime{Time: time.Now()},
+			DateCreated:  types.DateTime{Time: time.Now()},
+			DateModified: types.DateTime{Time: time.Now()},
 		},
 	}
 
