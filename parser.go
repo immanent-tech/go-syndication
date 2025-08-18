@@ -265,9 +265,15 @@ func discoverFeedImage(ctx context.Context, client *resty.Client, sourceURL stri
 	// website.
 	site.Path = ""
 	site.RawQuery = ""
-
+	// Try to get a favicon.ico file at the root.
+	_, err = client.R().SetContext(ctx).Head(site.String() + "/favicon.ico")
+	if err == nil {
+		return &types.Image{Value: site.String() + "/favicon.ico"}, nil
+	}
+	// If that failed, try getting the root page and parsing its content to find an appropriate icon.
+	var resp *resty.Response
 	// Get the root website contents.
-	resp, err := client.R().SetContext(ctx).Get(site.String())
+	resp, err = client.R().SetContext(ctx).Get(site.String())
 	if err != nil {
 		return nil, fmt.Errorf("could not access URL: %w", err)
 	}
@@ -299,16 +305,17 @@ func discoverImages(content []byte) (string, error) {
 			tkn := page.Token()
 			switch tkn.DataAtom {
 			case htmlatom.Link:
-				// "rel" attribute must contain "icon" string.
+				// "rel" attribute must contain "icon" string. Canonical favicon indicator.
 				if !slices.ContainsFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "icon" }) {
 					continue
 				}
-				// "href" attribute must contain "icon" string.
+				// if the href points to a favicon file, that's the one!
 				if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
-					return a.Key == "href" && strings.Contains(a.Val, "icon")
+					return a.Key == "href" && strings.Contains(a.Val, "favicon.ico")
 				}); idx != -1 {
 					return tkn.Attr[idx].Val, nil
 				}
+
 			case htmlatom.Image:
 				// "class" attribute must contain "icon" string.
 				if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
