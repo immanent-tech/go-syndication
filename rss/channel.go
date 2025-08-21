@@ -37,9 +37,6 @@ func (c *Channel) GetDescription() string {
 // GetSourceURL retrieves the URL that links to the RSS file for the channel. This will be any <atom:link> element
 // present in the Channel with a "rel" attribute of "self".
 func (c *Channel) GetSourceURL() string {
-	if c.AtomLink == nil {
-		return ""
-	}
 	if c.AtomLink.Rel != nil && *c.AtomLink.Rel == atom.LinkRelSelf {
 		return c.AtomLink.Href
 	}
@@ -49,7 +46,7 @@ func (c *Channel) GetSourceURL() string {
 // SetSourceURL will set a source URL, indicating the URL to the RSS file, in the Channel.
 func (c *Channel) SetSourceURL(url string) {
 	rel := atom.LinkRelSelf
-	c.AtomLink = &atom.Link{Href: url, Rel: &rel}
+	c.AtomLink = atom.Link{Href: url, Rel: &rel}
 }
 
 // GetLink retrieves the <link> (if any) of the Channel. This is the link to the website associated with the RSS feed.

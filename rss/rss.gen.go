@@ -35,7 +35,7 @@ type Category struct {
 
 // Channel defines model for Channel.
 type Channel struct {
-	AtomLink *externalRef0.Link `json:"AtomLink,omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+	AtomLink externalRef0.Link `json:"atom_link" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// DCContributor is an entity responsible for making contributions to the resource.
 	DCContributor *externalRef1.DCContributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
@@ -233,7 +233,7 @@ type Channel struct {
 
 // ChannelElements contains all Channel elements (i.e., Channel metadata).
 type ChannelElements struct {
-	AtomLink *externalRef0.Link `json:"AtomLink,omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+	AtomLink externalRef0.Link `json:"atom_link" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
 	Categories []Category `json:"category,omitempty" xml:"category,omitempty"`

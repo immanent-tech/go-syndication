@@ -410,7 +410,7 @@ components:
             - $ref: 'atom.yaml#/components/schemas/Link'
           x-oapi-codegen-extra-tags:
             xml: 'http://www.w3.org/2005/Atom link,omitempty'
-          x-go-type-skip-optional-pointer: false
+            json: 'atom_link'
         language:
           $ref: 'types-elements.yaml#/components/schemas/Language'
         copyright:
