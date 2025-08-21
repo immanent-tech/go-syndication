@@ -32,6 +32,11 @@ var (
 	MimeTypesImage = []string{"image/avif", "image/gif", "image/jpeg", "image/png", "image/svg+xml", "image/webp"}
 )
 
+const (
+	// MimeTypeOPML indicates the canonical mimetype for an OPML file.
+	MimeTypeOPML = "text/x-opml+xml"
+)
+
 // String will return the value of the object.
 func (c *CustomTypeBase) String() string {
 	if c != nil {
@@ -85,5 +90,5 @@ func (s *StringData) UnmarshalText(data []byte) error {
 }
 
 func (s *StringData) String() string {
-	return string(*s)
+	return html.UnescapeString(string(*s))
 }
