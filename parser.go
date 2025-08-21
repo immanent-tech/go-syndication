@@ -173,6 +173,20 @@ func NewItemsFromURLs(ctx context.Context, urls ...string) ItemsResult {
 	return results
 }
 
+// FindFeedImage will try to find an image to represent the feed. Useful to call if the feed does not define an image
+// itself.
+func FindFeedImage(ctx context.Context, feed *Feed) error {
+	client := newWebClient()
+	image, err := discoverFeedImage(ctx, client, feed.GetLink())
+	if err != nil {
+		return fmt.Errorf("unable to find feed image: %w", err)
+	}
+	if image != nil {
+		feed.SetImage(image)
+	}
+	return nil
+}
+
 // parseFeedURL attempts to parse the given URL as a feed source.
 func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedResult {
 	// Get the feed data.
@@ -238,24 +252,6 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	// If the source URL is not set, set it.
 	if feed.GetSourceURL() == "" || feed.GetSourceURL() != url {
 		feed.AddLink(url)
-	}
-	// If the feed source did not define an image, try to find and set an appropriate one.
-	if feed.GetImage() == nil {
-		slog.DebugContext(ctx, "Feed does not provide image, finding one...",
-			slog.String("feed", feed.GetTitle()),
-			slog.String("source", url),
-			slog.String("link", feed.GetLink()),
-		)
-		image, err := discoverFeedImage(ctx, client, feed.GetLink())
-		if err != nil {
-			slog.ErrorContext(ctx, "Failed to discover an image for the feed.",
-				slog.String("feed", feed.GetTitle()),
-				slog.Any("error", err),
-			)
-		}
-		if image != nil {
-			feed.SetImage(image)
-		}
 	}
 
 	return FeedResult{URL: url, Feed: feed}
