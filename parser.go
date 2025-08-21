@@ -99,6 +99,13 @@ func NewFeedFromSource[T types.FeedSource](source T) *Feed {
 	return feed
 }
 
+// NewFeedFromURL will attempt to create new Feed object from the given URL.
+func NewFeedFromURL(ctx context.Context, url string) (*Feed, error) {
+	client := newWebClient()
+	result := parseFeedURL(ctx, client, url)
+	return result.Feed, result.Err
+}
+
 // NewFeedsFromURLs will attempt to create new Feed objects from the given list of URLs. It returns a slice containing:
 // the URL, any Feed object that was created, else, an non-nil error explaining the problem creating the Feed.
 func NewFeedsFromURLs(ctx context.Context, urls ...string) []FeedResult {
