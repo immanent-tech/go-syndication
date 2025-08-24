@@ -411,6 +411,8 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'http://www.w3.org/2005/Atom link,omitempty'
             json: 'atom_link'
+            validate: omitempty
+          x-go-type-skip-optional-pointer: true
         language:
           $ref: 'types-elements.yaml#/components/schemas/Language'
         copyright:
