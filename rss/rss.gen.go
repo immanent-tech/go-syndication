@@ -201,7 +201,7 @@ type Channel struct {
 	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`
 
 	// Link is the URL to the HTML website corresponding to the channel.
-	Link string `json:"link" validate:"required,url" xml:"link"`
+	Link string `json:"link" validate:"omitempty,url" xml:"link"`
 
 	// ManagingEditor is the email address for person responsible for editorial content.
 	ManagingEditor externalRef5.CharData `json:"managingEditor,omitempty,omitzero" xml:"managingEditor,omitempty"`
@@ -264,7 +264,7 @@ type ChannelElements struct {
 	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`
 
 	// Link is the URL to the HTML website corresponding to the channel.
-	Link string `json:"link" validate:"required,url" xml:"link"`
+	Link string `json:"link" validate:"omitempty,url" xml:"link"`
 
 	// ManagingEditor is the email address for person responsible for editorial content.
 	ManagingEditor externalRef5.CharData `json:"managingEditor,omitempty,omitzero" xml:"managingEditor,omitempty"`
@@ -340,13 +340,13 @@ type Image struct {
 	Height int `json:"height,omitempty,omitzero" validate:"omitempty,gt=0,lte=400" xml:"height,omitempty"`
 
 	// Link is the URL of the site, when the channel is rendered, the image is a link to the site. (Note, in practice the image <title> and <link> should have the same value as the channel's <title> and <link>.
-	Link string `json:"link" validate:"required,url" xml:"link"`
+	Link string `json:"link" validate:"required_without=URL,omitempty,url" xml:"link"`
 
 	// Title describes the image, it's used in the ALT attribute of the HTML <img> tag when the channel is rendered in HTML.
 	Title string `json:"title" validate:"required" xml:"title"`
 
 	// URL is the URL of a GIF, JPEG or PNG image that represents the channel.
-	URL string `json:"url" validate:"required,url" xml:"url"`
+	URL string `json:"url" validate:"required_without=link,omitempty,url" xml:"url"`
 
 	// Width indicates the width of the image in pixels.
 	Width int `json:"width,omitempty,omitzero" validate:"omitempty,gt=0,lte=144" xml:"width,omitempty"`

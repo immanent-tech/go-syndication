@@ -134,7 +134,7 @@ components:
           x-go-name: URL
           x-oapi-codegen-extra-tags:
             xml: 'url'
-            validate: 'required,url'
+            validate: 'required_without=link,omitempty,url'
         title:
           description: >
             describes the image, it's used in the ALT attribute of the HTML <img> tag when the channel is rendered in
@@ -150,7 +150,7 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             xml: 'link'
-            validate: 'required,url'
+            validate: 'required_without=URL,omitempty,url'
         width:
           description: >
             indicates the width of the image in pixels.
@@ -397,7 +397,7 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             xml: 'link'
-            validate: 'required,url'
+            validate: 'omitempty,url'
         description:
           description: >
             the description of the channel.
