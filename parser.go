@@ -234,7 +234,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
-		url, err := discoverFeedURL(resp.Body())
+		url, err := discoverFeedURL(url, resp.Body())
 		if err == nil && url != "" {
 			return parseFeedURL(ctx, client, url)
 		}
@@ -334,7 +334,12 @@ func discoverImages(content []byte) (string, error) {
 }
 
 // discoverFeedURL attempts to find a feed URL within a HTML page.
-func discoverFeedURL(content []byte) (string, error) {
+func discoverFeedURL(path string, content []byte) (string, error) {
+	pageURL, err := url.Parse(path)
+	if err != nil {
+		return "", fmt.Errorf("unable to parse url: %w", err)
+	}
+
 	page := html.NewTokenizer(bytes.NewReader(content))
 	for {
 		tt := page.Next()
@@ -351,11 +356,33 @@ func discoverFeedURL(content []byte) (string, error) {
 				continue
 			}
 			// "type" attribute must contain valid feed MIME type.
-			if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
+			idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
 				return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val)
-			}); idx != -1 {
-				return tkn.Attr[idx].Val, nil
+			})
+			if idx == 0 {
+				continue
 			}
+			// is a feed url, extract the url.
+			idx = slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
+				return a.Key == "href"
+			})
+			if idx == 0 {
+				continue
+			}
+			feedURL, err := url.Parse(tkn.Attr[idx].Val)
+			if err != nil {
+				return tkn.Attr[idx].Val, fmt.Errorf("found URL but unable to parse: %w", err)
+			}
+			if !feedURL.IsAbs() {
+				// Try to create an absolute URL for the feed.
+				fullPath, err := url.JoinPath("/", feedURL.Path)
+				if err != nil {
+					return "", fmt.Errorf("failed to generate feed URL: %w", err)
+				}
+				pageURL.Path = fullPath
+				return pageURL.String(), nil
+			}
+			return feedURL.String(), nil
 		}
 	}
 }
