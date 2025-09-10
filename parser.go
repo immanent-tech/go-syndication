@@ -15,8 +15,10 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/go-shiori/go-readability"
 	"golang.org/x/net/html"
 	htmlatom "golang.org/x/net/html/atom"
 
@@ -29,7 +31,8 @@ import (
 
 var (
 	// ErrParseFeed indicates an error parsing the feed content.
-	ErrParseFeed = errors.New("unable to parse")
+	ErrParseFeed  = errors.New("unable to parse")
+	ErrParseImage = errors.New("unable to parse an image")
 	// ErrUnmarshal indicates an error unmarshaling the feed from its native format.
 	ErrUnmarshal = errors.New("unable to unmarshal")
 	// ErrUnsupportedFormat indicates that feed format is not known and cannot be parsed.
@@ -176,8 +179,14 @@ func NewItemsFromURLs(ctx context.Context, urls ...string) ItemsResult {
 // FindFeedImage will try to find an image to represent the feed. Useful to call if the feed does not define an image
 // itself.
 func FindFeedImage(ctx context.Context, feed *Feed) error {
-	client := newWebClient()
-	image, err := discoverFeedImage(ctx, client, feed.GetLink())
+	var timeout time.Duration
+	deadline, ok := ctx.Deadline()
+	if !ok {
+		timeout = 30 * time.Second
+	} else {
+		timeout = time.Until(deadline)
+	}
+	image, err := discoverFeedImage(feed.GetLink(), timeout)
 	if err != nil {
 		return fmt.Errorf("unable to find feed image: %w", err)
 	}
@@ -258,78 +267,18 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 }
 
 // discoverFeedImage attempts to find a suitable image to use for a feed.
-func discoverFeedImage(ctx context.Context, client *resty.Client, sourceURL string) (*types.Image, error) {
-	// Parse the URL.
-	site, err := url.Parse(sourceURL)
+func discoverFeedImage(sourceURL string, timeout time.Duration) (*types.Image, error) {
+	page, err := readability.FromURL(sourceURL, timeout)
 	if err != nil {
-		return nil, fmt.Errorf("could not parse URL: %w", err)
+		return nil, fmt.Errorf("failed to parse %s, %w", sourceURL, err)
 	}
-	// Assume that the root website hosting the feed will likely have an appropriate icon. Wipe the path to get the root
-	// website.
-	site.Path = ""
-	site.RawQuery = ""
-	// Try to get a favicon.ico file at the root.
-	_, err = client.R().SetContext(ctx).Head(site.String() + "/favicon.ico")
-	if err == nil {
-		return &types.Image{Value: site.String() + "/favicon.ico"}, nil
-	}
-	// If that failed, try getting the root page and parsing its content to find an appropriate icon.
-	var resp *resty.Response
-	// Get the root website contents.
-	resp, err = client.R().SetContext(ctx).Get(site.String())
-	if err != nil {
-		return nil, fmt.Errorf("could not access URL: %w", err)
-	}
-	// Discover any appropriate images.
-	imagePath, err := discoverImages(resp.Body())
-	if err != nil {
-		return nil, fmt.Errorf("could not find appropriate image: %w", err)
-	}
-	// Generate image URL.
-	imageURL, err := url.Parse(imagePath)
-	if err != nil {
-		return nil, fmt.Errorf("could not find appropriate image: %w", err)
-	}
-	if !imageURL.IsAbs() {
-		imageURL = site.JoinPath(imagePath)
-	}
-	return &types.Image{Value: imageURL.String()}, nil
-}
-
-// discoverFeedURL attempts to find a feed URL within a HTML page.
-func discoverImages(content []byte) (string, error) {
-	page := html.NewTokenizer(bytes.NewReader(content))
-	for {
-		tt := page.Next()
-		switch tt {
-		case html.ErrorToken:
-			return "", fmt.Errorf("unable to determine feed url: %w", page.Err())
-		case html.StartTagToken:
-			tkn := page.Token()
-			switch tkn.DataAtom {
-			case htmlatom.Link:
-				// "rel" attribute must contain "icon" string. Canonical favicon indicator.
-				if !slices.ContainsFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "icon" }) {
-					continue
-				}
-				// if the href points to a favicon file, that's the one!
-				if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
-					return a.Key == "href" && strings.Contains(a.Val, "favicon.ico")
-				}); idx != -1 {
-					return tkn.Attr[idx].Val, nil
-				}
-
-			case htmlatom.Image:
-				// "class" attribute must contain "icon" string.
-				if idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
-					return a.Key == "class" && strings.Contains(a.Val, "icon")
-				}); idx != -1 {
-					return tkn.Attr[idx].Val, nil
-				}
-			default:
-				continue
-			}
-		}
+	switch {
+	case page.Image != "":
+		return &types.Image{Value: page.Image}, nil
+	case page.Favicon != "":
+		return &types.Image{Value: page.Favicon}, nil
+	default:
+		return nil, ErrParseImage
 	}
 }
 
