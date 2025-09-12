@@ -9,10 +9,10 @@ import (
 	"github.com/immanent-tech/go-syndication/types"
 )
 
-// AsImage returns the <media:thumbnail> object as a types.Image object.
-func (t *MediaThumbnail) AsImage() *types.Image {
-	return &types.Image{
-		Value: t.URL,
+// AsImage returns the <media:thumbnail> object as a types.ImageInfo object.
+func (t *MediaThumbnail) AsImage() *types.ImageInfo {
+	return &types.ImageInfo{
+		URL: t.URL,
 	}
 }
 
@@ -33,18 +33,18 @@ func (t *MediaText) GetText() string {
 }
 
 // IsImage will return a boolean indicating whether the media:content element represents an image, and if it does, also
-// return a generic types.Image object.
-func (c *MediaContent) IsImage() (bool, *types.Image) {
+// return a generic types.ImageInfo object.
+func (c *MediaContent) IsImage() (bool, *types.ImageInfo) {
 	// Check if medium attr indicates an image.
 	if c.Medium == MediaContentMediumImage {
-		return true, &types.Image{
-			Value: c.Url,
+		return true, &types.ImageInfo{
+			URL: c.Url,
 		}
 	}
 	// Check if mimetype attr indicates an image.
 	if types.IsImage(c.Type) {
-		return true, &types.Image{
-			Value: c.Url,
+		return true, &types.ImageInfo{
+			URL: c.Url,
 		}
 	}
 	// Not an image.

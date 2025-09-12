@@ -109,21 +109,21 @@ func (c *Channel) GetCategories() []string {
 	return categories
 }
 
-// GetImage retrieves the image (if any) for the Item. The image is returned as a types.Image object. The value will be
+// GetImage retrieves the image (if any) for the Item. The image is returned as a types.ImageInfo object. The value will be
 // the first found of either any <image> or <media:thumbnail> element. Any errors is retrieving the image will result in
 // a nil result being returned.
-func (c *Channel) GetImage() *types.Image {
+func (c *Channel) GetImage() *types.ImageInfo {
 	switch {
 	case c.Image != nil:
-		return &types.Image{
-			Value: c.Image.URL,
+		return &types.ImageInfo{
+			URL:   c.Image.URL,
 			Title: &c.Image.Title,
 		}
 	case len(c.MediaThumbnails) > 0:
 		// Use the first thumbnail found.
 		thumbnail := c.MediaThumbnails[0]
-		return &types.Image{
-			Value: thumbnail.URL,
+		return &types.ImageInfo{
+			URL: thumbnail.URL,
 		}
 	default:
 		return nil
@@ -131,8 +131,8 @@ func (c *Channel) GetImage() *types.Image {
 }
 
 // SetImage sets an image for the Channel.
-func (c *Channel) SetImage(image *types.Image) {
-	c.Image = &Image{URL: image.URL(), Title: image.String()}
+func (c *Channel) SetImage(image *types.ImageInfo) {
+	c.Image = &Image{URL: image.GetURL(), Title: image.GetTitle()}
 }
 
 // GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a

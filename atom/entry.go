@@ -118,13 +118,13 @@ func (e *Entry) GetCategories() []string {
 	return categories
 }
 
-// GetImage retrieves the image (if any) for the Entry. The image is returned as a types.Image object. The value will be
+// GetImage retrieves the image (if any) for the Entry. The image is returned as a types.ImageInfo object. The value will be
 // the first found of <media:thumbnail> element.
-func (e *Entry) GetImage() *types.Image {
+func (e *Entry) GetImage() *types.ImageInfo {
 	if len(e.MediaThumbnails) > 0 {
 		thumbnail := e.MediaThumbnails[0]
-		return &types.Image{
-			Value: thumbnail.URL,
+		return &types.ImageInfo{
+			URL: thumbnail.URL,
 		}
 	}
 	return nil

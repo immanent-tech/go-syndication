@@ -21,12 +21,12 @@ type HasID interface {
 
 // HasMedia contains methods for retrieving an Object's media, such as audio and video.
 type HasMedia interface {
-	GetImage() *Image
+	GetImage() *ImageInfo
 }
 
 // MediaEditable indicates that the media of the object can be changed.
 type MediaEditable interface {
-	SetImage(image *Image)
+	SetImage(image *ImageInfo)
 }
 
 // HasAttribution contains methods for retrieving values that relate to the copyright, rights, authors and

@@ -49,16 +49,13 @@ type Extension struct {
 // Extensions records any elements that are unknown extensions to the schema.
 type Extensions = []Extension
 
-// Image defines model for Image.
-type Image struct {
-	// Attributes are any attributes of the element.
-	Attributes Attributes `json:"attributes" xml:",any,attr"`
-
-	// Title the description or alt tag of the image
+// ImageInfo is an abstraction of an Image across different types of specifications.
+type ImageInfo struct {
+	// Title the description of the image
 	Title *string `json:"title,omitempty"`
 
-	// Value is an element value that is required.
-	Value RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// URL is the URL to the image.
+	URL string `json:"url" validate:"required,url" xml:",chardata"`
 }
 
 // NameSpace maps namespace URL identifiers to a easy-to-use string type.

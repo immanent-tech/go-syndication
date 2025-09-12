@@ -87,7 +87,7 @@ func (f *Feed) GetCategories() []string {
 
 // GetImage retrieves the image (if any) for the Feed. It will retrieve the icon or favicon, whichever is found first,
 // or an empty string if neither is found.
-func (f *Feed) GetImage() *types.Image {
+func (f *Feed) GetImage() *types.ImageInfo {
 	var url string
 	switch {
 	case f.Icon != nil:
@@ -96,16 +96,16 @@ func (f *Feed) GetImage() *types.Image {
 		url = *f.Favicon
 	}
 	if url != "" {
-		return &types.Image{
-			Value: url,
+		return &types.ImageInfo{
+			URL: url,
 		}
 	}
 	return nil
 }
 
 // SetImage sets an image for the Feed. This will set the icon value.
-func (f *Feed) SetImage(image *types.Image) {
-	url := image.URL()
+func (f *Feed) SetImage(image *types.ImageInfo) {
+	url := image.GetURL()
 	f.Icon = &url
 }
 

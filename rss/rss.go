@@ -67,11 +67,11 @@ func (r *RSS) GetLanguage() string {
 	return r.Channel.GetLanguage()
 }
 
-func (r *RSS) GetImage() *types.Image {
+func (r *RSS) GetImage() *types.ImageInfo {
 	return r.Channel.GetImage()
 }
 
-func (r *RSS) SetImage(image *types.Image) {
+func (r *RSS) SetImage(image *types.ImageInfo) {
 	r.Channel.SetImage(image)
 }
 

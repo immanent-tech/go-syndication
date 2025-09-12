@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-// String returns any title (alt tag) for the Image.
-func (i *Image) String() string {
+// GetTitle returns the title (if any) of the image.
+func (i *ImageInfo) GetTitle() string {
 	if i != nil {
 		if i.Title != nil && *i.Title != "" {
 			return *i.Title
@@ -18,10 +18,10 @@ func (i *Image) String() string {
 	return ""
 }
 
-// URL returns the URL to the Image.
-func (i *Image) URL() string {
+// GetURL returns the URL of the image.
+func (i *ImageInfo) GetURL() string {
 	if i != nil {
-		return i.Value
+		return i.URL
 	}
 	return ""
 }

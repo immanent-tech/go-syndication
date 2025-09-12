@@ -440,7 +440,7 @@ var rssMedia = map[string]rssTestSuite{
 			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
 			assert.Equal(t, media.Sample, item.MediaContent.Expression)
 			assert.Len(t, item.MediaThumbnails, 1)
-			assert.Equal(t, "http://example.com/thumbnail", item.GetImage().URL())
+			assert.Equal(t, "http://example.com/thumbnail", item.GetImage().GetURL())
 			assert.Equal(t, "12:34:56", item.MediaThumbnails[0].Time)
 		},
 	},

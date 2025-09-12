@@ -267,16 +267,16 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 }
 
 // discoverFeedImage attempts to find a suitable image to use for a feed.
-func discoverFeedImage(sourceURL string, timeout time.Duration) (*types.Image, error) {
+func discoverFeedImage(sourceURL string, timeout time.Duration) (*types.ImageInfo, error) {
 	page, err := readability.FromURL(sourceURL, timeout)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse %s, %w", sourceURL, err)
 	}
 	switch {
 	case page.Image != "":
-		return &types.Image{Value: page.Image}, nil
+		return &types.ImageInfo{URL: page.Image}, nil
 	case page.Favicon != "":
-		return &types.Image{Value: page.Favicon}, nil
+		return &types.ImageInfo{URL: page.Favicon}, nil
 	default:
 		return nil, ErrParseImage
 	}

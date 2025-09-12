@@ -99,7 +99,7 @@ func (i *Item) GetCategories() []string {
 	return categories
 }
 
-// GetImage retrieves the image (if any) for the Item. The image is returned as a types.Image object. There are many
+// GetImage retrieves the image (if any) for the Item. The image is returned as a types.ImageInfo object. There are many
 // places/elements that could represent the item's image, or rather, many ways various feeds indicate an image:
 //
 // - an <image> element in the item.
@@ -111,16 +111,16 @@ func (i *Item) GetCategories() []string {
 // - a single <media:thumbnail> element.
 //
 // This method tries to retrieve one of these, first one wins, in the order above.
-func (i *Item) GetImage() *types.Image {
+func (i *Item) GetImage() *types.ImageInfo {
 	switch {
 	case i.Image != nil:
-		return &types.Image{
-			Value: i.Image.Link,
+		return &types.ImageInfo{
+			URL:   i.Image.Link,
 			Title: &i.Image.Title,
 		}
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
-		return &types.Image{
-			Value: i.Enclosure.URL,
+		return &types.ImageInfo{
+			URL: i.Enclosure.URL,
 		}
 	case i.MediaContent != nil:
 		isImage, image := i.MediaContent.IsImage()

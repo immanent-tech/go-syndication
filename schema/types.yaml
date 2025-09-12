@@ -102,17 +102,27 @@ components:
           $ref: '#/components/schemas/RequiredValue'
         attributes:
           $ref: '#/components/schemas/Attributes'
-    Image:
+    ImageInfo:
       description: >
         is an abstraction of an Image across different types of specifications.
-      allOf:
-        - $ref: '#/components/schemas/CustomTypeBase'
-        - type: object
-          properties:
-            title:
-              description: >
-                the description or alt tag of the image
-              type: string
+      type: object
+      required:
+        - url
+      properties:
+        title:
+          description: >
+            the description of the image
+          type: string
+        url:
+          description: >
+            is the URL to the image.
+          type: string
+          x-go-name: URL
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
+            validate: 'required,url'
+      x-oapi-codegen-extra-tags:
+        validate: 'omitempty'
     CharData:
       description: >
         represents character data of an element.
