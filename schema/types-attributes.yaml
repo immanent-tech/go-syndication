@@ -22,7 +22,14 @@ components:
         xml: 'url,attr,omitempty'
         validate: 'omitempty,url'
     AttrHref:
-      $ref: '#/components/schemas/AttrURL'
+      description: >
+        is a URL that represents the element content.
+      type: string
+      xml:
+        attribute: true
+      x-oapi-codegen-extra-tags:
+        xml: 'href,attr,omitempty'
+        validate: 'omitempty,url'
     AttrLang:
       description: >
         is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.

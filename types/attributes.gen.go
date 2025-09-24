@@ -22,7 +22,7 @@ type AttrFramerate = int
 type AttrHeight = int
 
 // AttrHref is a URL that represents the element content.
-type AttrHref = AttrURL
+type AttrHref = string
 
 // AttrLang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
 type AttrLang = string

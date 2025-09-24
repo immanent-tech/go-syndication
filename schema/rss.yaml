@@ -490,6 +490,8 @@ components:
         - $ref: 'rss-ext.yaml#/components/schemas/SyndicationElements'
         - $ref: 'dc.yaml#/components/schemas/DublinCoreElements'
         - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
+        - $ref: 'itunes.yaml#/components/schemas/ItunesElements'
+        - $ref: 'googleplay.yaml#/components/schemas/GooglePlayElements'
         - type: object
           properties:
             items:

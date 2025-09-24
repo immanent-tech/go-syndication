@@ -26,11 +26,12 @@ func (c *Channel) GetTitle() string {
 // GetDescription retrieves the <description> (if any) of the Channel.
 func (c *Channel) GetDescription() string {
 	switch {
+	case c.Description.String() != "":
+		return c.Description.String()
 	case c.DCDescription != nil:
 		return c.DCDescription.String()
 	default:
-		return c.Description.String()
-		// return sanitization.SanitizeString(c.Description)
+		return ""
 	}
 }
 
@@ -106,6 +107,15 @@ func (c *Channel) GetCategories() []string {
 	for category := range slices.Values(c.Categories) {
 		categories = append(categories, category.String())
 	}
+	if c.MediaCategory != nil {
+		categories = append(categories, c.MediaCategory.Value)
+	}
+	if c.GooglePlayCategory.String() != "" {
+		categories = append(categories, c.GooglePlayCategory.String())
+	}
+	if c.ItunesCategory.Text != "" {
+		categories = append(categories, c.ItunesCategory.GetCategories()...)
+	}
 	return categories
 }
 
@@ -124,6 +134,10 @@ func (c *Channel) GetImage() *types.ImageInfo {
 		thumbnail := c.MediaThumbnails[0]
 		return &types.ImageInfo{
 			URL: thumbnail.URL,
+		}
+	case c.ItunesImage.Href != "":
+		return &types.ImageInfo{
+			URL: c.ItunesImage.Href,
 		}
 	default:
 		return nil

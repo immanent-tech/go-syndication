@@ -535,7 +535,7 @@ type MediaKeywords struct {
 // MediaLicense link to specify the machine-readable license associated with the content.
 type MediaLicense struct {
 	// Href is a URL that represents the element content.
-	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
+	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"href,attr,omitempty"`
 
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
@@ -556,7 +556,7 @@ type MediaParam struct {
 // MediaPeerLink contains P2P link.
 type MediaPeerLink struct {
 	// Href is a URL that represents the element content.
-	Href externalRef1.AttrHref `json:"href" validate:"omitempty,url" xml:"url,attr,omitempty"`
+	Href externalRef1.AttrHref `json:"href" validate:"omitempty,url" xml:"href,attr,omitempty"`
 
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
@@ -661,7 +661,7 @@ type MediaStatusState string
 // MediaSubTitle contains subtitle/CC link.
 type MediaSubTitle struct {
 	// Href is a URL that represents the element content.
-	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
+	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"href,attr,omitempty"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
 	Lang externalRef1.AttrLang `json:"lang" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`

@@ -10,6 +10,8 @@ package feeds
 //go:generate go tool oapi-codegen -config atom-cfg.yaml atom.yaml
 //go:generate go tool oapi-codegen -config dc-cfg.yaml dc.yaml
 //go:generate go tool oapi-codegen -config media-rss-cfg.yaml media-rss.yaml
+//go:generate go tool oapi-codegen -config itunes-cfg.yaml itunes.yaml
+//go:generate go tool oapi-codegen -config googleplay-cfg.yaml googleplay.yaml
 //go:generate go tool oapi-codegen -config rss-ext-cfg.yaml rss-ext.yaml
 //go:generate go tool oapi-codegen -config rss.cfg.yaml rss.yaml
 //go:generate go tool oapi-codegen -config jsonfeed-cfg.yaml jsonfeed.yaml

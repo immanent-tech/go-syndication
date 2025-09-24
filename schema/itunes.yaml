@@ -1,0 +1,133 @@
+# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: iTunes RSS extension
+  description: >
+    An RSS module that supplements the <itunes:*> element capabilities of RSS 2.0.
+
+    https://help.apple.com/itc/podcasts_connect/#/itcb54353390
+  license:
+    name: AGPL-3.0-or-later
+    url: https://spdx.org/licenses/AGPL-3.0-only.html
+components:
+  schemas:
+    Category:
+      description: >
+        is a taxonomy that represents the show.
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          description: >
+            is the text that describes the category.
+          type: string
+          xml:
+            attribute: true
+          x-oapi-codegen-extra-tags:
+            xml: 'text,attr'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty'
+        json: 'itunes_category'
+    Categories:
+      description: >
+        is the set of all taxonomies that represent the show.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Category'
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                $ref: '#/components/schemas/Category'
+              x-oapi-codegen-extra-tags:
+                xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty'
+                json: 'itunes_category'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty'
+        json: 'itunes_category'
+    Image:
+      description: >
+        is the artwork for the show.
+      type: object
+      required:
+        - href
+      properties:
+        href:
+          $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty'
+        json: 'itunes_image'
+    Explicit:
+      description: >
+        indicates whether the content is explicit in nature.
+      type: boolean
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd explicit,omitempty'
+        json: 'itunes_explicit'
+    Summary:
+      description: >
+        is a summary of the show content.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd summary,omitempty'
+        json: 'itunes_summary'
+    Subtitle:
+      description: >
+        is a subtitle for the show content.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd subtitle,omitempty'
+        json: 'itunes_subtitle'
+    Author:
+      description: >
+        is the author of the show content.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd author,omitempty'
+        json: 'itunes_author'
+    Type:
+      description: >
+        is the type of show
+      type: string
+      enum:
+        - Episodic
+        - Serial
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty'
+        json: 'itunes_type'
+    Name:
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd name,omitempty'
+        json: 'itunes_name'
+    Owner:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd owner,omitempty'
+        json: 'itunes_owner'
+    ItunesElements:
+      description: >
+        is the list itunes elements.
+      properties:
+        ItunesCategory:
+          $ref: '#/components/schemas/Categories'
+        ItunesImage:
+          $ref: '#/components/schemas/Image'
+        ItunesExplicit:
+          $ref: '#/components/schemas/Explicit'
+        ItunesSummary:
+          $ref: '#/components/schemas/Summary'
+        ItunesSubtitle:
+          $ref: '#/components/schemas/Subtitle'
+        ItunesAuthor:
+          $ref: '#/components/schemas/Author'
+        ItunesType:
+          $ref: '#/components/schemas/Type'
+        ItunesOwner:
+          $ref: '#/components/schemas/Owner'

@@ -1,0 +1,38 @@
+# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Google Play extension
+  description: >
+    An RSS module that supplements the <googleplay:*> element capabilities of RSS 2.0.
+
+    https://www.google.com/schemas/play-podcasts/1.0/play-podcasts.xsd
+  license:
+    name: AGPL-3.0-or-later
+    url: https://spdx.org/licenses/AGPL-3.0-only.html
+components:
+  schemas:
+    Category:
+      description: >
+        a taxonomy for the object.
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          description: >
+            the text that describes the category.
+          type: string
+          xml:
+            attribute: true
+          x-oapi-codegen-extra-tags:
+            xml: 'text,attr'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.google.com/schemas/play-podcasts/1.0 category,omitempty'
+        json: 'googleplay_category'
+    GooglePlayElements:
+      description: >
+        is the list Google Play elements.
+      properties:
+        GooglePlayCategory:
+          $ref: '#/components/schemas/Category'
