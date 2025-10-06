@@ -14,7 +14,7 @@ import (
 // omitted if the PersonConstruct has no email.
 func (p *PersonConstruct) String() string {
 	if p.Email != nil {
-		return fmt.Sprintf("%s (%s)", p.Name.Value, p.Email)
+		return fmt.Sprintf("%s (%s)", p.Name.Value, p.Email.Value)
 	}
 	return p.Name.Value
 }

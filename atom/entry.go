@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var _ types.ItemSource = (*Entry)(nil)
@@ -156,4 +157,10 @@ func (e *Entry) GetContent() string {
 		}
 	}
 	return ""
+}
+
+// Validate applies custom validation to an item.
+func (e *Entry) Validate() error {
+	// Perform validation based on struct tags.
+	return validation.ValidateStruct(e)
 }

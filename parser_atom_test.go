@@ -38,8 +38,25 @@ var atomOtherTests = map[string]atomTestSuite{
 	},
 }
 
+var atomMustTests = map[string]atomTestSuite{
+	"entry_author_email_contains_plus.xml": {
+		wantErr: false,
+		tests: func(t *testing.T, feed *Feed) {
+			t.Helper()
+			atom := toAtom(t, feed)
+			entries := atom.GetItems()
+			assert.Len(t, entries, 1)
+			assert.Equal(t, "Valid name (valid+folder@example.com)", entries[0].GetAuthors()[0])
+		},
+	},
+	"entry_author_email_invalid.xml": {
+		wantErr: true,
+	},
+}
+
 var atomTests = map[string]map[string]atomTestSuite{
 	"test/assets/atom/other": atomOtherTests,
+	"test/assets/atom/must":  atomMustTests,
 }
 
 func toAtom(t *testing.T, source *Feed) *atom.Feed {
