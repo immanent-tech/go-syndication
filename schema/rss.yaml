@@ -269,7 +269,7 @@ components:
             attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'length,attr'
-            validate: 'required,number'
+            validate: 'number'
         type:
           description: >
             indicates the MIME type of the enclosure.

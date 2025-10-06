@@ -340,7 +340,7 @@ type Comments = types.StringData
 // Enclosure describes a media object.
 type Enclosure struct {
 	// Length indicates how big the enclosure is in bytes.
-	Length int `json:"length" validate:"required,number" xml:"length,attr"`
+	Length int `json:"length" validate:"number" xml:"length,attr"`
 
 	// Type indicates the MIME type of the enclosure.
 	Type string `json:"type" validate:"required" xml:"type,attr"`
