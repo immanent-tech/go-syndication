@@ -534,7 +534,7 @@ type ID struct {
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
-	Value      string                  `json:"value" validate:"required,uri" xml:",chardata"`
+	Value      string                  `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // Icon defines model for Icon.
@@ -550,7 +550,7 @@ type Icon struct {
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
-	Value      string                  `json:"value" validate:"required,uri" xml:",chardata"`
+	Value      string                  `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // Link defines model for Link.
@@ -584,7 +584,7 @@ type Link struct {
 
 	// Type identifies the resource's MIME media type.
 	Type  string `json:"type,omitempty,omitzero" xml:"type,attr,omitempty"`
-	Value string `json:"value" validate:"required,uri" xml:",chardata"`
+	Value string `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // LinkRel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
@@ -606,7 +606,7 @@ type Logo struct {
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
-	Value      string                  `json:"value" validate:"required,uri" xml:",chardata"`
+	Value      string                  `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // Name is an element that conveys a human-readable name.
@@ -756,7 +756,7 @@ type Type = string
 type URI struct {
 	// XMLName represents the XML namespace of an element.
 	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
-	Value   string               `json:"value" validate:"required,uri" xml:",chardata"`
+	Value   string               `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // Updated defines model for Updated.

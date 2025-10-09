@@ -18,8 +18,9 @@ import (
 )
 
 type atomTestSuite struct {
-	wantInvalid bool
-	tests       func(t *testing.T, feed *atom.Feed)
+	wantInvalid   bool
+	wantDecodeErr bool
+	tests         func(t *testing.T, feed *atom.Feed)
 }
 
 var atomOtherTests = map[string]atomTestSuite{
@@ -416,6 +417,171 @@ var atomMustTests = map[string]atomTestSuite{
 	"entry_id_multiple.xml": {
 		wantInvalid: true,
 	},
+	"entry_id_not_full_uri.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			failedValidations, err := getFailedValidations(validation.Validate.Struct(feed.Entries[0].ID))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+		},
+	},
+	"entry_id_not_tag.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			failedValidations, err := getFailedValidations(validation.Validate.Struct(feed.Entries[0].ID))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+		},
+	},
+	"entry_id_not_tag2.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			failedValidations, err := getFailedValidations(validation.Validate.Struct(feed.Entries[0].ID))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+		},
+	},
+	"entry_id_not_urn.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			failedValidations, err := getFailedValidations(validation.Validate.Struct(feed.Entries[0].ID))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+		},
+	},
+	"entry_id_not_urn2.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			failedValidations, err := getFailedValidations(validation.Validate.Struct(feed.Entries[0].ID))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+		},
+	},
+	"entry_id_urn.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			assert.Equal(t, "urn:diveintomark-org:1", feed.Entries[0].GetID())
+		},
+	},
+	"entry_id_tag.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			assert.Equal(t, "tag:diveintomark.org,2003:blog-14:post-19", feed.Entries[0].GetID())
+		},
+	},
+	"entry_issued_bad_day.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_bad_day2.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_bad_hours.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_bad_minutes.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_bad_month.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_bad_seconds.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_extra_spaces.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_extra_spaces2.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_extra_spaces3.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_extra_spaces4.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_extra_spaces5.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_fractional_second.xml": {
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			assert.Equal(t, "2002-12-31 19:20:30.45 +0100 +0100", feed.Entries[0].GetPublishedDate().String())
+		},
+	},
+	// TODO: this should fail but it doesn't (probably because types.Datetime excepts more formats than the Atom spec).
+	"entry_issued_hours_minutes.xml": {
+		wantDecodeErr: true,
+	},
+	// TODO: might require custom unmarshal logic?
+	// "entry_issued_multiple.xml": {
+	// 	wantDecodeErr: true,
+	// },
+	"entry_issued_no_colons.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_no_hyphens.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_no_t.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_no_timezone_colon.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_no_year.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued_seconds.xml": {
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			assert.Equal(t, "2002-12-31 19:20:30 +0100 +0100", feed.Entries[0].GetPublishedDate().String())
+		},
+	},
+	"entry_issued_utc.xml": {
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			assert.Equal(t, "2002-12-31 19:20:30 +0000 UTC", feed.Entries[0].GetPublishedDate().String())
+		},
+	},
+	// TODO: this should fail but it doesn't (probably because types.Datetime excepts more formats than the Atom spec).
+	"entry_issued_wrong_format.xml": {
+		wantDecodeErr: true,
+	},
+	"entry_issued.xml": {
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			entries := feed.GetItems()
+			assert.Len(t, entries, 1)
+			assert.Equal(t, "2003-07-01 01:55:07 -0500 -0500", feed.Entries[0].GetPublishedDate().String())
+		},
+	},
 }
 
 var atomTests = map[string]map[string]atomTestSuite{
@@ -457,8 +623,8 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			feed, err := Decode[*atom.Feed]("", tt.args.data)
-			if err != nil {
-				t.Fatalf("Decode() error = %v", err)
+			if (err != nil) != tt.suite.wantDecodeErr {
+				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return
 			}
 

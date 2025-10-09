@@ -68,7 +68,7 @@ components:
           x-oapi-codegen-extra-tags:
             json: 'value'
             xml: ',chardata'
-            validate: "required,uri"
+            validate: "required,uri|urn_rfc2141|uuid"
       x-go-name: URI
       x-oapi-codegen-extra-tags:
         xml: 'uri,omitempty'
