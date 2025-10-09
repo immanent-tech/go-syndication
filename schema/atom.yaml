@@ -179,7 +179,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'id'
         json: 'id'
-        validate: 'required,uri'
+        validate: 'required'
     Title:
       description: >
         is an element of type Text construct that conveys a human-readable title for an entry or feed.

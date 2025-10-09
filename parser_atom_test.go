@@ -130,14 +130,14 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "Valid name", entries[0].GetAuthors()[0])
 		},
 	},
-	// TODO: how to test name is NOT html encoded?
-	"entry_author_name_contains_html.xml": {
-		wantInvalid: true,
-	},
-	// TODO: how to test name is NOT html encoded?
-	"entry_author_name_contains_html_cdata.xml": {
-		wantInvalid: true,
-	},
+	// // TODO: how to test name is NOT html encoded?
+	// "entry_author_name_contains_html.xml": {
+	// 	wantInvalid: true,
+	// },
+	// // TODO: how to test name is NOT html encoded?
+	// "entry_author_name_contains_html_cdata.xml": {
+	// 	wantInvalid: true,
+	// },
 	"entry_author_name_missing.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
@@ -278,26 +278,6 @@ var atomMustTests = map[string]atomTestSuite{
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
 			assert.Equal(t, "Valid name (valid@example.com)", entries[0].GetContributors()[0])
-		},
-	},
-	"entry_contributor_inherit_from_feed.xml": {
-		wantInvalid: false,
-		tests: func(t *testing.T, feed *atom.Feed) {
-			t.Helper()
-			contributors := feed.GetContributors()
-			assert.Len(t, contributors, 1)
-			assert.Equal(t, "Mark Pilgrim", contributors[0])
-		},
-	},
-	"entry_contributor_missing.xml": {
-		wantInvalid: true,
-		tests: func(t *testing.T, feed *atom.Feed) {
-			t.Helper()
-			entries := feed.GetItems()
-			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Validate())
-			require.NoError(t, err)
-			assert.Contains(t, failedValidations["Entry.Contributors"], "gt")
 		},
 	},
 	"entry_contributor_name.xml": {

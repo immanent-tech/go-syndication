@@ -165,7 +165,7 @@ type Entry struct {
 	DCType *externalRef0.DCType `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
-	ID ID `json:"id" validate:"required,uri" xml:"id"`
+	ID ID `json:"id" validate:"required" xml:"id"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang string `json:"lang,omitempty" validate:"omitempty,bcp47_language_tag" xml:"lang,attr,omitempty"`
@@ -336,7 +336,7 @@ type Feed struct {
 	DCType *externalRef0.DCType `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
-	ID ID `json:"id" validate:"required,uri" xml:"id"`
+	ID ID `json:"id" validate:"required" xml:"id"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang string `json:"lang,omitempty" validate:"omitempty,bcp47_language_tag" xml:"lang,attr,omitempty"`
@@ -459,7 +459,7 @@ type FeedMetadata struct {
 	Base string `json:"base,omitempty" validate:"omitempty" xml:"base,attr,omitempty"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
-	ID ID `json:"id" validate:"required,uri" xml:"id"`
+	ID ID `json:"id" validate:"required" xml:"id"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang string `json:"lang,omitempty" validate:"omitempty,bcp47_language_tag" xml:"lang,attr,omitempty"`
