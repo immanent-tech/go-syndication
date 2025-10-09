@@ -18,14 +18,13 @@ components:
       description: >
         represents what the content of the element is.
       type: string
-      enum: ['text', 'html', 'xhtml']
       default: 'text'
       xml:
         attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'type,attr,omitempty'
         json: 'type,omitempty'
-        validate: 'omitempty,oneof=text html xhtml'
+        validate: 'type_attr'
     CommonAttributes:
       description: >
         are common attributes across Atom elements.
@@ -69,11 +68,12 @@ components:
           x-oapi-codegen-extra-tags:
             json: 'value'
             xml: ',chardata'
-            # validate: "omitempty,uri"
+            validate: "required,uri"
       x-go-name: URI
       x-oapi-codegen-extra-tags:
         xml: 'uri,omitempty'
         json: 'uri,omitempty'
+        validate: 'omitempty'
     Name:
       description: >
         is an element that conveys a human-readable name.
@@ -108,7 +108,7 @@ components:
           x-oapi-codegen-extra-tags:
             json: 'value'
             xml: ',chardata'
-            # validate: "required,email"
+            validate: "required,email"
       x-oapi-codegen-extra-tags:
         xml: 'email,omitempty'
         json: 'email,omitempty'
@@ -149,6 +149,8 @@ components:
               $ref: '#/components/schemas/Email'
             extensions:
               $ref: 'types.yaml#/components/schemas/Extensions'
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'
     DateConstruct:
       description: >
         is an element whose content MUST conform to the "date-time" production in [RFC3339].
@@ -177,7 +179,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'id'
         json: 'id'
-        validate: 'required'
+        validate: 'required,uri'
     Title:
       description: >
         is an element of type Text construct that conveys a human-readable title for an entry or feed.
@@ -262,6 +264,7 @@ components:
         $ref: '#/components/schemas/Category'
       x-oapi-codegen-extra-tags:
         xml: 'category,omitempty'
+        validate: 'dive'
       x-go-type-skip-optional-pointer: true
     Generator:
       description: >
@@ -382,6 +385,7 @@ components:
         $ref: '#/components/schemas/Link'
       x-oapi-codegen-extra-tags:
         xml: 'link,omitempty'
+        validate: 'dive'
       x-go-type-skip-optional-pointer: true
     Logo:
       description: >
@@ -489,6 +493,7 @@ components:
         $ref: '#/components/schemas/PersonConstruct'
       x-oapi-codegen-extra-tags:
         xml: 'contributor,omitempty'
+        validate: 'gt=0,dive,validateFn'
       x-go-type-skip-optional-pointer: true
     Authors:
       description: >
@@ -498,6 +503,7 @@ components:
         $ref: '#/components/schemas/PersonConstruct'
       x-oapi-codegen-extra-tags:
         xml: 'author,omitempty'
+        validate: 'gt=0,dive,validateFn'
       x-go-type-skip-optional-pointer: true
     FeedMetadata:
       description: >
@@ -554,12 +560,14 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: 'entry,omitempty'
                 json: 'entry,omitempty'
+                validate: 'dive'
               x-go-type-skip-optional-pointer: true
-            extensions:
-              $ref: 'types.yaml#/components/schemas/Extensions'
+            # extensions:
+            #   $ref: 'types.yaml#/components/schemas/Extensions'
       x-oapi-codegen-extra-tags:
         xml: 'feed'
         json: 'feed'
+        validate: 'validateFn'
     Source:
       description: >
         contains the metadata from the source feed for the entry.
@@ -614,3 +622,4 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'entry'
         json: 'entry'
+        validate: 'validateFn'

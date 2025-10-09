@@ -5,30 +5,52 @@
 package atom
 
 import (
+	"errors"
 	"fmt"
+	"mime"
+	"slices"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/sanitization"
+	"github.com/immanent-tech/go-syndication/validation"
 )
+
+var ErrPersonConstruct = errors.New("person construct is invalid")
+
+func init() {
+	validation.Validate.RegisterValidation("type_attr", validateTypeAttr)
+}
 
 // String returns string-ified format of the PersonConstruct. This will be the format "name (email)". The email part is
 // omitted if the PersonConstruct has no email.
 func (p *PersonConstruct) String() string {
-	if p.Email != nil {
+	if p.Email.Value != "" {
 		return fmt.Sprintf("%s (%s)", p.Name.Value, p.Email.Value)
 	}
 	return p.Name.Value
+}
+
+func (p *PersonConstruct) Validate() error {
+	// htmlEncodedErr := validation.Validate(p.Name.Value, "html_encoded")
+	// var validateErrs validator.ValidationErrors
+	// if errors.As(htmlEncodedErr, &validateErrs) {
+	// 	slog.Info("invalid name")
+	// 	return fmt.Errorf("%w: name cannot be HTML encoded", ErrPersonConstruct)
+	// }
+	// returns nil or ValidationErrors ( []FieldError
+	return validation.Validate.Struct(p)
 }
 
 // String returns the string-ified format of the Category. It will return the first found of: any human-readable label,
 // the element value or the term attribute value, in that order.
 func (c *Category) String() string {
 	// Use the label attribute if present.
-	if c.Label != nil && c.Label.Value != "" {
+	if c.Label.Value != "" {
 		return sanitization.SanitizeString(c.Label.Value)
 	}
 	// Use any value if present.
-	if c.Value != nil && *c.Value != "" {
-		return sanitization.SanitizeString(*c.Value)
+	if c.Value != "" {
+		return sanitization.SanitizeString(c.Value)
 	}
 	// Use the term attribute.
 	return sanitization.SanitizeString(c.Term.Value)
@@ -44,4 +66,17 @@ func (t *Subtitle) String() string {
 
 func (s *Summary) String() string {
 	return sanitization.SanitizeString(s.Value)
+}
+
+func validateTypeAttr(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+	if slices.Contains([]string{"text", "html", "xhtml"}, value) {
+		return true
+	}
+	_, _, err := mime.ParseMediaType(value)
+	if err != nil {
+		return false
+	}
+
+	return true
 }

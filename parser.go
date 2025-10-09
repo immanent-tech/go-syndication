@@ -26,7 +26,6 @@ import (
 	"github.com/immanent-tech/go-syndication/jsonfeed"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
-	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var (
@@ -84,7 +83,7 @@ func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
 		FeedSource: source,
 	}
 	feed.SourceType = parseSource(original)
-	err = validation.ValidateStruct(feed)
+	err = feed.Validate()
 	if err != nil {
 		return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseFeed, err)
 	}

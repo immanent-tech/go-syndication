@@ -29,7 +29,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, atom.LinkRelSelf, *r.Channel.AtomLink.Rel)
+			assert.Equal(t, atom.LinkRelSelf, r.Channel.AtomLink.Rel)
 			assert.Equal(t, "http://www.rss-world.info/", r.Channel.AtomLink.Value)
 			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", r.Channel.AtomLink.Href)
 		},
@@ -39,7 +39,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *Feed) {
 			t.Helper()
 			r := toRSS(t, feed)
-			assert.Equal(t, atom.LinkRelSelf, *r.Channel.AtomLink.Rel)
+			assert.Equal(t, atom.LinkRelSelf, r.Channel.AtomLink.Rel)
 			assert.Equal(t, "http://www.rss-world.info/", r.Channel.AtomLink.Value)
 			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", r.Channel.AtomLink.Href)
 		},

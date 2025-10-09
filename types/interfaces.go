@@ -85,4 +85,5 @@ type FeedSource interface {
 	SourceEditable
 	MediaEditable
 	GetItems() []ItemSource
+	Validate() error
 }

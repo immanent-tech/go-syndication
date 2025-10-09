@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var _ types.FeedSource = (*RSS)(nil)
@@ -77,4 +78,9 @@ func (r *RSS) SetImage(image *types.ImageInfo) {
 
 func (r *RSS) GetItems() []types.ItemSource {
 	return r.Channel.GetItems()
+}
+
+// Validate applies custom validation to an feed.
+func (r *RSS) Validate() error {
+	return validation.Validate.Struct(r)
 }

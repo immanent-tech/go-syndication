@@ -4,14 +4,19 @@
 package atom
 
 import (
+	"errors"
+	"fmt"
 	"slices"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var _ types.FeedSource = (*Feed)(nil)
+
+var ErrFeedValidation = errors.New("feed is invalid")
 
 // GetTitle retrieves the <title> of the Feed.
 func (f *Feed) GetTitle() string {
@@ -30,7 +35,7 @@ func (f *Feed) GetDescription() string {
 	switch {
 	case f.DCDescription != nil:
 		return f.DCDescription.String()
-	case f.Subtitle != nil:
+	case f.Subtitle.String() != "":
 		return f.Subtitle.String()
 	default:
 		return ""
@@ -41,8 +46,8 @@ func (f *Feed) GetDescription() string {
 // present with a "rel" attribute of "self" and ideally with a mime-type indicating Atom content.
 func (f *Feed) GetSourceURL() string {
 	for link := range slices.Values(f.Links) {
-		if link.Rel != nil && *link.Rel == LinkRelSelf {
-			if link.Type != nil && slices.Contains(types.MimeTypesAtom, *link.Type) {
+		if link.Rel != "" && link.Rel == LinkRelSelf {
+			if link.Type != "" && slices.Contains(types.MimeTypesAtom, link.Type) {
 				return link.Href
 			}
 		}
@@ -53,13 +58,13 @@ func (f *Feed) GetSourceURL() string {
 // SetSourceURL will set a source URL, indicating the URL of the Atom document, in the Feed.
 func (f *Feed) SetSourceURL(url string) {
 	rel := LinkRelSelf
-	f.Links = append(f.Links, Link{Href: url, Rel: &rel, Type: &types.MimeTypesAtom[0]})
+	f.Links = append(f.Links, Link{Href: url, Rel: rel, Type: types.MimeTypesAtom[0]})
 }
 
 // GetLink retrieves the <link> of the Feed. This is the link to the website associated with the RSS feed.
 func (f *Feed) GetLink() string {
 	for link := range slices.Values(f.Links) {
-		if link.Rel != nil && *link.Rel == LinkRelAlternate {
+		if link.Rel != "" && link.Rel == LinkRelAlternate {
 			return link.Href
 		}
 	}
@@ -102,7 +107,7 @@ func (f *Feed) GetRights() string {
 	switch {
 	case f.DCRights != nil:
 		return f.DCRights.String()
-	case f.Rights != nil:
+	case f.Rights.Value != "":
 		return f.Rights.Value
 	default:
 		return ""
@@ -113,10 +118,10 @@ func (f *Feed) GetRights() string {
 // or <lang> elements.
 func (f *Feed) GetLanguage() string {
 	switch {
-	case f.DCLanguage != nil:
+	case f.DCLanguage.String() != "":
 		return f.DCLanguage.String()
-	case f.Lang != nil:
-		return *f.Lang
+	case f.Lang != "":
+		return f.Lang
 	default:
 		return ""
 	}
@@ -167,4 +172,24 @@ func (f *Feed) GetItems() []types.ItemSource {
 		items = append(items, &item)
 	}
 	return items
+}
+
+// Validate applies custom validation to an feed.
+func (f *Feed) Validate() error {
+	// Check for all entries having authors.
+	var missingEntryAuthors bool
+	for entry := range slices.Values(f.GetItems()) {
+		if len(entry.GetAuthors()) == 0 {
+			missingEntryAuthors = true
+			break
+		}
+	}
+	// atom:feed elements MUST contain one or more atom:author elements, unless all of the atom:feed element's child
+	// atom:entry elements  contain at least one atom:author element.
+	//
+	// https://www.rfc-editor.org/rfc/rfc4287#page-11
+	if len(f.GetAuthors()) == 0 && missingEntryAuthors {
+		return fmt.Errorf("%w: must have at least one author or all entries with authors", ErrFeedValidation)
+	}
+	return validation.Validate.Struct(f)
 }

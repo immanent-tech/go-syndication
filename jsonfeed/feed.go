@@ -9,6 +9,7 @@ import (
 
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var _ types.FeedSource = (*Feed)(nil)
@@ -140,4 +141,9 @@ func (f *Feed) GetItems() []types.ItemSource {
 		items = append(items, &item)
 	}
 	return items
+}
+
+// Validate applies custom validation to an feed.
+func (f *Feed) Validate() error {
+	return validation.Validate.Struct(f)
 }

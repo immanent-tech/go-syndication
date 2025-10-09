@@ -32,10 +32,10 @@ func (e *Entry) GetTitle() string {
 // retrieved directly from the Links field as needed.
 func (e *Entry) GetLink() string {
 	for link := range slices.Values(e.Links) {
-		if link.Rel == nil {
+		if link.Rel == "" {
 			return link.Href
 		}
-		if link.Rel != nil && *link.Rel == LinkRelAlternate {
+		if link.Rel != "" && link.Rel == LinkRelAlternate {
 			return link.Href
 		}
 	}
@@ -47,7 +47,7 @@ func (e *Entry) GetDescription() string {
 	switch {
 	case e.DCDescription != nil:
 		return e.DCDescription.String()
-	case e.Summary != nil:
+	case e.Summary.String() != "":
 		return e.Summary.String()
 	default:
 		return ""
@@ -90,7 +90,7 @@ func (e *Entry) GetRights() string {
 	switch {
 	case e.DCRights != nil:
 		return e.DCRights.String()
-	case e.Rights != nil:
+	case e.Rights.Value != "":
 		return e.Rights.Value
 	default:
 		return ""
@@ -101,10 +101,10 @@ func (e *Entry) GetRights() string {
 // or <lang> elements.
 func (e *Entry) GetLanguage() string {
 	switch {
-	case e.DCLanguage != nil:
+	case e.DCLanguage != "":
 		return e.DCLanguage.String()
-	case e.Lang != nil:
-		return *e.Lang
+	case e.Lang != "":
+		return e.Lang
 	default:
 		return ""
 	}
@@ -134,7 +134,7 @@ func (e *Entry) GetImage() *types.ImageInfo {
 // GetPublishedDate returns the <published> of the Entry (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
 func (e *Entry) GetPublishedDate() time.Time {
-	if e.Published != nil {
+	if !e.Published.Value.IsZero() {
 		return e.Published.Value.Time
 	}
 	return time.Unix(0, 0)
@@ -148,13 +148,11 @@ func (e *Entry) GetUpdatedDate() time.Time {
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
 func (e *Entry) GetContent() string {
-	if e.Content != nil {
-		switch {
-		case e.Content.Value != nil:
-			return *e.Content.Value
-		case e.Content.Source != nil:
-			return *e.Content.Source
-		}
+	switch {
+	case e.Content.Value != "":
+		return e.Content.Value
+	case e.Content.Source != "":
+		return e.Content.Source
 	}
 	return ""
 }
@@ -162,5 +160,5 @@ func (e *Entry) GetContent() string {
 // Validate applies custom validation to an item.
 func (e *Entry) Validate() error {
 	// Perform validation based on struct tags.
-	return validation.ValidateStruct(e)
+	return validation.Validate.Struct(e)
 }
