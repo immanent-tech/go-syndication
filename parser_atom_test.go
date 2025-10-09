@@ -4,13 +4,11 @@
 package feeds
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/validation"
 	"github.com/stretchr/testify/assert"
@@ -642,19 +640,4 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 			}
 		})
 	}
-}
-
-func getFailedValidations(err error) (map[string][]string, error) {
-	failedValidations := make(map[string][]string)
-	var invalidValidationError *validator.InvalidValidationError
-	if errors.As(err, &invalidValidationError) {
-		return nil, invalidValidationError
-	}
-	var validateErrs validator.ValidationErrors
-	if errors.As(err, &validateErrs) {
-		for _, e := range validateErrs {
-			failedValidations[e.StructNamespace()] = append(failedValidations[e.StructNamespace()], e.Tag())
-		}
-	}
-	return failedValidations, nil
 }
