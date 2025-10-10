@@ -18,7 +18,10 @@ import (
 var ErrPersonConstruct = errors.New("person construct is invalid")
 
 func init() {
-	validation.Validate.RegisterValidation("type_attr", validateTypeAttr)
+	err := validation.Validate.RegisterValidation("type_attr", validateTypeAttr)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // String returns string-ified format of the PersonConstruct. This will be the format "name (email)". The email part is
@@ -68,15 +71,15 @@ func (s *Summary) String() string {
 	return sanitization.SanitizeString(s.Value)
 }
 
+func (i *ID) String() string {
+	return i.Value
+}
+
 func validateTypeAttr(fl validator.FieldLevel) bool {
 	value := fl.Field().String()
 	if slices.Contains([]string{"text", "html", "xhtml"}, value) {
 		return true
 	}
 	_, _, err := mime.ParseMediaType(value)
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }

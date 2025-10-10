@@ -18,7 +18,7 @@ components:
       type: string
       x-oapi-codegen-extra-tags:
         xml: 'language,omitempty'
-        validate: 'omitempty,bcp47_language_tag'
+        validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
     URL:
       description: >
         is a URL link.

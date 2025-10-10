@@ -24,7 +24,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'type,attr,omitempty'
         json: 'type,omitempty'
-        validate: 'type_attr'
+        validate: 'omitempty,mimetype'
     CommonAttributes:
       description: >
         are common attributes across Atom elements.
@@ -50,7 +50,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'lang,attr,omitempty'
             json: 'lang,omitempty'
-            validate: 'omitempty,bcp47_language_tag'
+            validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
         attributes:
           $ref: 'types.yaml#/components/schemas/Attributes'
     URI:
@@ -122,6 +122,8 @@ components:
             - value
           properties:
             value:
+              description: >
+                is the actual text value of the construct.
               type: string
               x-oapi-codegen-extra-tags:
                 xml: ',chardata'
@@ -175,6 +177,15 @@ components:
       allOf:
         - $ref: '#/components/schemas/CommonAttributes'
         - $ref: '#/components/schemas/URI'
+        - type: object
+          properties:
+            value:
+              description: >
+                is the value of the ID
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: ',chardata'
+                validate: 'required,uri|urn_rfc2141'
       x-go-name: ID
       x-oapi-codegen-extra-tags:
         xml: 'id'
@@ -287,7 +298,7 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: 'uri,attr,omitempty'
                 json: 'uri,omitempty'
-                validate: 'omitempty,uri'
+                validate: 'omitempty,url'
             version:
               type: string
               xml:
@@ -335,9 +346,7 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'hreflang,attr,omitempty'
-                validate: 'omitempty,bcp47_language_tag'
-              example:
-                language: en-us
+                validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
             length:
               description: >
                 contains the resource's size, in bytes.
@@ -364,6 +373,7 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'type,attr,omitempty'
+                validate: 'omitempty,mimetype'
             rel:
               description: >
                 contains a keyword that identifies the nature of the relationship between the linked resouce and the
@@ -374,6 +384,7 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'rel,attr,omitempty'
+                validate: 'omitnil,oneof=alternate enclosure related self via'
       x-oapi-codegen-extra-tags:
         xml: 'link,omitempty'
         json: 'link,omitempty'

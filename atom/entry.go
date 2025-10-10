@@ -142,7 +142,10 @@ func (e *Entry) GetPublishedDate() time.Time {
 
 // GetUpdatedDate returns the <updated> of the Entry.
 func (e *Entry) GetUpdatedDate() time.Time {
-	return e.Updated.Value.Time
+	if !e.Updated.Value.IsZero() {
+		return e.Updated.Value.Time
+	}
+	return time.Unix(0, 0)
 }
 
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source

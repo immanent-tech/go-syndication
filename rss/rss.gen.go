@@ -222,7 +222,7 @@ type Channel struct {
 	Items []Item `json:"items,omitempty,omitzero" validate:"omitempty,dive,validateFn" xml:"item,omitempty"`
 
 	// Language is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
-	Language externalRef7.Language `json:"language,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"language,omitempty"`
+	Language externalRef7.Language `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
 
 	// LastBuildDate is the last time the content of the channel changed.
 	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`
@@ -285,7 +285,7 @@ type ChannelElements struct {
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Language is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
-	Language externalRef7.Language `json:"language,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"language,omitempty"`
+	Language externalRef7.Language `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
 
 	// LastBuildDate is the last time the content of the channel changed.
 	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`

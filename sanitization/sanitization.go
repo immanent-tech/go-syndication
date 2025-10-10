@@ -17,7 +17,7 @@ var safePrinter = bluemonday.UGCPolicy()
 // whitespace and then run the string through bluemonday to remove dangerous components. This should retain HTML5
 // content.
 func SanitizeString(str string) string {
-	return html.UnescapeString(safePrinter.Sanitize(strings.TrimSpace(str)))
+	return strings.TrimSpace(html.UnescapeString(safePrinter.Sanitize(str)))
 }
 
 // SanitizeBytes attempts to "sanitize" a []byte value from a Feed/Item object. It will strip any leading/trailing

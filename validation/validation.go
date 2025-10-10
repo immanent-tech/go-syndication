@@ -4,6 +4,8 @@
 package validation
 
 import (
+	"mime"
+
 	"github.com/go-playground/validator/v10"
 )
 
@@ -11,4 +13,15 @@ var Validate *validator.Validate
 
 func init() {
 	Validate = validator.New()
+	err := Validate.RegisterValidation("mimetype", validateMimetype)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// validateMimetype checks that the field is a valid mimetype.
+func validateMimetype(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+	_, _, err := mime.ParseMediaType(value)
+	return err == nil
 }

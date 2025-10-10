@@ -9,9 +9,9 @@
 -->
 
 <feed xmlns="http://www.w3.org/2005/Atom">
-<entry>
-<summary type="text/html" mode="escaped">
-<p>foo</p>
-</summary>
-</entry>
+  <entry>
+    <summary type="text/html" mode="escaped">
+      <p>foo</p>
+    </summary>
+  </entry>
 </feed>

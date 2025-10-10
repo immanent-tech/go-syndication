@@ -18,7 +18,9 @@ func Decode[T any](namespace string, b []byte) (T, error) {
 
 	reader := bytes.NewReader(b)
 	decoder := xml.NewDecoder(reader)
-	decoder.DefaultSpace = namespace
+	if namespace != "" {
+		decoder.DefaultSpace = namespace
+	}
 	decoder.CharsetReader = charset.NewReaderLabel
 	err := decoder.Decode(&feed)
 	if err != nil {

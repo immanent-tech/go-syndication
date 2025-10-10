@@ -288,7 +288,7 @@ type MediaContent struct {
 	IsDefault string `json:"isDefault,omitempty,omitzero" validate:"omitempty,boolean" xml:"isDefault,attr"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
-	Lang externalRef1.AttrLang `json:"lang,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
+	Lang externalRef1.AttrLang `json:"lang,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr"`
 
 	// Medium is the type of object (image | audio | video | document | executable). While this attribute can at times seem redundant if type is supplied, it is included because it simplifies decision making on the reader side, as well as flushes out any ambiguities between MIME type and object type.
 	Medium MediaContentMedium `json:"medium,omitempty,omitzero" validate:"omitempty,oneof=image audio video document executable" xml:"medium,attr"`
@@ -664,7 +664,7 @@ type MediaSubTitle struct {
 	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"href,attr,omitempty"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
-	Lang externalRef1.AttrLang `json:"lang" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
+	Lang externalRef1.AttrLang `json:"lang" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr"`
 
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
@@ -676,7 +676,7 @@ type MediaText struct {
 	End string `json:"end,omitempty,omitzero" xml:"end,attr,omitempty"`
 
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
-	Lang externalRef1.AttrLang `json:"lang,omitempty,omitzero" validate:"omitempty,bcp47_language_tag" xml:"lang,attr"`
+	Lang externalRef1.AttrLang `json:"lang,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr"`
 
 	// Start specifies the start time offset that the text starts being relevant to the media object. An example of this would be for closed captioning. It uses the NTP time code format.
 	Start string `json:"start,omitempty,omitzero" xml:"start,attr,omitempty"`
