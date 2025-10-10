@@ -108,7 +108,7 @@ components:
           x-oapi-codegen-extra-tags:
             json: 'value'
             xml: ',chardata'
-            validate: "required,email"
+            validate: "omitempty,email"
       x-oapi-codegen-extra-tags:
         xml: 'email,omitempty'
         json: 'email,omitempty'
@@ -323,7 +323,6 @@ components:
         defines a relationship between a web resource (such as a page) and an RSS channel or item.
       allOf:
         - $ref: '#/components/schemas/CommonAttributes'
-        - $ref: '#/components/schemas/URI'
         - type: object
           required:
             - href
@@ -379,12 +378,20 @@ components:
                 contains a keyword that identifies the nature of the relationship between the linked resouce and the
                 element.
               type: string
-              enum: ['alternate', 'enclosure', 'related', 'self', 'via']
+              enum: ['alternate', 'enclosure', 'related', 'self', 'via', 'hub']
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'rel,attr,omitempty'
-                validate: 'omitnil,oneof=alternate enclosure related self via'
+                validate: 'omitempty,oneof=alternate enclosure related self via hub'
+            value:
+              description: >
+                is any value for the link.
+              type: string
+              x-oapi-codegen-extra-tags:
+                json: 'value'
+                xml: ',chardata'
+                validate: "omitempty,uri|urn_rfc2141|uuid"
       x-oapi-codegen-extra-tags:
         xml: 'link,omitempty'
         json: 'link,omitempty'
@@ -403,10 +410,18 @@ components:
         is an element that contains a URI to an logo suitable for representing a feed.
       allOf:
         - $ref: '#/components/schemas/CommonAttributes'
-        - $ref: '#/components/schemas/URI'
+        - type: object
+          properties:
+            value:
+              type: string
+              x-oapi-codegen-extra-tags:
+                json: 'value'
+                xml: ',chardata'
+                validate: "required,uri|urn_rfc2141|uuid"
       x-oapi-codegen-extra-tags:
         xml: 'logo,omitempty'
         json: 'logo,omitempty'
+        validate: 'omitempty'
     Rights:
       description: >
         is an element of type Text construct that conveys information about rights held in and over an entry or feed.
@@ -504,7 +519,7 @@ components:
         $ref: '#/components/schemas/PersonConstruct'
       x-oapi-codegen-extra-tags:
         xml: 'contributor,omitempty'
-        validate: 'gt=0,dive,validateFn'
+        validate: 'omitempty,gt=0,dive'
       x-go-type-skip-optional-pointer: true
     Authors:
       description: >
@@ -514,7 +529,7 @@ components:
         $ref: '#/components/schemas/PersonConstruct'
       x-oapi-codegen-extra-tags:
         xml: 'author,omitempty'
-        validate: 'gt=0,dive,validateFn'
+        validate: 'omitempty,gt=0,dive'
       x-go-type-skip-optional-pointer: true
     FeedMetadata:
       description: >
@@ -587,6 +602,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'source,omitempty'
         json: 'source,omitempty'
+        validate: 'omitempty'
     Entry:
       description: >
         represents an individual entry, acting as a container for metadata and data associated with the entry.

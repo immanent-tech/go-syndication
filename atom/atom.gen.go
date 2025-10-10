@@ -16,6 +16,7 @@ import (
 const (
 	LinkRelAlternate LinkRel = "alternate"
 	LinkRelEnclosure LinkRel = "enclosure"
+	LinkRelHub       LinkRel = "hub"
 	LinkRelRelated   LinkRel = "related"
 	LinkRelSelf      LinkRel = "self"
 	LinkRelVia       LinkRel = "via"
@@ -111,7 +112,7 @@ type DateConstruct struct {
 type Email struct {
 	// XMLName represents the XML namespace of an element.
 	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
-	Value   string               `json:"value" validate:"required,email" xml:",chardata"`
+	Value   string               `json:"value" validate:"omitempty,email" xml:",chardata"`
 }
 
 // Entry defines model for Entry.
@@ -249,7 +250,7 @@ type Entry struct {
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty,omitzero" validate:"gt=0,dive,validateFn" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty,omitzero" validate:"omitempty,gt=0,dive" xml:"author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty,omitzero" validate:"dive" xml:"category,omitempty"`
@@ -258,7 +259,7 @@ type Entry struct {
 	Content Content `json:"content,omitempty" xml:"content,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty,omitzero" validate:"gt=0,dive,validateFn" xml:"contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty,omitzero" validate:"omitempty,gt=0,dive" xml:"contributor,omitempty"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
 	Extensions externalRef2.Extensions `json:"extensions,omitempty" xml:",any"`
@@ -273,7 +274,7 @@ type Entry struct {
 	Rights Rights `json:"rights,omitempty" xml:"rights,omitempty"`
 
 	// Source contains the metadata from the source feed for the entry.
-	Source Source `json:"source,omitempty" xml:"source,omitempty"`
+	Source Source `json:"source,omitempty" validate:"omitempty" xml:"source,omitempty"`
 
 	// Summary is an element of type Text construct that conveys a short summary, abstract, or excerpt of an entry.
 	Summary Summary `json:"summary,omitempty" xml:"summary,omitempty"`
@@ -420,13 +421,13 @@ type Feed struct {
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty,omitzero" validate:"gt=0,dive,validateFn" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty,omitzero" validate:"omitempty,gt=0,dive" xml:"author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty,omitzero" validate:"dive" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty,omitzero" validate:"gt=0,dive,validateFn" xml:"contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty,omitzero" validate:"omitempty,gt=0,dive" xml:"contributor,omitempty"`
 
 	// Entries is the list of <entry> elements for the feed.
 	Entries []Entry `json:"entry,omitempty" validate:"dive" xml:"entry,omitempty"`
@@ -438,7 +439,7 @@ type Feed struct {
 	Links Links `json:"links,omitempty,omitzero" validate:"dive" xml:"link,omitempty"`
 
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
-	Logo Logo `json:"logo,omitempty" xml:"logo,omitempty"`
+	Logo Logo `json:"logo,omitempty" validate:"omitempty" xml:"logo,omitempty"`
 
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
 	Rights Rights `json:"rights,omitempty" xml:"rights,omitempty"`
@@ -471,13 +472,13 @@ type FeedMetadata struct {
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty,omitzero" validate:"gt=0,dive,validateFn" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty,omitzero" validate:"omitempty,gt=0,dive" xml:"author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty,omitzero" validate:"dive" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty,omitzero" validate:"gt=0,dive,validateFn" xml:"contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty,omitzero" validate:"omitempty,gt=0,dive" xml:"contributor,omitempty"`
 
 	// Generator is an element identifies the agent used to generate a feed.
 	Generator Generator `json:"generator,omitempty" xml:"generator,omitempty"`
@@ -486,7 +487,7 @@ type FeedMetadata struct {
 	Links Links `json:"links,omitempty,omitzero" validate:"dive" xml:"link,omitempty"`
 
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
-	Logo Logo `json:"logo,omitempty" xml:"logo,omitempty"`
+	Logo Logo `json:"logo,omitempty" validate:"omitempty" xml:"logo,omitempty"`
 
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
 	Rights Rights `json:"rights,omitempty" xml:"rights,omitempty"`
@@ -563,9 +564,6 @@ type Link struct {
 	// Lang indicates the natural language for the element and its descendents.
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
-	// XMLName represents the XML namespace of an element.
-	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
-
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 
@@ -579,14 +577,16 @@ type Link struct {
 	Length int `json:"length,omitempty,omitzero" validate:"omitempty,number" xml:"length,attr,omitempty"`
 
 	// Rel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
-	Rel LinkRel `json:"rel,omitempty,omitzero" validate:"omitnil,oneof=alternate enclosure related self via" xml:"rel,attr,omitempty"`
+	Rel LinkRel `json:"rel,omitempty,omitzero" validate:"omitempty,oneof=alternate enclosure related self via hub" xml:"rel,attr,omitempty"`
 
 	// Title provides a human-readable description of the resource.
 	Title string `json:"title,omitempty,omitzero" validate:"omitempty,html_encoded" xml:"title,attr,omitempty"`
 
 	// Type identifies the resource's MIME media type.
-	Type  string `json:"type,omitempty,omitzero" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
-	Value string `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
+	Type string `json:"type,omitempty,omitzero" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
+
+	// Value is any value for the link.
+	Value string `json:"value" validate:"omitempty,uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // LinkRel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
@@ -602,9 +602,6 @@ type Logo struct {
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
-
-	// XMLName represents the XML namespace of an element.
-	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`

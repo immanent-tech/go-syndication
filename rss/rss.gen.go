@@ -23,6 +23,14 @@ const (
 	XmlRpc   CloudProtocol = "xml-rpc"
 )
 
+// Defines values for RSSVersion.
+const (
+	N091 RSSVersion = "0.91"
+	N092 RSSVersion = "0.92"
+	N20  RSSVersion = "2.0"
+	N201 RSSVersion = "2.0.1"
+)
+
 // Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
 type Author = types.StringData
 
@@ -598,8 +606,11 @@ type RSS struct {
 	Channel Channel `json:"channel" validate:"required" xml:"channel"`
 
 	// Version specifies the version of RSS that the document conforms to.
-	Version string `json:"version" validate:"required,oneof=0.91 0.92 2.0 2.0.1" xml:"version,attr"`
+	Version RSSVersion `json:"version" validate:"required,oneof=0.91 0.92 2.0 2.0.1" xml:"version,attr"`
 }
+
+// RSSVersion specifies the version of RSS that the document conforms to.
+type RSSVersion string
 
 // Rating contains a rating for the element.
 type Rating = types.StringData

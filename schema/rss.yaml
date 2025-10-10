@@ -609,6 +609,7 @@ components:
           description: >
             specifies the version of RSS that the document conforms to.
           type: string
+          enum: ['0.91', '0.92', '2.0', '2.0.1']
           x-oapi-codegen-extra-tags:
             xml: 'version,attr'
             validate: 'required,oneof=0.91 0.92 2.0 2.0.1'
