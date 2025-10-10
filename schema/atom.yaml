@@ -363,7 +363,6 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'title,attr,omitempty'
-                validate: 'omitempty,html_encoded'
             type:
               description: >
                 identifies the resource's MIME media type.
@@ -378,12 +377,12 @@ components:
                 contains a keyword that identifies the nature of the relationship between the linked resouce and the
                 element.
               type: string
-              enum: ['alternate', 'enclosure', 'related', 'self', 'via', 'hub']
+              enum: ['alternate', 'enclosure', 'related', 'self', 'via', 'hub', 'edit', 'next', 'http://schemas.google.com/g/2005#feed']
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'rel,attr,omitempty'
-                validate: 'omitempty,oneof=alternate enclosure related self via hub'
+                validate: 'omitempty,oneof=alternate enclosure related self via hub edit next http://schemas.google.com/g/2005#feed'
             value:
               description: >
                 is any value for the link.

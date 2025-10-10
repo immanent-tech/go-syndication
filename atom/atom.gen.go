@@ -14,12 +14,15 @@ import (
 
 // Defines values for LinkRel.
 const (
-	LinkRelAlternate LinkRel = "alternate"
-	LinkRelEnclosure LinkRel = "enclosure"
-	LinkRelHub       LinkRel = "hub"
-	LinkRelRelated   LinkRel = "related"
-	LinkRelSelf      LinkRel = "self"
-	LinkRelVia       LinkRel = "via"
+	LinkRelAlternate                     LinkRel = "alternate"
+	LinkRelEdit                          LinkRel = "edit"
+	LinkRelEnclosure                     LinkRel = "enclosure"
+	LinkRelHttpschemasGoogleComg2005Feed LinkRel = "http://schemas.google.com/g/2005#feed"
+	LinkRelHub                           LinkRel = "hub"
+	LinkRelNext                          LinkRel = "next"
+	LinkRelRelated                       LinkRel = "related"
+	LinkRelSelf                          LinkRel = "self"
+	LinkRelVia                           LinkRel = "via"
 )
 
 // Authors a list of persons who maintain authorship of the feed.
@@ -577,10 +580,10 @@ type Link struct {
 	Length int `json:"length,omitempty,omitzero" validate:"omitempty,number" xml:"length,attr,omitempty"`
 
 	// Rel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
-	Rel LinkRel `json:"rel,omitempty,omitzero" validate:"omitempty,oneof=alternate enclosure related self via hub" xml:"rel,attr,omitempty"`
+	Rel LinkRel `json:"rel,omitempty,omitzero" validate:"omitempty,oneof=alternate enclosure related self via hub edit next http://schemas.google.com/g/2005#feed" xml:"rel,attr,omitempty"`
 
 	// Title provides a human-readable description of the resource.
-	Title string `json:"title,omitempty,omitzero" validate:"omitempty,html_encoded" xml:"title,attr,omitempty"`
+	Title string `json:"title,omitempty,omitzero" xml:"title,attr,omitempty"`
 
 	// Type identifies the resource's MIME media type.
 	Type string `json:"type,omitempty,omitzero" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
