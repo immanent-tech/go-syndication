@@ -240,6 +240,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 		// JSONFeed
 		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body())
 	case isMimeType(content, types.MimeTypesHTML):
+		slog.Debug("Trying to find a feed URL in HTML...")
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
 		url, err := discoverFeedURL(url, resp.Body())
@@ -291,6 +292,7 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 	page := html.NewTokenizer(bytes.NewReader(content))
 	for {
 		tt := page.Next()
+		var feedURL *url.URL
 		switch tt {
 		case html.ErrorToken:
 			return "", fmt.Errorf("unable to determine feed url: %w", page.Err())
@@ -299,39 +301,75 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 			if tkn.DataAtom != htmlatom.Link {
 				continue
 			}
-			// "rel" attribute must have a value of "alternate".
-			if !slices.ContainsFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" }) {
+			var found bool
+			// Canonical link with appropriate attributes.
+			if slices.ContainsFunc(tkn.Attr,
+				func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" }) &&
+				slices.ContainsFunc(tkn.Attr,
+					func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) }) {
+				found = true
+			}
+			// Link ends in feed...
+			if slices.ContainsFunc(tkn.Attr,
+				func(a html.Attribute) bool {
+					if a.Key == "href" && strings.HasSuffix(a.Val, "feed") {
+						return true
+					}
+					return false
+				}) {
+				found = true
+			}
+			// Dont' continue if no feed URL found.
+			if !found {
 				continue
 			}
-			// "type" attribute must contain valid feed MIME type.
 			idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
-				return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val)
-			})
-			if idx == 0 {
-				continue
-			}
-			// is a feed url, extract the url.
-			idx = slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
 				return a.Key == "href"
 			})
 			if idx == 0 {
 				continue
 			}
-			feedURL, err := url.Parse(tkn.Attr[idx].Val)
+			feedURL, err = url.Parse(tkn.Attr[idx].Val)
 			if err != nil {
 				return tkn.Attr[idx].Val, fmt.Errorf("found URL but unable to parse: %w", err)
 			}
-			if !feedURL.IsAbs() {
-				// Try to create an absolute URL for the feed.
-				fullPath, err := url.JoinPath("/", feedURL.Path)
-				if err != nil {
-					return "", fmt.Errorf("failed to generate feed URL: %w", err)
-				}
-				pageURL.Path = fullPath
-				return pageURL.String(), nil
+		case html.StartTagToken:
+			tkn := page.Token()
+			if tkn.Data != "a" {
+				continue
 			}
-			return feedURL.String(), nil
+			var found bool
+			// Link ends in feed...
+			if slices.ContainsFunc(tkn.Attr,
+				func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") }) {
+				found = true
+			}
+			if !found {
+				continue
+			}
+			// Get the link.
+			idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") })
+			if idx == -1 {
+				continue
+			}
+			feedURL, err = url.Parse(tkn.Attr[idx].Val)
+			if err != nil {
+				return tkn.Attr[idx].Val, fmt.Errorf("found URL but unable to parse: %w", err)
+			}
 		}
+		if feedURL == nil {
+			continue
+		}
+		if !feedURL.IsAbs() {
+			// Try to create an absolute URL for the feed.
+			fullPath, err := url.JoinPath("/", feedURL.Path)
+			if err != nil {
+				return "", fmt.Errorf("failed to generate feed URL: %w", err)
+			}
+			pageURL.Path = fullPath
+			return pageURL.String(), nil
+		}
+		return feedURL.String(), nil
 	}
 }
 
