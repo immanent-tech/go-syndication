@@ -42,8 +42,6 @@ components:
           description: >
             is a string that identifies a categorization taxonomy.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'domain,attr,omitempty'
       x-oapi-codegen-extra-tags:
@@ -65,37 +63,27 @@ components:
       properties:
         domain:
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'domain,attr'
             validate: 'required'
         port:
           type: integer
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'port,attr'
             validate: 'required'
         path:
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'path,attr'
             validate: 'required'
         registerProcedure:
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'registerProcedure,attr'
             validate: 'required'
         protocol:
           type: string
           enum: ['xml-rpc', 'soap', 'http-post']
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'protocol,attr'
             validate: 'required'
@@ -256,8 +244,6 @@ components:
             indicates where the enclosure is located.
           type: string
           x-go-name: URL
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'url,attr'
             validate: 'required,uri'
@@ -265,8 +251,6 @@ components:
           description: >
             indicates how big the enclosure is in bytes.
           type: integer
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'length,attr'
             validate: 'number'
@@ -274,8 +258,6 @@ components:
           description: >
             indicates the MIME type of the enclosure.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'type,attr'
             validate: 'required'
@@ -297,8 +279,6 @@ components:
             a url to anything in particular.
           type: boolean
           default: true
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: 'isPermaLink,attr,omitempty'
       x-go-name: GUID
@@ -446,8 +426,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Category'
-          xml:
-            name: category
           x-oapi-codegen-extra-tags:
             json: 'category,omitempty'
             xml: 'category,omitempty'
@@ -500,8 +478,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Item'
-              xml:
-                name: item
               x-oapi-codegen-extra-tags:
                 xml: 'item,omitempty'
                 validate: 'omitempty,dive,validateFn'
@@ -551,8 +527,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Category'
-          xml:
-            name: category
           x-oapi-codegen-extra-tags:
             xml: 'category,omitempty'
           x-go-type-skip-optional-pointer: true
@@ -589,7 +563,7 @@ components:
             PermaLink:
               $ref: 'rss-ext.yaml#/components/schemas/PermaLink'
       x-oapi-codegen-extra-tags:
-        xml: 'item,omitemtpy'
+        xml: 'item,omitempty'
         validate: validateFn
     RSS:
       description: >
@@ -602,7 +576,14 @@ components:
         - channel
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
+          x-go-type-import:
+            path: github.com/nbio/xml
+          x-oapi-codegen-extra-tags:
+            json: 'xml'
+            validate: 'required'
         channel:
           $ref: '#/components/schemas/Channel'
         version:
@@ -613,14 +594,14 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'version,attr'
             validate: 'required,oneof=0.91 0.92 2.0 2.0.1'
-          xml:
-            attribute: true
         attributes:
           description: >
             contains any additional attributes (including namespaces).
           type: array
           items:
             x-go-type: xml.Attr
+            x-go-type-import:
+              path: github.com/nbio/xml
           x-oapi-codegen-extra-tags:
             xml: ',any,attr'
             json: 'attributes'

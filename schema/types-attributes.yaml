@@ -16,8 +16,6 @@ components:
       description: >
         is a URL that represents the element content.
       type: string
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'url,attr,omitempty'
         validate: 'omitempty,url'
@@ -25,8 +23,6 @@ components:
       description: >
         is a URL that represents the element content.
       type: string
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'href,attr,omitempty'
         validate: 'omitempty,url'
@@ -36,8 +32,6 @@ components:
         This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third
         Edition).
       type: string
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'lang,attr'
         validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
@@ -45,24 +39,18 @@ components:
       description: >
         is the number of bytes of the media object.
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'fileSize,attr,omitempty'
     AttrMimeType:
       description: >
         is the standard MIME type of the object.
       type: string
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'type,attr,omitempty'
     AttrBitrate:
       description: >
         is the kilobits per second rate of media.
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'bitrate,attr'
         validate: 'omitempty,number'
@@ -70,8 +58,6 @@ components:
       description: >
         is the number of frames per second for the media object.
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'framerate,attr'
         validate: 'omitempty,number'
@@ -80,8 +66,6 @@ components:
         is the number of samples per second taken to create the media object. It is expressed in thousands of
         samples per second (kHz)
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'samplingrate,attr'
         validate: 'omitempty,number'
@@ -89,8 +73,6 @@ components:
       description: >
         is number of audio channels in the media object.
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'channels,attr'
         validate: 'omitempty,number'
@@ -98,8 +80,6 @@ components:
       description: >
         is the number of seconds the media object plays.
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'duration,attr'
         validate: 'omitempty,number'
@@ -107,8 +87,6 @@ components:
       description: >
         is the height of the media object.
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'height,attr'
         validate: 'omitempty,number'
@@ -116,8 +94,6 @@ components:
       description: >
         is the width of the media object. It is an optional attribute.
       type: integer
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: 'width,attr'
         validate: 'omitempty,number'

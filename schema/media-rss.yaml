@@ -64,7 +64,7 @@ components:
         scheme:
           $ref: '#/components/schemas/Scheme'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ rating,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:rating,omitempty'
         json: 'media_rating'
       x-go-type-skip-optional-pointer: false
     MediaTitle:
@@ -79,7 +79,7 @@ components:
         type:
           $ref: '#/components/schemas/TextType'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ title,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:title,omitempty'
         json: 'media_title'
       x-go-type-skip-optional-pointer: false
     MediaDescription:
@@ -94,7 +94,7 @@ components:
         type:
           $ref: '#/components/schemas/TextType'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ description,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:description,omitempty'
         json: 'media_description'
       x-go-type-skip-optional-pointer: false
     MediaKeywords:
@@ -108,7 +108,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ keywords,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:keywords,omitempty'
         json: 'media_keywords'
       x-go-type-skip-optional-pointer: false
     MediaThumbnail:
@@ -138,7 +138,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'time,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ thumbnail,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:thumbnail,omitempty'
         json: 'media_thumbnail'
       x-go-type-skip-optional-pointer: false
     MediaThumbnails:
@@ -165,7 +165,7 @@ components:
         label:
           $ref: '#/components/schemas/Label'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ category,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:category,omitempty'
         json: 'media_category'
       x-go-type-skip-optional-pointer: false
     MediaHash:
@@ -186,7 +186,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'algo,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ hash,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:hash,omitempty'
         json: 'media_hash'
       x-go-type-skip-optional-pointer: false
     MediaHashes:
@@ -217,7 +217,7 @@ components:
         width:
           $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ player,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:player,omitempty'
         json: 'media_player'
       x-go-type-skip-optional-pointer: false
     MediaCredit:
@@ -243,7 +243,7 @@ components:
         scheme:
           $ref: '#/components/schemas/Scheme'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ credit,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:credit,omitempty'
         json: 'media_credit'
       x-go-type-skip-optional-pointer: false
     MediaCredits:
@@ -270,7 +270,7 @@ components:
         url:
           $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ copyright,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:copyright,omitempty'
         json: 'media_copyright'
       x-go-type-skip-optional-pointer: false
     MediaText:
@@ -301,7 +301,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'end,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ text,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:text,omitempty'
         json: 'media_text'
       x-go-type-skip-optional-pointer: false
     MediaTexts:
@@ -340,7 +340,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'sharing,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ restriction,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:restriction,omitempty'
         json: 'media_restriction'
       x-go-type-skip-optional-pointer: false
     MediaCommunityStarRating:
@@ -370,8 +370,8 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'max,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ starRating,omitemtpy'
-        json: 'media_star_rating,omitemtpy'
+        xml: 'https://search.yahoo.com/mrss/ media:starRating,omitempty'
+        json: 'media_star_rating,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaCommunityStatistics:
       description: >
@@ -390,8 +390,8 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'favorites,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ statistics,omitemtpy'
-        json: 'media_community_statistics,omitemtpy'
+        xml: 'https://search.yahoo.com/mrss/ media:statistics,omitempty'
+        json: 'media_community_statistics,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaCommunityTags:
       description: >
@@ -405,8 +405,8 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ tags,omitemtpy'
-        json: 'media_community_tags,omitemtpy'
+        xml: 'https://search.yahoo.com/mrss/ media:tags,omitempty'
+        json: 'media_community_tags,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaCommunity:
       description: >
@@ -421,7 +421,7 @@ components:
         tags:
           $ref: '#/components/schemas/MediaCommunityTags'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ community,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:community,omitempty'
         json: 'media_community'
       x-go-type-skip-optional-pointer: false
     MediaComment:
@@ -434,7 +434,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ comment,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:comment,omitempty'
         json: 'media_comment'
       x-go-type-skip-optional-pointer: false
     MediaComments:
@@ -464,7 +464,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'name,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ param,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:param,omitempty'
         json: 'media_param'
       x-go-type-skip-optional-pointer: false
     MediaEmbed:
@@ -481,11 +481,11 @@ components:
               items:
                 $ref: '#/components/schemas/MediaParam'
               x-oapi-codegen-extra-tags:
-                xml: 'http://search.yahoo.com/mrss/ param,omitempty'
+                xml: 'https://search.yahoo.com/mrss/ media:param,omitempty'
                 json: 'param,omitempty'
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ embed,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:embed,omitempty'
         json: 'media_embed'
       x-go-type-skip-optional-pointer: false
     MediaResponse:
@@ -498,7 +498,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ response,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:response,omitempty'
         json: 'media_response'
       x-go-type-skip-optional-pointer: false
     MediaResponses:
@@ -508,7 +508,7 @@ components:
       items:
         $ref: '#/components/schemas/MediaResponse'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ response,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:response,omitempty'
         json: 'media_responses'
       x-go-type-skip-optional-pointer: true
     MediaBacklink:
@@ -521,7 +521,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:backLink,omitempty'
         json: 'media_backlink,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaBacklinks:
@@ -531,7 +531,7 @@ components:
       items:
         $ref: '#/components/schemas/MediaBacklink'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:backLink,omitempty'
         json: 'media_backlinks,omitempty'
       x-go-type-skip-optional-pointer: true
     MediaStatus:
@@ -561,7 +561,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'reason,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ status,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:status,omitempty'
         json: 'media_status'
       x-go-type-skip-optional-pointer: false
     MediaPrice:
@@ -608,7 +608,7 @@ components:
             xml: 'currency,attr,omitempty'
             validate: 'omitempty,iso4217'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ price,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:price,omitempty'
         json: 'media_price'
       x-go-type-skip-optional-pointer: false
     MediaLicense:
@@ -625,7 +625,7 @@ components:
         href:
           $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ license,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:license,omitempty'
         json: 'media_license'
       x-go-type-skip-optional-pointer: false
     MediaSubTitle:
@@ -644,7 +644,7 @@ components:
           $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
         json: 'media_subtitle,omitempty'
-        xml: 'http://search.yahoo.com/mrss/ subTitle,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:subTitle,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaPeerLink:
       description: >
@@ -659,7 +659,7 @@ components:
         href:
           $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ peerLink,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:peerLink,omitempty'
         json: 'media_peerlink'
       x-go-type-skip-optional-pointer: false
     MediaRights:
@@ -679,7 +679,7 @@ components:
             xml: 'status,attr'
             validate: 'omitempty,oneof=userCreated official'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ rights,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:rights,omitempty'
         json: 'media_rights'
       x-go-type-skip-optional-pointer: false
     SceneTitle:
@@ -736,7 +736,7 @@ components:
         sceneEndTime:
           $ref: '#/components/schemas/SceneEndTime'
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ scene,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:scene,omitempty'
         json: 'media_scene'
       x-go-type-skip-optional-pointer: false
     MediaScenes:
@@ -748,7 +748,7 @@ components:
       xml:
         name: scenes
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ scene,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:scene,omitempty'
         json: 'media_scenes'
       x-go-type-skip-optional-pointer: true
     MediaElements:
@@ -872,7 +872,7 @@ components:
                 validate: 'omitempty,oneof=sample full nonstop'
       x-oapi-codegen-extra-tags:
         json: 'media_content,omitempty'
-        xml: 'http://search.yahoo.com/mrss/ content,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:content,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaGroup:
       description: >
@@ -892,9 +892,9 @@ components:
                 name: content
               x-oapi-codegen-extra-tags:
                 json: 'content,omitempty'
-                xml: 'http://search.yahoo.com/mrss/ content,omitempty'
+                xml: 'https://search.yahoo.com/mrss/ media:content,omitempty'
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         json: 'media_group,omitempty'
-        xml: 'http://search.yahoo.com/mrss/ group,omitempty'
+        xml: 'https://search.yahoo.com/mrss/ media:group,omitempty'
       x-go-type-skip-optional-pointer: false

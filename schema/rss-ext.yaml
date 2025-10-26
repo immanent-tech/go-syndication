@@ -15,6 +15,15 @@ info:
     url: https://spdx.org/licenses/AGPL-3.0-only.html
 components:
   schemas:
+    XMLName:
+      description: >
+        represents the XML namespace of an element.
+      x-go-type: 'xml.Name'
+      x-go-type-import:
+        path: github.com/nbio/xml
+      x-oapi-codegen-extra-tags:
+        json: 'xml'
+        validate: 'required'
     ContentEncoded:
       description: >
         is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
@@ -24,7 +33,7 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          $ref: '#/components/schemas/XMLName'
         value:
           allOf:
             - $ref: 'types.yaml#/components/schemas/CharData'
@@ -44,7 +53,7 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          $ref: '#/components/schemas/XMLName'
         value:
           x-go-type: types.StringData
           default: 'daily'
@@ -73,7 +82,7 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          $ref: '#/components/schemas/XMLName'
         value:
           type: integer
           minimum: 1
@@ -95,7 +104,7 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          $ref: '#/components/schemas/XMLName'
         value:
           x-go-type: types.DateTime
           x-oapi-codegen-extra-tags:

@@ -5,10 +5,11 @@ package opml
 
 import (
 	"bytes"
-	"encoding/xml"
 	"fmt"
 	"slices"
 	"time"
+
+	"github.com/nbio/xml"
 
 	"github.com/immanent-tech/go-syndication/types"
 	"golang.org/x/net/html/charset"

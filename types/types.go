@@ -6,10 +6,11 @@ package types
 
 import (
 	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"html"
 	"slices"
+
+	"github.com/nbio/xml"
 
 	"github.com/immanent-tech/go-syndication/sanitization"
 )

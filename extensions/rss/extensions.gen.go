@@ -6,12 +6,13 @@ package rss
 import (
 	"github.com/immanent-tech/go-syndication/types"
 	externalRef1 "github.com/immanent-tech/go-syndication/types"
+	"github.com/nbio/xml"
 )
 
 // ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
 type ContentEncoded struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName  `json:"xml" validate:"required"`
+	XMLName XMLName               `json:"xml" validate:"required"`
 	Value   externalRef1.CharData `json:"value" validate:"required" xml:",chardata"`
 }
 
@@ -27,22 +28,22 @@ type PermaLink struct {
 // SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
 type SYUpdateBase struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
-	Value   types.DateTime       `json:"value" validate:"omitempty" xml:",chardata"`
+	XMLName XMLName        `json:"xml" validate:"required"`
+	Value   types.DateTime `json:"value" validate:"omitempty" xml:",chardata"`
 }
 
 // SYUpdateFrequency describes the frequency of updates in relation to the update period.
 type SYUpdateFrequency struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
-	Value   int                  `json:"value" validate:"required,number,gte=1" xml:",chardata"`
+	XMLName XMLName `json:"xml" validate:"required"`
+	Value   int     `json:"value" validate:"required,number,gte=1" xml:",chardata"`
 }
 
 // SYUpdatePeriod is the period over which the channel format is updated.
 type SYUpdatePeriod struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
-	Value   types.StringData     `json:"value" validate:"required,oneof=hourly daily weekly monthly yearly" xml:",chardata"`
+	XMLName XMLName          `json:"xml" validate:"required"`
+	Value   types.StringData `json:"value" validate:"required,oneof=hourly daily weekly monthly yearly" xml:",chardata"`
 }
 
 // SyndicationElements contains all syndication extension elements.
@@ -56,3 +57,6 @@ type SyndicationElements struct {
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
 	SYUpdateFrequency *SYUpdateFrequency `json:"sy_updateFrequency,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
 }
+
+// XMLName represents the XML namespace of an element.
+type XMLName = xml.Name

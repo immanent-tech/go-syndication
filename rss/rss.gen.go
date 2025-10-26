@@ -4,8 +4,6 @@
 package rss
 
 import (
-	"encoding/xml"
-
 	externalRef0 "github.com/immanent-tech/go-syndication/atom"
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef2 "github.com/immanent-tech/go-syndication/extensions/googleplay"
@@ -14,6 +12,7 @@ import (
 	externalRef5 "github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	externalRef7 "github.com/immanent-tech/go-syndication/types"
+	"github.com/nbio/xml"
 )
 
 // Defines values for CloudProtocol.
@@ -118,73 +117,73 @@ type Channel struct {
 	ItunesType externalRef3.Type `json:"itunes_type" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
-	MediaBackLinks externalRef4.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
+	MediaBackLinks externalRef4.MediaBacklinks `json:"media_backlinks,omitempty" xml:"https://search.yahoo.com/mrss/ media:backLink,omitempty"`
 
 	// MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
-	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
+	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"https://search.yahoo.com/mrss/ media:category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
 	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
-	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
+	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"https://search.yahoo.com/mrss/ media:community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" xml:"https://search.yahoo.com/mrss/ media:content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
-	MediaCopyright *externalRef4.MediaCopyright `json:"media_copyright" xml:"http://search.yahoo.com/mrss/ copyright,omitempty"`
+	MediaCopyright *externalRef4.MediaCopyright `json:"media_copyright" xml:"https://search.yahoo.com/mrss/ media:copyright,omitempty"`
 
 	// MediaCredits a list of credits for the object.
 	MediaCredits externalRef4.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
 
 	// MediaDescription is a short description describing the media object typically a sentence in length.
-	MediaDescription *externalRef4.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
+	MediaDescription *externalRef4.MediaDescription `json:"media_description" xml:"https://search.yahoo.com/mrss/ media:description,omitempty"`
 
 	// MediaEmbed allows inclusion of player-specific information in the form of key-value (Param) pairs.
-	MediaEmbed *externalRef4.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
+	MediaEmbed *externalRef4.MediaEmbed `json:"media_embed" xml:"https://search.yahoo.com/mrss/ media:embed,omitempty"`
 
 	// MediaGroup allows grouping of <media:content> elements that are effectively the same content, yet different representations. For instance: the same song recorded in both the WAV and MP3 format.
-	MediaGroup *externalRef4.MediaGroup `json:"media_group,omitempty" xml:"http://search.yahoo.com/mrss/ group,omitempty"`
+	MediaGroup *externalRef4.MediaGroup `json:"media_group,omitempty" xml:"https://search.yahoo.com/mrss/ media:group,omitempty"`
 
 	// MediaHashes a list of hashes for the object.
 	MediaHashes externalRef4.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
 
 	// MediaKeywords are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and phrases should be comma-delimited.
-	MediaKeywords *externalRef4.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
+	MediaKeywords *externalRef4.MediaKeywords `json:"media_keywords" xml:"https://search.yahoo.com/mrss/ media:keywords,omitempty"`
 
 	// MediaLicense link to specify the machine-readable license associated with the content.
-	MediaLicense *externalRef4.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
+	MediaLicense *externalRef4.MediaLicense `json:"media_license" xml:"https://search.yahoo.com/mrss/ media:license,omitempty"`
 
 	// MediaPeerLink contains P2P link.
-	MediaPeerLink *externalRef4.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
+	MediaPeerLink *externalRef4.MediaPeerLink `json:"media_peerlink" xml:"https://search.yahoo.com/mrss/ media:peerLink,omitempty"`
 
 	// MediaPlayer allows the media object to be accessed through a web browser media player console.
-	MediaPlayer *externalRef4.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
+	MediaPlayer *externalRef4.MediaPlayer `json:"media_player" xml:"https://search.yahoo.com/mrss/ media:player,omitempty"`
 
 	// MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
-	MediaPrice *externalRef4.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
+	MediaPrice *externalRef4.MediaPrice `json:"media_price" xml:"https://search.yahoo.com/mrss/ media:price,omitempty"`
 
 	// MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
-	MediaRating *externalRef4.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
+	MediaRating *externalRef4.MediaRating `json:"media_rating" xml:"https://search.yahoo.com/mrss/ media:rating,omitempty"`
 
 	// MediaResponses allows inclusion of a list of all media responses a media object has received.
-	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
+	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"https://search.yahoo.com/mrss/ media:response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"https://search.yahoo.com/mrss/ media:restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
-	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
+	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"https://search.yahoo.com/mrss/ media:rights,omitempty"`
 
 	// MediaScenes specifies various scenes within a media object.
-	MediaScenes externalRef4.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
+	MediaScenes externalRef4.MediaScenes `json:"media_scenes" xml:"https://search.yahoo.com/mrss/ media:scene,omitempty"`
 
 	// MediaStatus specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
-	MediaStatus *externalRef4.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
+	MediaStatus *externalRef4.MediaStatus `json:"media_status" xml:"https://search.yahoo.com/mrss/ media:status,omitempty"`
 
 	// MediaSubTitle contains subtitle/CC link.
-	MediaSubTitle *externalRef4.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
+	MediaSubTitle *externalRef4.MediaSubTitle `json:"media_subtitle,omitempty" xml:"https://search.yahoo.com/mrss/ media:subTitle,omitempty"`
 
 	// MediaTexts a list of texts for the object.
 	MediaTexts externalRef4.MediaTexts `json:"media_texts" xml:"text,omitempty"`
@@ -193,7 +192,7 @@ type Channel struct {
 	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"https://search.yahoo.com/mrss/ media:title,omitempty"`
 
 	// SYUdatePeriod is the period over which the channel format is updated.
 	SYUdatePeriod *externalRef5.SYUpdatePeriod `json:"sy_updatePeriod,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
@@ -438,73 +437,73 @@ type Item struct {
 	DCType *externalRef1.DCType `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
-	MediaBackLinks externalRef4.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
+	MediaBackLinks externalRef4.MediaBacklinks `json:"media_backlinks,omitempty" xml:"https://search.yahoo.com/mrss/ media:backLink,omitempty"`
 
 	// MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
-	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
+	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"https://search.yahoo.com/mrss/ media:category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
 	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
-	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
+	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"https://search.yahoo.com/mrss/ media:community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" xml:"https://search.yahoo.com/mrss/ media:content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
-	MediaCopyright *externalRef4.MediaCopyright `json:"media_copyright" xml:"http://search.yahoo.com/mrss/ copyright,omitempty"`
+	MediaCopyright *externalRef4.MediaCopyright `json:"media_copyright" xml:"https://search.yahoo.com/mrss/ media:copyright,omitempty"`
 
 	// MediaCredits a list of credits for the object.
 	MediaCredits externalRef4.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
 
 	// MediaDescription is a short description describing the media object typically a sentence in length.
-	MediaDescription *externalRef4.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
+	MediaDescription *externalRef4.MediaDescription `json:"media_description" xml:"https://search.yahoo.com/mrss/ media:description,omitempty"`
 
 	// MediaEmbed allows inclusion of player-specific information in the form of key-value (Param) pairs.
-	MediaEmbed *externalRef4.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
+	MediaEmbed *externalRef4.MediaEmbed `json:"media_embed" xml:"https://search.yahoo.com/mrss/ media:embed,omitempty"`
 
 	// MediaGroup allows grouping of <media:content> elements that are effectively the same content, yet different representations. For instance: the same song recorded in both the WAV and MP3 format.
-	MediaGroup *externalRef4.MediaGroup `json:"media_group,omitempty" xml:"http://search.yahoo.com/mrss/ group,omitempty"`
+	MediaGroup *externalRef4.MediaGroup `json:"media_group,omitempty" xml:"https://search.yahoo.com/mrss/ media:group,omitempty"`
 
 	// MediaHashes a list of hashes for the object.
 	MediaHashes externalRef4.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
 
 	// MediaKeywords are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and phrases should be comma-delimited.
-	MediaKeywords *externalRef4.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
+	MediaKeywords *externalRef4.MediaKeywords `json:"media_keywords" xml:"https://search.yahoo.com/mrss/ media:keywords,omitempty"`
 
 	// MediaLicense link to specify the machine-readable license associated with the content.
-	MediaLicense *externalRef4.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
+	MediaLicense *externalRef4.MediaLicense `json:"media_license" xml:"https://search.yahoo.com/mrss/ media:license,omitempty"`
 
 	// MediaPeerLink contains P2P link.
-	MediaPeerLink *externalRef4.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
+	MediaPeerLink *externalRef4.MediaPeerLink `json:"media_peerlink" xml:"https://search.yahoo.com/mrss/ media:peerLink,omitempty"`
 
 	// MediaPlayer allows the media object to be accessed through a web browser media player console.
-	MediaPlayer *externalRef4.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
+	MediaPlayer *externalRef4.MediaPlayer `json:"media_player" xml:"https://search.yahoo.com/mrss/ media:player,omitempty"`
 
 	// MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
-	MediaPrice *externalRef4.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
+	MediaPrice *externalRef4.MediaPrice `json:"media_price" xml:"https://search.yahoo.com/mrss/ media:price,omitempty"`
 
 	// MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
-	MediaRating *externalRef4.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
+	MediaRating *externalRef4.MediaRating `json:"media_rating" xml:"https://search.yahoo.com/mrss/ media:rating,omitempty"`
 
 	// MediaResponses allows inclusion of a list of all media responses a media object has received.
-	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
+	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"https://search.yahoo.com/mrss/ media:response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"https://search.yahoo.com/mrss/ media:restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
-	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
+	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"https://search.yahoo.com/mrss/ media:rights,omitempty"`
 
 	// MediaScenes specifies various scenes within a media object.
-	MediaScenes externalRef4.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
+	MediaScenes externalRef4.MediaScenes `json:"media_scenes" xml:"https://search.yahoo.com/mrss/ media:scene,omitempty"`
 
 	// MediaStatus specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
-	MediaStatus *externalRef4.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
+	MediaStatus *externalRef4.MediaStatus `json:"media_status" xml:"https://search.yahoo.com/mrss/ media:status,omitempty"`
 
 	// MediaSubTitle contains subtitle/CC link.
-	MediaSubTitle *externalRef4.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
+	MediaSubTitle *externalRef4.MediaSubTitle `json:"media_subtitle,omitempty" xml:"https://search.yahoo.com/mrss/ media:subTitle,omitempty"`
 
 	// MediaTexts a list of texts for the object.
 	MediaTexts externalRef4.MediaTexts `json:"media_texts" xml:"text,omitempty"`
@@ -513,7 +512,7 @@ type Item struct {
 	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"https://search.yahoo.com/mrss/ media:title,omitempty"`
 
 	// PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
 	PermaLink externalRef5.PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
@@ -597,7 +596,7 @@ type PubDate = types.DateTime
 // RSS represents an RSS document.
 type RSS struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef7.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"xml" validate:"required"`
 
 	// Attributes contains any additional attributes (including namespaces).
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`

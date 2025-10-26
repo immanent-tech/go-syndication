@@ -4,7 +4,7 @@
 package types
 
 import (
-	"encoding/xml"
+	"github.com/nbio/xml"
 )
 
 // Defines values for NameSpace.
@@ -36,7 +36,7 @@ type CustomTypeBase struct {
 // Extension represents an element that is not defined in the schema.
 type Extension struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes Attributes  `json:"attributes" xml:",any,attr"`
@@ -66,6 +66,3 @@ type OptionalValue = string
 
 // RequiredValue is an element value that is required.
 type RequiredValue = string
-
-// XMLName represents the XML namespace of an element.
-type XMLName = xml.Name
