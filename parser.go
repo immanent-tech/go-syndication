@@ -309,10 +309,10 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 					func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) }) {
 				found = true
 			}
-			// Link ends in feed...
+			// Link ends in feed type...
 			if slices.ContainsFunc(tkn.Attr,
 				func(a html.Attribute) bool {
-					if a.Key == "href" && strings.HasSuffix(a.Val, "feed") {
+					if a.Key == "href" && slices.Contains([]string{"feed", "rss", "atom"}, a.Val) {
 						return true
 					}
 					return false
