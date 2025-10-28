@@ -36,6 +36,8 @@ components:
       required:
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/CharData'
         domain:
@@ -472,6 +474,8 @@ components:
         - $ref: 'googleplay.yaml#/components/schemas/GooglePlayElements'
         - type: object
           properties:
+            XMLName:
+              $ref: 'types.yaml#/components/schemas/XMLName'
             items:
               description: >
                 is a list of the current items published to the channel.
@@ -554,6 +558,8 @@ components:
         - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
         - type: object
           properties:
+            XMLName:
+              $ref: 'types.yaml#/components/schemas/XMLName'
             ContentEncoded:
               $ref: 'rss-ext.yaml#/components/schemas/ContentEncoded'
             MediaContent:
@@ -576,14 +582,7 @@ components:
         - channel
       properties:
         XMLName:
-          description: >
-            represents the XML namespace of an element.
-          x-go-type: 'xml.Name'
-          x-go-type-import:
-            path: github.com/nbio/xml
-          x-oapi-codegen-extra-tags:
-            json: 'xml'
-            validate: 'required'
+          $ref: 'types.yaml#/components/schemas/XMLName'
         channel:
           $ref: '#/components/schemas/Channel'
         version:
@@ -594,17 +593,17 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'version,attr'
             validate: 'required,oneof=0.91 0.92 2.0 2.0.1'
-        attributes:
-          description: >
-            contains any additional attributes (including namespaces).
-          type: array
-          items:
-            x-go-type: xml.Attr
-            x-go-type-import:
-              path: github.com/nbio/xml
-          x-oapi-codegen-extra-tags:
-            xml: ',any,attr'
-            json: 'attributes'
-          x-go-type-skip-optional-pointer: true
+        # attributes:
+        #   description: >
+        #     contains any additional attributes (including namespaces).
+        #   type: array
+        #   items:
+        #     x-go-type: xml.Attr
+        #     x-go-type-import:
+        #       path: github.com/nbio/xml
+        #   x-oapi-codegen-extra-tags:
+        #     xml: ',any,attr'
+        #     json: 'attributes'
+        #   x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         xml: 'rss'

@@ -52,7 +52,7 @@ func (i *Item) GetDescription() string {
 // <dc:creator> elements.
 func (i *Item) GetAuthors() []string {
 	var authors []string
-	if i.Author != "" {
+	if i.Author.String() != "" {
 		authors = append(authors, i.Author.String())
 	}
 	if i.DCCreator != nil {
@@ -83,7 +83,7 @@ func (i *Item) GetRights() string {
 // present.
 func (i *Item) GetLanguage() string {
 	switch {
-	case i.DCLanguage != "":
+	case i.DCLanguage.String() != "":
 		return i.DCLanguage.String()
 	default:
 		return ""

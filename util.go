@@ -5,9 +5,9 @@ package feeds
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 
-	"github.com/nbio/xml"
 	"golang.org/x/net/html/charset"
 )
 

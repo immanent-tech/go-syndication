@@ -6,11 +6,10 @@ package types
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"html"
 	"slices"
-
-	"github.com/nbio/xml"
 
 	"github.com/immanent-tech/go-syndication/sanitization"
 )
@@ -82,14 +81,14 @@ func (c *CharData) String() string {
 	return html.UnescapeString(string(c.Value))
 }
 
-type StringData string
+// type StringData string
 
 func (s *StringData) UnmarshalText(data []byte) error {
 	safeData := sanitization.SanitizeBytes(data)
-	*s = StringData(string(safeData))
+	s.Value = string(safeData)
 	return nil
 }
 
 func (s *StringData) String() string {
-	return html.UnescapeString(string(*s))
+	return html.UnescapeString(string(s.Value))
 }

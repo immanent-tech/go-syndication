@@ -5,7 +5,7 @@ package opml
 
 import (
 	"github.com/immanent-tech/go-syndication/types"
-	"github.com/nbio/xml"
+	externalRef0 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for BreakpointState.
@@ -86,7 +86,8 @@ type Head struct {
 
 // OPML represents an OPML document.
 type OPML struct {
-	XMLName xml.Name `json:"xml" validate:"required"`
+	// XMLName represents the XML namespace of an element.
+	XMLName externalRef0.XMLName `json:"xml" validate:"required"`
 
 	// Body represents the OPML <body> element.
 	Body Body `json:"body" validate:"required,dive" xml:"body>outline"`

@@ -4,11 +4,12 @@
 package atom
 
 import (
+	"encoding/xml"
+
 	externalRef0 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
 	externalRef2 "github.com/immanent-tech/go-syndication/types"
-	"github.com/nbio/xml"
 )
 
 // Defines values for LinkRel.
@@ -39,7 +40,7 @@ type Category struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -78,7 +79,7 @@ type Content struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -103,7 +104,7 @@ type DateConstruct struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -113,8 +114,8 @@ type DateConstruct struct {
 // Email is an element that conveys an email address.
 type Email struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
-	Value   string  `json:"value" validate:"omitempty,email" xml:",chardata"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
+	Value   string               `json:"value" validate:"omitempty,email" xml:",chardata"`
 }
 
 // Entry defines model for Entry.
@@ -174,67 +175,67 @@ type Entry struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
-	MediaBackLinks externalRef1.MediaBacklinks `json:"media_backlinks,omitempty" xml:"https://search.yahoo.com/mrss/ media:backLink,omitempty"`
+	MediaBackLinks externalRef1.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
 
 	// MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
-	MediaCategory *externalRef1.MediaCategory `json:"media_category" xml:"https://search.yahoo.com/mrss/ media:category,omitempty"`
+	MediaCategory *externalRef1.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
 	MediaComments externalRef1.MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
-	MediaCommunity *externalRef1.MediaCommunity `json:"media_community" xml:"https://search.yahoo.com/mrss/ media:community,omitempty"`
+	MediaCommunity *externalRef1.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
-	MediaCopyright *externalRef1.MediaCopyright `json:"media_copyright" xml:"https://search.yahoo.com/mrss/ media:copyright,omitempty"`
+	MediaCopyright *externalRef1.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
 
 	// MediaCredits a list of credits for the object.
 	MediaCredits externalRef1.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
 
 	// MediaDescription is a short description describing the media object typically a sentence in length.
-	MediaDescription *externalRef1.MediaDescription `json:"media_description" xml:"https://search.yahoo.com/mrss/ media:description,omitempty"`
+	MediaDescription *externalRef1.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
 
 	// MediaEmbed allows inclusion of player-specific information in the form of key-value (Param) pairs.
-	MediaEmbed *externalRef1.MediaEmbed `json:"media_embed" xml:"https://search.yahoo.com/mrss/ media:embed,omitempty"`
+	MediaEmbed *externalRef1.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
 
 	// MediaHashes a list of hashes for the object.
 	MediaHashes externalRef1.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
 
 	// MediaKeywords are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and phrases should be comma-delimited.
-	MediaKeywords *externalRef1.MediaKeywords `json:"media_keywords" xml:"https://search.yahoo.com/mrss/ media:keywords,omitempty"`
+	MediaKeywords *externalRef1.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
 
 	// MediaLicense link to specify the machine-readable license associated with the content.
-	MediaLicense *externalRef1.MediaLicense `json:"media_license" xml:"https://search.yahoo.com/mrss/ media:license,omitempty"`
+	MediaLicense *externalRef1.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
 
 	// MediaPeerLink contains P2P link.
-	MediaPeerLink *externalRef1.MediaPeerLink `json:"media_peerlink" xml:"https://search.yahoo.com/mrss/ media:peerLink,omitempty"`
+	MediaPeerLink *externalRef1.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
 
 	// MediaPlayer allows the media object to be accessed through a web browser media player console.
-	MediaPlayer *externalRef1.MediaPlayer `json:"media_player" xml:"https://search.yahoo.com/mrss/ media:player,omitempty"`
+	MediaPlayer *externalRef1.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
 
 	// MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
-	MediaPrice *externalRef1.MediaPrice `json:"media_price" xml:"https://search.yahoo.com/mrss/ media:price,omitempty"`
+	MediaPrice *externalRef1.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
 
 	// MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
-	MediaRating *externalRef1.MediaRating `json:"media_rating" xml:"https://search.yahoo.com/mrss/ media:rating,omitempty"`
+	MediaRating *externalRef1.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
 
 	// MediaResponses allows inclusion of a list of all media responses a media object has received.
-	MediaResponses externalRef1.MediaResponses `json:"media_responses" xml:"https://search.yahoo.com/mrss/ media:response,omitempty"`
+	MediaResponses externalRef1.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef1.MediaRestriction `json:"media_restriction" xml:"https://search.yahoo.com/mrss/ media:restriction,omitempty"`
+	MediaRestriction *externalRef1.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
-	MediaRights *externalRef1.MediaRights `json:"media_rights" xml:"https://search.yahoo.com/mrss/ media:rights,omitempty"`
+	MediaRights *externalRef1.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
 
 	// MediaScenes specifies various scenes within a media object.
-	MediaScenes externalRef1.MediaScenes `json:"media_scenes" xml:"https://search.yahoo.com/mrss/ media:scene,omitempty"`
+	MediaScenes externalRef1.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
 
 	// MediaStatus specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
-	MediaStatus *externalRef1.MediaStatus `json:"media_status" xml:"https://search.yahoo.com/mrss/ media:status,omitempty"`
+	MediaStatus *externalRef1.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
 
 	// MediaSubTitle contains subtitle/CC link.
-	MediaSubTitle *externalRef1.MediaSubTitle `json:"media_subtitle,omitempty" xml:"https://search.yahoo.com/mrss/ media:subTitle,omitempty"`
+	MediaSubTitle *externalRef1.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
 
 	// MediaTexts a list of texts for the object.
 	MediaTexts externalRef1.MediaTexts `json:"media_texts" xml:"text,omitempty"`
@@ -243,10 +244,10 @@ type Entry struct {
 	MediaThumbnails externalRef1.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle *externalRef1.MediaTitle `json:"media_title" xml:"https://search.yahoo.com/mrss/ media:title,omitempty"`
+	MediaTitle *externalRef1.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -345,67 +346,67 @@ type Feed struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
-	MediaBackLinks externalRef1.MediaBacklinks `json:"media_backlinks,omitempty" xml:"https://search.yahoo.com/mrss/ media:backLink,omitempty"`
+	MediaBackLinks externalRef1.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
 
 	// MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
-	MediaCategory *externalRef1.MediaCategory `json:"media_category" xml:"https://search.yahoo.com/mrss/ media:category,omitempty"`
+	MediaCategory *externalRef1.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
 	MediaComments externalRef1.MediaComments `json:"MediaComments,omitempty,omitzero"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
-	MediaCommunity *externalRef1.MediaCommunity `json:"media_community" xml:"https://search.yahoo.com/mrss/ media:community,omitempty"`
+	MediaCommunity *externalRef1.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
-	MediaCopyright *externalRef1.MediaCopyright `json:"media_copyright" xml:"https://search.yahoo.com/mrss/ media:copyright,omitempty"`
+	MediaCopyright *externalRef1.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
 
 	// MediaCredits a list of credits for the object.
 	MediaCredits externalRef1.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
 
 	// MediaDescription is a short description describing the media object typically a sentence in length.
-	MediaDescription *externalRef1.MediaDescription `json:"media_description" xml:"https://search.yahoo.com/mrss/ media:description,omitempty"`
+	MediaDescription *externalRef1.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
 
 	// MediaEmbed allows inclusion of player-specific information in the form of key-value (Param) pairs.
-	MediaEmbed *externalRef1.MediaEmbed `json:"media_embed" xml:"https://search.yahoo.com/mrss/ media:embed,omitempty"`
+	MediaEmbed *externalRef1.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
 
 	// MediaHashes a list of hashes for the object.
 	MediaHashes externalRef1.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
 
 	// MediaKeywords are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and phrases should be comma-delimited.
-	MediaKeywords *externalRef1.MediaKeywords `json:"media_keywords" xml:"https://search.yahoo.com/mrss/ media:keywords,omitempty"`
+	MediaKeywords *externalRef1.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
 
 	// MediaLicense link to specify the machine-readable license associated with the content.
-	MediaLicense *externalRef1.MediaLicense `json:"media_license" xml:"https://search.yahoo.com/mrss/ media:license,omitempty"`
+	MediaLicense *externalRef1.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
 
 	// MediaPeerLink contains P2P link.
-	MediaPeerLink *externalRef1.MediaPeerLink `json:"media_peerlink" xml:"https://search.yahoo.com/mrss/ media:peerLink,omitempty"`
+	MediaPeerLink *externalRef1.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
 
 	// MediaPlayer allows the media object to be accessed through a web browser media player console.
-	MediaPlayer *externalRef1.MediaPlayer `json:"media_player" xml:"https://search.yahoo.com/mrss/ media:player,omitempty"`
+	MediaPlayer *externalRef1.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
 
 	// MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
-	MediaPrice *externalRef1.MediaPrice `json:"media_price" xml:"https://search.yahoo.com/mrss/ media:price,omitempty"`
+	MediaPrice *externalRef1.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
 
 	// MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
-	MediaRating *externalRef1.MediaRating `json:"media_rating" xml:"https://search.yahoo.com/mrss/ media:rating,omitempty"`
+	MediaRating *externalRef1.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
 
 	// MediaResponses allows inclusion of a list of all media responses a media object has received.
-	MediaResponses externalRef1.MediaResponses `json:"media_responses" xml:"https://search.yahoo.com/mrss/ media:response,omitempty"`
+	MediaResponses externalRef1.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef1.MediaRestriction `json:"media_restriction" xml:"https://search.yahoo.com/mrss/ media:restriction,omitempty"`
+	MediaRestriction *externalRef1.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
-	MediaRights *externalRef1.MediaRights `json:"media_rights" xml:"https://search.yahoo.com/mrss/ media:rights,omitempty"`
+	MediaRights *externalRef1.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
 
 	// MediaScenes specifies various scenes within a media object.
-	MediaScenes externalRef1.MediaScenes `json:"media_scenes" xml:"https://search.yahoo.com/mrss/ media:scene,omitempty"`
+	MediaScenes externalRef1.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
 
 	// MediaStatus specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
-	MediaStatus *externalRef1.MediaStatus `json:"media_status" xml:"https://search.yahoo.com/mrss/ media:status,omitempty"`
+	MediaStatus *externalRef1.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
 
 	// MediaSubTitle contains subtitle/CC link.
-	MediaSubTitle *externalRef1.MediaSubTitle `json:"media_subtitle,omitempty" xml:"https://search.yahoo.com/mrss/ media:subTitle,omitempty"`
+	MediaSubTitle *externalRef1.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
 
 	// MediaTexts a list of texts for the object.
 	MediaTexts externalRef1.MediaTexts `json:"media_texts" xml:"text,omitempty"`
@@ -414,10 +415,10 @@ type Feed struct {
 	MediaThumbnails externalRef1.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle *externalRef1.MediaTitle `json:"media_title" xml:"https://search.yahoo.com/mrss/ media:title,omitempty"`
+	MediaTitle *externalRef1.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -468,7 +469,7 @@ type FeedMetadata struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -513,7 +514,7 @@ type Generator struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -533,13 +534,13 @@ type ID struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 
 	// Value is the value of the ID
-	Value string `json:"value" validate:"required,uri|urn_rfc2141" xml:",chardata"`
+	Value string `json:"value" validate:"required,uri|urn_rfc2141|ascii" xml:",chardata"`
 }
 
 // Icon defines model for Icon.
@@ -551,7 +552,7 @@ type Icon struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -570,7 +571,7 @@ type Link struct {
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 
 	// Href contains the URL of the related resource.
-	Href string `json:"href" validate:"required,url" xml:"href,attr"`
+	Href string `json:"href" validate:"required,url|hostname" xml:"href,attr"`
 
 	// HrefLang identifies the language used by the related resource using an HTML language code.
 	HrefLang string `json:"hreflang,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"hreflang,attr,omitempty"`
@@ -613,8 +614,8 @@ type Logo struct {
 // Name is an element that conveys a human-readable name.
 type Name struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
-	Value   string  `json:"value" validate:"required" xml:",chardata"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
+	Value   string               `json:"value" validate:"required" xml:",chardata"`
 }
 
 // PersonConstruct defines model for PersonConstruct.
@@ -648,7 +649,7 @@ type Published struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -664,7 +665,7 @@ type Rights struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -688,7 +689,7 @@ type Subtitle struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -709,7 +710,7 @@ type Summary struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -748,7 +749,7 @@ type Title struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
@@ -766,8 +767,8 @@ type Type = string
 // URI is an element that conveys an IRI (URI).
 type URI struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
-	Value   string  `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
+	Value   string               `json:"value" validate:"required,uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // Updated defines model for Updated.
@@ -779,12 +780,9 @@ type Updated struct {
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName `json:"xml" validate:"required"`
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 	Value      types.DateTime          `json:"value" validate:"required" xml:",chardata"`
 }
-
-// XMLName represents the XML namespace of an element.
-type XMLName = xml.Name

@@ -4,7 +4,7 @@
 package types
 
 import (
-	"github.com/nbio/xml"
+	"encoding/xml"
 )
 
 // Defines values for NameSpace.
@@ -21,7 +21,9 @@ type Attributes = []xml.Attr
 
 // CharData represents character data of an element.
 type CharData struct {
-	Value xml.CharData `json:"CharData"`
+	// XMLName represents the XML namespace of an element.
+	XMLName XMLName      `json:"xml" validate:"required"`
+	Value   xml.CharData `json:"value"`
 }
 
 // CustomTypeBase defines model for CustomTypeBase.
@@ -66,3 +68,13 @@ type OptionalValue = string
 
 // RequiredValue is an element value that is required.
 type RequiredValue = string
+
+// StringData represents string data of an element.
+type StringData struct {
+	// XMLName represents the XML namespace of an element.
+	XMLName XMLName `json:"xml" validate:"required"`
+	Value   string  `json:"value"`
+}
+
+// XMLName represents the XML namespace of an element.
+type XMLName = xml.Name

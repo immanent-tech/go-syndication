@@ -57,14 +57,17 @@ components:
         are necessary.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         scheme:
           $ref: '#/components/schemas/Scheme'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:rating,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ rating,omitempty'
         json: 'media_rating'
       x-go-type-skip-optional-pointer: false
     MediaTitle:
@@ -72,14 +75,17 @@ components:
         is the title of the particular media object.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
           $ref: '#/components/schemas/TextType'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:title,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ title,omitempty'
         json: 'media_title'
       x-go-type-skip-optional-pointer: false
     MediaDescription:
@@ -87,14 +93,17 @@ components:
         is a short description describing the media object typically a sentence in length.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
           $ref: '#/components/schemas/TextType'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:description,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ description,omitempty'
         json: 'media_description'
       x-go-type-skip-optional-pointer: false
     MediaKeywords:
@@ -103,12 +112,15 @@ components:
         phrases should be comma-delimited.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:keywords,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ keywords,omitempty'
         json: 'media_keywords'
       x-go-type-skip-optional-pointer: false
     MediaThumbnail:
@@ -116,8 +128,11 @@ components:
         allows a particular images to be used as a representative image for the media object.
       type: object
       required:
+        - XMLName
         - url
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         url:
           allOf:
             - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
@@ -138,7 +153,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'time,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:thumbnail,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ thumbnail,omitempty'
         json: 'media_thumbnail'
       x-go-type-skip-optional-pointer: false
     MediaThumbnails:
@@ -156,8 +171,11 @@ components:
         allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         scheme:
@@ -165,7 +183,7 @@ components:
         label:
           $ref: '#/components/schemas/Label'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:category,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ category,omitempty'
         json: 'media_category'
       x-go-type-skip-optional-pointer: false
     MediaHash:
@@ -173,8 +191,11 @@ components:
       description: >
         is the hash of the binary media file. Elements represents hashes in different alogrithms.
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         algo:
@@ -186,7 +207,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'algo,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:hash,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ hash,omitempty'
         json: 'media_hash'
       x-go-type-skip-optional-pointer: false
     MediaHashes:
@@ -204,8 +225,11 @@ components:
         allows the media object to be accessed through a web browser media player console.
       type: object
       required:
+        - XMLName
         - url
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         url:
           allOf:
             - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
@@ -217,7 +241,7 @@ components:
         width:
           $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:player,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ player,omitempty'
         json: 'media_player'
       x-go-type-skip-optional-pointer: false
     MediaCredit:
@@ -227,8 +251,11 @@ components:
         role.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         role:
@@ -243,7 +270,7 @@ components:
         scheme:
           $ref: '#/components/schemas/Scheme'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:credit,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ credit,omitempty'
         json: 'media_credit'
       x-go-type-skip-optional-pointer: false
     MediaCredits:
@@ -263,14 +290,17 @@ components:
         is copyright information for the media object.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         url:
           $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:copyright,omitempty'
+        xml: 'media copyright,omitempty'
         json: 'media_copyright'
       x-go-type-skip-optional-pointer: false
     MediaText:
@@ -278,8 +308,11 @@ components:
         allows the inclusion of a text transcript, closed captioning or lyrics of the media content.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
@@ -301,7 +334,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'end,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:text,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ text,omitempty'
         json: 'media_text'
       x-go-type-skip-optional-pointer: false
     MediaTexts:
@@ -320,9 +353,12 @@ components:
       description: allows restrictions to be placed on the aggregator rendering the media in the feed.
       type: object
       required:
+        - XMLName
         - value
         - relationship
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         relationship:
@@ -340,7 +376,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'sharing,attr,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:restriction,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ restriction,omitempty'
         json: 'media_restriction'
       x-go-type-skip-optional-pointer: false
     MediaCommunityStarRating:
@@ -370,7 +406,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'max,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:starRating,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ starRating,omitempty'
         json: 'media_star_rating,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaCommunityStatistics:
@@ -390,7 +426,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'favorites,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:statistics,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ statistics,omitempty'
         json: 'media_community_statistics,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaCommunityTags:
@@ -405,7 +441,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:tags,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ tags,omitempty'
         json: 'media_community_tags,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaCommunity:
@@ -413,7 +449,11 @@ components:
         stands for the community related content. This allows inclusion of the user perception about a media object in
         the form of view count, ratings and tags.
       type: object
+      required:
+        - XMLName
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         starRating:
           $ref: '#/components/schemas/MediaCommunityStarRating'
         statistics:
@@ -421,7 +461,7 @@ components:
         tags:
           $ref: '#/components/schemas/MediaCommunityTags'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:community,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ community,omitempty'
         json: 'media_community'
       x-go-type-skip-optional-pointer: false
     MediaComment:
@@ -429,12 +469,15 @@ components:
         is a comments a media object has received.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:comment,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ comment,omitempty'
         json: 'media_comment'
       x-go-type-skip-optional-pointer: false
     MediaComments:
@@ -464,7 +507,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'name,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:param,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ param,omitempty'
         json: 'media_param'
       x-go-type-skip-optional-pointer: false
     MediaEmbed:
@@ -473,7 +516,11 @@ components:
       allOf:
         - $ref: '#/components/schemas/MediaPlayer'
         - type: object
+          required:
+            - XMLName
           properties:
+            XMLName:
+              $ref: 'types.yaml#/components/schemas/XMLName'
             params:
               description: >
                 is a list of player-specific parameters.
@@ -481,11 +528,11 @@ components:
               items:
                 $ref: '#/components/schemas/MediaParam'
               x-oapi-codegen-extra-tags:
-                xml: 'https://search.yahoo.com/mrss/ media:param,omitempty'
+                xml: 'http://search.yahoo.com/mrss/ param,omitempty'
                 json: 'param,omitempty'
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:embed,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ embed,omitempty'
         json: 'media_embed'
       x-go-type-skip-optional-pointer: false
     MediaResponse:
@@ -498,7 +545,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:response,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ response,omitempty'
         json: 'media_response'
       x-go-type-skip-optional-pointer: false
     MediaResponses:
@@ -508,7 +555,7 @@ components:
       items:
         $ref: '#/components/schemas/MediaResponse'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:response,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ response,omitempty'
         json: 'media_responses'
       x-go-type-skip-optional-pointer: true
     MediaBacklink:
@@ -521,7 +568,7 @@ components:
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:backLink,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
         json: 'media_backlink,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaBacklinks:
@@ -531,7 +578,7 @@ components:
       items:
         $ref: '#/components/schemas/MediaBacklink'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:backLink,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
         json: 'media_backlinks,omitempty'
       x-go-type-skip-optional-pointer: true
     MediaStatus:
@@ -539,9 +586,12 @@ components:
         specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
       type: object
       required:
+        - XMLName
         - state
         - reason
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         state:
           description: >
             indicates the status.
@@ -561,7 +611,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: 'reason,attr'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:status,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ status,omitempty'
         json: 'media_status'
       x-go-type-skip-optional-pointer: false
     MediaPrice:
@@ -569,7 +619,11 @@ components:
         includes pricing information about a media object. If this tag is not present, the media object is supposed to
         be free.
       type: object
+      required:
+        - XMLName
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         type:
           description: >
             is the type of pricing for the media object.
@@ -608,7 +662,7 @@ components:
             xml: 'currency,attr,omitempty'
             validate: 'omitempty,iso4217'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:price,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ price,omitempty'
         json: 'media_price'
       x-go-type-skip-optional-pointer: false
     MediaLicense:
@@ -616,8 +670,11 @@ components:
         link to specify the machine-readable license associated with the content.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
@@ -625,7 +682,7 @@ components:
         href:
           $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:license,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ license,omitempty'
         json: 'media_license'
       x-go-type-skip-optional-pointer: false
     MediaSubTitle:
@@ -633,9 +690,12 @@ components:
         contains subtitle/CC link.
       type: object
       required:
+        - XMLName
         - type
         - lang
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         type:
           $ref: '#/components/schemas/TextType'
         lang:
@@ -644,22 +704,25 @@ components:
           $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
         json: 'media_subtitle,omitempty'
-        xml: 'https://search.yahoo.com/mrss/ media:subTitle,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ subTitle,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaPeerLink:
       description: >
         contains P2P link.
       type: object
       required:
+        - XMLName
         - type
         - href
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         type:
           $ref: '#/components/schemas/TextType'
         href:
           $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:peerLink,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ peerLink,omitempty'
         json: 'media_peerlink'
       x-go-type-skip-optional-pointer: false
     MediaRights:
@@ -667,8 +730,11 @@ components:
         specifies the rights information of a media object.
       type: object
       required:
+        - XMLName
         - status
       properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
         status:
           description: >
             is the status of the media object saying whether a media object has been created by the publisher or they
@@ -679,7 +745,7 @@ components:
             xml: 'status,attr'
             validate: 'omitempty,oneof=userCreated official'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:rights,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ rights,omitempty'
         json: 'media_rights'
       x-go-type-skip-optional-pointer: false
     SceneTitle:
@@ -736,7 +802,7 @@ components:
         sceneEndTime:
           $ref: '#/components/schemas/SceneEndTime'
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:scene,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ scene,omitempty'
         json: 'media_scene'
       x-go-type-skip-optional-pointer: false
     MediaScenes:
@@ -748,7 +814,7 @@ components:
       xml:
         name: scenes
       x-oapi-codegen-extra-tags:
-        xml: 'https://search.yahoo.com/mrss/ media:scene,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ scene,omitempty'
         json: 'media_scenes'
       x-go-type-skip-optional-pointer: true
     MediaElements:
@@ -813,8 +879,15 @@ components:
         - $ref: 'dc.yaml#/components/schemas/DublinCoreElements'
         - type: object
           required:
+            - XMLName
             - url
           properties:
+            XMLName:
+              $ref: 'types.yaml#/components/schemas/XMLName'
+            NameSpace:
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'xmlns:media,attr'
             url:
               $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
             fileSize:
@@ -872,7 +945,7 @@ components:
                 validate: 'omitempty,oneof=sample full nonstop'
       x-oapi-codegen-extra-tags:
         json: 'media_content,omitempty'
-        xml: 'https://search.yahoo.com/mrss/ media:content,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ content,omitempty'
       x-go-type-skip-optional-pointer: false
     MediaGroup:
       description: >
@@ -881,7 +954,11 @@ components:
       allOf:
         - $ref: '#/components/schemas/MediaElements'
         - type: object
+          required:
+            - XMLName
           properties:
+            XMLName:
+              $ref: 'types.yaml#/components/schemas/XMLName'
             content:
               description: >
                 is the list of <media:content> elements
@@ -892,9 +969,9 @@ components:
                 name: content
               x-oapi-codegen-extra-tags:
                 json: 'content,omitempty'
-                xml: 'https://search.yahoo.com/mrss/ media:content,omitempty'
+                xml: 'http://search.yahoo.com/mrss/ content,omitempty'
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         json: 'media_group,omitempty'
-        xml: 'https://search.yahoo.com/mrss/ media:group,omitempty'
+        xml: 'http://search.yahoo.com/mrss/ group,omitempty'
       x-go-type-skip-optional-pointer: false

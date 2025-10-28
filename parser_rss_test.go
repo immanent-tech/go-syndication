@@ -17,31 +17,30 @@ import (
 )
 
 type rssTestSuite struct {
-	wantErr bool
-	tests   func(t *testing.T, feed *Feed)
+	wantInvalid   bool
+	wantDecodeErr bool
+	tests         func(t *testing.T, feed *rss.RSS)
 }
 
 var rssMustPass = map[string]rssTestSuite{
-	// "admin_errorReportsTo.xml": {wantErr: false},
+	// "admin_errorReportsTo.xml": {wantInvalid: false},
 	// "admin_generatorAgent.xml": false,
 	"atom_link2.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, atom.LinkRelSelf, r.Channel.AtomLink.Rel)
-			assert.Equal(t, "http://www.rss-world.info/", r.Channel.AtomLink.Value)
-			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", r.Channel.AtomLink.Href)
+			assert.Equal(t, atom.LinkRelSelf, feed.Channel.AtomLink.Rel)
+			assert.Equal(t, "http://www.rss-world.info/", feed.Channel.AtomLink.Value)
+			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
 		},
 	},
 	"atom_link.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, atom.LinkRelSelf, r.Channel.AtomLink.Rel)
-			assert.Equal(t, "http://www.rss-world.info/", r.Channel.AtomLink.Value)
-			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", r.Channel.AtomLink.Href)
+			assert.Equal(t, atom.LinkRelSelf, feed.Channel.AtomLink.Rel)
+			assert.Equal(t, "http://www.rss-world.info/", feed.Channel.AtomLink.Value)
+			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
 		},
 	},
 	// TODO: implement blogChannel
@@ -51,93 +50,88 @@ var rssMustPass = map[string]rssTestSuite{
 	// "blogChannel_mySubscriptions.xml":   false,
 	// "cp_server.xml":                     false,
 	"dcdate_complete_date.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31", r.Channel.DCDate.Format(time.DateOnly))
+			assert.Equal(t, "2002-12-31", feed.Channel.DCDate.Format(time.DateOnly))
 		},
 	},
 	"dcdate_fractional_second.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T19:20:30.45+01:00", r.Channel.DCDate.Format("2006-01-02T15:04:05.00Z07:00"))
+			assert.Equal(t, "2002-12-31T19:20:30.45+01:00", feed.Channel.DCDate.Format("2006-01-02T15:04:05.00Z07:00"))
 		},
 	},
 	"dcdate_hours_minutes.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T19:20+01:00", r.Channel.DCDate.Format(time.DateOnly+"T"+"15:04-07:00"))
+			assert.Equal(t, "2002-12-31T19:20+01:00", feed.Channel.DCDate.Format(time.DateOnly+"T"+"15:04-07:00"))
 		},
 	},
 	"dc_date_must_include_timezone.xml": {
-		wantErr: true,
+		wantInvalid: true,
 	},
 	"dcdate_seconds.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T19:20:30+01:00", r.Channel.DCDate.Format(time.RFC3339))
+			assert.Equal(t, "2002-12-31T19:20:30+01:00", feed.Channel.DCDate.Format(time.RFC3339))
 		},
 	},
 	"dc_date_with_just_day.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2003-09-24", r.Channel.DCDate.Format(time.DateOnly))
+			assert.Equal(t, "2003-09-24", feed.Channel.DCDate.Format(time.DateOnly))
 		},
 	},
 	"dcdate.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12-31T01:15:07-05:00", r.Channel.DCDate.Format(time.RFC3339))
+
+			assert.Equal(t, "2002-12-31T01:15:07-05:00", feed.Channel.DCDate.Format(time.RFC3339))
 		},
 	},
 	"dcdate_year_and_month.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2002-12", r.Channel.DCDate.Format("2006-01"))
+
+			assert.Equal(t, "2002-12", feed.Channel.DCDate.Format("2006-01"))
 		},
 	},
 	"dcdate_year_only.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "2002", r.Channel.DCDate.Format("2006"))
+
+			assert.Equal(t, "2002", feed.Channel.DCDate.Format("2006"))
 		},
 	},
 	"dclanguage_country_code.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "en-us", r.Channel.DCLanguage.String())
+
+			assert.Equal(t, "en-us", feed.Channel.DCLanguage.String())
 		},
 	},
 	"dclanguage.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "en", r.Channel.DCLanguage.String())
+
+			assert.Equal(t, "en", feed.Channel.DCLanguage.String())
 		},
 	},
 	// "doctype_not_entity.xml": {
-	// 	wantErr: false,
+	// 	wantInvalid: false,
 	// },
 	// "doctype_wrong_version.xml": {
-	// 	wantErr: true,
+	// 	wantInvalid: true,
 	// 	// TODO: doctype parsing...
 	// },
 	// doctype.xml
@@ -146,11 +140,11 @@ var rssMustPass = map[string]rssTestSuite{
 	// foaf_name.xml
 	// foaf_person.xml
 	"ignorable_whitespace.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "http://example.com/mt/mt-comments.cgi?entryid=1", r.Channel.Items[0].Comments)
+
+			assert.Equal(t, "http://example.com/mt/mt-comments.cgi?entryid=1", feed.Channel.Items[0].Comments.String())
 		},
 	},
 	// TODO: implement blogChannel
@@ -171,24 +165,24 @@ var rssMustPass = map[string]rssTestSuite{
 	// "invalid_namespace2.xml":     true,
 	// "invalid_namespace.xml":      true,
 	// "invalid_rdf_about.xml":      true,
-	"invalid_rss_version.xml": {wantErr: true},
+	"invalid_rss_version.xml": {wantInvalid: true},
 	// TODO: implement slash hit parade.
 	// "invalid_slash_hit_parade.xml":            true,
-	"invalid_sy_updateBase_blank.xml":         {wantErr: true},
-	"invalid_sy_updateBase.xml":               {wantErr: true},
-	"invalid_sy_updateFrequency_blank.xml":    {wantErr: true},
-	"invalid_sy_updateFrequency_decimal.xml":  {wantErr: true},
-	"invalid_sy_updateFrequency_negative.xml": {wantErr: true},
-	"invalid_sy_updateFrequency_zero.xml":     {wantErr: true},
-	"invalid_sy_updatePeriod_blank.xml":       {wantErr: true},
-	"invalid_sy_updatePeriod.xml":             {wantErr: true},
-	"invalid_xml.xml":                         {wantErr: true},
+	"invalid_sy_updateBase_blank.xml":         {wantInvalid: true},
+	"invalid_sy_updateBase.xml":               {wantInvalid: true},
+	"invalid_sy_updateFrequency_blank.xml":    {wantInvalid: true},
+	"invalid_sy_updateFrequency_decimal.xml":  {wantInvalid: true},
+	"invalid_sy_updateFrequency_negative.xml": {wantInvalid: true},
+	"invalid_sy_updateFrequency_zero.xml":     {wantInvalid: true},
+	// "invalid_sy_updatePeriod_blank.xml":       {wantInvalid: true},
+	// "invalid_sy_updatePeriod.xml": {wantInvalid: true},
+	"invalid_xml.xml": {wantInvalid: true},
 	// "l_permalink.xml":
-	"missing_namespace2.xml":          {wantErr: true},
-	"missing_namespace_attr_only.xml": {wantErr: true},
-	"missing_namespace.xml":           {wantErr: true},
-	"missing_rss2.xml":                {wantErr: true},
-	"missing_rss.xml":                 {wantErr: true},
+	"missing_namespace2.xml":          {wantInvalid: true},
+	"missing_namespace_attr_only.xml": {wantInvalid: true},
+	"missing_namespace.xml":           {wantInvalid: true},
+	"missing_rss2.xml":                {wantInvalid: true},
+	"missing_rss.xml":                 {wantInvalid: true},
 	// multiple_admin_errorReportsTo.xml
 	// multiple_admin_generatorAgent.xml
 	// multiple_channel1.xml
@@ -239,28 +233,28 @@ var rssMustPass = map[string]rssTestSuite{
 	// rss10_unexpected_item_pubDate.xml
 	// harper:ignore
 	"rss20_spec_sample_noerror.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "Scripting News", r.Channel.GetTitle())
-			assert.Equal(t, "http://www.scripting.com/", r.Channel.GetLink())
-			assert.Equal(t, "A weblog about scripting and stuff like that.", r.Channel.GetDescription())
-			assert.Equal(t, "en-us", r.Channel.GetLanguage())
-			assert.Equal(t, "Copyright 1997-2002 Dave Winer", r.Channel.Copyright.String())
-			assert.Equal(t, "Mon, 30 Sep 2002 11:00:00 GMT", r.Channel.LastBuildDate.Format(time.RFC1123))
-			assert.Equal(t, "http://backend.userland.com/rss", r.Channel.Docs)
-			assert.Equal(t, "Radio UserLand v8.0.5", r.Channel.Generator.String())
-			assert.True(t, slices.Contains(r.Channel.GetCategories(), "1765"))
-			assert.Equal(t, "dave@userland.com", r.Channel.ManagingEditor.String())
-			assert.Equal(t, "dave@userland.com", r.Channel.WebMaster.String())
-			assert.Equal(t, 40, r.Channel.TTL)
-			assert.Len(t, r.Channel.GetItems(), 9)
+
+			assert.Equal(t, "Scripting News", feed.Channel.GetTitle())
+			assert.Equal(t, "http://www.scripting.com/", feed.Channel.GetLink())
+			assert.Equal(t, "A weblog about scripting and stuff like that.", feed.Channel.GetDescription())
+			assert.Equal(t, "en-us", feed.Channel.GetLanguage())
+			assert.Equal(t, "Copyright 1997-2002 Dave Winer", feed.Channel.Copyright.String())
+			assert.Equal(t, "Mon, 30 Sep 2002 11:00:00 GMT", feed.Channel.LastBuildDate.Format(time.RFC1123))
+			assert.Equal(t, "http://backend.userland.com/rss", feed.Channel.Docs)
+			assert.Equal(t, "Radio UserLand v8.0.5", feed.Channel.Generator.String())
+			assert.True(t, slices.Contains(feed.Channel.GetCategories(), "1765"))
+			assert.Equal(t, "dave@userland.com", feed.Channel.ManagingEditor.String())
+			assert.Equal(t, "dave@userland.com", feed.Channel.WebMaster.String())
+			assert.Equal(t, 40, feed.Channel.TTL)
+			assert.Len(t, feed.Channel.GetItems(), 9)
 			// Check item contents.
-			item := r.Channel.Items[8]
+			item := feed.Channel.Items[8]
 			// assert.Equal(t,
 			// 	sanitization.SanitizeString("&quot;rssflowersalignright&quot;With any luck we should have one or two more days of namespaces stuff here on Scripting News. It feels like it's winding down. Later in the week I'm going to a &lt;a href=&quot;http://harvardbusinessonline.hbsp.harvard.edu/b02/en/conferences/conf_detail.jhtml?id=s775stg&amp;pid=144XCF&quot;&gt;conference&lt;/a&gt; put on by the Harvard Business School. So that should change the topic a bit. The following week I'm off to Colorado for the &lt;a href=&quot;http://www.digitalidworld.com/conference/2002/index.php&quot;&gt;Digital ID World&lt;/a&gt; conference. We had to go through namespaces, and it turns out that weblogs are a great way to work around mail lists that are clogged with &lt;a href=&quot;http://www.userland.com/whatIsStopEnergy&quot;&gt;stop energy&lt;/a&gt;. I think we solved the problem, have reached a consensus, and will be ready to move forward shortly."),
-			// 	r.Channel.Items[0].GetDescription(),
+			// 	feed.Channel.Items[0].GetDescription(),
 			// )
 			assert.Equal(t, "Sun, 29 Sep 2002 11:13:10 GMT", item.GetPublishedDate().Format(time.RFC1123))
 			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GUID.Value.String())
@@ -276,7 +270,7 @@ var rssMustPass = map[string]rssTestSuite{
 	// rss91rab.xml
 	// rss91u_entity.xml
 	// slash_zero_comments.xml
-	// "sy_updateBase.xml": {wantErr: false},
+	// "sy_updateBase.xml": {wantInvalid: false},
 	// sy_updateFrequency.xml
 	// sy_updatePeriod_daily.xml
 	// sy_updatePeriod_hourly.xml
@@ -286,7 +280,7 @@ var rssMustPass = map[string]rssTestSuite{
 	// thr_children.xml
 	// ulcc_channel_url.xml
 	// ulcc_item_url.xml
-	// "unexpected_text.xml": {wantErr: true},
+	// "unexpected_text.xml": {wantInvalid: true},
 	// unknown_element2.xml
 	// unknown_element_in_known_namespace.xml
 	// unknown_element.xml
@@ -310,67 +304,67 @@ var rssMustPass = map[string]rssTestSuite{
 
 var rss20 = map[string]rssTestSuite{
 	"element-channel-image-description/image_no_description.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.NotNil(t, r.Channel.Image)
-			assert.Equal(t, "Valid image", r.Channel.Image.Title)
-			assert.Equal(t, "http://purl.org/rss/2.0/", r.Channel.Image.Link)
-			assert.Equal(t, "http://example.com/image.jpg", r.Channel.Image.URL)
+
+			assert.NotNil(t, feed.Channel.Image)
+			assert.Equal(t, "Valid image", feed.Channel.Image.Title)
+			assert.Equal(t, "http://purl.org/rss/2.0/", feed.Channel.Image.Link)
+			assert.Equal(t, "http://example.com/image.jpg", feed.Channel.Image.URL)
 		},
 	},
 	"element-channel/multiple_category.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Len(t, r.Channel.Categories, 2)
-			assert.Equal(t, "Weblogging", r.Channel.Categories[0].String())
-			assert.Equal(t, "Navel-gazing", r.Channel.Categories[1].String())
+
+			assert.Len(t, feed.Channel.Categories, 2)
+			assert.Equal(t, "Weblogging", feed.Channel.Categories[0].String())
+			assert.Equal(t, "Navel-gazing", feed.Channel.Categories[1].String())
 		},
 	},
-	"element-channel/missing_channel_description.xml":               {wantErr: true},
-	"element-channel/missing_channel_link.xml":                      {wantErr: true},
-	"element-channel/missing_channel_title.xml":                     {wantErr: true},
-	"element-channel-item/invalid_item_no_title_or_description.xml": {wantErr: true},
-	"element-channel-link/invalid_link.xml":                         {wantErr: true},
-	"element-channel-link/invalid_link2.xml":                        {wantErr: true},
+	"element-channel/missing_channel_description.xml":               {wantInvalid: true},
+	"element-channel/missing_channel_link.xml":                      {wantInvalid: true},
+	"element-channel/missing_channel_title.xml":                     {wantInvalid: true},
+	"element-channel-item/invalid_item_no_title_or_description.xml": {wantInvalid: true},
+	"element-channel-link/invalid_link.xml":                         {wantInvalid: true},
+	"element-channel-link/invalid_link2.xml":                        {wantInvalid: true},
 	"element-channel-link/link.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "http://purl.org/rss/2.0/", r.Channel.GetLink())
+
+			assert.Equal(t, "http://purl.org/rss/2.0/", feed.Channel.GetLink())
 		},
 	},
 	"element-channel-link/link_contains_comma.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", r.Channel.GetLink())
+
+			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", feed.Channel.GetLink())
 		},
 	},
 	"element-channel-link/link_ftp.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			assert.Equal(t, "ftp://purl.org/rss/2.0/", r.Channel.GetLink())
+
+			assert.Equal(t, "ftp://purl.org/rss/2.0/", feed.Channel.GetLink())
 		},
 	},
-	"element-rss/missing_channel.xml":           {wantErr: true},
-	"element-rss/missing_version_attribute.xml": {wantErr: true},
+	"element-rss/missing_channel.xml":           {wantInvalid: true},
+	"element-rss/missing_version_attribute.xml": {wantInvalid: true},
 }
 
 var rssMedia = map[string]rssTestSuite{
 	"example1.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			item := r.Channel.Items[0]
+
+			item := feed.Channel.Items[0]
 			assert.Equal(t, "Story about something", item.GetTitle())
 			assert.Equal(t, "http://www.foo.com/item1.htm", item.GetLink())
 			assert.Equal(t, "http://www.foo.com/file.mov", item.Enclosure.URL)
@@ -379,11 +373,13 @@ var rssMedia = map[string]rssTestSuite{
 		},
 	},
 	"example2.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			item := r.Channel.Items[0]
+
+			assert.Len(t, feed.Channel.Items, 1)
+			item := feed.Channel.Items[0]
+			assert.NotNil(t, item.MediaContent)
 			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
 			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
 			assert.Equal(t, 12216320, item.MediaContent.FileSize)
@@ -393,11 +389,12 @@ var rssMedia = map[string]rssTestSuite{
 		},
 	},
 	"example3.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			item := r.Channel.Items[0]
+
+			assert.Len(t, feed.Channel.Items, 1)
+			item := feed.Channel.Items[0]
 			assert.Equal(t, "The latest video from an artist", item.GetTitle())
 			if assert.NotNil(t, item.MediaContent) {
 				assert.Equal(t, "http://www.foo.com/movie.mov", item.MediaContent.Url)
@@ -428,11 +425,12 @@ var rssMedia = map[string]rssTestSuite{
 		},
 	},
 	"valid_thumbnail_time_hms.xml": {
-		wantErr: false,
-		tests: func(t *testing.T, feed *Feed) {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			r := toRSS(t, feed)
-			item := r.Channel.Items[0]
+
+			assert.Len(t, feed.Channel.Items[0], 1)
+			item := feed.Channel.Items[0]
 			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
 			assert.Equal(t, "http://www.foo.com/item1.htm", item.GetLink())
 			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
@@ -450,15 +448,6 @@ var rssTests = map[string]map[string]rssTestSuite{
 	"test/assets/rss/must":  rssMustPass,
 	"test/assets/ext/media": rssMedia,
 	"test/assets/rss20":     rss20,
-}
-
-func toRSS(t *testing.T, source *Feed) *rss.RSS {
-	t.Helper()
-	r, ok := source.FeedSource.(*rss.RSS)
-	if !ok {
-		t.Fatal("Unable to convert to RSS")
-	}
-	return r
 }
 
 func TestNewFeedFromBytesRSS(t *testing.T) {
@@ -494,15 +483,23 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			feed, err := NewFeedFromBytes[*rss.RSS](tt.args.data)
-			// Check test suite error condition.
-			if (err != nil) != tt.suite.wantErr {
-				t.Fatalf("NewFeedFromBytes() error = %v, wantErr %v", err, tt.suite.wantErr)
+			feed, err := Decode[*rss.RSS]("", tt.args.data)
+			if (err != nil) != tt.suite.wantDecodeErr {
+				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return
 			}
+
 			// Run test suites.
 			if tt.suite.tests != nil {
 				tt.suite.tests(t, feed)
+			}
+			// If wantErr, make sure that occurs.
+			if tt.suite.wantInvalid {
+				err := feed.Validate()
+				if (err != nil) != tt.suite.wantInvalid {
+					t.Fatalf("Validate() error = %v, wantErr %v", err, tt.suite.wantInvalid)
+					return
+				}
 			}
 		})
 	}

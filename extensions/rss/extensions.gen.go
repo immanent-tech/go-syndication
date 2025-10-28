@@ -4,9 +4,10 @@
 package rss
 
 import (
+	"encoding/xml"
+
 	"github.com/immanent-tech/go-syndication/types"
 	externalRef1 "github.com/immanent-tech/go-syndication/types"
-	"github.com/nbio/xml"
 )
 
 // ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.

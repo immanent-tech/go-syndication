@@ -101,7 +101,7 @@ func (e *Entry) GetRights() string {
 // or <lang> elements.
 func (e *Entry) GetLanguage() string {
 	switch {
-	case e.DCLanguage != "":
+	case e.DCLanguage.String() != "":
 		return e.DCLanguage.String()
 	case e.Lang != "":
 		return e.Lang

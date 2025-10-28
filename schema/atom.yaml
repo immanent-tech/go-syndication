@@ -14,15 +14,6 @@ info:
     url: https://spdx.org/licenses/AGPL-3.0-only.html
 components:
   schemas:
-    XMLName:
-      description: >
-        represents the XML namespace of an element.
-      x-go-type: 'xml.Name'
-      x-go-type-import:
-        path: github.com/nbio/xml
-      x-oapi-codegen-extra-tags:
-        json: 'xml'
-        validate: 'required'
     Type:
       description: >
         represents what the content of the element is.
@@ -71,7 +62,7 @@ components:
         - value
       properties:
         XMLName:
-          $ref: '#/components/schemas/XMLName'
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           type: string
           x-oapi-codegen-extra-tags:
@@ -92,7 +83,7 @@ components:
         - value
       properties:
         XMLName:
-          $ref: '#/components/schemas/XMLName'
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           type: string
           x-oapi-codegen-extra-tags:
@@ -111,7 +102,7 @@ components:
         - value
       properties:
         XMLName:
-          $ref: '#/components/schemas/XMLName'
+          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
           type: string
           x-oapi-codegen-extra-tags:
@@ -173,7 +164,7 @@ components:
             - value
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
             value:
               x-go-type: types.DateTime
               x-oapi-codegen-extra-tags:
@@ -194,7 +185,7 @@ components:
               type: string
               x-oapi-codegen-extra-tags:
                 xml: ',chardata'
-                validate: 'required,uri|urn_rfc2141'
+                validate: 'required,uri|urn_rfc2141|ascii'
       x-go-name: ID
       x-oapi-codegen-extra-tags:
         xml: 'id'
@@ -210,7 +201,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
       x-oapi-codegen-extra-tags:
         xml: 'title'
         json: 'title'
@@ -226,7 +217,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
       x-oapi-codegen-extra-tags:
         xml: 'updated'
         json: 'updated'
@@ -242,15 +233,13 @@ components:
             - term
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
             value:
               $ref: 'types.yaml#/components/schemas/OptionalValue'
             term:
               description: >
                 is a string that identifies the category to which the entry or feed belongs.
               x-go-type: xml.Attr
-              x-go-type-import:
-                path: github.com/nbio/xml
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
@@ -261,8 +250,6 @@ components:
               description: >
                 is an IRI that identifies a categorization scheme.
               x-go-type: xml.Attr
-              x-go-type-import:
-                path: github.com/nbio/xml
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
@@ -272,8 +259,6 @@ components:
               description: >
                 provides a human-readable label for display in end-user applications.
               x-go-type: xml.Attr
-              x-go-type-import:
-                path: github.com/nbio/xml
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
@@ -302,7 +287,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
             value:
               $ref: 'types.yaml#/components/schemas/OptionalValue'
             uri:
@@ -350,7 +335,7 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'href,attr'
-                validate: 'required,url'
+                validate: 'required,url|hostname'
             hreflang:
               description: >
                 identifies the language used by the related resource using an HTML language code.
@@ -446,7 +431,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
       x-oapi-codegen-extra-tags:
         xml: 'rights,omitempty'
         json: 'rights,omitempty'
@@ -461,7 +446,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
       x-oapi-codegen-extra-tags:
         xml: 'published,omitempty'
         json: 'published,omitempty'
@@ -475,7 +460,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
       x-oapi-codegen-extra-tags:
         xml: 'subtitle,omitempty'
         json: 'subtitle,omitempty'
@@ -489,7 +474,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
       x-oapi-codegen-extra-tags:
         xml: 'summary,omitempty'
         json: 'summary,omitempty'
@@ -503,7 +488,7 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
             type:
               $ref: '#/components/schemas/Type'
             src:
@@ -558,7 +543,7 @@ components:
             - updated
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
             ID:
               $ref: '#/components/schemas/ID'
             title:
@@ -633,7 +618,7 @@ components:
             - updated
           properties:
             XMLName:
-              $ref: '#/components/schemas/XMLName'
+              $ref: 'types.yaml#/components/schemas/XMLName'
             ID:
               $ref: '#/components/schemas/ID'
             title:

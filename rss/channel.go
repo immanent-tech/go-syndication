@@ -93,7 +93,7 @@ func (c *Channel) GetRights() string {
 // or <lang> elements.
 func (c *Channel) GetLanguage() string {
 	switch {
-	case c.DCLanguage != "":
+	case c.DCLanguage.String() != "":
 		return c.DCLanguage.String()
 	case c.Language != "":
 		return c.Language

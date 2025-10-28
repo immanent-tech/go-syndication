@@ -12,6 +12,13 @@ info:
     url: https://spdx.org/licenses/AGPL-3.0-only.html
 components:
   schemas:
+    XMLName:
+      description: >
+        represents the XML namespace of an element.
+      x-go-type: 'xml.Name'
+      x-oapi-codegen-extra-tags:
+        json: 'xml'
+        validate: 'required'
     NameSpace:
       description: >
         maps namespace URL identifiers to a easy-to-use string type.
@@ -47,8 +54,6 @@ components:
       type: array
       items:
         x-go-type: xml.Attr
-        x-go-type-import:
-          path: github.com/nbio/xml
       x-oapi-codegen-extra-tags:
         xml: ',any,attr'
         json: 'attributes'
@@ -64,8 +69,6 @@ components:
           description: >
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
-          x-go-type-import:
-            path: github.com/nbio/xml
           x-oapi-codegen-extra-tags:
             json: 'xml'
             validate: 'required'
@@ -130,13 +133,26 @@ components:
         represents character data of an element.
       type: object
       required:
+        - XMLName
         - value
       properties:
+        XMLName:
+          $ref: '#/components/schemas/XMLName'
         value:
           x-go-type: 'xml.CharData'
-          x-go-type-import:
-            path: github.com/nbio/xml
-          x-oapi-codegen-extra-tags:
-            json: 'CharData'
+      x-oapi-codegen-extra-tags:
+        xml: ',chardata'
+    StringData:
+      description: >
+        represents string data of an element.
+      type: object
+      required:
+        - XMLName
+        - value
+      properties:
+        XMLName:
+          $ref: '#/components/schemas/XMLName'
+        value:
+          type: string
       x-oapi-codegen-extra-tags:
         xml: ',chardata'

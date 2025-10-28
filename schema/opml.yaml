@@ -26,12 +26,7 @@ components:
         - version
       properties:
         XMLName:
-          x-go-type: 'xml.Name'
-          x-go-type-import:
-            path: github.com/nbio/xml
-          x-oapi-codegen-extra-tags:
-            json: 'xml'
-            validate: 'required'
+          $ref: 'types.yaml#/components/schemas/XMLName'
         head:
           $ref: '#/components/schemas/Head'
         body:
