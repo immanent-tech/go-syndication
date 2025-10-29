@@ -72,22 +72,7 @@ func (i *Item) UnmarshalJSON(v []byte) error {
 type Feed struct {
 	types.FeedSource `json:"source"`
 
-	SourceType SourceType  `json:"type"`
-	URLs       []types.URL `json:"source_urls"`
-}
-
-// Links returns all the known links to the feed source.
-func (f *Feed) Links() []types.URL {
-	links := f.URLs
-	if f.GetSourceURL() != "" {
-		links = append(links, f.GetSourceURL())
-	}
-	return links
-}
-
-// AddLink adds the given URL to the list of URLs that points to the feed source.
-func (f *Feed) AddLink(url types.URL) {
-	f.URLs = append(f.URLs, url)
+	SourceType SourceType `json:"type"`
 }
 
 // GetItems retrieves a slice of Item for the Feed.

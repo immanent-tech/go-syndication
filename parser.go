@@ -260,7 +260,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 
 	// If the source URL is not set, set it.
 	if feed.GetSourceURL() == "" || feed.GetSourceURL() != url {
-		feed.AddLink(url)
+		feed.SetSourceURL(url)
 	}
 
 	return FeedResult{URL: url, Feed: feed}
