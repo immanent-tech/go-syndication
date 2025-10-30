@@ -116,7 +116,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
 
-			assert.Equal(t, "en-us", feed.Channel.DCLanguage.String())
+			assert.Equal(t, "en-us", feed.Channel.DCLanguage)
 		},
 	},
 	"dclanguage.xml": {
@@ -124,7 +124,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
 
-			assert.Equal(t, "en", feed.Channel.DCLanguage.String())
+			assert.Equal(t, "en", feed.Channel.DCLanguage)
 		},
 	},
 	// "doctype_not_entity.xml": {
