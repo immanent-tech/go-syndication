@@ -17,6 +17,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/go-resty/resty/v2"
 	"github.com/go-shiori/go-readability"
 	"golang.org/x/net/html"
@@ -220,17 +221,16 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 		// Likely a feed but mimetype is ambiguous.
 		// Try RSS first...
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
-		if err != nil {
+		if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
 			slog.DebugContext(ctx, "Failed to parse indeterminate feed as RSS.",
 				slog.Any("error", err),
 				slog.String("url", url),
 			)
+		} else {
+			break
 		}
-		// Try Atom if that failed...
-		if err != nil {
-			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
-		}
-		if err != nil {
+		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
+		if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
 			slog.DebugContext(ctx, "Failed to parse indeterminate feed as Atom.",
 				slog.Any("error", err),
 				slog.String("url", url),
