@@ -218,23 +218,18 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 		// Atom.
 		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
 	case isMimeType(content, types.MimeTypesIndeterminate):
-		// Likely a feed but mimetype is ambiguous.
-		// Try RSS first...
-		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
-		if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
-			slog.DebugContext(ctx, "Failed to parse indeterminate feed as RSS.",
-				slog.Any("error", err),
-				slog.String("url", url),
-			)
-		} else {
-			break
-		}
-		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
-		if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
-			slog.DebugContext(ctx, "Failed to parse indeterminate feed as Atom.",
-				slog.Any("error", err),
-				slog.String("url", url),
-			)
+		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
+		switch {
+		case bytes.Contains(resp.Body(), []byte("<feed")):
+			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
+			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
+				return FeedResult{Err: fmt.Errorf("could not parse as atom: %w", err)}
+			}
+		case bytes.Contains(resp.Body(), []byte("<rss")):
+			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
+			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
+				return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
+			}
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
 		// JSONFeed
