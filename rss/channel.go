@@ -53,7 +53,7 @@ func (c *Channel) SetSourceURL(url string) {
 
 // GetLink retrieves the <link> (if any) of the Channel. This is the link to the website associated with the RSS feed.
 func (c *Channel) GetLink() string {
-	return c.Link
+	return c.Link.String()
 }
 
 // GetAuthors retrieves the authors (if any) of the Channel. This will be the list of values from any <dc:creator>
@@ -95,8 +95,8 @@ func (c *Channel) GetLanguage() string {
 	switch {
 	case c.DCLanguage != "":
 		return c.DCLanguage
-	case c.Language != "":
-		return c.Language
+	case c.Language.String() != "":
+		return c.Language.String()
 	default:
 		return ""
 	}

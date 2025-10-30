@@ -34,7 +34,7 @@ func (i *Item) GetTitle() string {
 
 // GetLink retrieves the <link> (if any) of the Item.
 func (i *Item) GetLink() string {
-	return i.Link
+	return i.Link.String()
 }
 
 // GetDescription retrieves the <description> (if any) of the Item.

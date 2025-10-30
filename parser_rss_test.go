@@ -176,7 +176,7 @@ var rssMustPass = map[string]rssTestSuite{
 	"invalid_sy_updateFrequency_zero.xml":     {wantInvalid: true},
 	// "invalid_sy_updatePeriod_blank.xml":       {wantInvalid: true},
 	// "invalid_sy_updatePeriod.xml": {wantInvalid: true},
-	"invalid_xml.xml": {wantInvalid: true},
+	"invalid_xml.xml": {wantDecodeErr: true},
 	// "l_permalink.xml":
 	"missing_namespace2.xml":          {wantInvalid: true},
 	"missing_namespace_attr_only.xml": {wantInvalid: true},
@@ -243,7 +243,7 @@ var rssMustPass = map[string]rssTestSuite{
 			assert.Equal(t, "en-us", feed.Channel.GetLanguage())
 			assert.Equal(t, "Copyright 1997-2002 Dave Winer", feed.Channel.Copyright.String())
 			assert.Equal(t, "Mon, 30 Sep 2002 11:00:00 GMT", feed.Channel.LastBuildDate.Format(time.RFC1123))
-			assert.Equal(t, "http://backend.userland.com/rss", feed.Channel.Docs)
+			assert.Equal(t, "http://backend.userland.com/rss", feed.Channel.Docs.String())
 			assert.Equal(t, "Radio UserLand v8.0.5", feed.Channel.Generator.String())
 			assert.True(t, slices.Contains(feed.Channel.GetCategories(), "1765"))
 			assert.Equal(t, "dave@userland.com", feed.Channel.ManagingEditor.String())

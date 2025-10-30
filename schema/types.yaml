@@ -142,17 +142,4 @@ components:
           x-go-type: 'xml.CharData'
       x-oapi-codegen-extra-tags:
         xml: ',chardata'
-    StringData:
-      description: >
-        represents string data of an element.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: '#/components/schemas/XMLName'
-        value:
-          type: string
-      x-oapi-codegen-extra-tags:
-        xml: ',chardata'
+

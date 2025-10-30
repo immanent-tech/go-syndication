@@ -81,14 +81,18 @@ func (c *CharData) String() string {
 	return html.UnescapeString(string(c.Value))
 }
 
-// type StringData string
+// String is custom string type that handles "malformed" string fields containing whitespace or forbidden input.
+//
+//nolint:recvcheck
+type String string
 
-func (s *StringData) UnmarshalText(data []byte) error {
+// UnmarshalText provides custom unmarshaling of String that will sanitize, unescape and trim whitespace from the value.
+func (s *String) UnmarshalText(data []byte) error {
 	safeData := sanitization.SanitizeBytes(data)
-	s.Value = string(safeData)
+	*s = String(safeData)
 	return nil
 }
 
-func (s *StringData) String() string {
-	return html.UnescapeString(string(s.Value))
+func (s String) String() string {
+	return html.UnescapeString(string(s))
 }

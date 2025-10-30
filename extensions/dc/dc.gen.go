@@ -9,49 +9,49 @@ import (
 )
 
 // DCContributor is an entity responsible for making contributions to the resource.
-type DCContributor = types.StringData
+type DCContributor = types.String
 
 // DCCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
-type DCCoverage = types.StringData
+type DCCoverage = types.String
 
 // DCCreator is an entity primarily responsible for making the resource.
-type DCCreator = types.StringData
+type DCCreator = types.String
 
 // DCDate is a point or period of time associated with an event in the lifecycle of the resource.
 type DCDate = types.DateTime
 
 // DCDescription may include but is not limited to: an abstract, table of contents, reference to a graphical representation of content or a free-text account of the content.
-type DCDescription = types.StringData
+type DCDescription = types.String
 
 // DCFormat is the file format, physical medium, or dimensions of the resource.
-type DCFormat = types.StringData
+type DCFormat = types.String
 
 // DCIdentifier is an unambiguous reference to the resource within a given context.
-type DCIdentifier = types.StringData
+type DCIdentifier = types.String
 
 // DCLanguage is the primary language encapsulated in the element.
 type DCLanguage = externalRef0.Language
 
 // DCPublisher is an entity responsible for making the resource available.
-type DCPublisher = types.StringData
+type DCPublisher = types.String
 
 // DCRelation is a related resource.
-type DCRelation = types.StringData
+type DCRelation = types.String
 
 // DCRights is information about rights held in and over the resource.
-type DCRights = types.StringData
+type DCRights = types.String
 
 // DCSource is a related resource from which the described resource is derived.
-type DCSource = types.StringData
+type DCSource = types.String
 
 // DCSubject is the topic of the resource.
-type DCSubject = types.StringData
+type DCSubject = types.String
 
 // DCTitle is a name by which the resource is formally known.
-type DCTitle = types.StringData
+type DCTitle = types.String
 
 // DCType is the nature or genre of the resource.
-type DCType = types.StringData
+type DCType = types.String
 
 // DublinCoreElements contains Dublin Core extension elements.
 type DublinCoreElements struct {

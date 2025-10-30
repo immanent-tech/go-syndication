@@ -16,7 +16,7 @@ components:
     DCTitle:
       description: >
         is a name by which the resource is formally known.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_title,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ title,omitempty'
@@ -25,7 +25,7 @@ components:
       description: >
         may include but is not limited to: an abstract, table of contents, reference to a graphical representation of
         content or a free-text account of the content.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_description,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ description,omitempty'
@@ -33,7 +33,7 @@ components:
     DCContributor:
       description: >
         is an entity responsible for making contributions to the resource.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_contributor,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ contributor,omitempty'
@@ -41,7 +41,7 @@ components:
     DCCreator:
       description: >
         is an entity primarily responsible for making the resource.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_creator,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ creator,omitempty'
@@ -50,7 +50,7 @@ components:
       description: >
         is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under
         which the resource is relevant.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_coverage,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ coverage,omitempty'
@@ -58,7 +58,7 @@ components:
     DCFormat:
       description: >
         is the file format, physical medium, or dimensions of the resource.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_format,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ format,omitempty'
@@ -66,7 +66,7 @@ components:
     DCIdentifier:
       description: >
         is an unambiguous reference to the resource within a given context.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_identifier,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ identifier,omitempty'
@@ -74,7 +74,7 @@ components:
     DCPublisher:
       description: >
         is an entity responsible for making the resource available.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_publisher,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ publisher,omitempty'
@@ -82,7 +82,7 @@ components:
     DCRelation:
       description: >
         is a related resource.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_relation,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ relation,omitempty'
@@ -91,7 +91,7 @@ components:
       description: >
         is information about rights held in and over the resource.
       type: object
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_rights,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ rights,omitempty'
@@ -99,7 +99,7 @@ components:
     DCSubject:
       description: >
         is the topic of the resource.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_subject,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ subject,omitempty'
@@ -107,7 +107,7 @@ components:
     DCType:
       description: >
         is the nature or genre of the resource.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_type,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ type,omitempty'
@@ -115,7 +115,7 @@ components:
     DCSource:
       description: >
         is a related resource from which the described resource is derived.
-      x-go-type: 'types.StringData'
+      x-go-type: 'types.String'
       x-oapi-codegen-extra-tags:
         json: 'dc_source,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ source,omitempty'
