@@ -123,7 +123,8 @@ components:
     DCLanguage:
       description: >
         identifies the language used by the related resource using an HTML language code.
-      x-go-type: 'types.StringData'
+      allOf:
+        - $ref: 'types-elements.yaml#/components/schemas/Language'
       x-oapi-codegen-extra-tags:
         json: 'dc_language,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ language,omitempty'

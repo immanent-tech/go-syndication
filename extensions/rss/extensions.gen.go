@@ -43,8 +43,8 @@ type SYUpdateFrequency struct {
 // SYUpdatePeriod is the period over which the channel format is updated.
 type SYUpdatePeriod struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName XMLName          `json:"xml" validate:"required"`
-	Value   types.StringData `json:"value" validate:"required,oneof=hourly daily weekly monthly yearly" xml:",chardata"`
+	XMLName XMLName `json:"xml" validate:"required"`
+	Value   string  `json:"value" validate:"required,oneof=hourly daily weekly monthly yearly" xml:",chardata"`
 }
 
 // SyndicationElements contains all syndication extension elements.

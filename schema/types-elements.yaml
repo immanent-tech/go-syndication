@@ -14,7 +14,7 @@ components:
   schemas:
     Language:
       description: >
-        is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
+        is the primary language encapsulated in the element.
       type: string
       x-oapi-codegen-extra-tags:
         xml: 'language,omitempty'

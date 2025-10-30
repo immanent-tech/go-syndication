@@ -83,8 +83,8 @@ func (i *Item) GetRights() string {
 // present.
 func (i *Item) GetLanguage() string {
 	switch {
-	case i.DCLanguage.String() != "":
-		return i.DCLanguage.String()
+	case i.DCLanguage != "":
+		return i.DCLanguage
 	default:
 		return ""
 	}

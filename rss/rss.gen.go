@@ -29,6 +29,17 @@ const (
 	N201 RSSVersion = "2.0.1"
 )
 
+// Defines values for SkipDaysDay.
+const (
+	SkipFriday    SkipDaysDay = "Friday"
+	SkipMonday    SkipDaysDay = "Monday"
+	SkipSaturday  SkipDaysDay = "Saturday"
+	SkipSunday    SkipDaysDay = "Sunday"
+	SkipThursday  SkipDaysDay = "Thursday"
+	SkipTuesday   SkipDaysDay = "Tuesday"
+	SkipWednesday SkipDaysDay = "Wednesday"
+)
+
 // Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
 type Author = types.StringData
 
@@ -233,7 +244,7 @@ type Channel struct {
 	// Items is a list of the current items published to the channel.
 	Items []Item `json:"items,omitempty,omitzero" validate:"omitempty,dive,validateFn" xml:"item,omitempty"`
 
-	// Language is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
+	// Language is the primary language encapsulated in the element.
 	Language externalRef7.Language `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
 
 	// LastBuildDate is the last time the content of the channel changed.
@@ -296,7 +307,7 @@ type ChannelElements struct {
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
-	// Language is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066.
+	// Language is the primary language encapsulated in the element.
 	Language externalRef7.Language `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
 
 	// LastBuildDate is the last time the content of the channel changed.
@@ -621,8 +632,11 @@ type Rating = types.StringData
 
 // SkipDays is a hint for aggregators telling them which days they can skip. This
 type SkipDays struct {
-	Day []types.StringData `json:"day,omitempty,omitzero" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day,omitempty"`
+	Day []SkipDaysDay `json:"day,omitempty,omitzero" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day,omitempty"`
 }
+
+// SkipDaysDay is a day of the week to skip.
+type SkipDaysDay string
 
 // SkipHours is a hint for aggregators telling them which hours they can skip.
 type SkipHours struct {

@@ -328,7 +328,7 @@ components:
           items:
             description: >
               is a day of the week to skip.
-            x-go-type: 'types.StringData'
+            type: string
             enum:
               [
                 'Monday',

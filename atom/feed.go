@@ -118,8 +118,8 @@ func (f *Feed) GetRights() string {
 // or <lang> elements.
 func (f *Feed) GetLanguage() string {
 	switch {
-	case f.DCLanguage.String() != "":
-		return f.DCLanguage.String()
+	case f.DCLanguage != "":
+		return f.DCLanguage
 	case f.Lang != "":
 		return f.Lang
 	default:
