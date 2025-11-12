@@ -115,7 +115,7 @@ func (i *Item) GetImage() *types.ImageInfo {
 	switch {
 	case i.Image != nil:
 		return &types.ImageInfo{
-			URL:   i.Image.Link,
+			URL:   i.Image.URL,
 			Title: &i.Image.Title,
 		}
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
