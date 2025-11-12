@@ -31,8 +31,8 @@ import (
 
 var (
 	// ErrParseFeed indicates an error parsing the feed content.
-	ErrParseFeed  = errors.New("unable to parse")
-	ErrParseImage = errors.New("unable to parse an image")
+	ErrParseFeed = errors.New("unable to parse")
+	ErrNotFound  = errors.New("not found")
 	// ErrUnmarshal indicates an error unmarshaling the feed from its native format.
 	ErrUnmarshal = errors.New("unable to unmarshal")
 	// ErrUnsupportedFormat indicates that feed format is not known and cannot be parsed.
@@ -274,22 +274,43 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 }
 
 // discoverFeedImage attempts to find a suitable image to use for a feed.
-func discoverFeedImage(sourceURL string, timeout time.Duration) (*types.ImageInfo, error) {
-	page, err := readability.FromURL(sourceURL, timeout)
+func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, error) {
+	// Parse feed string as URL.
+	sourceURL, err := url.Parse(feed)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse %s, %w", sourceURL, err)
+		return nil, fmt.Errorf("discover feed image: failed to parse url %s: %w", feed, err)
 	}
+	// Parse URL and extract readability content.
+	page, err := readability.FromURL(sourceURL.String(), timeout)
+	if err != nil {
+		return nil, fmt.Errorf("discover feed image: failed to parse url %s: %w", feed, err)
+	}
+	// Determine best image from readability content.
+	var img string
 	switch {
 	case page.Image != "":
-		return &types.ImageInfo{URL: page.Image}, nil
+		img = page.Image
 	case page.Favicon != "":
-		return &types.ImageInfo{URL: page.Favicon}, nil
+		img = page.Favicon
 	default:
-		return nil, ErrParseImage
+		return nil, fmt.Errorf("discover feed image: %s: %w", feed, ErrNotFound)
 	}
+	// Parse the image string as a URL.
+	imgURL, err := url.Parse(img)
+	if err != nil {
+		return nil, fmt.Errorf("discover feed image: failed to parse image url %s: %w", img, err)
+	}
+	// If the image URL is not absolute, assume it is based on the feed base URL and generate a new URL as appropriate.
+	if !imgURL.IsAbs() {
+		sourceURL.Path = imgURL.String()
+		return &types.ImageInfo{URL: sourceURL.String()}, nil
+	}
+	return &types.ImageInfo{URL: imgURL.String()}, nil
 }
 
 // discoverFeedURL attempts to find a feed URL within a HTML page.
+//
+//nolint:gocognit
 func discoverFeedURL(path string, content []byte) (string, error) {
 	pageURL, err := url.Parse(path)
 	if err != nil {
