@@ -34,6 +34,8 @@ var DateTimeFormats = []string{
 	time.DateOnly + "T" + "15:04-07:00", // DC no seconds.
 	"2006-01",                           // DC year and month only.
 	"2006",                              // DC year only.
+	"Jan 2, 2006",                       // Invalid but rarely used...
+	"2006 Jan 2 15:04:05 MST",           // Invalid but rarely used...
 }
 
 // UnixEpoch is the time.Time value of Unix epoch.

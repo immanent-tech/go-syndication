@@ -199,7 +199,10 @@ func FindFeedImage(ctx context.Context, feed *Feed) error {
 // parseFeedURL attempts to parse the given URL as a feed source.
 func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedResult {
 	// Get the feed data.
-	resp, err := client.R().SetContext(ctx).Get(url)
+	resp, err := client.R().
+		SetHeader("Accept", "*/*").
+		SetContext(ctx).
+		Get(url)
 	if err != nil {
 		return FeedResult{URL: url, Err: fmt.Errorf("%w: failed to get url: %w", ErrParseFeed, err)}
 	}
