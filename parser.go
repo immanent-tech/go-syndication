@@ -218,15 +218,21 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	var feed *Feed
 	switch {
 	case isMimeType(content, types.MimeTypesRSS):
-		slog.Debug("Mimetype indicates RSS, parsing as RSS...")
+		slog.Debug("Mimetype indicates RSS, parsing as RSS...",
+			slog.String("url", url),
+		)
 		// RSS.
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
 	case isMimeType(content, types.MimeTypesAtom):
-		slog.Debug("Mimetype indicates Atom, parsing as Atom...")
+		slog.Debug("Mimetype indicates Atom, parsing as Atom...",
+			slog.String("url", url),
+		)
 		// Atom.
 		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
 	case isMimeType(content, types.MimeTypesIndeterminate):
-		slog.Debug("Mimetype is ambiguous, examining content for clues...")
+		slog.Debug("Mimetype is ambiguous, examining content for clues...",
+			slog.String("url", url),
+		)
 		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
 		switch {
 		case bytes.Contains(resp.Body(), []byte("<feed")):
@@ -243,11 +249,15 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 			}
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
-		slog.Debug("Content indicates JSONFeed, parsing as JSONFeed...")
+		slog.Debug("Content indicates JSONFeed, parsing as JSONFeed...",
+			slog.String("url", url),
+		)
 		// JSONFeed
 		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body())
 	case isMimeType(content, types.MimeTypesHTML):
-		slog.Debug("HTML link, trying to find a feed URL in HTML...")
+		slog.Debug("HTML link, trying to find a feed URL in HTML...",
+			slog.String("url", url),
+		)
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
 		url, err := discoverFeedURL(url, resp.Body())
@@ -268,6 +278,10 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	// If the source URL is not set, set it.
 	if feed.GetSourceURL() == "" || feed.GetSourceURL() != url {
 		feed.SetSourceURL(url)
+	}
+
+	// Make sure link is populated.
+	if feed.SourceType == TypeRSS {
 	}
 
 	return FeedResult{URL: url, Feed: feed}

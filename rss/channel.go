@@ -53,6 +53,9 @@ func (c *Channel) SetSourceURL(url string) {
 
 // GetLink retrieves the <link> (if any) of the Channel. This is the link to the website associated with the RSS feed.
 func (c *Channel) GetLink() string {
+	if c.Link.String() == "" {
+		return c.GetSourceURL()
+	}
 	return c.Link.String()
 }
 

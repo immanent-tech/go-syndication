@@ -61,10 +61,19 @@ func (f *Feed) SetSourceURL(url string) {
 	f.Links = append(f.Links, Link{Href: url, Rel: rel, Type: types.MimeTypesAtom[0]})
 }
 
-// GetLink retrieves the <link> of the Feed. This is the link to the website associated with the RSS feed.
+// GetLink retrieves the <link> of the Feed. This is the link to the website associated with the Atom feed. Even the
+// spec is ambiguous about what link attributes constitute the correct combination to indicate the site, so we apply
+// some guesses here.
 func (f *Feed) GetLink() string {
 	for link := range slices.Values(f.Links) {
-		if link.Rel != "" && link.Rel == LinkRelAlternate {
+		// If there is a rel=self link that does not point to an atom document, use that.
+		if link.Rel == LinkRelSelf {
+			if !slices.Contains(types.MimeTypesAtom, link.Type) {
+				return link.Href
+			}
+		}
+		// If there is a rel=alt, use that.
+		if link.Rel == LinkRelAlternate {
 			return link.Href
 		}
 	}
