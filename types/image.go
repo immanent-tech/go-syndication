@@ -10,20 +10,12 @@ import (
 
 // GetTitle returns the title (if any) of the image.
 func (i *ImageInfo) GetTitle() string {
-	if i != nil {
-		if i.Title != nil && *i.Title != "" {
-			return *i.Title
-		}
-	}
-	return ""
+	return i.Title
 }
 
 // GetURL returns the URL of the image.
 func (i *ImageInfo) GetURL() string {
-	if i != nil {
-		return i.URL
-	}
-	return ""
+	return i.URL
 }
 
 // IsImage will return a boolean indicating whether the given mimetype represents an image.

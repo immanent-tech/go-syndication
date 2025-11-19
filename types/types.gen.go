@@ -45,7 +45,7 @@ type Extension struct {
 	Extensions []Extension `json:"extensions,omitempty" xml:",any"`
 
 	// Value is an element value that is optional.
-	Value *OptionalValue `json:"value,omitempty" xml:",chardata"`
+	Value OptionalValue `json:"value,omitempty,omitzero" xml:",chardata"`
 }
 
 // Extensions records any elements that are unknown extensions to the schema.
@@ -54,7 +54,7 @@ type Extensions = []Extension
 // ImageInfo is an abstraction of an Image across different types of specifications.
 type ImageInfo struct {
 	// Title the description of the image
-	Title *string `json:"title,omitempty"`
+	Title string `json:"title,omitempty,omitzero"`
 
 	// URL is the URL to the image.
 	URL string `json:"url" validate:"required,url" xml:",chardata"`

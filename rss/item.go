@@ -112,28 +112,34 @@ func (i *Item) GetCategories() []string {
 //
 // This method tries to retrieve one of these, first one wins, in the order above.
 func (i *Item) GetImage() *types.ImageInfo {
+	var img *types.ImageInfo
 	switch {
 	case i.Image != nil:
-		return &types.ImageInfo{
+		img = &types.ImageInfo{
 			URL:   i.Image.URL,
-			Title: &i.Image.Title,
+			Title: i.Image.Title,
 		}
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
-		return &types.ImageInfo{
+		img = &types.ImageInfo{
 			URL: i.Enclosure.URL,
 		}
 	case i.MediaContent != nil:
 		isImage, image := i.MediaContent.IsImage()
 		if isImage {
-			return image
+			img = image
 		}
 		return nil
 	case len(i.MediaThumbnails) > 0:
 		// Use the first thumbnail found.
-		return i.MediaThumbnails[0].AsImage()
+		img = i.MediaThumbnails[0].AsImage()
 	default:
 		return nil
 	}
+	// If the image does not have a title, set it to the item title.
+	if img.Title == "" {
+		img.Title = i.GetTitle()
+	}
+	return img
 }
 
 // GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a

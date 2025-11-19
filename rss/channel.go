@@ -127,25 +127,31 @@ func (c *Channel) GetCategories() []string {
 // the first found of either any <image> or <media:thumbnail> element. Any errors is retrieving the image will result in
 // a nil result being returned.
 func (c *Channel) GetImage() *types.ImageInfo {
+	var img *types.ImageInfo
 	switch {
 	case c.Image != nil:
-		return &types.ImageInfo{
+		img = &types.ImageInfo{
 			URL:   c.Image.URL,
-			Title: &c.Image.Title,
+			Title: c.Image.Title,
 		}
 	case len(c.MediaThumbnails) > 0:
 		// Use the first thumbnail found.
 		thumbnail := c.MediaThumbnails[0]
-		return &types.ImageInfo{
+		img = &types.ImageInfo{
 			URL: thumbnail.URL,
 		}
 	case c.ItunesImage.Href != "":
-		return &types.ImageInfo{
+		img = &types.ImageInfo{
 			URL: c.ItunesImage.Href,
 		}
 	default:
 		return nil
 	}
+	// If the image does not have a title, set it to the channel title.
+	if img.Title == "" {
+		img.Title = c.GetTitle()
+	}
+	return img
 }
 
 // SetImage sets an image for the Channel.
