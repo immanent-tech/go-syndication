@@ -151,7 +151,8 @@ func (f *Feed) GetImage() *types.ImageInfo {
 	if len(f.MediaThumbnails) > 0 {
 		thumbnail := f.MediaThumbnails[0]
 		return &types.ImageInfo{
-			URL: thumbnail.URL,
+			URL:   thumbnail.URL,
+			Title: f.GetTitle(),
 		}
 	}
 	return nil
@@ -200,5 +201,9 @@ func (f *Feed) Validate() error {
 	if len(f.GetAuthors()) == 0 && missingEntryAuthors {
 		return fmt.Errorf("%w: must have at least one author or all entries with authors", ErrFeedValidation)
 	}
-	return validation.Validate.Struct(f)
+	err := validation.Validate.Struct(f)
+	if err != nil {
+		return fmt.Errorf("feed validation failed: %w", err)
+	}
+	return nil
 }

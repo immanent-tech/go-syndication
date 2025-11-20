@@ -4,6 +4,7 @@
 package rss
 
 import (
+	"fmt"
 	"slices"
 	"time"
 
@@ -188,5 +189,9 @@ func (c *Channel) GetItems() []types.ItemSource {
 
 // Validate applies custom validation to an Channel.
 func (c *Channel) Validate() error {
-	return validation.Validate.Struct(c)
+	err := validation.Validate.Struct(c)
+	if err != nil {
+		return fmt.Errorf("channel validation failed: %w", err)
+	}
+	return nil
 }

@@ -128,12 +128,9 @@ func (i *Item) GetImage() *types.ImageInfo {
 		if isImage {
 			img = image
 		}
-		return nil
 	case len(i.MediaThumbnails) > 0:
 		// Use the first thumbnail found.
 		img = i.MediaThumbnails[0].AsImage()
-	default:
-		return nil
 	}
 	// If the image does not have a title, set it to the item title.
 	if img.Title == "" {

@@ -33,6 +33,8 @@ func (p *PersonConstruct) String() string {
 	return p.Name.Value
 }
 
+// Validate ensures that the PersonConstruct is valid. If not, it returns a non-nil error containing details of any
+// failed validation.
 func (p *PersonConstruct) Validate() error {
 	// htmlEncodedErr := validation.Validate(p.Name.Value, "html_encoded")
 	// var validateErrs validator.ValidationErrors
@@ -41,7 +43,11 @@ func (p *PersonConstruct) Validate() error {
 	// 	return fmt.Errorf("%w: name cannot be HTML encoded", ErrPersonConstruct)
 	// }
 	// returns nil or ValidationErrors ( []FieldError
-	return validation.Validate.Struct(p)
+	err := validation.Validate.Struct(p)
+	if err != nil {
+		return fmt.Errorf("person construct is not valid: %w", err)
+	}
+	return nil
 }
 
 // String returns the string-ified format of the Category. It will return the first found of: any human-readable label,

@@ -7,6 +7,7 @@
 package rss
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/types"
@@ -82,5 +83,9 @@ func (r *RSS) GetItems() []types.ItemSource {
 
 // Validate applies custom validation to an feed.
 func (r *RSS) Validate() error {
-	return validation.Validate.Struct(r)
+	err := validation.Validate.Struct(r)
+	if err != nil {
+		return fmt.Errorf("rss validation failed: %w", err)
+	}
+	return nil
 }

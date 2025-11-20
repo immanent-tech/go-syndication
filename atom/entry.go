@@ -4,6 +4,7 @@
 package atom
 
 import (
+	"fmt"
 	"slices"
 	"time"
 
@@ -125,7 +126,8 @@ func (e *Entry) GetImage() *types.ImageInfo {
 	if len(e.MediaThumbnails) > 0 {
 		thumbnail := e.MediaThumbnails[0]
 		return &types.ImageInfo{
-			URL: thumbnail.URL,
+			URL:   thumbnail.URL,
+			Title: e.GetTitle(),
 		}
 	}
 	return nil
@@ -162,6 +164,9 @@ func (e *Entry) GetContent() string {
 
 // Validate applies custom validation to an item.
 func (e *Entry) Validate() error {
-	// Perform validation based on struct tags.
-	return validation.Validate.Struct(e)
+	err := validation.Validate.Struct(e)
+	if err != nil {
+		return fmt.Errorf("entry validation failed: %w", err)
+	}
+	return nil
 }
