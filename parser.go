@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log/slog"
 	"mime"
 	"net/url"
 	"slices"
@@ -28,6 +27,9 @@ import (
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
 )
+
+// DefaultRequestTimeout is the maximum time allowed for a HTTP request issued by the library to execute.
+var DefaultRequestTimeout = 30 * time.Second
 
 var (
 	// ErrParseFeed indicates an error parsing the feed content.
@@ -182,7 +184,7 @@ func FindFeedImage(ctx context.Context, feed *Feed) error {
 	var timeout time.Duration
 	deadline, ok := ctx.Deadline()
 	if !ok {
-		timeout = 30 * time.Second
+		timeout = DefaultRequestTimeout
 	} else {
 		timeout = time.Until(deadline)
 	}
@@ -197,6 +199,8 @@ func FindFeedImage(ctx context.Context, feed *Feed) error {
 }
 
 // parseFeedURL attempts to parse the given URL as a feed source.
+//
+//nolint:gocognit
 func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedResult {
 	// Get the feed data.
 	resp, err := client.R().
@@ -218,51 +222,33 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	var feed *Feed
 	switch {
 	case isMimeType(content, types.MimeTypesRSS):
-		slog.Debug("Mimetype indicates RSS, parsing as RSS...",
-			slog.String("url", url),
-		)
 		// RSS.
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
 	case isMimeType(content, types.MimeTypesAtom):
-		slog.Debug("Mimetype indicates Atom, parsing as Atom...",
-			slog.String("url", url),
-		)
 		// Atom.
 		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
 	case isMimeType(content, types.MimeTypesIndeterminate):
-		slog.Debug("Mimetype is ambiguous, examining content for clues...",
-			slog.String("url", url),
-		)
 		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
 		switch {
 		case bytes.Contains(resp.Body(), []byte("<feed")):
-			slog.Debug("Content indicates RSS, parsing as RSS...")
 			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
 			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
 				return FeedResult{Err: fmt.Errorf("could not parse as atom: %w", err)}
 			}
 		case bytes.Contains(resp.Body(), []byte("<rss")):
-			slog.Debug("Content indicates Atom, parsing as Atom...")
 			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
 			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
 				return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
 			}
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
-		slog.Debug("Content indicates JSONFeed, parsing as JSONFeed...",
-			slog.String("url", url),
-		)
 		// JSONFeed
 		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body())
 	case isMimeType(content, types.MimeTypesHTML):
-		slog.Debug("HTML link, trying to find a feed URL in HTML...",
-			slog.String("url", url),
-		)
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
-		url, err := discoverFeedURL(url, resp.Body())
-		if err == nil && url != "" {
-			return parseFeedURL(ctx, client, url)
+		if newURL, err := discoverFeedURL(url, resp.Body()); err == nil && newURL != "" {
+			return parseFeedURL(ctx, client, newURL)
 		}
 		fallthrough
 	default:
@@ -278,10 +264,6 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	// If the source URL is not set, set it.
 	if feed.GetSourceURL() == "" || feed.GetSourceURL() != url {
 		feed.SetSourceURL(url)
-	}
-
-	// Make sure link is populated.
-	if feed.SourceType == TypeRSS {
 	}
 
 	return FeedResult{URL: url, Feed: feed}
@@ -324,7 +306,7 @@ func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 
 // discoverFeedURL attempts to find a feed URL within a HTML page.
 //
-//nolint:gocognit
+//nolint:gocognit,funlen
 func discoverFeedURL(path string, content []byte) (string, error) {
 	pageURL, err := url.Parse(path)
 	if err != nil {
@@ -335,7 +317,7 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 	for {
 		tt := page.Next()
 		var feedURL *url.URL
-		switch tt {
+		switch tt { //nolint:exhaustive // we don't want to check evey token.
 		case html.ErrorToken:
 			return "", fmt.Errorf("unable to determine feed url: %w", page.Err())
 		case html.SelfClosingTagToken:
@@ -347,8 +329,10 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 			// Canonical link with appropriate attributes.
 			if slices.ContainsFunc(tkn.Attr,
 				func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" }) &&
-				slices.ContainsFunc(tkn.Attr,
-					func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) }) {
+				slices.ContainsFunc(
+					tkn.Attr,
+					func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) },
+				) {
 				found = true
 			}
 			// Link ends in feed type...
@@ -390,7 +374,10 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 				continue
 			}
 			// Get the link.
-			idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") })
+			idx := slices.IndexFunc(
+				tkn.Attr,
+				func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") },
+			)
 			if idx == -1 {
 				continue
 			}
@@ -398,9 +385,6 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 			if err != nil {
 				return tkn.Attr[idx].Val, fmt.Errorf("found URL but unable to parse: %w", err)
 			}
-			slog.Debug("Found potential feed URL",
-				slog.String("url", feedURL.String()),
-			)
 		}
 		if feedURL == nil {
 			continue
