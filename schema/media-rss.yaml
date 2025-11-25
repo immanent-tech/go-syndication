@@ -1,4 +1,4 @@
-# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
+---
 openapi: '3.0.3'
 info:
   version: 1.0.0
@@ -8,9 +8,11 @@ info:
     syndication.
 
     https://www.rssboard.org/media-rss
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
   license:
-    name: AGPL-3.0-or-later
-    url: https://spdx.org/licenses/AGPL-3.0-only.html
+    identifier: AGPL-3.0-or-later
 components:
   schemas:
     Medium:

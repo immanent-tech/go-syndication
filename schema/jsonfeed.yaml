@@ -1,5 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/schemas/v3.0/schema.yaml
-# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
+---
 openapi: "3.0.3"
 info:
   version: 1.0.0
@@ -8,9 +7,11 @@ info:
     JSONFeed 1.1 OpenAPI schema.
 
     https://www.jsonfeed.org/version/1.1/
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
   license:
-    name: AGPL-3.0-or-later
-    url: https://spdx.org/licenses/AGPL-3.0-only.html
+    identifier: AGPL-3.0-or-later
 paths: {}
 components:
   schemas:

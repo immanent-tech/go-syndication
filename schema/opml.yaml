@@ -1,13 +1,17 @@
-# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
-# SPDX-License-Identifier: 	AGPL-3.0-or-later
-
+---
 openapi: '3.0.3'
 info:
   version: 1.0.0
   title: OPML
   description: >
     OPML specification.
-    Based on https://opml.org/spec2.opml
+
+    https://opml.org/spec2.opml
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
+  license:
+    identifier: AGPL-3.0-or-later
 paths: {}
 components:
   schemas:

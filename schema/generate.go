@@ -1,8 +1,8 @@
 // Copyright 2024 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	AGPL-3.0-or-later
 
-// Package feeds contains objects and methods for handling various syndication formats such as Atom and RSS.
-package feeds
+// Package schema contains the OpenAPI schema definitions for go-syndication.
+package schema
 
 //go:generate go tool oapi-codegen -config types-cfg.yaml types.yaml
 //go:generate go tool oapi-codegen -config types-attributes-cfg.yaml types-attributes.yaml

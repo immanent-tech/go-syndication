@@ -1,16 +1,17 @@
-# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
-# SPDX-License-Identifier: 	AGPL-3.0-or-later
+---
 openapi: '3.0.3'
 info:
   version: 1.0.0
-  title: RSS 2.0
+  title: RSS 2.0 OpenAPI schema
   description: >
-    RSS 2.0 OpenAPI schema.
+    Provides an OpenAPI schema to represent RSS documents.
 
     https://www.rssboard.org/rss-specification
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
   license:
-    name: AGPL-3.0-or-later
-    url: https://spdx.org/licenses/AGPL-3.0-only.html
+    identifier: AGPL-3.0-or-later
 components:
   schemas:
     PubDate:

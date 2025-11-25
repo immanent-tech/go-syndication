@@ -1,15 +1,15 @@
-# Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
-# SPDX-License-Identifier: 	AGPL-3.0-or-later
-
+---
 openapi: '3.0.3'
 info:
   version: 1.0.0
   title: Common Types
   description: >
     Common/shared types across schemas.
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
   license:
-    name: AGPL-3.0-or-later
-    url: https://spdx.org/licenses/AGPL-3.0-only.html
+    identifier: AGPL-3.0-or-later
 components:
   schemas:
     XMLName:
@@ -142,4 +142,3 @@ components:
           x-go-type: 'xml.CharData'
       x-oapi-codegen-extra-tags:
         xml: ',chardata'
-
