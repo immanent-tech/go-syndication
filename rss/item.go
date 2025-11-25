@@ -115,22 +115,24 @@ func (i *Item) GetImage() *types.ImageInfo {
 	var img *types.ImageInfo
 	switch {
 	case i.Image != nil:
+		// Item has an <image> element, use it.
 		img = &types.ImageInfo{
 			URL:   i.Image.URL,
 			Title: i.Image.Title,
 		}
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
+		// Item has an <enclosure> element, check if it contains an image and use it.
 		img = &types.ImageInfo{
 			URL: i.Enclosure.URL,
 		}
 	case i.MediaContent != nil:
+		// Item has a <media:content> element, check if it is an image and use it.
 		isImage, image := i.MediaContent.IsImage()
 		if isImage {
 			img = image
 		}
-		fallthrough
 	case len(i.MediaThumbnails) > 0:
-		// Use the first thumbnail found.
+		// Check for a <media:thumbnails> element and assume the first element is an appropriate image.
 		img = i.MediaThumbnails[0].AsImage()
 	default:
 		return nil
