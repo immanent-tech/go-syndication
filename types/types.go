@@ -30,6 +30,8 @@ var (
 	MimeTypesHTML = []string{"text/html", "application/xhtml+xml"}
 	// MimeTypesImage contains canonical/standard/common mimetypes for images.
 	MimeTypesImage = []string{"image/avif", "image/gif", "image/jpeg", "image/png", "image/svg+xml", "image/webp"}
+	// MediaImageExt contains canonical/standard/common file extensions for images.
+	MediaImageExt = []string{"jpg", "jpeg", "png", "webp", "gif"}
 )
 
 const (

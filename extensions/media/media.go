@@ -5,6 +5,10 @@
 package media
 
 import (
+	"net/url"
+	"slices"
+	"strings"
+
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
 )
@@ -47,6 +51,17 @@ func (c *MediaContent) IsImage() (bool, *types.ImageInfo) {
 			URL: c.Url,
 		}
 	}
-	// Not an image.
+	// Ugh, maybe try parsing the URL and see if it ends in a well-known image file extension...
+	url, err := url.Parse(c.Url)
+	if err == nil {
+		for imgext := range slices.Values(types.MediaImageExt) {
+			if strings.HasSuffix(url.Path, imgext) {
+				return true, &types.ImageInfo{
+					URL: c.Url,
+				}
+			}
+		}
+	}
+	// Not an image, probably...
 	return false, nil
 }
