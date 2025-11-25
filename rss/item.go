@@ -128,6 +128,7 @@ func (i *Item) GetImage() *types.ImageInfo {
 		if isImage {
 			img = image
 		}
+		fallthrough
 	case len(i.MediaThumbnails) > 0:
 		// Use the first thumbnail found.
 		img = i.MediaThumbnails[0].AsImage()
