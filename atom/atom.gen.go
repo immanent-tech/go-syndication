@@ -22,6 +22,7 @@ const (
 	LinkRelNext                          LinkRel = "next"
 	LinkRelRelated                       LinkRel = "related"
 	LinkRelSelf                          LinkRel = "self"
+	LinkRelStandout                      LinkRel = "standout"
 	LinkRelVia                           LinkRel = "via"
 )
 
@@ -580,7 +581,7 @@ type Link struct {
 	Length int `json:"length,omitempty,omitzero" validate:"omitempty,number" xml:"length,attr,omitempty"`
 
 	// Rel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
-	Rel LinkRel `json:"rel,omitempty,omitzero" validate:"omitempty,oneof=alternate enclosure related self via hub edit next http://schemas.google.com/g/2005#feed" xml:"rel,attr,omitempty"`
+	Rel LinkRel `json:"rel,omitempty,omitzero" validate:"omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed" xml:"rel,attr,omitempty"`
 
 	// Title provides a human-readable description of the resource.
 	Title string `json:"title,omitempty,omitzero" xml:"title,attr,omitempty"`

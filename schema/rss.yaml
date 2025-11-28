@@ -30,6 +30,27 @@ components:
         xml: 'lastBuildDate,omitempty'
         validate: 'omitempty'
       x-go-type-skip-optional-pointer: false
+    Title:
+      description: >
+        is the title of the element.
+      x-go-type: types.String
+      x-oapi-codegen-extra-tags:
+        xml: 'title'
+        validate: required
+    Description:
+      description: >
+        is a short description of the element.
+      x-go-type: types.String
+      x-oapi-codegen-extra-tags:
+        xml: description
+        validate: omitempty,required
+    Link:
+      description: >
+        represents a link that represents the parent element.
+      x-go-type: types.String
+      x-oapi-codegen-extra-tags:
+        xml: link
+        validate: 'required,url'
     Category:
       description: >
         allows a taxonomy to be set on the channel or item.
@@ -37,10 +58,10 @@ components:
       required:
         - value
       properties:
-        XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
         value:
-          $ref: 'types.yaml#/components/schemas/CharData'
+          x-go-type: types.String
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
         domain:
           description: >
             is a string that identifies a categorization taxonomy.
@@ -275,7 +296,9 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/CharData'
+          x-go-type: types.String
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
         isPermaLink:
           description: >
             If true the guid is assumed to be a URL. If its value is false, the guid may not be assumed to be a url, or
@@ -295,7 +318,9 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/CharData'
+          x-go-type: types.String
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
         url:
           $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
       x-oapi-codegen-extra-tags:
@@ -366,36 +391,13 @@ components:
         - description
       properties:
         title:
-          description: >
-            is the name of the channel. It's how people refer to your service. If you have an HTML website that contains
-            the same information as your RSS file, the title of your channel should be the same as the title of your
-            website.
-          x-go-type: types.String
-          x-oapi-codegen-extra-tags:
-            xml: 'title'
-            validate: 'required'
+          $ref: '#/components/schemas/Title'
         link:
-          description: >
-            is the URL to the HTML website corresponding to the channel.
-          x-go-type: types.String
-          x-oapi-codegen-extra-tags:
-            xml: 'link'
-            validate: 'omitempty,url'
+          $ref: '#/components/schemas/Link'
+        atom_link:
+          $ref: 'atom.yaml#/components/schemas/Link'
         description:
-          description: >
-            the description of the channel.
-          x-go-type: types.String
-          x-oapi-codegen-extra-tags:
-            xml: 'description'
-            validate: 'omitempty,required'
-        AtomLink:
-          allOf:
-            - $ref: 'atom.yaml#/components/schemas/Link'
-          x-oapi-codegen-extra-tags:
-            xml: 'http://www.w3.org/2005/Atom link,omitempty'
-            json: 'atom_link'
-            validate: omitempty
-          x-go-type-skip-optional-pointer: true
+          $ref: '#/components/schemas/Description'
         language:
           description: >
             is the language the channel is written in. This allows aggregators to group all Italian language sites, for
@@ -510,22 +512,29 @@ components:
         title:
           description: >
             is the title of the item.
-          x-go-type: types.String
+          allOf:
+            - $ref: '#/components/schemas/Title'
           x-oapi-codegen-extra-tags:
-            xml: 'title'
+            xml: title
+            validate: 'omitempty'
         link:
           description: >
             is the URL of the item.
-          x-go-type: types.String
+          allOf:
+            - $ref: '#/components/schemas/Link'
           x-oapi-codegen-extra-tags:
             xml: link
             validate: 'omitempty,url'
+        atom_link:
+          $ref: 'atom.yaml#/components/schemas/Link'
         description:
           description: >
-            is the item synopsis.
-          x-go-type: types.String
+            is a short description of the item.
+          allOf:
+            - $ref: '#/components/schemas/Description'
           x-oapi-codegen-extra-tags:
             xml: description
+            validate: omitempty
         author:
           $ref: '#/components/schemas/Author'
         categories:
