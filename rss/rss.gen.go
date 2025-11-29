@@ -40,6 +40,9 @@ const (
 	SkipWednesday SkipDaysDay = "Wednesday"
 )
 
+// AtomLink defines a relationship between a web resource (such as a page) and an RSS channel or item.
+type AtomLink = externalRef0.Link
+
 // Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
 type Author = types.String
 
@@ -208,12 +211,7 @@ type Channel struct {
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
 	SYUpdateFrequency *externalRef5.SYUpdateFrequency `json:"sy_updateFrequency,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
-
-	// XMLName represents the XML namespace of an element.
-	XMLName externalRef7.XMLName `json:"xml" validate:"required"`
-
-	// AtomLink defines a relationship between a web resource (such as a page) and an RSS channel or item.
-	AtomLink externalRef0.Link `json:"link,omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+	AtomLink          AtomLink                        `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
 	Categories []Category `json:"category,omitempty" xml:"category,omitempty"`
@@ -239,70 +237,6 @@ type Channel struct {
 
 	// Items is a list of the current items published to the channel.
 	Items []Item `json:"items,omitempty,omitzero" validate:"omitempty,dive,validateFn" xml:"item,omitempty"`
-
-	// Language is the language the channel is written in. This allows aggregators to group all Italian language sites, for example, on a single page.
-	Language types.String `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
-
-	// LastBuildDate is the last time the content of the channel changed.
-	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`
-
-	// Link represents a link that represents the parent element.
-	Link Link `json:"link" validate:"required,url" xml:"link"`
-
-	// ManagingEditor is the email address for person responsible for editorial content.
-	ManagingEditor types.String `json:"managingEditor,omitempty,omitzero" xml:"managingEditor,omitempty"`
-
-	// PubDate is the publication date of the content.
-	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
-
-	// Rating contains a rating for the element.
-	Rating Rating `json:"rating,omitempty,omitzero" xml:"rating,omitempty"`
-
-	// SkipDays is a hint for aggregators telling them which days they can skip. This
-	SkipDays SkipDays `json:"skipDays,omitempty,omitzero" xml:"skipDays,omitempty"`
-
-	// SkipHours is a hint for aggregators telling them which hours they can skip.
-	SkipHours SkipHours `json:"skipHours,omitempty,omitzero" xml:"skipHours,omitempty"`
-
-	// TextInput The purpose of the <textInput> element is something of a mystery. You can use it to specify a search engine box. Or to allow a reader to provide feedback. Most aggregators ignore it.
-	TextInput *TextInput `json:"textInput,omitempty" xml:"textInput,omitempty"`
-
-	// Title is the title of the element.
-	Title Title `json:"title" validate:"required" xml:"title"`
-
-	// TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.
-	TTL TTL `json:"ttl,omitempty,omitzero" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
-
-	// WebMaster is the email address for person responsible for technical issues relating to channel.
-	WebMaster types.String `json:"webMaster,omitempty,omitzero" xml:"webMaster,omitempty"`
-}
-
-// ChannelElements contains all Channel elements (i.e., Channel metadata).
-type ChannelElements struct {
-	// AtomLink defines a relationship between a web resource (such as a page) and an RSS channel or item.
-	AtomLink externalRef0.Link `json:"link,omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
-
-	// Categories is a list of categories associated with the channel.
-	Categories []Category `json:"category,omitempty" xml:"category,omitempty"`
-
-	// Cloud specifies a web service that supports the rssCloud interface which can be implemented in HTTP-POST, XML-RPC or SOAP 1.1.
-	// Its purpose is to allow processes to register with a cloud to be notified of updates to the channel, implementing a lightweight publish-subscribe protocol for RSS feeds.
-	Cloud *Cloud `json:"cloud,omitempty" xml:"cloud,omitempty"`
-
-	// Copyright Copyright notice for content in the channel.
-	Copyright types.String `json:"copyright,omitempty,omitzero" xml:"copyright,omitempty"`
-
-	// Description is a short description of the element.
-	Description Description `json:"description" validate:"omitempty,required" xml:"description"`
-
-	// Docs A URL that points to the documentation for the format used in the RSS file. It's probably a pointer to this page. It's for people who might stumble across an RSS file on a Web server 25 years from now and wonder what it is.
-	Docs types.String `json:"docs,omitempty,omitzero" validate:"omitempty,url" xml:"docs,omitempty"`
-
-	// Generator is a string indicating the program used to generate the channel.
-	Generator types.String `json:"generator,omitempty,omitzero" xml:"generator,omitempty"`
-
-	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
-	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Language is the language the channel is written in. This allows aggregators to group all Italian language sites, for example, on a single page.
 	Language types.String `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
@@ -530,12 +464,7 @@ type Item struct {
 
 	// PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
 	PermaLink externalRef5.PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
-
-	// XMLName represents the XML namespace of an element.
-	XMLName externalRef7.XMLName `json:"xml" validate:"required"`
-
-	// AtomLink defines a relationship between a web resource (such as a page) and an RSS channel or item.
-	AtomLink externalRef0.Link `json:"link,omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+	AtomLink  AtomLink               `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
 	Author Author `json:"author,omitempty,omitzero" xml:"author,omitempty"`
@@ -547,7 +476,7 @@ type Item struct {
 	Comments Comments `json:"comments,omitempty,omitzero" xml:"comments,omitempty"`
 
 	// Description is a short description of the item.
-	Description Description `json:"description" validate:"omitempty" xml:"description"`
+	Description Description `json:"description,omitempty,omitzero" validate:"omitempty" xml:"description"`
 
 	// Enclosure describes a media object.
 	Enclosure *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
@@ -559,7 +488,7 @@ type Item struct {
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Link is the URL of the item.
-	Link Link `json:"link" validate:"omitempty,url" xml:"link"`
+	Link Link `json:"link,omitempty,omitzero" validate:"omitempty,url" xml:"link"`
 
 	// PubDate is the publication date of the content.
 	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
@@ -568,46 +497,7 @@ type Item struct {
 	Source Source `json:"source,omitempty,omitzero" xml:"source,omitempty"`
 
 	// Title is the title of the item.
-	Title Title `json:"title" validate:"omitempty" xml:"title"`
-}
-
-// ItemElements contains all Item elements.
-type ItemElements struct {
-	// AtomLink defines a relationship between a web resource (such as a page) and an RSS channel or item.
-	AtomLink externalRef0.Link `json:"link,omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
-
-	// Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
-	Author Author `json:"author,omitempty,omitzero" xml:"author,omitempty"`
-
-	// Categories is a list of categories associated with the channel.
-	Categories []Category `json:"categories,omitempty,omitzero" xml:"category,omitempty"`
-
-	// Comments is the url of the comments page for the item.
-	Comments Comments `json:"comments,omitempty,omitzero" xml:"comments,omitempty"`
-
-	// Description is a short description of the item.
-	Description Description `json:"description" validate:"omitempty" xml:"description"`
-
-	// Enclosure describes a media object.
-	Enclosure *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
-
-	// GUID is a string that uniquely identifies an item.
-	GUID GUID `json:"guid,omitempty,omitzero" xml:"guid,omitempty"`
-
-	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
-	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
-
-	// Link is the URL of the item.
-	Link Link `json:"link" validate:"omitempty,url" xml:"link"`
-
-	// PubDate is the publication date of the content.
-	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
-
-	// Source The RSS channel that the item came from.
-	Source Source `json:"source,omitempty,omitzero" xml:"source,omitempty"`
-
-	// Title is the title of the item.
-	Title Title `json:"title" validate:"omitempty" xml:"title"`
+	Title Title `json:"title,omitempty,omitzero" validate:"omitempty" xml:"title"`
 }
 
 // LastBuildDate is the last time the content of the channel changed.

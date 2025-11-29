@@ -325,8 +325,11 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
+            - XMLName
             - href
           properties:
+            XMLName:
+              $ref: 'types.yaml#/components/schemas/XMLName'
             href:
               description: >
                 contains the URL of the related resource.

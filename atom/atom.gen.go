@@ -568,6 +568,9 @@ type Link struct {
 	// Lang indicates the natural language for the element and its descendents.
 	Lang string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"lang,attr,omitempty"`
 
+	// XMLName represents the XML namespace of an element.
+	XMLName externalRef2.XMLName `json:"xml" validate:"required"`
+
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
 
