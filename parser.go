@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"mime"
+	"net/http"
 	"net/url"
 	"slices"
 	"strings"
@@ -32,11 +33,10 @@ import (
 var DefaultRequestTimeout = 30 * time.Second
 
 var (
-	// ErrParseFeed indicates an error parsing the feed content.
-	ErrParseFeed = errors.New("unable to parse")
-	ErrNotFound  = errors.New("not found")
-	// ErrUnmarshal indicates an error unmarshaling the feed from its native format.
-	ErrUnmarshal = errors.New("unable to unmarshal")
+	// ErrParseBytes indicates an error occurred trying to parse a byte array as a feed.
+	ErrParseBytes = errors.New("unable to parse bytes as feed")
+	// ErrParseURL indicates an error occurred trying to parse a URL as a feed.
+	ErrParseURL = errors.New("unable to parse URL as feed")
 	// ErrUnsupportedFormat indicates that feed format is not known and cannot be parsed.
 	ErrUnsupportedFormat = errors.New("unsupported feed format")
 )
@@ -76,11 +76,11 @@ func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
 		original, err = Decode[T]("", data)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrParseFeed, err)
+		return nil, fmt.Errorf("%w: %w", ErrParseBytes, err)
 	}
 	source, ok := any(original).(types.FeedSource)
 	if !ok {
-		return nil, fmt.Errorf("%w: data is not a valid feed type %T", ErrParseFeed, original)
+		return nil, fmt.Errorf("%w: data is not a valid feed type %T", ErrParseBytes, original)
 	}
 	feed = &Feed{
 		FeedSource: source,
@@ -88,7 +88,7 @@ func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
 	feed.SourceType = parseSource(original)
 	err = feed.Validate()
 	if err != nil {
-		return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseFeed, err)
+		return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseBytes, err)
 	}
 
 	return feed, nil
@@ -199,24 +199,21 @@ func FindFeedImage(ctx context.Context, feed *Feed) error {
 }
 
 // parseFeedURL attempts to parse the given URL as a feed source.
-//
-//nolint:gocognit
 func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedResult {
 	// Get the feed data.
 	resp, err := client.R().
-		SetHeader("Accept", "*/*").
 		SetContext(ctx).
 		Get(url)
 	if err != nil {
-		return FeedResult{URL: url, Err: fmt.Errorf("%w: failed to get url: %w", ErrParseFeed, err)}
+		return FeedResult{URL: url, Err: fmt.Errorf("%w: %w", ErrParseURL, err)}
 	}
 	if resp.IsError() {
-		return FeedResult{Err: fmt.Errorf("%w: %s", ErrParseFeed, resp.Status())}
+		return FeedResult{Err: fmt.Errorf("%w: %s", ErrParseURL, resp.Status())}
 	}
 	// Retrieve the content header so we know what format we are dealing with.
 	content := resp.Header().Get("Content-Type")
 	if content == "" {
-		return FeedResult{URL: url, Err: fmt.Errorf("%w: unable to determine feed type", ErrParseFeed)}
+		return FeedResult{URL: url, Err: fmt.Errorf("%w: missing Content-Type header", ErrParseURL)}
 	}
 	// Try to parse the response body as a valid feed type.
 	var feed *Feed
@@ -253,7 +250,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 		fallthrough
 	default:
 		// Cannot determine or unsupported content.
-		err = fmt.Errorf("%w: %w: %s", ErrParseFeed, ErrUnsupportedFormat, content)
+		err = fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)
 	}
 
 	// (╯°益°)╯彡┻━┻
@@ -289,7 +286,7 @@ func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 	case page.Favicon != "":
 		img = page.Favicon
 	default:
-		return nil, fmt.Errorf("discover feed image: %s: %w", feed, ErrNotFound)
+		return nil, fmt.Errorf("discover feed image: %s: %d", feed, http.StatusNotFound)
 	}
 	// Parse the image string as a URL.
 	imgURL, err := url.Parse(img)
@@ -310,7 +307,7 @@ func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 func discoverFeedURL(path string, content []byte) (string, error) {
 	pageURL, err := url.Parse(path)
 	if err != nil {
-		return "", fmt.Errorf("unable to parse url: %w", err)
+		return "", fmt.Errorf("discover feed url: %w", err)
 	}
 
 	page := html.NewTokenizer(bytes.NewReader(content))
@@ -319,7 +316,7 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 		var feedURL *url.URL
 		switch tt { //nolint:exhaustive // we don't want to check evey token.
 		case html.ErrorToken:
-			return "", fmt.Errorf("unable to determine feed url: %w", page.Err())
+			return "", fmt.Errorf("discover feed url: %w", page.Err())
 		case html.SelfClosingTagToken:
 			tkn := page.Token()
 			if tkn.DataAtom != htmlatom.Link {
@@ -357,7 +354,7 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 			}
 			feedURL, err = url.Parse(tkn.Attr[idx].Val)
 			if err != nil {
-				return tkn.Attr[idx].Val, fmt.Errorf("found URL but unable to parse: %w", err)
+				return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
 			}
 		case html.StartTagToken:
 			tkn := page.Token()
@@ -383,7 +380,7 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 			}
 			feedURL, err = url.Parse(tkn.Attr[idx].Val)
 			if err != nil {
-				return tkn.Attr[idx].Val, fmt.Errorf("found URL but unable to parse: %w", err)
+				return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
 			}
 		}
 		if feedURL == nil {
@@ -393,7 +390,7 @@ func discoverFeedURL(path string, content []byte) (string, error) {
 			// Try to create an absolute URL for the feed.
 			fullPath, err := url.JoinPath("/", feedURL.Path)
 			if err != nil {
-				return "", fmt.Errorf("failed to generate feed URL: %w", err)
+				return "", fmt.Errorf("discover feed url: %w", err)
 			}
 			pageURL.Path = fullPath
 			return pageURL.String(), nil
@@ -425,11 +422,5 @@ func parseSource[T any](source T) SourceType {
 }
 
 func newWebClient() *resty.Client {
-	// Set the mimetypes we accept. Who knows if this helps but at least we are honest to the server with what mimetypes
-	// we want.
-	mimeTypes := types.MimeTypesFeed
-	mimeTypes = append(mimeTypes, ";q=0.2,*/*", ";q=0.1")
-	// Return a client.
-	return resty.New().
-		SetHeader("Accept", strings.Join(mimeTypes, ","))
+	return resty.New().SetHeader("User-Agent", "go-syndication")
 }

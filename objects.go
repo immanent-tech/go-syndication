@@ -5,6 +5,7 @@ package feeds
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"slices"
 
@@ -13,6 +14,9 @@ import (
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
 )
+
+// ErrUnmarshal indicates an error occurred trying to unmarshal data into a given feed object.
+var ErrUnmarshal = errors.New("unmarshaling object failed")
 
 const (
 	// TypeRSS indicates the source data was from an RSS feed.
@@ -47,21 +51,21 @@ func (i *Item) UnmarshalJSON(v []byte) error {
 		i.SourceType = TypeAtom
 		i.ItemSource, err = unmarshalSource[*atom.Entry](source)
 		if err != nil {
-			return fmt.Errorf("%w: unable to unmarshal Atom data: %w", ErrUnmarshal, err)
+			return fmt.Errorf("%w: unable to unmarshal into Atom: %w", ErrUnmarshal, err)
 		}
 		return nil
 	case TypeRSS:
 		i.SourceType = TypeRSS
 		i.ItemSource, err = unmarshalSource[*rss.Item](source)
 		if err != nil {
-			return fmt.Errorf("%w: unable to unmarshal RSS data: %w", ErrUnmarshal, err)
+			return fmt.Errorf("%w: unable to unmarshal into RSS: %w", ErrUnmarshal, err)
 		}
 		return nil
 	case TypeJSONFeed:
 		i.SourceType = TypeJSONFeed
 		i.ItemSource, err = unmarshalSource[*jsonfeed.Item](source)
 		if err != nil {
-			return fmt.Errorf("%w: unable to unmarshal JSONFeed data: %w", ErrUnmarshal, err)
+			return fmt.Errorf("%w: unable to unmarshal into JSONFeed: %w", ErrUnmarshal, err)
 		}
 		return nil
 	}
@@ -101,21 +105,21 @@ func (f *Feed) UnmarshalJSON(v []byte) error {
 		f.SourceType = TypeAtom
 		f.FeedSource, err = unmarshalSource[*atom.Feed](source)
 		if err != nil {
-			return fmt.Errorf("%w: unable to unmarshal Atom data: %w", ErrUnmarshal, err)
+			return fmt.Errorf("%w: unable to unmarshal into Atom: %w", ErrUnmarshal, err)
 		}
 		return nil
 	case TypeRSS:
 		f.SourceType = TypeRSS
 		f.FeedSource, err = unmarshalSource[*rss.RSS](source)
 		if err != nil {
-			return fmt.Errorf("%w: unable to unmarshal RSS data: %w", ErrUnmarshal, err)
+			return fmt.Errorf("%w: unable to unmarshal into RSS: %w", ErrUnmarshal, err)
 		}
 		return nil
 	case TypeJSONFeed:
 		f.SourceType = TypeJSONFeed
 		f.FeedSource, err = unmarshalSource[*jsonfeed.Feed](source)
 		if err != nil {
-			return fmt.Errorf("%w: unable to unmarshal JSONFeed data: %w", ErrUnmarshal, err)
+			return fmt.Errorf("%w: unable to unmarshal into JSONFeed: %w", ErrUnmarshal, err)
 		}
 		return nil
 	}

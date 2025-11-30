@@ -85,7 +85,7 @@ func (c *CharData) String() string {
 
 // String is custom string type that handles "malformed" string fields containing whitespace or forbidden input.
 //
-//nolint:recvcheck
+//nolint:recvcheck // required for unmarshal to work correctly.
 type String string
 
 // UnmarshalText provides custom unmarshaling of String that will sanitize, unescape and trim whitespace from the value.
