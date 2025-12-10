@@ -17,9 +17,9 @@ import (
 	"sync"
 	"time"
 
+	"codeberg.org/readeck/go-readability/v2"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-resty/resty/v2"
-	"github.com/go-shiori/go-readability"
 	"golang.org/x/net/html"
 	htmlatom "golang.org/x/net/html/atom"
 
@@ -281,10 +281,10 @@ func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 	// Determine best image from readability content.
 	var img string
 	switch {
-	case page.Image != "":
-		img = page.Image
-	case page.Favicon != "":
-		img = page.Favicon
+	case page.ImageURL() != "":
+		img = page.ImageURL()
+	case page.Favicon() != "":
+		img = page.Favicon()
 	default:
 		return nil, fmt.Errorf("discover feed image: %s: %d", feed, http.StatusNotFound)
 	}
