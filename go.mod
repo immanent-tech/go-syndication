@@ -1,10 +1,10 @@
 module github.com/immanent-tech/go-syndication
 
-go 1.24.5
+go 1.25
 
 require (
-	github.com/go-playground/validator/v10 v10.28.0
-	github.com/go-resty/resty/v2 v2.17.0
+	github.com/go-playground/validator/v10 v10.30.1
+	github.com/go-resty/resty/v2 v2.17.1
 	github.com/microcosm-cc/bluemonday v1.0.27
 	golang.org/x/net v0.48.0
 )
@@ -25,7 +25,7 @@ require (
 	codeberg.org/readeck/go-readability/v2 v2.1.0
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.10 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.12 // indirect
 	github.com/getkin/kin-openapi v0.132.0 // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect

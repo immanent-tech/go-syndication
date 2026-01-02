@@ -21,8 +21,7 @@ func NewOPMLFromBytes(b []byte) (*OPML, error) {
 	reader := bytes.NewReader(b)
 	decoder := xml.NewDecoder(reader)
 	decoder.CharsetReader = charset.NewReaderLabel
-	err := decoder.Decode(&root)
-	if err != nil {
+	if err := decoder.Decode(&root); err != nil {
 		return nil, fmt.Errorf("could not decode byte array to OPML: %w", err)
 	}
 

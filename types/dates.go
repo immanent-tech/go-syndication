@@ -71,8 +71,7 @@ func (d *DateTime) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON handles unmarshaling a DateTime from JSON.
 func (d *DateTime) UnmarshalJSON(data []byte) error {
 	var dateStr string
-	err := json.Unmarshal(data, &dateStr)
-	if err != nil {
+	if err := json.Unmarshal(data, &dateStr); err != nil {
 		return errors.Join(ErrInvalidDateTimeFormat, err)
 	}
 	parsed, err := tryFormats(dateStr)

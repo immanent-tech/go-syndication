@@ -83,8 +83,7 @@ func (r *RSS) GetItems() []types.ItemSource {
 
 // Validate applies custom validation to an feed.
 func (r *RSS) Validate() error {
-	err := validation.Validate.Struct(r)
-	if err != nil {
+	if err := validation.Validate.Struct(r); err != nil {
 		return fmt.Errorf("rss validation failed: %w", err)
 	}
 	return nil

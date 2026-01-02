@@ -1,0 +1,219 @@
+---
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Common Types
+  description: >
+    OpenAPI schema for sitemaps.
+
+    https://www.sitemaps.org/protocol.html
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
+  license:
+    identifier: AGPL-3.0-or-later
+components:
+  schemas:
+    Image:
+      description: >
+        contains details about an image.
+      type: object
+      required:
+        - loc
+      properties:
+        loc:
+          description: >
+              URL to the image.
+          x-go-type: types.String
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.google.com/schemas/sitemap-image/1.1 loc'
+            validate: 'required,url'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.google.com/schemas/sitemap-image/1.1 image'
+        json: 'image'
+    News:
+      description: >
+        indicates a URL is a news article and contains additional related elements.
+      type: object
+      properties:
+        Publication:
+          $ref: '#/components/schemas/Publication'
+        PublicationDate:
+          $ref: '#/components/schemas/PublicationDate'
+        Title:
+          $ref: '#/components/schemas/Title'
+        Access:
+          $ref: '#/components/schemas/Access'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.google.com/schemas/sitemap-news/0.9 news'
+    Publication:
+      description: >
+         contains details about the publication for the news item.
+      type: object
+      properties:
+        name:
+          description: >
+            is the name of the news publication. It must exactly match the name as it appears on your articles on
+            news.google.com, omitting anything in parentheses.
+          x-go-type: types.String
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.google.com/schemas/sitemap-news/0.9 name'
+            validate: 'omitempty'
+        language:
+          description: >
+            is the language of your publication. Use an ISO 639 language code (two or three letters).
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.google.com/schemas/sitemap-news/0.9 language'
+            validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.google.com/schemas/sitemap-news/0.9 publication'
+        json: 'publication'
+    PublicationDate:
+      description: >
+        The article publication date in W3C format. Use either the "complete date" format (YYYY-MM-DD) or the "complete
+        date plus hours, minutes, and seconds" format with time zone designator format (YYYY-MM-DDThh:mm:ssTZD). Specify
+        the original date and time when the article was first published on your site. Don't specify the time when you
+        added the article to your sitemap.
+      x-go-type: types.DateTime
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.google.com/schemas/sitemap-news/0.9 publication_date'
+        json: 'publication_date'
+        validate: 'omitempty'
+    Title:
+      description: >
+        The title of the news article.
+      x-go-type: types.String
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.google.com/schemas/sitemap-news/0.9 title'
+        json: 'title'
+        validate: 'omitempty'
+    Access:
+      description: >
+         is the accessibility of the article. Required if access is not open, otherwise this tag should be omitted.
+      type: object
+      properties:
+        restriction:
+          type: string
+          enum: ['Subscription','Registration']
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.google.com/schemas/sitemap-news/0.9 restriction'
+            validate: 'required,oneof=Subscription Registration'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.google.com/schemas/sitemap-news/0.9 access'
+        json: 'access'
+        validate: 'omitempty'
+    LOC:
+      description: >
+          URL of the page. This URL must begin with the protocol (such as http) and end with a trailing slash, if
+          your web server requires it. This value must be less than 2,048 characters.
+      x-go-type: types.String
+      x-oapi-codegen-extra-tags:
+        xml: 'loc'
+        validate: 'required,url'
+    LastMod:
+      description: >
+          The date of last modification of the page. This date should be in W3C Datetime format. This format allows
+          you to omit the time portion, if desired, and use YYYY-MM-DD. Note that the date must be set to the date
+          the linked page was last modified, not when the sitemap is generated. Note also that this tag is separate
+          from the If-Modified-Since (304) header the server can return, and search engines may use the information
+          from both sources differently.
+      x-go-type: types.DateTime
+      x-oapi-codegen-extra-tags:
+        xml: 'lastmod'
+        validate: 'omitempty'
+    URLSet:
+      description: >
+         Encapsulates the file and references the current protocol standard.
+      x-go-name: URLSet
+      required:
+        - XMLName
+        - URLs
+      properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
+        URLs:
+          description: >
+             is the list of URLs contained within the sitemap.
+          type: array
+          x-go-name: URLs
+          items:
+            $ref: '#/components/schemas/URL'
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: 'url'
+            json: 'urls'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.sitemaps.org/schemas/sitemap/0.9 urlset'
+        json: 'urlset'
+    URL:
+      description: >
+         describes a URL in the sitemap
+      type: object
+      required:
+        - loc
+      properties:
+        loc:
+          $ref: '#/components/schemas/LOC'
+        lastmod:
+          $ref: '#/components/schemas/LastMod'
+        changefreq:
+          description: >
+             How frequently the page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.
+          type: string
+          enum: ['always','hourly','daily','weekly','monthly','yearly','never']
+          x-oapi-codegen-extra-tags:
+            xml: 'changefreq'
+            validate: 'omitempty,oneof=always hourly daily weekly monthly yearly never'
+        priority:
+          description: >
+             The priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. This
+             value does not affect how your pages are compared to pages on other sites—it only lets the search engines
+             know which pages you deem most important for the crawlers.
+          type: number
+          x-oapi-codegen-extra-tags:
+            xml: 'priority'
+            validate: 'gte=0.0,lte=1.0'
+        news:
+          $ref: '#/components/schemas/News'
+        image:
+          $ref: '#/components/schemas/Image'
+      x-go-name: URL
+      x-oapi-codegen-extra-tags:
+        xml: 'url'
+    SitemapIndex:
+      description: >
+         encapsulates information about all of the Sitemaps in the file.
+      x-go-name: SitemapIndex
+      required:
+        - XMLName
+        - Sitemap
+      properties:
+        XMLName:
+          $ref: 'types.yaml#/components/schemas/XMLName'
+        Sitemaps:
+          description: >
+            is a list of sitemaps.
+          type: array
+          items:
+            $ref: '#/components/schemas/Sitemap'
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: 'sitemap'
+            json: 'sitemaps'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.sitemaps.org/schemas/sitemap/0.9 sitemapindex'
+        json: 'sitemapindex'
+    Sitemap:
+      description: >
+        encapsulates information about an individual Sitemap.
+      type: object
+      required:
+        - loc
+      properties:
+        loc:
+          $ref: '#/components/schemas/LOC'
+        lastmod:
+          $ref: '#/components/schemas/LastMod'
+      x-oapi-codegen-extra-tags:
+        xml: 'sitemap'

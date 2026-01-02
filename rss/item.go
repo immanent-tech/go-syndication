@@ -127,8 +127,7 @@ func (i *Item) GetImage() *types.ImageInfo {
 		}
 	case i.MediaContent != nil:
 		// Item has a <media:content> element, check if it is an image and use it.
-		isImage, image := i.MediaContent.IsImage()
-		if isImage {
+		if isImage, image := i.MediaContent.IsImage(); isImage {
 			img = image
 		}
 	case len(i.MediaThumbnails) > 0:

@@ -147,8 +147,7 @@ func sourceFromBytes(v []byte) (SourceType, json.RawMessage, error) {
 
 func unmarshalSource[T any](v json.RawMessage) (T, error) {
 	var source T
-	err := json.Unmarshal(v, &source)
-	if err != nil {
+	if err := json.Unmarshal(v, &source); err != nil {
 		return source, fmt.Errorf("%w: %w", ErrUnmarshal, err)
 	}
 	return source, nil

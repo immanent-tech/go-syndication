@@ -154,8 +154,7 @@ func NewItemsFromURLs(ctx context.Context, urls ...string) ItemsResult {
 			wg.Add(1)
 			go func(url string) {
 				defer wg.Done()
-				result := parseFeedURL(ctx, client, url)
-				if result.Err != nil {
+				if result := parseFeedURL(ctx, client, url); result.Err != nil {
 					workerCh <- FeedItemsResult{
 						URL: url,
 						Err: result.Err,
@@ -182,8 +181,7 @@ func NewItemsFromURLs(ctx context.Context, urls ...string) ItemsResult {
 // itself.
 func FindFeedImage(ctx context.Context, feed *Feed) error {
 	var timeout time.Duration
-	deadline, ok := ctx.Deadline()
-	if !ok {
+	if deadline, ok := ctx.Deadline(); !ok {
 		timeout = DefaultRequestTimeout
 	} else {
 		timeout = time.Until(deadline)
@@ -302,6 +300,10 @@ func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 }
 
 // discoverFeedURL attempts to find a feed URL within a HTML page.
+//
+// There are a couple of "canonical" places the feed URL is located. Firstly, as per the RSS spec, look for a link
+// element with rel="alternate" and type="application/rss+xml". Secondly, check for a link element with a URL that ends
+// with feed, rss or atom, which would indicate a feed URL.
 //
 //nolint:gocognit,funlen
 func discoverFeedURL(path string, content []byte) (string, error) {
