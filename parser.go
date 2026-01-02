@@ -29,8 +29,12 @@ import (
 	"github.com/immanent-tech/go-syndication/types"
 )
 
-// DefaultRequestTimeout is the maximum time allowed for a HTTP request issued by the library to execute.
-var DefaultRequestTimeout = 30 * time.Second
+var (
+	// DefaultRequestTimeout is the maximum time allowed for a HTTP request issued by the library to execute.
+	DefaultRequestTimeout = 30 * time.Second
+	// UserAgent is the user agent that is sent when making http requests. Change this as needed.
+	UserAgent = "go-syndication"
+)
 
 var (
 	// ErrParseBytes indicates an error occurred trying to parse a byte array as a feed.
@@ -423,6 +427,6 @@ func parseSource[T any](source T) SourceType {
 	}
 }
 
-func newWebClient() *resty.Client {
+var newWebClient = sync.OnceValue(func() *resty.Client {
 	return resty.New().SetHeader("User-Agent", "go-syndication")
-}
+})
