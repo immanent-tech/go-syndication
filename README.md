@@ -24,7 +24,7 @@
 [![Project license](https://img.shields.io/github/license/immanent-tech/go-syndication.svg?style=flat-square)](LICENSE)
 
 [![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/immanent-tech/go-syndication/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
-[![code with love by GITHUB_USERNAME](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-GITHUB_USERNAME-ff1414.svg?style=flat-square)](https://github.com/GITHUB_USERNAME)
+[![code with love by joshuar](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-joshuar-ff1414.svg?style=flat-square)](https://github.com/joshuar)
 
 </div>
 
@@ -44,7 +44,6 @@
 - [Authors \& contributors](#authors--contributors)
 - [Security](#security)
 - [License](#license)
-- [Acknowledgements](#acknowledgements)
 
 </details>
 
@@ -52,48 +51,36 @@
 
 ## About
 
-> **[?]**
-> Provide general information about your project here.
-> What problem does it (intend to) solve?
-> What is the purpose of your project?
-> Why did you undertake it?
-> You don't have to answer all the questions -- just the ones relevant to your project.
+`go-syndication` is Go package for dealing with various feed syndication formats. It supports:
 
-<!-- <details>
-<summary>Screenshots</summary>
-<br>
+- RSS
+- Atom
+- JSONFeed
+- Sitemaps
+- OPML
+- Various RSS/Atom extensions such as media, dublin core, itunes, and googleplay.
 
-> **[?]**
-> Please provide your screenshots here.
-
-|                               Home Page                               |                               Login Page                               |
-| :-------------------------------------------------------------------: | :--------------------------------------------------------------------: |
-| <img src="docs/images/screenshot.png" title="Home Page" width="100%"> | <img src="docs/images/screenshot.png" title="Login Page" width="100%"> |
-
-</details> -->
+The package can read and write all formats. It includes built-in validation and sanitisation of elements.
 
 ### Built With
 
-> **[?]**
-> Please provide the technologies that are used in the project.
+- [openapi-codegen](https://github.com/oapi-codegen/oapi-codegen/).
+- [validator](https://github.com/go-playground/validator).
+- [bluemonday](https://github.com/microcosm-cc/bluemonday).
 
 ## Getting Started
 
 ### Prerequisites
 
-> **[?]**
-> What are the project requirements/dependencies?
+TBA.
 
 ### Installation
 
-> **[?]**
-> Describe how to install and get started with the project.
+TBA.
 
 ## Usage
 
-> **[?]**
-> How does one go about using it?
-> Provide various use cases and code examples here.
+TBA.
 
 ## Roadmap
 
@@ -105,13 +92,10 @@ See the [open issues](https://github.com/immanent-tech/go-syndication/issues) fo
 
 ## Support
 
-> **[?]**
-> Provide additional ways to contact the project maintainer/maintainers.
-
 Reach out to the maintainer at one of the following places:
 
 - [GitHub issues](https://github.com/immanent-tech/go-syndication/issues/new?assignees=&labels=question&template=04_SUPPORT_QUESTION.md&title=support%3A+)
-- Contact options listed on [this GitHub profile](https://github.com/GITHUB_USERNAME)
+- Contact options listed on [this GitHub profile](https://github.com/joshuar)
 
 ## Project assistance
 
@@ -132,7 +116,7 @@ Please read [our contribution guidelines](docs/CONTRIBUTING.md), and thank you f
 
 ## Authors & contributors
 
-The original setup of this repository is by [FULL_NAME](https://github.com/GITHUB_USERNAME).
+The original setup of this repository is by [joshuar](https://github.com/joshuar).
 
 For a full list of all authors and contributors, see [the contributors page](https://github.com/immanent-tech/go-syndication/contributors).
 
@@ -149,8 +133,8 @@ This project is licensed under the **MIT license**.
 
 See [LICENSE](LICENSE) for more information.
 
-## Acknowledgements
+<!-- ## Acknowledgements
 
 > **[?]**
 > If your work was funded by any organization or institution, acknowledge their support here.
-> In addition, if your work relies on other software libraries, or was inspired by looking at other work, it is appropriate to acknowledge this intellectual debt too.
+> In addition, if your work relies on other software libraries, or was inspired by looking at other work, it is appropriate to acknowledge this intellectual debt too. -->

@@ -9,7 +9,7 @@ info:
     name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
-    identifier: AGPL-3.0-or-later
+    identifier: MIT
 components:
   schemas:
     Language:
