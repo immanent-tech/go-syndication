@@ -45,6 +45,20 @@ var (
 	ErrUnsupportedFormat = errors.New("unsupported feed format")
 )
 
+type ParserOptions struct {
+	Validate bool
+}
+
+type ParseOption func(*ParserOptions)
+
+// PerformValidation option controls whether validation will be performed after the feed data has been parsed.
+// This allows a feed that doesn't strictly pass its format specification to be returned.
+func PerformValidation(value bool) ParseOption {
+	return func(po *ParserOptions) {
+		po.Validate = value
+	}
+}
+
 // FeedResult is returned when calling NewFeedsFromURLs and contains the results for parsing an individual URL. It
 // will contain the original URL and either a new Feed or a non-nil error.
 type FeedResult struct {
@@ -66,7 +80,13 @@ type FeedItemsResult struct {
 type ItemsResult []FeedItemsResult
 
 // NewFeedFromBytes will create a new Feed of the given type from the given byte array.
-func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
+func NewFeedFromBytes[T any](data []byte, options ...ParseOption) (*Feed, error) {
+	// Parse and set options.
+	opts := &ParserOptions{}
+	for option := range slices.Values(options) {
+		option(opts)
+	}
+
 	var (
 		original T
 		feed     *Feed
@@ -90,9 +110,10 @@ func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
 		FeedSource: source,
 	}
 	feed.SourceType = parseSource(original)
-	err = feed.Validate()
-	if err != nil {
-		return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseBytes, err)
+	if opts.Validate {
+		if err = feed.Validate(); err != nil {
+			return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseBytes, err)
+		}
 	}
 
 	return feed, nil
@@ -109,9 +130,9 @@ func NewFeedFromSource[T types.FeedSource](source T) *Feed {
 }
 
 // NewFeedFromURL will attempt to create new Feed object from the given URL.
-func NewFeedFromURL(ctx context.Context, url string) (*Feed, error) {
+func NewFeedFromURL(ctx context.Context, url string, options ...ParseOption) (*Feed, error) {
 	client := newWebClient()
-	result := parseFeedURL(ctx, client, url)
+	result := parseFeedURL(ctx, client, url, options...)
 	return result.Feed, result.Err
 }
 
@@ -201,7 +222,7 @@ func FindFeedImage(ctx context.Context, feed *Feed) error {
 }
 
 // parseFeedURL attempts to parse the given URL as a feed source.
-func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedResult {
+func parseFeedURL(ctx context.Context, client *resty.Client, url string, options ...ParseOption) FeedResult {
 	// Get the feed data.
 	resp, err := client.R().
 		SetContext(ctx).
@@ -222,27 +243,27 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string) FeedRes
 	switch {
 	case isMimeType(content, types.MimeTypesRSS):
 		// RSS.
-		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
+		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
 	case isMimeType(content, types.MimeTypesAtom):
 		// Atom.
-		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
+		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
 	case isMimeType(content, types.MimeTypesIndeterminate):
 		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
 		switch {
 		case bytes.Contains(resp.Body(), []byte("<feed")):
-			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body())
+			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
 			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
 				return FeedResult{Err: fmt.Errorf("could not parse as atom: %w", err)}
 			}
 		case bytes.Contains(resp.Body(), []byte("<rss")):
-			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body())
+			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
 			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
 				return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
 			}
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
 		// JSONFeed
-		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body())
+		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body(), options...)
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
