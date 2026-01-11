@@ -81,6 +81,10 @@ func (r *RSS) GetItems() []types.ItemSource {
 	return r.Channel.GetItems()
 }
 
+func (r *RSS) GetUpdateInterval() time.Duration {
+	return r.Channel.GetUpdateInterval()
+}
+
 // Validate applies custom validation to an feed.
 func (r *RSS) Validate() error {
 	if err := validation.Validate.Struct(r); err != nil {

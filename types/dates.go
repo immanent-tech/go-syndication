@@ -112,3 +112,21 @@ func tryFormats(data string) (time.Time, error) {
 	}
 	return parsed, nil
 }
+
+func GetMedianInterval(data []time.Duration) time.Duration {
+	dataCopy := make([]time.Duration, len(data))
+	copy(dataCopy, data)
+
+	slices.Sort(dataCopy)
+
+	var median time.Duration
+	if l := len(dataCopy); l == 0 {
+		return 0
+	} else if l%2 == 0 {
+		median = (dataCopy[l/2-1] + dataCopy[l/2]) / 2
+	} else {
+		median = dataCopy[l/2]
+	}
+
+	return median
+}

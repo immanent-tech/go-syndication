@@ -84,6 +84,7 @@ type FeedSource interface {
 	Source
 	SourceEditable
 	MediaEditable
+	GetUpdateInterval() time.Duration
 	GetItems() []ItemSource
 	Validate() error
 }

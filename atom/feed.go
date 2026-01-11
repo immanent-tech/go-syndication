@@ -175,6 +175,23 @@ func (f *Feed) GetUpdatedDate() time.Time {
 	return f.Updated.Value.Time
 }
 
+func (f *Feed) GetUpdateInterval() time.Duration {
+	if items := f.GetItems(); len(items) > 2 {
+		var intervals []time.Duration
+		for idx := range items {
+			if idx < len(items)-1 {
+				if items[idx].GetUpdatedDate() != types.UnixEpoch && items[idx+1].GetUpdatedDate() != types.UnixEpoch {
+					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(items[idx+1].GetUpdatedDate()))
+				}
+			}
+		}
+		if len(intervals) > 0 {
+			return types.GetMedianInterval(intervals)
+		}
+	}
+	return 5 * time.Minute
+}
+
 // GetItems returns a slice of Entry values for the Feed.
 func (f *Feed) GetItems() []types.ItemSource {
 	items := make([]types.ItemSource, 0, len(f.Entries))
