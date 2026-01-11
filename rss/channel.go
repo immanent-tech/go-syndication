@@ -179,12 +179,31 @@ func (c *Channel) GetUpdatedDate() time.Time {
 }
 
 func (c *Channel) GetUpdateInterval() time.Duration {
+	if c.SYUdatePeriod != nil {
+		var baseInterval time.Duration
+		switch c.SYUdatePeriod.Value {
+		case "hourly":
+			baseInterval = time.Hour
+		case "daily":
+			baseInterval = 24 * time.Hour
+		case "weekly":
+			baseInterval = 7 * 24 * time.Hour
+		case "yearly":
+			baseInterval = 365 * 24 * time.Hour
+		default:
+			baseInterval = 5 * time.Hour
+		}
+		if c.SYUpdateFrequency != nil && c.SYUpdateFrequency.Value > 1 {
+			return time.Duration(int64(float64(baseInterval) / float64(c.SYUpdateFrequency.Value)))
+		}
+		return baseInterval
+	}
 	if items := c.GetItems(); len(items) > 2 {
 		var intervals []time.Duration
 		for idx := range items {
 			if idx < len(items)-1 {
 				if items[idx].GetUpdatedDate() != types.UnixEpoch && items[idx+1].GetUpdatedDate() != types.UnixEpoch {
-					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(items[idx+1].GetUpdatedDate()))
+					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(items[idx+1].GetUpdatedDate()).Abs())
 				}
 			}
 		}

@@ -140,7 +140,7 @@ func (f *Feed) GetUpdateInterval() time.Duration {
 		for idx := range items {
 			if idx < len(items)-1 {
 				if items[idx].GetUpdatedDate() != types.UnixEpoch && items[idx+1].GetUpdatedDate() != types.UnixEpoch {
-					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(items[idx+1].GetUpdatedDate()))
+					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(items[idx+1].GetUpdatedDate()).Abs())
 				}
 			}
 		}
