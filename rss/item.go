@@ -137,8 +137,10 @@ func (i *Item) GetImage() *types.ImageInfo {
 		return nil
 	}
 	// If the image does not have a title, set it to the item title.
-	if img.Title == "" {
-		img.Title = i.GetTitle()
+	if img != nil {
+		if img.Title == "" {
+			img.Title = i.GetTitle()
+		}
 	}
 	return img
 }
