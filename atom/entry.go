@@ -1,15 +1,19 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
+//nolint:sloglint // ignore bare slog usage in pkg.
 package atom
 
 import (
 	"fmt"
+	"log/slog"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
+	"golang.org/x/net/html"
 )
 
 var _ types.ItemSource = (*Entry)(nil)
@@ -155,7 +159,29 @@ func (e *Entry) GetUpdatedDate() time.Time {
 func (e *Entry) GetContent() string {
 	switch {
 	case e.Content.Value != "":
-		return e.Content.Value
+		switch {
+		case e.Content.Type == "text":
+			return e.Content.Value
+		case e.Content.Type == "html" || e.Content.Type == "xhtml":
+			// Parse the value.
+			doc, err := html.Parse(strings.NewReader(e.Content.Value))
+			if err != nil {
+				slog.Error("Unable to parse content.",
+					slog.Any("error", err),
+				)
+				return ""
+			}
+			// Write out.
+			var out strings.Builder
+			err = html.Render(&out, doc)
+			if err != nil {
+				slog.Error("Unable to render content.",
+					slog.Any("error", err),
+				)
+				return ""
+			}
+			return out.String()
+		}
 	case e.Content.Source != "":
 		return e.Content.Source
 	}
@@ -164,8 +190,7 @@ func (e *Entry) GetContent() string {
 
 // Validate applies custom validation to an item.
 func (e *Entry) Validate() error {
-	err := validation.Validate.Struct(e)
-	if err != nil {
+	if err := validation.Validate.Struct(e); err != nil {
 		return fmt.Errorf("entry validation failed: %w", err)
 	}
 	return nil

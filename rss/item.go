@@ -1,15 +1,19 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
+//nolint:sloglint // ignore bare slog usage in pkg.
 package rss
 
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/types"
+	"golang.org/x/net/html"
 )
 
 var _ types.ItemSource = (*Item)(nil)
@@ -162,10 +166,27 @@ func (i *Item) GetUpdatedDate() time.Time {
 
 // GetContent returns the content of the Item (if any). This will be taken from any <content:encoded> element.
 func (i *Item) GetContent() string {
-	if i.ContentEncoded != nil {
-		return i.ContentEncoded.Value.String()
+	if i.ContentEncoded == nil {
+		return ""
 	}
-	return ""
+	// Parse the value.
+	doc, err := html.Parse(strings.NewReader(i.ContentEncoded.Value.String()))
+	if err != nil {
+		slog.Error("Unable to parse content:encoded.",
+			slog.Any("error", err),
+		)
+		return ""
+	}
+	// Write out.
+	var out strings.Builder
+	err = html.Render(&out, doc)
+	if err != nil {
+		slog.Error("Unable to render content:encoded.",
+			slog.Any("error", err),
+		)
+		return ""
+	}
+	return out.String()
 }
 
 // Validate applies custom validation to an item.
