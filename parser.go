@@ -238,6 +238,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 	if content == "" {
 		return FeedResult{URL: url, Err: fmt.Errorf("%w: missing Content-Type header", ErrParseURL)}
 	}
+
 	// Try to parse the response body as a valid feed type.
 	var feed *Feed
 	switch {
@@ -260,6 +261,8 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
 				return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
 			}
+		default:
+			return FeedResult{Err: fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)}
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
 		// JSONFeed
@@ -273,12 +276,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 		fallthrough
 	default:
 		// Cannot determine or unsupported content.
-		err = fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)
-	}
-
-	// (╯°益°)╯彡┻━┻
-	if err != nil {
-		return FeedResult{URL: url, Err: err}
+		return FeedResult{Err: fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)}
 	}
 
 	// If the source URL is not set, set it.
