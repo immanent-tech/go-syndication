@@ -48,7 +48,7 @@ type LastMod = types.DateTime
 // News indicates a URL is a news article and contains additional related elements.
 type News struct {
 	// Access is the accessibility of the article. Required if access is not open, otherwise this tag should be omitted.
-	Access *Access `json:"Access,omitempty" validate:"omitempty" xml:"http://www.google.com/schemas/sitemap-news/0.9 access"`
+	Access *Access `json:"access" validate:"omitempty" xml:"http://www.google.com/schemas/sitemap-news/0.9 access"`
 
 	// Publication contains details about the publication for the news item.
 	Publication *Publication `json:"publication" xml:"http://www.google.com/schemas/sitemap-news/0.9 publication"`
@@ -111,7 +111,7 @@ type URL struct {
 	News *News `json:"news,omitempty" xml:"http://www.google.com/schemas/sitemap-news/0.9 news"`
 
 	// Priority The priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. This value does not affect how your pages are compared to pages on other sites—it only lets the search engines know which pages you deem most important for the crawlers.
-	Priority *float32 `json:"priority,omitempty" validate:"gte=0.0,lte=1.0" xml:"priority"`
+	Priority float32 `json:"priority,omitempty" validate:"gte=0.0,lte=1.0" xml:"priority"`
 }
 
 // URLChangefreq How frequently the page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.
