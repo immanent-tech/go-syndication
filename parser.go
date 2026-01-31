@@ -33,7 +33,7 @@ var (
 	// DefaultRequestTimeout is the maximum time allowed for a HTTP request issued by the library to execute.
 	DefaultRequestTimeout = 30 * time.Second
 	// UserAgent is the user agent that is sent when making http requests. Change this as needed.
-	UserAgent = "go-syndication"
+	UserAgent = "go-syndication (+https://github.com/immanent-tech/go-syndication)"
 )
 
 var (
@@ -245,9 +245,15 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 	case isMimeType(content, types.MimeTypesRSS):
 		// RSS.
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
+		if err != nil {
+			return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
+		}
 	case isMimeType(content, types.MimeTypesAtom):
 		// Atom.
 		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
+		if err != nil {
+			return FeedResult{Err: fmt.Errorf("could not parse as atom: %w", err)}
+		}
 	case isMimeType(content, types.MimeTypesIndeterminate):
 		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
 		switch {
@@ -267,6 +273,9 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 	case isMimeType(content, types.MimeTypesJSONFeed):
 		// JSONFeed
 		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body(), options...)
+		if err != nil {
+			return FeedResult{Err: fmt.Errorf("could not parse as jsonfeed: %w", err)}
+		}
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
@@ -447,5 +456,5 @@ func parseSource[T any](source T) SourceType {
 }
 
 var newWebClient = sync.OnceValue(func() *resty.Client {
-	return resty.New().SetHeader("User-Agent", "go-syndication")
+	return resty.New().SetHeader("User-Agent", UserAgent)
 })

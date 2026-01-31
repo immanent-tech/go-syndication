@@ -22,8 +22,7 @@ func Decode[T any](namespace string, b []byte) (T, error) {
 		decoder.DefaultSpace = namespace
 	}
 	decoder.CharsetReader = charset.NewReaderLabel
-	err := decoder.Decode(&feed)
-	if err != nil {
+	if err := decoder.Decode(&feed); err != nil {
 		return feed, fmt.Errorf("could not decode byte array: %w", err)
 	}
 
@@ -36,8 +35,7 @@ func Encode[T any](feed T) ([]byte, error) {
 
 	reader := bytes.NewBuffer(b)
 	encoder := xml.NewEncoder(reader)
-	err := encoder.Encode(&feed)
-	if err != nil {
+	if err := encoder.Encode(&feed); err != nil {
 		return nil, fmt.Errorf("could not encode byte array: %w", err)
 	}
 

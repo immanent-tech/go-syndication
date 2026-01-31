@@ -13,8 +13,7 @@ var Validate *validator.Validate
 
 func init() {
 	Validate = validator.New()
-	err := Validate.RegisterValidation("mimetype", validateMimetype)
-	if err != nil {
+	if err := Validate.RegisterValidation("mimetype", validateMimetype); err != nil {
 		panic(err)
 	}
 }
