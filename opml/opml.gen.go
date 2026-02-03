@@ -48,7 +48,7 @@ type Head struct {
 	DateCreated Date `json:"dateCreated,omitempty,omitzero" validate:"omitempty" xml:"dateCreated,omitempty"`
 
 	// DateModified is a date-time, indicating when the document was last modified.
-	DateModified Date `json:"dateModified,omitempty,omitzero" validate:"omitempty,datetime" xml:"dateModified,omitempty"`
+	DateModified Date `json:"dateModified,omitempty,omitzero" validate:"omitempty" xml:"dateModified,omitempty"`
 
 	// Docs is the http address of documentation for the format used in the OPML file. It's probably a pointer to this page for people who might stumble across the file on a web server 25 years from now and wonder what it is.
 	Docs string `json:"docs,omitempty,omitzero" validate:"omitempty,url" xml:"docs,omitempty"`

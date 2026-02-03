@@ -74,7 +74,7 @@ components:
             - $ref: '#/components/schemas/Date'
           x-oapi-codegen-extra-tags:
             xml: 'dateModified,omitempty'
-            validate: 'omitempty,datetime'
+            validate: 'omitempty'
         ownerName:
           description: >
             is the owner of the document.

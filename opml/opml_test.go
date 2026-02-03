@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/immanent-tech/go-syndication/validation"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -115,11 +116,10 @@ func TestNewOPML(t *testing.T) {
 			},
 		},
 	}
-	validate := validator.New()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			opml := NewOPML(tt.args.options...)
-			require.NoError(t, validate.Struct(opml))
+			require.NoError(t, validation.ValidateStruct(opml))
 			assert.Equal(t, "test-subscription", opml.Head.Title)
 			feed := opml.Body[0]
 			assert.Equal(t, "CNET News.com", feed.Text)
