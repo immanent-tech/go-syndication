@@ -218,7 +218,7 @@ func (f *Feed) Validate() error {
 	if len(f.GetAuthors()) == 0 && missingEntryAuthors {
 		return fmt.Errorf("%w: must have at least one author or all entries with authors", ErrFeedValidation)
 	}
-	err := validation.Validate.Struct(f)
+	err := validation.ValidateStruct(f)
 	if err != nil {
 		return fmt.Errorf("feed validation failed: %w", err)
 	}

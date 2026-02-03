@@ -87,7 +87,7 @@ func (r *RSS) GetUpdateInterval() time.Duration {
 
 // Validate applies custom validation to an feed.
 func (r *RSS) Validate() error {
-	if err := validation.Validate.Struct(r); err != nil {
+	if err := validation.ValidateStruct(r); err != nil {
 		return fmt.Errorf("rss validation failed: %w", err)
 	}
 	return nil

@@ -18,7 +18,6 @@ import (
 	"time"
 
 	"codeberg.org/readeck/go-readability/v2"
-	"github.com/go-playground/validator/v10"
 	"github.com/go-resty/resty/v2"
 	"golang.org/x/net/html"
 	htmlatom "golang.org/x/net/html/atom"
@@ -27,6 +26,7 @@ import (
 	"github.com/immanent-tech/go-syndication/jsonfeed"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var (
@@ -259,12 +259,12 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 		switch {
 		case bytes.Contains(resp.Body(), []byte("<feed")):
 			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
-			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
+			if err != nil && errors.Is(err, &validation.StructError{}) {
 				return FeedResult{Err: fmt.Errorf("could not parse as atom: %w", err)}
 			}
 		case bytes.Contains(resp.Body(), []byte("<rss")):
 			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
-			if err != nil && errors.Is(err, &validator.InvalidValidationError{}) {
+			if err != nil && errors.Is(err, &validation.StructError{}) {
 				return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
 			}
 		default:
@@ -286,6 +286,11 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 	default:
 		// Cannot determine or unsupported content.
 		return FeedResult{Err: fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)}
+	}
+
+	// Handle getting through the switch but still not parsing the content.
+	if feed == nil {
+		return FeedResult{Err: fmt.Errorf("%w: unknown error", ErrParseURL)}
 	}
 
 	// If the source URL is not set, set it.

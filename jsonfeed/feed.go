@@ -162,5 +162,5 @@ func (f *Feed) GetItems() []types.ItemSource {
 
 // Validate applies custom validation to an feed.
 func (f *Feed) Validate() error {
-	return validation.Validate.Struct(f)
+	return validation.ValidateStruct(f)
 }

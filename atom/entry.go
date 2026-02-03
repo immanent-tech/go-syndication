@@ -190,7 +190,7 @@ func (e *Entry) GetContent() string {
 
 // Validate applies custom validation to an item.
 func (e *Entry) Validate() error {
-	if err := validation.Validate.Struct(e); err != nil {
+	if err := validation.ValidateStruct(e); err != nil {
 		return fmt.Errorf("entry validation failed: %w", err)
 	}
 	return nil

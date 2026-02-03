@@ -18,8 +18,7 @@ import (
 var ErrPersonConstruct = errors.New("person construct is invalid")
 
 func init() {
-	err := validation.Validate.RegisterValidation("type_attr", validateTypeAttr)
-	if err != nil {
+	if err := validation.RegisterValidation("type_attr", validateTypeAttr); err != nil {
 		panic(err)
 	}
 }
@@ -43,7 +42,7 @@ func (p *PersonConstruct) Validate() error {
 	// 	return fmt.Errorf("%w: name cannot be HTML encoded", ErrPersonConstruct)
 	// }
 	// returns nil or ValidationErrors ( []FieldError
-	err := validation.Validate.Struct(p)
+	err := validation.ValidateStruct(p)
 	if err != nil {
 		return fmt.Errorf("person construct is not valid: %w", err)
 	}

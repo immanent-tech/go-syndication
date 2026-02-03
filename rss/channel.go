@@ -225,7 +225,7 @@ func (c *Channel) GetItems() []types.ItemSource {
 
 // Validate applies custom validation to an Channel.
 func (c *Channel) Validate() error {
-	if err := validation.Validate.Struct(c); err != nil {
+	if err := validation.ValidateStruct(c); err != nil {
 		return fmt.Errorf("channel validation failed: %w", err)
 	}
 	return nil
