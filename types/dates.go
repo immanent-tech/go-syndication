@@ -107,9 +107,6 @@ func tryFormats(data string) (time.Time, error) {
 		}
 		parsed = value
 	}
-	if parsed.IsZero() {
-		return parsed, fmt.Errorf("%w: got zero value", ErrInvalidDateTimeFormat)
-	}
 	return parsed, nil
 }
 
