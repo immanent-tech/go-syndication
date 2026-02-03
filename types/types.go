@@ -25,7 +25,7 @@ var (
 	// MimeTypesJSONFeed contains canonical/standard mimetypes for JSONFeed feeds.
 	MimeTypesJSONFeed = []string{"application/feed+json", "application/json"}
 	// MimeTypesFeed is the concatenation of all feed mime types.
-	MimeTypesFeed = slices.Concat(MimeTypesAtom, MimeTypesRSS, MimeTypesIndeterminate, MimeTypesJSONFeed)
+	MimeTypesFeed = slices.Concat(MimeTypesAtom, MimeTypesRSS, MimeTypesIndeterminate)
 	// MimeTypesHTML contains canonical/standard mimetypes for HTML.
 	MimeTypesHTML = []string{"text/html", "application/xhtml+xml"}
 	// MimeTypesImage contains canonical/standard/common mimetypes for images.
