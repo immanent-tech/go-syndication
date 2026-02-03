@@ -11,17 +11,17 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-var safePrinter = bluemonday.UGCPolicy()
+var Policy = bluemonday.UGCPolicy()
 
 // SanitizeString attempts to "sanitize" a string value from a Feed/Item object. It will strip any leading/trailing
 // whitespace and then run the string through bluemonday to remove dangerous components. This should retain HTML5
 // content.
 func SanitizeString(str string) string {
-	return strings.TrimSpace(html.UnescapeString(safePrinter.Sanitize(str)))
+	return strings.TrimSpace(html.UnescapeString(Policy.Sanitize(str)))
 }
 
 // SanitizeBytes attempts to "sanitize" a []byte value from a Feed/Item object. It will strip any leading/trailing
 // whitespace and then run the string through bluemonday to remove dangerous components.
 func SanitizeBytes(b []byte) []byte {
-	return safePrinter.SanitizeBytes(bytes.TrimSpace(b))
+	return Policy.SanitizeBytes(bytes.TrimSpace(b))
 }
