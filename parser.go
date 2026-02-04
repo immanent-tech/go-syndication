@@ -227,15 +227,16 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 	resp, err := client.R().
 		SetContext(ctx).
 		Get(url)
-	if err != nil {
+	switch {
+	case err != nil && resp.IsError():
+		return FeedResult{Err: &HTTPError{Code: resp.StatusCode(), Message: resp.Status()}}
+	case err != nil:
 		return FeedResult{
 			URL: url,
 			Err: &HTTPError{Code: http.StatusInternalServerError, Message: err.Error()},
 		}
 	}
-	if resp.IsError() {
-		return FeedResult{Err: &HTTPError{Code: resp.StatusCode(), Message: resp.Status()}}
-	}
+
 	// Retrieve the content header so we know what format we are dealing with.
 	content := resp.Header().Get("Content-Type")
 	if content == "" {
