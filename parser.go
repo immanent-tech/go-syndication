@@ -228,10 +228,13 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 		SetContext(ctx).
 		Get(url)
 	if err != nil {
-		return FeedResult{URL: url, Err: fmt.Errorf("%w: %w", ErrParseURL, err)}
+		return FeedResult{
+			URL: url,
+			Err: &HTTPError{Code: http.StatusInternalServerError, Message: err.Error()},
+		}
 	}
 	if resp.IsError() {
-		return FeedResult{Err: fmt.Errorf("%w: %s", ErrParseURL, resp.Status())}
+		return FeedResult{Err: &HTTPError{Code: resp.StatusCode(), Message: resp.Status()}}
 	}
 	// Retrieve the content header so we know what format we are dealing with.
 	content := resp.Header().Get("Content-Type")
@@ -463,3 +466,12 @@ func parseSource[T any](source T) SourceType {
 var newWebClient = sync.OnceValue(func() *resty.Client {
 	return resty.New().SetHeader("User-Agent", UserAgent)
 })
+
+type HTTPError struct {
+	Code    int
+	Message string
+}
+
+func (e *HTTPError) Error() string {
+	return fmt.Sprintf("%d: %s", e.Code, e.Message)
+}
