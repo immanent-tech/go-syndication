@@ -294,7 +294,7 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 
 	// Handle getting through the switch but still not parsing the content.
 	if feed == nil {
-		return FeedResult{Err: fmt.Errorf("%w: unknown error", ErrParseURL)}
+		return FeedResult{Err: fmt.Errorf("%w: %w", ErrParseURL, err)}
 	}
 
 	// If the source URL is not set, set it.
