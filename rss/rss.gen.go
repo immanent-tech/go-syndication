@@ -4,6 +4,8 @@
 package rss
 
 import (
+	"encoding/xml"
+
 	externalRef0 "github.com/immanent-tech/go-syndication/atom"
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef2 "github.com/immanent-tech/go-syndication/extensions/googleplay"
@@ -49,8 +51,8 @@ type Author = types.String
 // Category allows a taxonomy to be set on the channel or item.
 type Category struct {
 	// Domain is a string that identifies a categorization taxonomy.
-	Domain types.String `json:"domain,omitempty,omitzero" xml:"domain,attr,omitempty"`
-	Value  types.String `json:"value" xml:",chardata"`
+	Domain *types.String `json:"domain,omitempty" xml:"domain,attr,omitempty"`
+	Value  types.String  `json:"value" xml:",chardata"`
 }
 
 // Channel defines model for Channel.
@@ -77,7 +79,7 @@ type Channel struct {
 	DCIdentifier *externalRef1.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
-	DCLanguage externalRef1.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DCLanguage *externalRef1.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
 	DCPublisher *externalRef1.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
@@ -101,29 +103,29 @@ type Channel struct {
 	DCType *externalRef1.DCType `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// GooglePlayCategory a taxonomy for the object.
-	GooglePlayCategory externalRef2.Category `json:"googleplay_category" xml:"http://www.google.com/schemas/play-podcasts/1.0 category,omitempty"`
+	GooglePlayCategory *externalRef2.Category `json:"googleplay_category" xml:"http://www.google.com/schemas/play-podcasts/1.0 category,omitempty"`
 
 	// ItunesAuthor is the author of the show content.
-	ItunesAuthor externalRef3.Author `json:"itunes_author" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd author,omitempty"`
+	ItunesAuthor *externalRef3.Author `json:"itunes_author" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd author,omitempty"`
 
 	// ItunesCategory is the set of all taxonomies that represent the show.
-	ItunesCategory externalRef3.Categories `json:"itunes_category" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty"`
+	ItunesCategory *externalRef3.Categories `json:"itunes_category" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty"`
 
 	// ItunesExplicit indicates whether the content is explicit in nature.
-	ItunesExplicit externalRef3.Explicit `json:"itunes_explicit" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd explicit,omitempty"`
+	ItunesExplicit *externalRef3.Explicit `json:"itunes_explicit" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd explicit,omitempty"`
 
 	// ItunesImage is the artwork for the show.
-	ItunesImage externalRef3.Image `json:"itunes_image" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty"`
-	ItunesOwner externalRef3.Owner `json:"itunes_owner" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd owner,omitempty"`
+	ItunesImage *externalRef3.Image `json:"itunes_image" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty"`
+	ItunesOwner *externalRef3.Owner `json:"itunes_owner" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd owner,omitempty"`
 
 	// ItunesSubtitle is a subtitle for the show content.
-	ItunesSubtitle externalRef3.Subtitle `json:"itunes_subtitle" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd subtitle,omitempty"`
+	ItunesSubtitle *externalRef3.Subtitle `json:"itunes_subtitle" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd subtitle,omitempty"`
 
 	// ItunesSummary is a summary of the show content.
-	ItunesSummary externalRef3.Summary `json:"itunes_summary" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd summary,omitempty"`
+	ItunesSummary *externalRef3.Summary `json:"itunes_summary" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd summary,omitempty"`
 
 	// ItunesType is the type of show
-	ItunesType externalRef3.Type `json:"itunes_type" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty"`
+	ItunesType *externalRef3.Type `json:"itunes_type" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
 	MediaBackLinks externalRef4.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
@@ -132,7 +134,7 @@ type Channel struct {
 	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty,omitzero"`
+	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -204,14 +206,14 @@ type Channel struct {
 	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// SYUdatePeriod is the period over which the channel format is updated.
-	SYUdatePeriod *externalRef5.SYUpdatePeriod `json:"sy_updatePeriod,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
+	SYUdatePeriod *externalRef5.SYUpdatePeriod `json:"update_period,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
 
 	// SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
-	SYUpdateBase *externalRef5.SYUpdateBase `json:"sy_updateBase,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
+	SYUpdateBase *externalRef5.SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
-	SYUpdateFrequency *externalRef5.SYUpdateFrequency `json:"sy_updateFrequency,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
-	AtomLink          AtomLink                        `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+	SYUpdateFrequency *externalRef5.SYUpdateFrequency `json:"update_frequency,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	AtomLink          *AtomLink                       `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
 	Categories []Category `json:"category,omitempty" xml:"category,omitempty"`
@@ -227,7 +229,7 @@ type Channel struct {
 	Description Description `json:"description" validate:"omitempty,required" xml:"description"`
 
 	// Docs A URL that points to the documentation for the format used in the RSS file. It's probably a pointer to this page. It's for people who might stumble across an RSS file on a Web server 25 years from now and wonder what it is.
-	Docs types.String `json:"docs,omitempty,omitzero" validate:"omitempty,url" xml:"docs,omitempty"`
+	Docs types.String `json:"docs,omitempty" validate:"omitempty,url" xml:"docs,omitempty"`
 
 	// Generator is a string indicating the program used to generate the channel.
 	Generator types.String `json:"generator,omitempty,omitzero" xml:"generator,omitempty"`
@@ -236,31 +238,31 @@ type Channel struct {
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Items is a list of the current items published to the channel.
-	Items []Item `json:"items,omitempty,omitzero" validate:"omitempty,dive,validateFn" xml:"item,omitempty"`
+	Items []Item `json:"items,omitempty" validate:"omitempty,dive,validateFn" xml:"item,omitempty"`
 
 	// Language is the language the channel is written in. This allows aggregators to group all Italian language sites, for example, on a single page.
 	Language types.String `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
 
 	// LastBuildDate is the last time the content of the channel changed.
-	LastBuildDate *LastBuildDate `json:"lastBuildDate,omitempty" validate:"omitempty" xml:"lastBuildDate,omitempty"`
+	LastBuildDate *LastBuildDate `json:"last_build_date" validate:"omitempty" xml:"lastBuildDate,omitempty"`
 
 	// Link represents a link that represents the parent element.
 	Link Link `json:"link" validate:"required,url" xml:"link"`
 
 	// ManagingEditor is the email address for person responsible for editorial content.
-	ManagingEditor types.String `json:"managingEditor,omitempty,omitzero" xml:"managingEditor,omitempty"`
+	ManagingEditor types.String `json:"managing_editor" xml:"managingEditor,omitempty"`
 
 	// PubDate is the publication date of the content.
-	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
+	PubDate *PubDate `json:"pub_date" validate:"omitempty" xml:"pubDate,omitempty"`
 
 	// Rating contains a rating for the element.
-	Rating Rating `json:"rating,omitempty,omitzero" xml:"rating,omitempty"`
+	Rating *Rating `json:"rating,omitempty" xml:"rating,omitempty"`
 
 	// SkipDays is a hint for aggregators telling them which days they can skip. This
-	SkipDays SkipDays `json:"skipDays,omitempty,omitzero" xml:"skipDays,omitempty"`
+	SkipDays *SkipDays `json:"skip_days" xml:"skipDays"`
 
 	// SkipHours is a hint for aggregators telling them which hours they can skip.
-	SkipHours SkipHours `json:"skipHours,omitempty,omitzero" xml:"skipHours,omitempty"`
+	SkipHours *SkipHours `json:"skip_hours" xml:"skipHours,omitempty"`
 
 	// TextInput The purpose of the <textInput> element is something of a mystery. You can use it to specify a search engine box. Or to allow a reader to provide feedback. Most aggregators ignore it.
 	TextInput *TextInput `json:"textInput,omitempty" xml:"textInput,omitempty"`
@@ -269,10 +271,10 @@ type Channel struct {
 	Title Title `json:"title" validate:"required" xml:"title"`
 
 	// TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.
-	TTL TTL `json:"ttl,omitempty,omitzero" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
+	TTL TTL `json:"ttl,omitempty" validate:"omitempty,gte=1" xml:"ttl,omitempty"`
 
 	// WebMaster is the email address for person responsible for technical issues relating to channel.
-	WebMaster types.String `json:"webMaster,omitempty,omitzero" xml:"webMaster,omitempty"`
+	WebMaster types.String `json:"web_master" xml:"webMaster,omitempty"`
 }
 
 // Cloud specifies a web service that supports the rssCloud interface which can be implemented in HTTP-POST, XML-RPC or SOAP 1.1.
@@ -309,17 +311,17 @@ type Enclosure struct {
 // GUID is a string that uniquely identifies an item.
 type GUID struct {
 	// IsPermaLink If true the guid is assumed to be a URL. If its value is false, the guid may not be assumed to be a url, or a url to anything in particular.
-	IsPermaLink bool         `json:"isPermaLink,omitempty,omitzero" xml:"isPermaLink,attr,omitempty"`
+	IsPermaLink bool         `json:"is_permalink" xml:"isPermaLink,attr,omitempty"`
 	Value       types.String `json:"value" xml:",chardata"`
 }
 
 // Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 type Image struct {
 	// Description contains text that is included in the TITLE attribute of the link formed around the image in the HTML rendering.
-	Description string `json:"description,omitempty,omitzero" xml:"description,omitempty"`
+	Description *string `json:"description,omitempty" xml:"description,omitempty"`
 
 	// Height indicates the height of the image in pixels.
-	Height int `json:"height,omitempty,omitzero" validate:"omitempty,gt=0,lte=400" xml:"height,omitempty"`
+	Height *int `json:"height,omitempty" validate:"omitempty,gt=0,lte=400" xml:"height,omitempty"`
 
 	// Link is the URL of the site, when the channel is rendered, the image is a link to the site. (Note, in practice the image <title> and <link> should have the same value as the channel's <title> and <link>.
 	Link string `json:"link" validate:"required_without=URL,omitempty,url" xml:"link"`
@@ -331,7 +333,7 @@ type Image struct {
 	URL string `json:"url" validate:"required_without=link,omitempty,url" xml:"url"`
 
 	// Width indicates the width of the image in pixels.
-	Width int `json:"width,omitempty,omitzero" validate:"omitempty,gt=0,lte=144" xml:"width,omitempty"`
+	Width *int `json:"width,omitempty" validate:"omitempty,gt=0,lte=144" xml:"width,omitempty"`
 }
 
 // Item defines model for Item.
@@ -361,7 +363,7 @@ type Item struct {
 	DCIdentifier *externalRef1.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
-	DCLanguage externalRef1.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DCLanguage *externalRef1.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
 	DCPublisher *externalRef1.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
@@ -391,7 +393,7 @@ type Item struct {
 	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty,omitzero"`
+	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
@@ -463,41 +465,41 @@ type Item struct {
 	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
-	PermaLink externalRef5.PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
-	AtomLink  AtomLink               `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+	PermaLink *externalRef5.PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
+	AtomLink  *AtomLink               `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
-	Author Author `json:"author,omitempty,omitzero" xml:"author,omitempty"`
+	Author *Author `json:"author,omitempty" xml:"author,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
-	Categories []Category `json:"categories,omitempty,omitzero" xml:"category,omitempty"`
+	Categories []Category `json:"categories,omitempty" xml:"category,omitempty"`
 
 	// Comments is the url of the comments page for the item.
-	Comments Comments `json:"comments,omitempty,omitzero" xml:"comments,omitempty"`
+	Comments *Comments `json:"comments,omitempty" xml:"comments,omitempty"`
 
 	// Description is a short description of the item.
-	Description Description `json:"description,omitempty,omitzero" validate:"omitempty" xml:"description"`
+	Description Description `json:"description" validate:"omitzero,required" xml:"description"`
 
 	// Enclosure describes a media object.
 	Enclosure *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
 
 	// GUID is a string that uniquely identifies an item.
-	GUID GUID `json:"guid,omitempty,omitzero" xml:"guid,omitempty"`
+	GUID *GUID `json:"guid,omitempty" xml:"guid,omitempty"`
 
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Link is the URL of the item.
-	Link Link `json:"link,omitempty,omitzero" validate:"omitempty,url" xml:"link"`
+	Link Link `json:"link" validate:"omitzero,required,url" xml:"link"`
 
 	// PubDate is the publication date of the content.
-	PubDate *PubDate `json:"pubDate,omitempty" validate:"omitempty" xml:"pubDate,omitempty"`
+	PubDate *PubDate `json:"pub_date" validate:"omitempty" xml:"pubDate,omitempty"`
 
 	// Source The RSS channel that the item came from.
-	Source Source `json:"source,omitempty,omitzero" xml:"source,omitempty"`
+	Source *Source `json:"source,omitempty" xml:"source,omitempty"`
 
 	// Title is the title of the item.
-	Title Title `json:"title,omitempty,omitzero" validate:"omitempty" xml:"title"`
+	Title Title `json:"title" validate:"omitzero,required" xml:"title"`
 }
 
 // LastBuildDate is the last time the content of the channel changed.
@@ -512,7 +514,7 @@ type PubDate = types.DateTime
 // RSS represents an RSS document.
 type RSS struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef7.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Channel is the element containing metadata (Channel elements) and items.
 	Channel Channel `json:"channel" validate:"required" xml:"channel"`
@@ -529,7 +531,7 @@ type Rating = types.String
 
 // SkipDays is a hint for aggregators telling them which days they can skip. This
 type SkipDays struct {
-	Day []SkipDaysDay `json:"day,omitempty,omitzero" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day,omitempty"`
+	Day *[]SkipDaysDay `json:"day,omitempty" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day"`
 }
 
 // SkipDaysDay is a day of the week to skip.
@@ -537,14 +539,14 @@ type SkipDaysDay string
 
 // SkipHours is a hint for aggregators telling them which hours they can skip.
 type SkipHours struct {
-	Hour []int `json:"hour,omitempty,omitzero" validate:"omitempty,dive,gte=0,lte=23" xml:"hour,omitempty"`
+	Hour []int `json:"hour,omitempty" validate:"omitempty,dive,gte=0,lte=23" xml:"hour,omitempty"`
 }
 
 // Source The RSS channel that the item came from.
 type Source struct {
 	// Url is a URL that represents the element content.
-	Url   externalRef7.AttrURL `json:"url,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
-	Value types.String         `json:"value" xml:",chardata"`
+	Url   *externalRef7.AttrURL `json:"url,omitempty" validate:"omitempty,url" xml:"url,attr,omitempty"`
+	Value types.String          `json:"value" xml:",chardata"`
 }
 
 // TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.

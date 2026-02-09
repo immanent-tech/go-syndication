@@ -7,6 +7,7 @@ import (
 	"errors"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 // getFailedValidations extracts the validation errors from the given error object and converts them into a map of the
@@ -18,10 +19,10 @@ func getFailedValidations(err error) (map[string][]string, error) {
 	if errors.As(err, &invalidValidationError) {
 		return nil, invalidValidationError
 	}
-	var validateErrs validator.ValidationErrors
-	if errors.As(err, &validateErrs) {
-		for _, e := range validateErrs {
-			failedValidations[e.StructNamespace()] = append(failedValidations[e.StructNamespace()], e.Tag())
+	var validateErrs validation.StructError
+	if errors.Is(err, &validateErrs) {
+		for _, e := range validateErrs.Fields {
+			failedValidations[e.StructField] = append(failedValidations[e.StructNamespace], e.Tag)
 		}
 	}
 	return failedValidations, nil

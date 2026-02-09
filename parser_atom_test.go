@@ -175,8 +175,8 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0].URI))
-			assert.Equal(t, "ftp://example.com/", feed.Entries[0].Authors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0]))
+			assert.Equal(t, "ftp://example.com/", feed.Entries[0].Authors[0].String())
 		},
 	},
 	"entry_author_url_http.xml": {
@@ -185,8 +185,8 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0].URI))
-			assert.Equal(t, "http://example.com/", feed.Entries[0].Authors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0]))
+			assert.Equal(t, "http://example.com/", feed.Entries[0].Authors[0].String())
 		},
 	},
 	// TODO: might require custom unmarshal logic?
@@ -1479,8 +1479,7 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 	for set, testSuites := range atomTests {
 		for name, suite := range testSuites {
 			testFile := filepath.Join(set, name)
-			data, err := os.ReadFile(testFile) // #nosec G304
-			if err != nil {
+			if data, err := os.ReadFile(testFile); err != nil {
 				t.Error("could not read file: " + name)
 			} else {
 				tests = append(tests, struct {
@@ -1511,8 +1510,7 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 			}
 			// If wantErr, make sure that occurs.
 			if tt.suite.wantInvalid {
-				err := feed.Validate()
-				if (err != nil) != tt.suite.wantInvalid {
+				if err := feed.Validate(); (err != nil) != tt.suite.wantInvalid {
 					t.Fatalf("Validate() error = %v, wantErr %v", err, tt.suite.wantInvalid)
 					return
 				}

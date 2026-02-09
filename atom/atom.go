@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"mime"
 	"slices"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/sanitization"
@@ -26,10 +27,15 @@ func init() {
 // String returns string-ified format of the PersonConstruct. This will be the format "name (email)". The email part is
 // omitted if the PersonConstruct has no email.
 func (p *PersonConstruct) String() string {
-	if p.Email.Value != "" {
-		return fmt.Sprintf("%s (%s)", p.Name.Value, p.Email.Value)
+	var value strings.Builder
+	value.WriteString(p.Name.Value)
+	if p.Email != nil && p.Email.Value != "" {
+		value.WriteString(" (" + p.Email.Value + ")")
 	}
-	return p.Name.Value
+	if p.URI != nil && p.URI.Value != "" {
+		value.WriteString(" " + p.URI.Value)
+	}
+	return value.String()
 }
 
 // Validate ensures that the PersonConstruct is valid. If not, it returns a non-nil error containing details of any
@@ -42,8 +48,7 @@ func (p *PersonConstruct) Validate() error {
 	// 	return fmt.Errorf("%w: name cannot be HTML encoded", ErrPersonConstruct)
 	// }
 	// returns nil or ValidationErrors ( []FieldError
-	err := validation.ValidateStruct(p)
-	if err != nil {
+	if err := validation.ValidateStruct(p); err != nil {
 		return fmt.Errorf("person construct is not valid: %w", err)
 	}
 	return nil
@@ -57,8 +62,8 @@ func (c *Category) String() string {
 		return sanitization.SanitizeString(c.Label.Value)
 	}
 	// Use any value if present.
-	if c.Value != "" {
-		return sanitization.SanitizeString(c.Value)
+	if c.UndefinedContent != nil {
+		return sanitization.SanitizeString(*c.UndefinedContent)
 	}
 	// Use the term attribute.
 	return sanitization.SanitizeString(c.Term.Value)
@@ -78,6 +83,13 @@ func (s *Summary) String() string {
 
 func (i *ID) String() string {
 	return i.Value
+}
+
+func (l *Link) String() string {
+	if l.Href == "" && l.UndefinedContent != nil {
+		return *l.UndefinedContent
+	}
+	return l.Href
 }
 
 func validateTypeAttr(fl validator.FieldLevel) bool {

@@ -4,6 +4,8 @@
 package media
 
 import (
+	"encoding/xml"
+
 	externalRef0 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef1 "github.com/immanent-tech/go-syndication/types"
 )
@@ -94,7 +96,7 @@ type MediaBacklinks = []MediaBacklink
 // MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
 type MediaCategory struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Label is the human readable label that can be displayed in end user applications.
 	Label Label `json:"label,omitempty,omitzero" xml:"label,attr,omitempty"`
@@ -109,7 +111,7 @@ type MediaCategory struct {
 // MediaComment is a comments a media object has received.
 type MediaComment struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -121,7 +123,7 @@ type MediaComments = []MediaComment
 // MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 type MediaCommunity struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// StarRating specifies the rating-related information about a media object.
 	StarRating *MediaCommunityStarRating `json:"media_star_rating,omitempty" xml:"http://search.yahoo.com/mrss/ starRating,omitempty"`
@@ -156,49 +158,49 @@ type MediaCommunityTags struct {
 // MediaContent defines model for MediaContent.
 type MediaContent struct {
 	// DCContributor is an entity responsible for making contributions to the resource.
-	DCContributor *externalRef0.DCContributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+	DCContributor externalRef0.DCContributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
 
 	// DCCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
-	DCCoverage *externalRef0.DCCoverage `json:"dc_coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
+	DCCoverage externalRef0.DCCoverage `json:"dc_coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
 
 	// DCCreator is an entity primarily responsible for making the resource.
-	DCCreator *externalRef0.DCCreator `json:"dc_creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
+	DCCreator externalRef0.DCCreator `json:"dc_creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
 
 	// DCDate is a point or period of time associated with an event in the lifecycle of the resource.
-	DCDate *externalRef0.DCDate `json:"dc_date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
+	DCDate externalRef0.DCDate `json:"dc_date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
 
 	// DCDescription may include but is not limited to: an abstract, table of contents, reference to a graphical representation of content or a free-text account of the content.
-	DCDescription *externalRef0.DCDescription `json:"dc_description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+	DCDescription externalRef0.DCDescription `json:"dc_description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
 
 	// DCFormat is the file format, physical medium, or dimensions of the resource.
-	DCFormat *externalRef0.DCFormat `json:"dc_format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
+	DCFormat externalRef0.DCFormat `json:"dc_format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
 
 	// DCIdentifier is an unambiguous reference to the resource within a given context.
-	DCIdentifier *externalRef0.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
+	DCIdentifier externalRef0.DCIdentifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// DCLanguage identifies the language used by the related resource using an HTML language code.
 	DCLanguage externalRef0.DCLanguage `json:"dc_language,omitempty" validate:"omitempty,bcp47_language_tag" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
 	// DCPublisher is an entity responsible for making the resource available.
-	DCPublisher *externalRef0.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
+	DCPublisher externalRef0.DCPublisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
 
 	// DCRelation is a related resource.
-	DCRelation *externalRef0.DCRelation `json:"dc_relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+	DCRelation externalRef0.DCRelation `json:"dc_relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
 
 	// DCRights is information about rights held in and over the resource.
-	DCRights *externalRef0.DCRights `json:"dc_rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
+	DCRights externalRef0.DCRights `json:"dc_rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
 
 	// DCSource is a related resource from which the described resource is derived.
-	DCSource *externalRef0.DCSource `json:"dc_source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
+	DCSource externalRef0.DCSource `json:"dc_source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
 
 	// DCSubject is the topic of the resource.
-	DCSubject *externalRef0.DCSubject `json:"dc_subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+	DCSubject externalRef0.DCSubject `json:"dc_subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
 
 	// DCTitle is a name by which the resource is formally known.
-	DCTitle *externalRef0.DCTitle `json:"dc_title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
+	DCTitle externalRef0.DCTitle `json:"dc_title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
 
 	// DCType is the nature or genre of the resource.
-	DCType *externalRef0.DCType `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
+	DCType externalRef0.DCType `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
 	MediaBackLinks MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
@@ -274,7 +276,7 @@ type MediaContent struct {
 	NameSpace  string      `json:"NameSpace,omitempty,omitzero" xml:"xmlns:media,attr"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Bitrate is the kilobits per second rate of media.
 	Bitrate externalRef1.AttrBitrate `json:"bitrate,omitempty,omitzero" validate:"omitempty,number" xml:"bitrate,attr"`
@@ -328,7 +330,7 @@ type MediaContentMedium string
 // MediaCopyright is copyright information for the media object.
 type MediaCopyright struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Url is a URL that represents the element content.
 	Url externalRef1.AttrURL `json:"url,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
@@ -340,7 +342,7 @@ type MediaCopyright struct {
 // MediaCredit Notable entity and the contribution to the creation of the media object. Current entities can include people, companies, locations, etc. Specific entities can have multiple roles, and several entities can have the same role.
 type MediaCredit struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Role specifies the role the entity played.
 	Role string `json:"role,omitempty,omitzero" validate:"omitempty,lowercase" xml:"role,attr,omitempty"`
@@ -358,7 +360,7 @@ type MediaCredits = []MediaCredit
 // MediaDescription is a short description describing the media object typically a sentence in length.
 type MediaDescription struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
@@ -445,7 +447,7 @@ type MediaElements struct {
 // MediaEmbed defines model for MediaEmbed.
 type MediaEmbed struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Height is the height of the media object.
 	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
@@ -533,7 +535,7 @@ type MediaGroup struct {
 	MediaTitle *MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Content is the list of <media:content> elements
 	Content []MediaContent `json:"content,omitempty" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
@@ -542,7 +544,7 @@ type MediaGroup struct {
 // MediaHash is the hash of the binary media file. Elements represents hashes in different alogrithms.
 type MediaHash struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Algo indicates the algorithm used to create the hash.
 	Algo MediaHashAlgo `json:"algo,omitempty,omitzero" xml:"algo,attr,omitempty"`
@@ -560,7 +562,7 @@ type MediaHashes = []MediaHash
 // MediaKeywords are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and phrases should be comma-delimited.
 type MediaKeywords struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Value is an element value that is required.
 	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
@@ -569,7 +571,7 @@ type MediaKeywords struct {
 // MediaLicense link to specify the machine-readable license associated with the content.
 type MediaLicense struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Href is a URL that represents the element content.
 	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"href,attr,omitempty"`
@@ -593,7 +595,7 @@ type MediaParam struct {
 // MediaPeerLink contains P2P link.
 type MediaPeerLink struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Href is a URL that represents the element content.
 	Href externalRef1.AttrHref `json:"href" validate:"omitempty,url" xml:"href,attr,omitempty"`
@@ -605,7 +607,7 @@ type MediaPeerLink struct {
 // MediaPlayer allows the media object to be accessed through a web browser media player console.
 type MediaPlayer struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Height is the height of the media object.
 	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
@@ -618,7 +620,7 @@ type MediaPlayer struct {
 // MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
 type MediaPrice struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Currency is the currency code of the price.
 	Currency string `json:"currency,omitempty,omitzero" validate:"omitempty,iso4217" xml:"currency,attr,omitempty"`
@@ -639,7 +641,7 @@ type MediaPriceType string
 // MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
 type MediaRating struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Scheme is the URI that identifies the scheme used by the element.
 	Scheme Scheme `json:"scheme,omitempty,omitzero" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
@@ -660,7 +662,7 @@ type MediaResponses = []MediaResponse
 // MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
 type MediaRestriction struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Relationship indicates the type of relationship that the restriction represents.
 	Relationship MediaRestrictionRelationship `json:"relationship" xml:"relationship,attr"`
@@ -681,7 +683,7 @@ type MediaRestrictionType string
 // MediaRights specifies the rights information of a media object.
 type MediaRights struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Status is the status of the media object saying whether a media object has been created by the publisher or they have rights to circulate it.
 	Status MediaRightsStatus `json:"status" validate:"omitempty,oneof=userCreated official" xml:"status,attr"`
@@ -704,7 +706,7 @@ type MediaScenes = []MediaScene
 // MediaStatus specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
 type MediaStatus struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Reason is a reason explaining why a media object has been blocked/deleted.
 	Reason string `json:"reason" xml:"reason,attr"`
@@ -719,7 +721,7 @@ type MediaStatusState string
 // MediaSubTitle contains subtitle/CC link.
 type MediaSubTitle struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Href is a URL that represents the element content.
 	Href externalRef1.AttrHref `json:"href,omitempty,omitzero" validate:"omitempty,url" xml:"href,attr,omitempty"`
@@ -734,7 +736,7 @@ type MediaSubTitle struct {
 // MediaText allows the inclusion of a text transcript, closed captioning or lyrics of the media content.
 type MediaText struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// End specifies the end time offset that the text ends being relevant to the media object. An example of this would be for closed captioning. It uses the NTP time code format.
 	End string `json:"end,omitempty,omitzero" xml:"end,attr,omitempty"`
@@ -758,7 +760,7 @@ type MediaTexts = []MediaText
 // MediaThumbnail allows a particular images to be used as a representative image for the media object.
 type MediaThumbnail struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Height is the height of the media object.
 	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
@@ -777,7 +779,7 @@ type MediaThumbnails = []MediaThumbnail
 // MediaTitle is the title of the particular media object.
 type MediaTitle struct {
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef1.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`

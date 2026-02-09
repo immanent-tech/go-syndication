@@ -47,7 +47,7 @@ func (f *Feed) GetDescription() string {
 func (f *Feed) GetSourceURL() string {
 	for link := range slices.Values(f.Links) {
 		if link.Rel != "" && link.Rel == LinkRelSelf {
-			if link.Type != "" && slices.Contains(types.MimeTypesAtom, link.Type) {
+			if link.Type != nil && slices.Contains(types.MimeTypesAtom, *link.Type) {
 				return link.Href
 			}
 		}
@@ -58,7 +58,7 @@ func (f *Feed) GetSourceURL() string {
 // SetSourceURL will set a source URL, indicating the URL of the Atom document, in the Feed.
 func (f *Feed) SetSourceURL(url string) {
 	rel := LinkRelSelf
-	f.Links = append(f.Links, Link{Href: url, Rel: rel, Type: types.MimeTypesAtom[0]})
+	f.Links = append(f.Links, Link{Href: url, Rel: rel, Type: &types.MimeTypesAtom[0]})
 }
 
 // GetLink retrieves the <link> of the Feed. This is the link to the website associated with the Atom feed. Even the
@@ -68,7 +68,7 @@ func (f *Feed) GetLink() string {
 	for link := range slices.Values(f.Links) {
 		// If there is a rel=self link that does not point to an atom document, use that.
 		if link.Rel == LinkRelSelf {
-			if !slices.Contains(types.MimeTypesAtom, link.Type) {
+			if !slices.Contains(types.MimeTypesAtom, *link.Type) {
 				return link.Href
 			}
 		}
@@ -127,10 +127,10 @@ func (f *Feed) GetRights() string {
 // or <lang> elements.
 func (f *Feed) GetLanguage() string {
 	switch {
-	case f.DCLanguage != "":
-		return f.DCLanguage
-	case f.Lang != "":
-		return f.Lang
+	case f.DCLanguage != nil:
+		return *f.DCLanguage
+	case f.Lang != nil:
+		return *f.Lang
 	default:
 		return ""
 	}

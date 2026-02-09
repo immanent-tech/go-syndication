@@ -39,14 +39,6 @@ const (
 	MimeTypeOPML = "text/x-opml+xml"
 )
 
-// String will return the value of the object.
-func (c *CustomTypeBase) String() string {
-	if c != nil {
-		return c.Value
-	}
-	return ""
-}
-
 // NewXMLAttr is a convienience function to create an xml.Attr from a name/value/namespace combination. The namespace
 // value is optional, but the name and value should be provided.
 func NewXMLAttr(name, value, namespace string) xml.Attr {
@@ -57,29 +49,6 @@ func NewXMLAttr(name, value, namespace string) xml.Attr {
 		},
 		Value: value,
 	}
-}
-
-func (c *CharData) UnmarshalText(data []byte) error {
-	c.Value = sanitization.SanitizeBytes(data)
-	return nil
-}
-
-func (c *CharData) UnmarshalJSON(data []byte) error {
-	var chardata struct {
-		CharData []byte `json:"CharData"`
-	}
-
-	if err := json.Unmarshal(data, &chardata); err != nil {
-		return fmt.Errorf("cannot unmarshal chardata: %w", err)
-	}
-
-	c.Value = sanitization.SanitizeBytes(chardata.CharData)
-
-	return nil
-}
-
-func (c *CharData) String() string {
-	return html.UnescapeString(string(c.Value))
 }
 
 // String is custom string type that handles "malformed" string fields containing whitespace or forbidden input.
@@ -96,4 +65,34 @@ func (s *String) UnmarshalText(data []byte) error {
 
 func (s String) String() string {
 	return html.UnescapeString(string(s))
+}
+
+// CharData is a custom type for xml.CharData that can additionally sanitize the data.
+type CharData xml.CharData
+
+// UnmarshalText provides custom unmarshaling of CharData that will sanitize, unescape and trim whitespace from the
+// value.
+func (c *CharData) UnmarshalText(data []byte) error {
+	*c = sanitization.SanitizeBytes(data)
+	return nil
+}
+
+// UnmarshalJSON provides custom unmarshaling of CharData that will sanitize, unescape and trim whitespace from the
+// value.
+func (c *CharData) UnmarshalJSON(data []byte) error {
+	var chardata struct {
+		CharData []byte `json:"CharData"`
+	}
+
+	if err := json.Unmarshal(data, &chardata); err != nil {
+		return fmt.Errorf("cannot unmarshal chardata: %w", err)
+	}
+
+	*c = sanitization.SanitizeBytes(chardata.CharData)
+
+	return nil
+}
+
+func (c *CharData) String() string {
+	return html.UnescapeString(string(*c))
 }

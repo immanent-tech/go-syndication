@@ -16,29 +16,11 @@ info:
     identifier: MIT
 components:
   schemas:
-    XMLName:
-      description: >
-        represents the XML namespace of an element.
-      x-go-type: 'xml.Name'
-      x-oapi-codegen-extra-tags:
-        json: 'xml'
-        validate: 'required'
     ContentEncoded:
       description: >
         is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
       type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: '#/components/schemas/XMLName'
-        value:
-          allOf:
-            - $ref: 'types.yaml#/components/schemas/CharData'
-          x-oapi-codegen-extra-tags:
-            xml: ',chardata'
-            validate: 'required'
+      x-go-type: 'types.CharData'
       x-oapi-codegen-extra-tags:
         json: 'content_encoded,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/content/ encoded,omitempty'
@@ -52,7 +34,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: '#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           x-go-type: string
           default: 'daily'
@@ -69,7 +53,7 @@ components:
             xml: ',chardata'
             validate: 'required,oneof=hourly daily weekly monthly yearly'
       x-oapi-codegen-extra-tags:
-        json: 'sy_updatePeriod,omitempty'
+        json: 'update_period,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty'
       x-go-type-skip-optional-pointer: false
     SYUpdateFrequency:
@@ -81,7 +65,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: '#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           type: integer
           minimum: 1
@@ -91,7 +77,7 @@ components:
             xml: ',chardata'
             validate: 'required,number,gte=1'
       x-oapi-codegen-extra-tags:
-        json: 'sy_updateFrequency,omitempty'
+        json: 'update_frequency,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty'
       x-go-type-skip-optional-pointer: false
     SYUpdateBase:
@@ -103,7 +89,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: '#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           x-go-type: types.DateTime
           x-oapi-codegen-extra-tags:
@@ -111,7 +99,7 @@ components:
             xml: ',chardata'
             validate: 'omitempty'
       x-oapi-codegen-extra-tags:
-        json: 'sy_updateBase,omitempty'
+        json: 'update_base,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty'
       x-go-type-skip-optional-pointer: false
     SyndicationElements:

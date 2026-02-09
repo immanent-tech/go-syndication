@@ -131,7 +131,9 @@ components:
         - URLs
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         URLs:
           description: >
              is the list of URLs contained within the sitemap.
@@ -191,7 +193,9 @@ components:
         - Sitemap
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         Sitemaps:
           description: >
             is a list of sitemaps.

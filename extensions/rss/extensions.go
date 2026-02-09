@@ -20,8 +20,7 @@ func (c *SYUpdatePeriod) UnmarshalJSON(data []byte) error {
 		CharData []byte `json:"CharData"`
 	}
 
-	err := json.Unmarshal(data, &chardata)
-	if err != nil {
+	if err := json.Unmarshal(data, &chardata); err != nil {
 		return fmt.Errorf("cannot unmarshal chardata: %w", err)
 	}
 

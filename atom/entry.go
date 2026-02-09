@@ -106,10 +106,10 @@ func (e *Entry) GetRights() string {
 // or <lang> elements.
 func (e *Entry) GetLanguage() string {
 	switch {
-	case e.DCLanguage != "":
-		return e.DCLanguage
-	case e.Lang != "":
-		return e.Lang
+	case e.DCLanguage != nil:
+		return *e.DCLanguage
+	case e.Lang != nil:
+		return *e.Lang
 	default:
 		return ""
 	}
@@ -158,13 +158,13 @@ func (e *Entry) GetUpdatedDate() time.Time {
 // attribute.
 func (e *Entry) GetContent() string {
 	switch {
-	case e.Content.Value != "":
-		switch {
-		case e.Content.Type == "text":
-			return e.Content.Value
-		case e.Content.Type == "html" || e.Content.Type == "xhtml":
+	case e.Content.Value != nil:
+		switch *e.Content.Type {
+		case "text":
+			return *e.Content.Value
+		case "html", "xhtml":
 			// Parse the value.
-			doc, err := html.Parse(strings.NewReader(e.Content.Value))
+			doc, err := html.Parse(strings.NewReader(*e.Content.Value))
 			if err != nil {
 				slog.Error("Unable to parse content.",
 					slog.Any("error", err),
@@ -182,8 +182,8 @@ func (e *Entry) GetContent() string {
 			}
 			return out.String()
 		}
-	case e.Content.Source != "":
-		return e.Content.Source
+	case e.Content.Source != nil:
+		return *e.Content.Source
 	}
 	return ""
 }

@@ -30,7 +30,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
 			assert.Equal(t, atom.LinkRelSelf, feed.Channel.AtomLink.Rel)
-			assert.Equal(t, "http://www.rss-world.info/", feed.Channel.AtomLink.Value)
+			assert.Equal(t, "http://www.rss-world.info/", feed.Channel.AtomLink.UndefinedContent)
 			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
 		},
 	},
@@ -39,7 +39,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
 			assert.Equal(t, atom.LinkRelSelf, feed.Channel.AtomLink.Rel)
-			assert.Equal(t, "http://www.rss-world.info/", feed.Channel.AtomLink.Value)
+			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLink.UndefinedContent)
 			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
 		},
 	},
@@ -116,7 +116,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
 
-			assert.Equal(t, "en-us", feed.Channel.DCLanguage)
+			assert.Equal(t, "en-us", *feed.Channel.DCLanguage)
 		},
 	},
 	"dclanguage.xml": {
@@ -124,7 +124,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
 
-			assert.Equal(t, "en", feed.Channel.DCLanguage)
+			assert.Equal(t, "en", *feed.Channel.DCLanguage)
 		},
 	},
 	// "doctype_not_entity.xml": {
@@ -257,8 +257,16 @@ var rssMustPass = map[string]rssTestSuite{
 			// 	feed.Channel.Items[0].GetDescription(),
 			// )
 			assert.Equal(t, "Sun, 29 Sep 2002 11:13:10 GMT", item.GetPublishedDate().Format(time.RFC1123))
-			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GUID.Value.String())
-			assert.Equal(t, "http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes", item.GetLink())
+			assert.Equal(
+				t,
+				"http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes",
+				item.GUID.Value.String(),
+			)
+			assert.Equal(
+				t,
+				"http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes",
+				item.GetLink(),
+			)
 			assert.Equal(t, "Really early morning no-coffee notes", item.GetTitle())
 		},
 	},
@@ -417,7 +425,11 @@ var rssMedia = map[string]rssTestSuite{
 				assert.Equal(t, "music/artist \n                name/album/song", item.MediaContent.GetCategory())
 				assert.Equal(t, "http://blah.com/scheme", item.MediaContent.MediaCategory.Scheme)
 				assert.Len(t, item.MediaContent.MediaTexts, 1)
-				assert.Equal(t, "Oh, say, can you see, by the dawn's early light", item.MediaContent.MediaTexts[0].GetText())
+				assert.Equal(
+					t,
+					"Oh, say, can you see, by the dawn's early light",
+					item.MediaContent.MediaTexts[0].GetText(),
+				)
 				assert.Equal(t, "nonadult", item.MediaContent.MediaRating.Value)
 			} else {
 				t.Fail()
@@ -438,6 +450,7 @@ var rssMedia = map[string]rssTestSuite{
 			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
 			assert.Equal(t, media.Sample, item.MediaContent.Expression)
 			assert.Len(t, item.MediaThumbnails, 1)
+			assert.NotNil(t, item.GetImage())
 			assert.Equal(t, "http://example.com/thumbnail", item.GetImage().GetURL())
 			assert.Equal(t, "12:34:56", item.MediaThumbnails[0].Time)
 		},

@@ -20,6 +20,7 @@ components:
       x-go-type: types.DateTime
       x-oapi-codegen-extra-tags:
         xml: 'pubDate,omitempty'
+        json: 'pub_date'
         validate: 'omitempty'
       x-go-type-skip-optional-pointer: false
     LastBuildDate:
@@ -28,6 +29,7 @@ components:
       x-go-type: types.DateTime
       x-oapi-codegen-extra-tags:
         xml: 'lastBuildDate,omitempty'
+        json: 'last_build_date'
         validate: 'omitempty'
       x-go-type-skip-optional-pointer: false
     Title:
@@ -134,6 +136,7 @@ components:
       type: integer
       minimum: 1
       x-go-name: TTL
+      x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         xml: 'ttl,omitempty'
         validate: 'omitempty,gte=1'
@@ -312,7 +315,9 @@ components:
             a url to anything in particular.
           type: boolean
           default: true
+          x-go-type-skip-optional-pointer: true
           x-oapi-codegen-extra-tags:
+            json: 'is_permalink'
             xml: 'isPermaLink,attr,omitempty'
       x-go-name: GUID
       x-oapi-codegen-extra-tags:
@@ -351,6 +356,7 @@ components:
           x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         xml: 'skipHours,omitempty'
+        json: 'skip_hours'
     SkipDays:
       description: >
         is a hint for aggregators telling them which days they can skip. This
@@ -383,23 +389,25 @@ components:
                 'SkipSunday',
               ]
           x-oapi-codegen-extra-tags:
-            xml: 'day,omitempty'
+            xml: 'day'
             validate: 'omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday'
           # x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'skipDays,omitempty'
+        xml: 'skipDays'
+        json: 'skip_days'
     RSS:
       description: >
         represents an RSS document.
       type: object
-      x-go-name: RSS
       required:
         - XMLName
         - version
         - channel
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         channel:
           $ref: '#/components/schemas/Channel'
         version:
@@ -422,6 +430,8 @@ components:
         #     xml: ',any,attr'
         #     json: 'attributes'
         #   x-go-type-skip-optional-pointer: true
+      xml:
+        name: 'rss'
       x-oapi-codegen-extra-tags:
         xml: 'rss'
     Channel:
@@ -452,6 +462,8 @@ components:
                 is the language the channel is written in. This allows aggregators to group all Italian language sites, for
                 example, on a single page.
               x-go-type: types.String
+              x-go-type-skip-optional-pointer: true
+              x-omitzero: true
               x-oapi-codegen-extra-tags:
                 xml: 'language,omitempty'
                 validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
@@ -459,20 +471,28 @@ components:
               description: >
                 Copyright notice for content in the channel.
               x-go-type: types.String
+              x-go-type-skip-optional-pointer: true
+              x-omitzero: true
               x-oapi-codegen-extra-tags:
                 xml: 'copyright,omitempty'
             managingEditor:
               description: >
                 is the email address for person responsible for editorial content.
               x-go-type: types.String
+              x-go-type-skip-optional-pointer: true
+              x-omitzero: true
               x-oapi-codegen-extra-tags:
                 xml: 'managingEditor,omitempty'
+                json: "managing_editor"
             webMaster:
               description: >
                 is the email address for person responsible for technical issues relating to channel.
               x-go-type: types.String
+              x-go-type-skip-optional-pointer: true
+              x-omitzero: true
               x-oapi-codegen-extra-tags:
                 xml: 'webMaster,omitempty'
+                json: 'web_master'
             pubDate:
               $ref: '#/components/schemas/PubDate'
             lastBuildDate:
@@ -491,6 +511,8 @@ components:
               description: >
                 is a string indicating the program used to generate the channel.
               x-go-type: types.String
+              x-go-type-skip-optional-pointer: true
+              x-omitzero: true
               x-oapi-codegen-extra-tags:
                 xml: 'generator,omitempty'
             docs:
@@ -499,6 +521,7 @@ components:
                 page. It's for people who might stumble across an RSS file on a Web server 25 years from now and wonder what
                 it is.
               x-go-type: types.String
+              x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
                 xml: 'docs,omitempty'
                 validate: 'omitempty,url'
@@ -545,6 +568,10 @@ components:
         - $ref: 'dc.yaml#/components/schemas/DublinCoreElements'
         - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
         - type: object
+          required:
+            - title
+            - link
+            - description
           properties:
             title:
               description: >
@@ -553,7 +580,7 @@ components:
                 - $ref: '#/components/schemas/Title'
               x-oapi-codegen-extra-tags:
                 xml: title
-                validate: 'omitempty'
+                validate: 'omitzero,required'
             link:
               description: >
                 is the URL of the item.
@@ -561,7 +588,7 @@ components:
                 - $ref: '#/components/schemas/Link'
               x-oapi-codegen-extra-tags:
                 xml: link
-                validate: 'omitempty,url'
+                validate: 'omitzero,required,url'
             atom_link:
               $ref: '#/components/schemas/AtomLink'
             description:
@@ -571,7 +598,7 @@ components:
                 - $ref: '#/components/schemas/Description'
               x-oapi-codegen-extra-tags:
                 xml: description
-                validate: omitempty
+                validate: 'omitzero,required'
             author:
               $ref: '#/components/schemas/Author'
             categories:

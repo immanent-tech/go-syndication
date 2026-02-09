@@ -4,8 +4,9 @@
 package sitemap
 
 import (
+	"encoding/xml"
+
 	"github.com/immanent-tech/go-syndication/types"
-	externalRef0 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for AccessRestriction.
@@ -87,7 +88,7 @@ type SitemapIndex struct {
 	Sitemaps []Sitemap `json:"sitemaps" xml:"sitemap"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef0.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 }
 
 // Title The title of the news article.
@@ -123,5 +124,5 @@ type URLSet struct {
 	URLs []URL `json:"urls" xml:"url"`
 
 	// XMLName represents the XML namespace of an element.
-	XMLName externalRef0.XMLName `json:"xml" validate:"required"`
+	XMLName xml.Name `json:"XMLName"`
 }

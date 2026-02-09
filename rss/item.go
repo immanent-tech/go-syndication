@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"golang.org/x/net/html"
 )
@@ -19,6 +20,69 @@ import (
 var _ types.ItemSource = (*Item)(nil)
 
 var ErrItemValidation = errors.New("item is invalid")
+
+// NewItem creates a new Item with the given options.
+func NewItem(options ...ItemOption) *Item {
+	item := &Item{
+		PubDate: &types.DateTime{Time: time.Now().UTC()},
+	}
+
+	for option := range slices.Values(options) {
+		option(item)
+	}
+
+	return item
+}
+
+// ItemOption is a functional option applied to an Item.
+type ItemOption func(*Item)
+
+// WithItemTitle option sets the item title. Note to be value, an item needs either the title or description set.
+func WithItemTitle(title string) ItemOption {
+	return func(i *Item) {
+		i.Title = types.String(title)
+	}
+}
+
+// WithItemDescription option sets the item description. Note to be value, an item needs either the title or description
+// set.
+func WithItemDescription(desc string) ItemOption {
+	return func(i *Item) {
+		i.Description = types.String(desc)
+	}
+}
+
+// WithItemLink option sets the URL to the original page displaying the item.
+func WithItemLink(link string) ItemOption {
+	return func(i *Item) {
+		i.Link = types.String(link)
+	}
+}
+
+// WithItemGUID option assigns the given GUID to the item.
+func WithItemGUID(guid *GUID) ItemOption {
+	return func(i *Item) {
+		i.GUID = guid
+	}
+}
+
+// WithItemContent option sets the item content.
+func WithItemContent(content []byte) ItemOption {
+	return func(i *Item) {
+		i.ContentEncoded = (*rss.ContentEncoded)(&content)
+	}
+}
+
+// WithItemPublishedDate option sets the published date of the item.
+func WithItemPublishedDate(ts time.Time) ItemOption {
+	return func(i *Item) {
+		if ts.IsZero() {
+			// Ignore zero value.
+			return
+		}
+		i.PubDate.Time = ts
+	}
+}
 
 // GetID returns an "id" for the item. This will be the value of the <guid> element, if present, or an empty string if
 // not present.
@@ -56,7 +120,7 @@ func (i *Item) GetDescription() string {
 // <dc:creator> elements.
 func (i *Item) GetAuthors() []string {
 	var authors []string
-	if i.Author.String() != "" {
+	if i.Author != nil && i.Author.String() != "" {
 		authors = append(authors, i.Author.String())
 	}
 	if i.DCCreator != nil {
@@ -87,8 +151,8 @@ func (i *Item) GetRights() string {
 // present.
 func (i *Item) GetLanguage() string {
 	switch {
-	case i.DCLanguage != "":
-		return i.DCLanguage
+	case i.DCLanguage != nil:
+		return *i.DCLanguage
 	default:
 		return ""
 	}
@@ -129,11 +193,9 @@ func (i *Item) GetImage() *types.ImageInfo {
 		img = &types.ImageInfo{
 			URL: i.Enclosure.URL,
 		}
-	case i.MediaContent != nil:
-		// Item has a <media:content> element, check if it is an image and use it.
-		if isImage, image := i.MediaContent.IsImage(); isImage {
-			img = image
-		}
+	case i.MediaContent != nil && i.MediaContent.AsImage() != nil:
+		// Item has a <media:content> element, extract the image.
+		img = i.MediaContent.AsImage()
 	case len(i.MediaThumbnails) > 0:
 		// Check for a <media:thumbnails> element and assume the first element is an appropriate image.
 		img = i.MediaThumbnails[0].AsImage()
@@ -166,11 +228,11 @@ func (i *Item) GetUpdatedDate() time.Time {
 
 // GetContent returns the content of the Item (if any). This will be taken from any <content:encoded> element.
 func (i *Item) GetContent() string {
-	if i.ContentEncoded == nil {
+	if i.ContentEncoded == nil || i.ContentEncoded.String() == "" {
 		return ""
 	}
 	// Parse the value.
-	doc, err := html.Parse(strings.NewReader(i.ContentEncoded.Value.String()))
+	doc, err := html.Parse(strings.NewReader(i.ContentEncoded.String()))
 	if err != nil {
 		slog.Error("Unable to parse content:encoded.",
 			slog.Any("error", err),
@@ -196,4 +258,12 @@ func (i *Item) Validate() error {
 		return fmt.Errorf("%w: description or title is required", ErrItemValidation)
 	}
 	return nil
+}
+
+// GenerateGUID creates a GUID from the given value, with the given permalink status.
+func GenerateGUID(value string, permalink bool) *GUID {
+	return &GUID{
+		IsPermaLink: permalink,
+		Value:       types.String(value),
+	}
 }

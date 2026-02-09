@@ -63,7 +63,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         scheme:
@@ -81,7 +83,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
@@ -99,7 +103,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
@@ -118,7 +124,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
@@ -134,7 +142,9 @@ components:
         - url
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         url:
           allOf:
             - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
@@ -177,7 +187,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         scheme:
@@ -197,7 +209,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         algo:
@@ -231,7 +245,9 @@ components:
         - url
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         url:
           allOf:
             - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
@@ -257,7 +273,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         role:
@@ -296,7 +314,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         url:
@@ -314,7 +334,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
@@ -360,7 +382,9 @@ components:
         - relationship
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         relationship:
@@ -455,7 +479,9 @@ components:
         - XMLName
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         starRating:
           $ref: '#/components/schemas/MediaCommunityStarRating'
         statistics:
@@ -475,7 +501,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
       x-oapi-codegen-extra-tags:
@@ -522,7 +550,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             params:
               description: >
                 is a list of player-specific parameters.
@@ -593,7 +623,9 @@ components:
         - reason
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         state:
           description: >
             indicates the status.
@@ -625,7 +657,9 @@ components:
         - XMLName
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         type:
           description: >
             is the type of pricing for the media object.
@@ -676,7 +710,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           $ref: 'types.yaml#/components/schemas/RequiredValue'
         type:
@@ -697,7 +733,9 @@ components:
         - lang
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         type:
           $ref: '#/components/schemas/TextType'
         lang:
@@ -718,7 +756,9 @@ components:
         - href
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         type:
           $ref: '#/components/schemas/TextType'
         href:
@@ -736,7 +776,9 @@ components:
         - status
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         status:
           description: >
             is the status of the media object saying whether a media object has been created by the publisher or they
@@ -885,7 +927,9 @@ components:
             - url
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             NameSpace:
               type: string
               x-oapi-codegen-extra-tags:
@@ -960,7 +1004,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             content:
               description: >
                 is the list of <media:content> elements

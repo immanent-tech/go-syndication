@@ -12,29 +12,6 @@ info:
     identifier: AGPL-3.0-or-later
 components:
   schemas:
-    XMLName:
-      description: >
-        represents the XML namespace of an element.
-      x-go-type: 'xml.Name'
-      x-oapi-codegen-extra-tags:
-        json: 'xml'
-        validate: 'required'
-    NameSpace:
-      description: >
-        maps namespace URL identifiers to a easy-to-use string type.
-      type: string
-      enum:
-        - 'http://purl.org/dc/elements/1.1/'
-        - 'http://search.yahoo.com/mrss/'
-        - 'http://purl.org/rss/1.0/modules/syndication/'
-        - 'http://purl.org/rss/1.0/modules/content/'
-        - 'http://www.w3.org/2005/Atom'
-      x-enum-varnames:
-        - DublinCore
-        - MediaRSS
-        - Syndication
-        - Content
-        - Atom
     RequiredValue:
       description: >
         is an element value that is required.
@@ -96,17 +73,6 @@ components:
         json: 'extensions,omitempty'
         xml: ',any'
       x-go-type-skip-optional-pointer: true
-    CustomTypeBase:
-      dscription: >
-        is a base type used by custom types containing their common fields.
-      type: object
-      required:
-        - value
-      properties:
-        value:
-          $ref: '#/components/schemas/RequiredValue'
-        attributes:
-          $ref: '#/components/schemas/Attributes'
     ImageInfo:
       description: >
         is an abstraction of an Image across different types of specifications.
@@ -128,17 +94,3 @@ components:
             validate: 'required,url'
       x-oapi-codegen-extra-tags:
         validate: 'omitempty'
-    CharData:
-      description: >
-        represents character data of an element.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          $ref: '#/components/schemas/XMLName'
-        value:
-          x-go-type: 'xml.CharData'
-      x-oapi-codegen-extra-tags:
-        xml: ',chardata'

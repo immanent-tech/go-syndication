@@ -7,9 +7,12 @@
 package rss
 
 import (
+	"encoding/xml"
 	"fmt"
+	"slices"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 )
@@ -19,6 +22,98 @@ var _ types.FeedSource = (*RSS)(nil)
 // String returns the value of the Category.
 func (c *Category) String() string {
 	return c.Value.String()
+}
+
+// NewRSS creates a new RSS version 2.0 object with the required title, description and link values and any given
+// options.
+func NewRSS(title, description, link string, options ...RSSOption) *RSS {
+	rss := &RSS{
+		XMLName: xml.Name{Local: "rss"},
+		Version: N20,
+		Channel: Channel{
+			Title:         Title(title),
+			Description:   Description(description),
+			Link:          Link(link),
+			LastBuildDate: &types.DateTime{Time: time.Now().UTC()},
+			Generator:     "go-syndication",
+			Docs:          types.String("https://www.rssboard.org/rss-specification"),
+		},
+	}
+
+	for option := range slices.Values(options) {
+		option(rss)
+	}
+
+	return rss
+}
+
+// RSSOption is a functional applied to an RSS object.
+type RSSOption func(*RSS)
+
+// WithCopyright option sets the RSS channel copyright.
+func WithCopyright(copyright string) RSSOption {
+	return func(r *RSS) {
+		r.Channel.Copyright = types.String(copyright)
+	}
+}
+
+// WithGenerator options sets the generator. This will default to "go-syndication".
+func WithGenerator(generator string) RSSOption {
+	return func(r *RSS) {
+		r.Channel.Generator = types.String(generator)
+	}
+}
+
+// WithManagingEditor option sets the RSS channel managingEditor.
+func WithManagingEditor(editor string) RSSOption {
+	return func(r *RSS) {
+		r.Channel.ManagingEditor = types.String(editor)
+	}
+}
+
+// WithWebmaster option sets the RSS channel webmaster.
+func WithWebmaster(webmaster string) RSSOption {
+	return func(r *RSS) {
+		r.Channel.WebMaster = types.String(webmaster)
+	}
+}
+
+// WithLastBuildDate option sets the last build date of the RSS object. This will default to time.Now().UTC().
+func WithLastBuildDate(ts time.Time) RSSOption {
+	return func(r *RSS) {
+		r.Channel.LastBuildDate.Time = ts
+	}
+}
+
+// WithPublishedDate option sets the published date of the RSS object.
+func WithPublishedDate(ts time.Time) RSSOption {
+	return func(r *RSS) {
+		r.Channel.PubDate = &types.DateTime{}
+		r.Channel.PubDate.Time = ts
+	}
+}
+
+// WithChannelLanguage option sets the RSS channel language. Should be an ISO country code to be valid.
+func WithChannelLanguage(lang string) RSSOption {
+	return func(r *RSS) {
+		r.Channel.Language = types.String(lang)
+	}
+}
+
+// WithChannelImage option sets an image.
+func WithChannelImage(image *Image) RSSOption {
+	return func(r *RSS) {
+		r.Channel.Image = image
+	}
+}
+
+// WithUpdatePeriod option sets the update period of the feed.
+func WithUpdatePeriod(up string) RSSOption {
+	return func(r *RSS) {
+		r.Channel.SYUdatePeriod = &rss.SYUpdatePeriod{
+			Value: up,
+		}
+	}
 }
 
 func (r *RSS) GetTitle() string {

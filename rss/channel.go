@@ -40,8 +40,10 @@ func (c *Channel) GetDescription() string {
 // GetSourceURL retrieves the URL that links to the RSS file for the channel. This will be any <atom:link> element
 // present in the Channel with a "rel" attribute of "self".
 func (c *Channel) GetSourceURL() string {
-	if c.AtomLink.Rel != "" && c.AtomLink.Rel == atom.LinkRelSelf {
-		return c.AtomLink.Href
+	if c.AtomLink != nil {
+		if c.AtomLink.Rel != "" && c.AtomLink.Rel == atom.LinkRelSelf {
+			return c.AtomLink.Href
+		}
 	}
 	return ""
 }
@@ -49,7 +51,7 @@ func (c *Channel) GetSourceURL() string {
 // SetSourceURL will set a source URL, indicating the URL to the RSS file, in the Channel.
 func (c *Channel) SetSourceURL(url string) {
 	rel := atom.LinkRelSelf
-	c.AtomLink = atom.Link{Href: url, Rel: rel}
+	c.AtomLink = &atom.Link{Href: url, Rel: rel}
 }
 
 // GetLink retrieves the <link> (if any) of the Channel. This is the link to the website associated with the RSS feed.
@@ -97,8 +99,8 @@ func (c *Channel) GetRights() string {
 // or <lang> elements.
 func (c *Channel) GetLanguage() string {
 	switch {
-	case c.DCLanguage != "":
-		return c.DCLanguage
+	case c.DCLanguage != nil:
+		return *c.DCLanguage
 	case c.Language.String() != "":
 		return c.Language.String()
 	default:
@@ -115,10 +117,10 @@ func (c *Channel) GetCategories() []string {
 	if c.MediaCategory != nil {
 		categories = append(categories, c.MediaCategory.Value)
 	}
-	if c.GooglePlayCategory.String() != "" {
+	if c.GooglePlayCategory != nil {
 		categories = append(categories, c.GooglePlayCategory.String())
 	}
-	if c.ItunesCategory.Text != "" {
+	if c.ItunesCategory != nil {
 		categories = append(categories, c.ItunesCategory.GetCategories()...)
 	}
 	return categories
@@ -135,13 +137,13 @@ func (c *Channel) GetImage() *types.ImageInfo {
 			URL:   c.Image.URL,
 			Title: c.Image.Title,
 		}
+	case c.MediaContent != nil && c.MediaContent.AsImage() != nil:
+		// Item has a <media:content> element, extract the image.
+		img = c.MediaContent.AsImage()
 	case len(c.MediaThumbnails) > 0:
-		// Use the first thumbnail found.
-		thumbnail := c.MediaThumbnails[0]
-		img = &types.ImageInfo{
-			URL: thumbnail.URL,
-		}
-	case c.ItunesImage.Href != "":
+		// Check for a <media:thumbnails> element and assume the first element is an appropriate image.
+		img = c.MediaThumbnails[0].AsImage()
+	case c.ItunesImage != nil && c.ItunesImage.Href != "":
 		img = &types.ImageInfo{
 			URL: c.ItunesImage.Href,
 		}

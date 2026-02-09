@@ -36,32 +36,30 @@ func (t *MediaText) GetText() string {
 	return sanitization.SanitizeString(t.Value)
 }
 
-// IsImage will return a boolean indicating whether the media:content element represents an image, and if it does, also
-// return a generic types.ImageInfo object.
-func (c *MediaContent) IsImage() (bool, *types.ImageInfo) {
+// AsImage will return a types.ImageInfo if the <media:content> element represents an image. If not, it will return nil.
+func (c *MediaContent) AsImage() *types.ImageInfo {
 	// Check if medium attr indicates an image.
 	if c.Medium == MediaContentMediumImage {
-		return true, &types.ImageInfo{
+		return &types.ImageInfo{
 			URL: c.Url,
 		}
 	}
 	// Check if mimetype attr indicates an image.
 	if types.IsImage(c.Type) {
-		return true, &types.ImageInfo{
+		return &types.ImageInfo{
 			URL: c.Url,
 		}
 	}
 	// Ugh, maybe try parsing the URL and see if it ends in a well-known image file extension...
-	url, err := url.Parse(c.Url)
-	if err == nil {
+	if url, err := url.Parse(c.Url); err == nil {
 		for imgext := range slices.Values(types.MediaImageExt) {
 			if strings.HasSuffix(url.Path, imgext) {
-				return true, &types.ImageInfo{
+				return &types.ImageInfo{
 					URL: c.Url,
 				}
 			}
 		}
 	}
-	// Not an image, probably...
-	return false, nil
+
+	return nil
 }

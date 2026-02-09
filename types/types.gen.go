@@ -7,33 +7,8 @@ import (
 	"encoding/xml"
 )
 
-// Defines values for NameSpace.
-const (
-	NameSpaceAtom        NameSpace = "http://www.w3.org/2005/Atom"
-	NameSpaceContent     NameSpace = "http://purl.org/rss/1.0/modules/content/"
-	NameSpaceDublinCore  NameSpace = "http://purl.org/dc/elements/1.1/"
-	NameSpaceMediaRSS    NameSpace = "http://search.yahoo.com/mrss/"
-	NameSpaceSyndication NameSpace = "http://purl.org/rss/1.0/modules/syndication/"
-)
-
 // Attributes are any attributes of the element.
 type Attributes = []xml.Attr
-
-// CharData represents character data of an element.
-type CharData struct {
-	// XMLName represents the XML namespace of an element.
-	XMLName XMLName      `json:"xml" validate:"required"`
-	Value   xml.CharData `json:"value"`
-}
-
-// CustomTypeBase defines model for CustomTypeBase.
-type CustomTypeBase struct {
-	// Attributes are any attributes of the element.
-	Attributes Attributes `json:"attributes" xml:",any,attr"`
-
-	// Value is an element value that is required.
-	Value RequiredValue `json:"value" validate:"required" xml:",chardata"`
-}
 
 // Extension represents an element that is not defined in the schema.
 type Extension struct {
@@ -60,14 +35,8 @@ type ImageInfo struct {
 	URL string `json:"url" validate:"required,url" xml:",chardata"`
 }
 
-// NameSpace maps namespace URL identifiers to a easy-to-use string type.
-type NameSpace string
-
 // OptionalValue is an element value that is optional.
 type OptionalValue = string
 
 // RequiredValue is an element value that is required.
 type RequiredValue = string
-
-// XMLName represents the XML namespace of an element.
-type XMLName = xml.Name

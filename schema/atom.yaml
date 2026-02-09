@@ -53,6 +53,13 @@ components:
             validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
         attributes:
           $ref: 'types.yaml#/components/schemas/Attributes'
+    UndefinedContent:
+      description: >
+        represents additional undefined, unstructed text content for the element.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: ',chardata'
+        json: "undefined_content,omitempty"
     URI:
       description: >
         is an element that conveys an IRI (URI).
@@ -62,7 +69,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           type: string
           x-oapi-codegen-extra-tags:
@@ -83,7 +92,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           type: string
           x-oapi-codegen-extra-tags:
@@ -102,7 +113,9 @@ components:
         - value
       properties:
         XMLName:
-          $ref: 'types.yaml#/components/schemas/XMLName'
+          description: >
+            represents the XML namespace of an element.
+          x-go-type: 'xml.Name'
         value:
           type: string
           x-oapi-codegen-extra-tags:
@@ -164,7 +177,9 @@ components:
             - value
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             value:
               x-go-type: types.DateTime
               x-oapi-codegen-extra-tags:
@@ -201,7 +216,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
       x-oapi-codegen-extra-tags:
         xml: 'title'
         json: 'title'
@@ -217,7 +234,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
       x-oapi-codegen-extra-tags:
         xml: 'updated'
         json: 'updated'
@@ -233,9 +252,11 @@ components:
             - term
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
-            value:
-              $ref: 'types.yaml#/components/schemas/OptionalValue'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
+            undefined_content:
+              $ref: '#/components/schemas/UndefinedContent'
             term:
               description: >
                 is a string that identifies the category to which the entry or feed belongs.
@@ -287,7 +308,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             value:
               $ref: 'types.yaml#/components/schemas/OptionalValue'
             uri:
@@ -329,7 +352,9 @@ components:
             - href
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             href:
               description: >
                 contains the URL of the related resource.
@@ -383,17 +408,12 @@ components:
               enum: ['alternate', 'enclosure', 'related', 'self', 'via', 'hub', 'edit', 'next', 'standout', 'http://schemas.google.com/g/2005#feed']
               xml:
                 attribute: true
+              x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
                 xml: 'rel,attr,omitempty'
                 validate: 'omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed'
-            value:
-              description: >
-                is any value for the link.
-              type: string
-              x-oapi-codegen-extra-tags:
-                json: 'value'
-                xml: ',chardata'
-                validate: "omitempty,uri|urn_rfc2141|uuid"
+            undefined_content:
+              $ref: '#/components/schemas/UndefinedContent'
       x-oapi-codegen-extra-tags:
         xml: 'http://www.w3.org/2005/Atom link,omitempty'
         json: 'link,omitempty'
@@ -434,7 +454,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
       x-oapi-codegen-extra-tags:
         xml: 'rights,omitempty'
         json: 'rights,omitempty'
@@ -449,7 +471,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
       x-oapi-codegen-extra-tags:
         xml: 'published,omitempty'
         json: 'published,omitempty'
@@ -463,7 +487,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
       x-oapi-codegen-extra-tags:
         xml: 'subtitle,omitempty'
         json: 'subtitle,omitempty'
@@ -477,7 +503,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
       x-oapi-codegen-extra-tags:
         xml: 'summary,omitempty'
         json: 'summary,omitempty'
@@ -491,7 +519,9 @@ components:
             - XMLName
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             type:
               $ref: '#/components/schemas/Type'
             src:
@@ -546,7 +576,9 @@ components:
             - updated
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             ID:
               $ref: '#/components/schemas/ID'
             title:
@@ -621,7 +653,9 @@ components:
             - updated
           properties:
             XMLName:
-              $ref: 'types.yaml#/components/schemas/XMLName'
+              description: >
+                represents the XML namespace of an element.
+              x-go-type: 'xml.Name'
             ID:
               $ref: '#/components/schemas/ID'
             title:
