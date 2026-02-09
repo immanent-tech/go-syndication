@@ -43,19 +43,19 @@ func (e *FieldError) Error() string {
 
 // StructError contains validation errors on individual fields in a struct.
 type StructError struct {
-	fields []FieldError
+	Fields []FieldError
 }
 
 // Error satisfies the Error interface.
 func (e *StructError) Error() string {
 	var errStr strings.Builder
 	errStr.WriteString("contains field errors")
-	if len(e.fields) > 0 {
+	if len(e.Fields) > 0 {
 		errStr.WriteRune('\n')
 	}
-	for idx, t := range e.fields {
+	for idx, t := range e.Fields {
 		errStr.WriteString(t.Error())
-		if idx < (len(e.fields) - 1) {
+		if idx < (len(e.Fields) - 1) {
 			errStr.WriteRune('\n')
 		}
 	}
@@ -69,9 +69,9 @@ func ValidateStruct(s any) *StructError {
 		errs := &StructError{}
 		var validateErrs validator.ValidationErrors
 		if errors.As(err, &validateErrs) {
-			errs.fields = make([]FieldError, 0, len(validateErrs))
+			errs.Fields = make([]FieldError, 0, len(validateErrs))
 			for _, err := range validateErrs {
-				errs.fields = append(errs.fields, FieldError{
+				errs.Fields = append(errs.Fields, FieldError{
 					Namespace:       err.Namespace(),
 					Field:           err.Field(),
 					StructNamespace: err.StructNamespace(),
