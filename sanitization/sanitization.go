@@ -31,7 +31,9 @@ type config struct {
 // whitespace and then run the string through bluemonday to remove dangerous components. This should retain HTML5
 // content.
 func SanitizeString(str string, options ...Option) string {
-	cfg := &config{}
+	cfg := &config{
+		policy: bluemonday.UGCPolicy(),
+	}
 	for option := range slices.Values(options) {
 		option(cfg)
 	}
@@ -40,10 +42,12 @@ func SanitizeString(str string, options ...Option) string {
 
 // SanitizeBytes attempts to "sanitize" a []byte value from a Feed/Item object. It will strip any leading/trailing
 // whitespace and then run the string through bluemonday to remove dangerous components.
-func SanitizeBytes(b []byte, options ...Option) []byte {
-	cfg := &config{}
+func SanitizeBytes(data []byte, options ...Option) []byte {
+	cfg := &config{
+		policy: bluemonday.UGCPolicy(),
+	}
 	for option := range slices.Values(options) {
 		option(cfg)
 	}
-	return cfg.policy.SanitizeBytes(bytes.TrimSpace(b))
+	return cfg.policy.SanitizeBytes(bytes.TrimSpace(data))
 }
