@@ -35,7 +35,7 @@ func (f *Feed) GetDescription() string {
 	switch {
 	case f.DCDescription != nil:
 		return f.DCDescription.String()
-	case f.Subtitle.String() != "":
+	case f.Subtitle != nil && f.Subtitle.String() != "":
 		return f.Subtitle.String()
 	default:
 		return ""

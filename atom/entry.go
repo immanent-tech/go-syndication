@@ -140,7 +140,7 @@ func (e *Entry) GetImage() *types.ImageInfo {
 // GetPublishedDate returns the <published> of the Entry (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
 func (e *Entry) GetPublishedDate() time.Time {
-	if !e.Published.Value.IsZero() {
+	if e.Published != nil && !e.Published.Value.IsZero() {
 		return e.Published.Value.Time
 	}
 	return time.Unix(0, 0)
