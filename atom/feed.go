@@ -116,7 +116,7 @@ func (f *Feed) GetRights() string {
 	switch {
 	case f.DCRights != nil:
 		return f.DCRights.String()
-	case f.Rights.Value != "":
+	case f.Rights != nil && f.Rights.Value != "":
 		return f.Rights.Value
 	default:
 		return ""
@@ -129,7 +129,7 @@ func (f *Feed) GetLanguage() string {
 	switch {
 	case f.DCLanguage != nil:
 		return *f.DCLanguage
-	case f.Lang != nil:
+	case f.Lang != nil && f.Lang != nil:
 		return *f.Lang
 	default:
 		return ""
@@ -189,7 +189,7 @@ func (f *Feed) GetUpdateInterval() time.Duration {
 			return types.GetMedianInterval(intervals)
 		}
 	}
-	return 5 * time.Minute
+	return types.DefaultFeedUpdateInterval
 }
 
 // GetItems returns a slice of Entry values for the Feed.
