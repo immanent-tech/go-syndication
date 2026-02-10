@@ -148,7 +148,7 @@ func (f *Feed) GetUpdateInterval() time.Duration {
 			return types.GetMedianInterval(intervals)
 		}
 	}
-	return 5 * time.Minute
+	return types.DefaultFeedUpdateInterval
 }
 
 // GetItems returns a slice of Entry values for the Feed.

@@ -213,7 +213,7 @@ func (c *Channel) GetUpdateInterval() time.Duration {
 			return types.GetMedianInterval(intervals)
 		}
 	}
-	return 5 * time.Minute
+	return types.DefaultFeedUpdateInterval
 }
 
 // GetItems retrieves a slice of Item values for the Channel.

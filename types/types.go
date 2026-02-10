@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"html"
 	"slices"
+	"time"
 
 	"github.com/immanent-tech/go-syndication/sanitization"
 )
@@ -37,6 +38,12 @@ var (
 const (
 	// MimeTypeOPML indicates the canonical mimetype for an OPML file.
 	MimeTypeOPML = "text/x-opml+xml"
+)
+
+var (
+	// DefaultFeedUpdateInterval defines the update interval for feeds that do not define an update interval or where
+	// one cannot be calculated based off item frequency.
+	DefaultFeedUpdateInterval = time.Hour
 )
 
 // NewXMLAttr is a convienience function to create an xml.Attr from a name/value/namespace combination. The namespace
