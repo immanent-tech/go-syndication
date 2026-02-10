@@ -5,7 +5,6 @@
 package atom
 
 import (
-	"errors"
 	"fmt"
 	"mime"
 	"slices"
@@ -15,8 +14,6 @@ import (
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/validation"
 )
-
-var ErrPersonConstruct = errors.New("person construct is invalid")
 
 func init() {
 	if err := validation.RegisterValidation("type_attr", validateTypeAttr); err != nil {

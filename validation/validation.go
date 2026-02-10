@@ -12,6 +12,9 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+var ErrInvalidField = errors.New("invalid field")
+var ErrInvalidStruct = errors.New("invalid struct")
+
 var validate *validator.Validate
 
 func init() {
@@ -38,7 +41,14 @@ type FieldError struct {
 
 // Error satisfies the Error interface.
 func (e *FieldError) Error() string {
-	return fmt.Sprintf("%s (value(%q)) failed validation for %s: %s", e.Field, e.Value, e.Tag, e.Message)
+	return fmt.Sprintf(
+		"%s %s (value(%q)) failed validation for %s: %s",
+		ErrInvalidField.Error(),
+		e.Field,
+		e.Value,
+		e.Tag,
+		e.Message,
+	)
 }
 
 // StructError contains validation errors on individual fields in a struct.

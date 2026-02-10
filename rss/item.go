@@ -5,7 +5,6 @@
 package rss
 
 import (
-	"errors"
 	"fmt"
 	"log/slog"
 	"slices"
@@ -14,12 +13,11 @@ import (
 
 	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
 )
 
 var _ types.ItemSource = (*Item)(nil)
-
-var ErrItemValidation = errors.New("item is invalid")
 
 // NewItem creates a new Item with the given options.
 func NewItem(options ...ItemOption) *Item {
@@ -255,7 +253,7 @@ func (i *Item) GetContent() string {
 func (i *Item) Validate() error {
 	// Either description or title must be set. Both cannot be empty.
 	if i.Description.String() == "" && i.Title.String() == "" {
-		return fmt.Errorf("%w: description or title is required", ErrItemValidation)
+		return fmt.Errorf("%w: description or title is required", validation.ErrInvalidStruct)
 	}
 	return nil
 }

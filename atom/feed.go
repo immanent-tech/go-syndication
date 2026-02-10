@@ -4,7 +4,6 @@
 package atom
 
 import (
-	"errors"
 	"fmt"
 	"slices"
 	"time"
@@ -15,8 +14,6 @@ import (
 )
 
 var _ types.FeedSource = (*Feed)(nil)
-
-var ErrFeedValidation = errors.New("feed is invalid")
 
 // GetTitle retrieves the <title> of the Feed.
 func (f *Feed) GetTitle() string {
@@ -129,7 +126,7 @@ func (f *Feed) GetLanguage() string {
 	switch {
 	case f.DCLanguage != nil:
 		return *f.DCLanguage
-	case f.Lang != nil && f.Lang != nil:
+	case f.Lang != nil:
 		return *f.Lang
 	default:
 		return ""
@@ -216,10 +213,9 @@ func (f *Feed) Validate() error {
 	//
 	// https://www.rfc-editor.org/rfc/rfc4287#page-11
 	if len(f.GetAuthors()) == 0 && missingEntryAuthors {
-		return fmt.Errorf("%w: must have at least one author or all entries with authors", ErrFeedValidation)
+		return fmt.Errorf("%w: must have at least one author or all entries with authors", validation.ErrInvalidStruct)
 	}
-	err := validation.ValidateStruct(f)
-	if err != nil {
+	if err := validation.ValidateStruct(f); err != nil {
 		return fmt.Errorf("feed validation failed: %w", err)
 	}
 	return nil
