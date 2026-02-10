@@ -52,7 +52,7 @@ func (e *Entry) GetDescription() string {
 	switch {
 	case e.DCDescription != nil:
 		return e.DCDescription.String()
-	case e.Summary.String() != "":
+	case e.Summary != nil && e.Summary.String() != "":
 		return e.Summary.String()
 	default:
 		return ""

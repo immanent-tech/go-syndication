@@ -58,7 +58,7 @@ func (p *PersonConstruct) Validate() error {
 // the element value or the term attribute value, in that order.
 func (c *Category) String() string {
 	// Use the label attribute if present.
-	if c.Label.Value != "" {
+	if c.Label != nil && c.Label.Value != "" {
 		return sanitization.SanitizeString(c.Label.Value)
 	}
 	// Use any value if present.
