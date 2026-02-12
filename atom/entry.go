@@ -95,7 +95,7 @@ func (e *Entry) GetRights() string {
 	switch {
 	case e.DCRights != nil:
 		return e.DCRights.String()
-	case e.Rights.Value != "":
+	case e.Rights != nil && e.Rights.Value != "":
 		return e.Rights.Value
 	default:
 		return ""
