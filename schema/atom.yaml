@@ -593,6 +593,8 @@ components:
               $ref: '#/components/schemas/Contributors'
             generator:
               $ref: '#/components/schemas/Generator'
+            icon:
+              $ref: '#/components/schemas/Icon'
             links:
               $ref: '#/components/schemas/Links'
             logo:

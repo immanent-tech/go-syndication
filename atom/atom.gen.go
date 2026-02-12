@@ -439,6 +439,9 @@ type Feed struct {
 	// Generator is an element identifies the agent used to generate a feed.
 	Generator *Generator `json:"generator,omitempty" xml:"generator,omitempty"`
 
+	// Icon is an element that contains a URI to an icon suitable for representing a feed.
+	Icon *Icon `json:"icon,omitempty" xml:"icon,omitempty"`
+
 	// Links a list of links associated with the feed.
 	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
 
@@ -486,6 +489,9 @@ type FeedMetadata struct {
 
 	// Generator is an element identifies the agent used to generate a feed.
 	Generator *Generator `json:"generator,omitempty" xml:"generator,omitempty"`
+
+	// Icon is an element that contains a URI to an icon suitable for representing a feed.
+	Icon *Icon `json:"icon,omitempty" xml:"icon,omitempty"`
 
 	// Links a list of links associated with the feed.
 	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`

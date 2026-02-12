@@ -145,14 +145,26 @@ func (f *Feed) GetCategories() []string {
 // GetImage retrieves the image (if any) for the Feed. The image is returned as a types.ImageInfo object. The value will be
 // the first found of <media:thumbnail> element.
 func (f *Feed) GetImage() *types.ImageInfo {
-	if len(f.MediaThumbnails) > 0 {
+	switch {
+	case f.Logo != nil:
+		return &types.ImageInfo{
+			URL:   *f.Logo.Value,
+			Title: f.GetTitle(),
+		}
+	case f.Icon != nil:
+		return &types.ImageInfo{
+			URL:   f.Icon.Value,
+			Title: f.GetTitle(),
+		}
+	case len(f.MediaThumbnails) > 0:
 		thumbnail := f.MediaThumbnails[0]
 		return &types.ImageInfo{
 			URL:   thumbnail.URL,
 			Title: f.GetTitle(),
 		}
+	default:
+		return nil
 	}
-	return nil
 }
 
 // SetImage sets an image for the Channel.
