@@ -46,7 +46,8 @@ var (
 )
 
 type ParserOptions struct {
-	Validate bool
+	validate bool
+	client   *resty.Client
 }
 
 type ParseOption func(*ParserOptions)
@@ -55,29 +56,16 @@ type ParseOption func(*ParserOptions)
 // This allows a feed that doesn't strictly pass its format specification to be returned.
 func PerformValidation(value bool) ParseOption {
 	return func(po *ParserOptions) {
-		po.Validate = value
+		po.validate = value
 	}
 }
 
-// FeedResult is returned when calling NewFeedsFromURLs and contains the results for parsing an individual URL. It
-// will contain the original URL and either a new Feed or a non-nil error.
-type FeedResult struct {
-	URL  string
-	Feed *Feed
-	Err  error
+// WithClient option allows using a custom client for any network requests to fetch feed resources.
+func WithClient(client *resty.Client) ParseOption {
+	return func(po *ParserOptions) {
+		po.client = client
+	}
 }
-
-// FeedItemsResult is returned when calling NewItemsFromURLs and contains the results for parsing an individual URL. It
-// will contain the original URL, any items parsed and a non-nil error if a problem occurred.
-type FeedItemsResult struct {
-	URL   string
-	Items []Item
-	Err   error
-}
-
-// ItemsResult is returned when calling NewItemsFromURLs and contains the results for parsing an individual Feed URL. It
-// will contain the original URL and either a slice of Items or a non-nil error.
-type ItemsResult []FeedItemsResult
 
 // NewFeedFromBytes will create a new Feed of the given type from the given byte array.
 func NewFeedFromBytes[T any](data []byte, options ...ParseOption) (*Feed, error) {
@@ -110,7 +98,7 @@ func NewFeedFromBytes[T any](data []byte, options ...ParseOption) (*Feed, error)
 		FeedSource: source,
 	}
 	feed.SourceType = parseSource(original)
-	if opts.Validate {
+	if opts.validate {
 		if err = feed.Validate(); err != nil {
 			return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseBytes, err)
 		}
@@ -129,118 +117,33 @@ func NewFeedFromSource[T types.FeedSource](source T) *Feed {
 	return feed
 }
 
-// NewFeedFromURL will attempt to create new Feed object from the given URL.
+// NewFeedFromURL attempts to parse the given URL as a feed source.
 func NewFeedFromURL(ctx context.Context, url string, options ...ParseOption) (*Feed, error) {
-	client := newWebClient()
-	result := parseFeedURL(ctx, client, url, options...)
-	return result.Feed, result.Err
-}
-
-// NewFeedsFromURLs will attempt to create new Feed objects from the given list of URLs. It returns a slice containing:
-// the URL, any Feed object that was created, else, an non-nil error explaining the problem creating the Feed.
-func NewFeedsFromURLs(ctx context.Context, urls ...string) []FeedResult {
-	client := newWebClient()
-
-	results := make([]FeedResult, 0, len(urls))
-	workerCh := make(chan FeedResult)
-	var wg sync.WaitGroup
-
-	go func() {
-		defer close(workerCh)
-		for url := range slices.Values(urls) {
-			wg.Add(1)
-			go func(url string) {
-				defer wg.Done()
-				workerCh <- parseFeedURL(ctx, client, url)
-			}(url)
-		}
-		wg.Wait()
-	}()
-	// Gather results.
-	for result := range workerCh {
-		results = append(results, result)
+	// Parse and set options.
+	opts := &ParserOptions{}
+	for option := range slices.Values(options) {
+		option(opts)
+	}
+	// Use the default client if one is not specified.
+	if opts.client == nil {
+		opts.client = newWebClient()
 	}
 
-	return results
-}
-
-// NewItemsFromURLs will attempt to create new Item objects from the given list of Feed URLs. It returns a slice
-// containing: the Feed URL, a slice of Items for that Feed URL, else, an non-nil error explaining the problem fetching
-// Items.
-func NewItemsFromURLs(ctx context.Context, urls ...string) ItemsResult {
-	client := newWebClient()
-	results := make(ItemsResult, 0, len(urls))
-	workerCh := make(chan FeedItemsResult)
-	var wg sync.WaitGroup
-
-	go func() {
-		defer close(workerCh)
-		for url := range slices.Values(urls) {
-			wg.Add(1)
-			go func(url string) {
-				defer wg.Done()
-				if result := parseFeedURL(ctx, client, url); result.Err != nil {
-					workerCh <- FeedItemsResult{
-						URL: url,
-						Err: result.Err,
-					}
-				} else {
-					workerCh <- FeedItemsResult{
-						URL:   url,
-						Items: result.Feed.GetItems(),
-					}
-				}
-			}(url)
-		}
-		wg.Wait()
-	}()
-	// Gather results.
-	for result := range workerCh {
-		results = append(results, result)
-	}
-
-	return results
-}
-
-// FindFeedImage will try to find an image to represent the feed. Useful to call if the feed does not define an image
-// itself.
-func FindFeedImage(ctx context.Context, feed *Feed) error {
-	var timeout time.Duration
-	if deadline, ok := ctx.Deadline(); !ok {
-		timeout = DefaultRequestTimeout
-	} else {
-		timeout = time.Until(deadline)
-	}
-	image, err := discoverFeedImage(feed.GetLink(), timeout)
-	if err != nil {
-		return fmt.Errorf("unable to find feed image: %w", err)
-	}
-	if image != nil {
-		feed.SetImage(image)
-	}
-	return nil
-}
-
-// parseFeedURL attempts to parse the given URL as a feed source.
-func parseFeedURL(ctx context.Context, client *resty.Client, url string, options ...ParseOption) FeedResult {
 	// Get the feed data.
-	resp, err := client.R().
+	resp, err := opts.client.R().
 		SetContext(ctx).
 		Get(url)
 	switch {
-	case err != nil && resp.IsError():
-		return FeedResult{Err: &HTTPError{Code: resp.StatusCode(), Message: resp.Status()}}
+	case err != nil || resp.IsError():
+		return nil, &HTTPError{Code: resp.StatusCode(), Message: resp.Status()}
 	case err != nil:
-		return FeedResult{
-			URL: url,
-			Err: &HTTPError{Code: http.StatusInternalServerError, Message: err.Error()},
-		}
+		return nil, &HTTPError{Code: http.StatusInternalServerError, Message: err.Error()}
 	}
 
 	// Retrieve the content header so we know what format we are dealing with.
 	content := resp.Header().Get("Content-Type")
 	if content == "" {
-		return FeedResult{URL: url, Err: fmt.Errorf("%w: missing Content-Type header", ErrParseURL)}
+		return nil, fmt.Errorf("%w: missing Content-Type header", ErrParseURL)
 	}
 
 	// Try to parse the response body as a valid feed type.
@@ -250,13 +153,13 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 		// RSS.
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
 		if err != nil {
-			return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
+			return nil, fmt.Errorf("could not parse as rss: %w", err)
 		}
 	case isMimeType(content, types.MimeTypesAtom):
 		// Atom.
 		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
 		if err != nil {
-			return FeedResult{Err: fmt.Errorf("could not parse as atom: %w", err)}
+			return nil, fmt.Errorf("could not parse as atom: %w", err)
 		}
 	case isMimeType(content, types.MimeTypesIndeterminate):
 		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
@@ -264,37 +167,37 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 		case bytes.Contains(resp.Body(), []byte("<feed")):
 			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
 			if err != nil && errors.Is(err, &validation.StructError{}) {
-				return FeedResult{Err: fmt.Errorf("could not parse as atom: %w", err)}
+				return nil, fmt.Errorf("could not parse as atom: %w", err)
 			}
 		case bytes.Contains(resp.Body(), []byte("<rss")):
 			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
 			if err != nil && errors.Is(err, &validation.StructError{}) {
-				return FeedResult{Err: fmt.Errorf("could not parse as rss: %w", err)}
+				return nil, fmt.Errorf("could not parse as rss: %w", err)
 			}
 		default:
-			return FeedResult{Err: fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)}
+			return nil, fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
 		// JSONFeed
 		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body(), options...)
 		if err != nil {
-			return FeedResult{Err: fmt.Errorf("could not parse as jsonfeed: %w", err)}
+			return nil, fmt.Errorf("could not parse as jsonfeed: %w", err)
 		}
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
-		if newURL, err := discoverFeedURL(url, resp.Body()); err == nil && newURL != "" {
-			return parseFeedURL(ctx, client, newURL)
+		if newURL, err := DiscoverFeedURL(url, resp.Body()); err == nil && newURL != "" {
+			return NewFeedFromURL(ctx, newURL)
 		}
-		fallthrough
+		return nil, fmt.Errorf("could not find a feed URL on page: %w", err)
 	default:
 		// Cannot determine or unsupported content.
-		return FeedResult{Err: fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)}
+		return nil, fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)
 	}
 
 	// Handle getting through the switch but still not parsing the content.
 	if feed == nil {
-		return FeedResult{Err: fmt.Errorf("%w: %w", ErrParseURL, err)}
+		return nil, fmt.Errorf("%w: %w", ErrParseURL, err)
 	}
 
 	// If the source URL is not set, set it.
@@ -302,11 +205,11 @@ func parseFeedURL(ctx context.Context, client *resty.Client, url string, options
 		feed.SetSourceURL(url)
 	}
 
-	return FeedResult{URL: url, Feed: feed}
+	return feed, nil
 }
 
-// discoverFeedImage attempts to find a suitable image to use for a feed.
-func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, error) {
+// DiscoverFeedImage attempts to find a suitable image to use for a feed.
+func DiscoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, error) {
 	// Parse feed string as URL.
 	sourceURL, err := url.Parse(feed)
 	if err != nil {
@@ -340,14 +243,14 @@ func discoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 	return &types.ImageInfo{URL: imgURL.String()}, nil
 }
 
-// discoverFeedURL attempts to find a feed URL within a HTML page.
+// DiscoverFeedURL attempts to find a feed URL within a HTML page.
 //
 // There are a couple of "canonical" places the feed URL is located. Firstly, as per the RSS spec, look for a link
 // element with rel="alternate" and type="application/rss+xml". Secondly, check for a link element with a URL that ends
 // with feed, rss or atom, which would indicate a feed URL.
 //
 //nolint:gocognit,funlen
-func discoverFeedURL(path string, content []byte) (string, error) {
+func DiscoverFeedURL(path string, content []byte) (string, error) {
 	pageURL, err := url.Parse(path)
 	if err != nil {
 		return "", fmt.Errorf("discover feed url: %w", err)
