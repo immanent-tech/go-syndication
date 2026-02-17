@@ -109,7 +109,13 @@ func NewFeedFromBytes[T any](data []byte, options ...ParseOption) (*Feed, error)
 
 // NewFeedFromSource will create a new Feed from the given source that satisfies the FeedSource interface. This can be
 // used to create a Feed from an existing rss.RSS or atom.Feed object.
-func NewFeedFromSource[T types.FeedSource](source T) *Feed {
+func NewFeedFromSource[T types.FeedSource](source T, options ...ParseOption) *Feed {
+	// Parse and set options.
+	opts := &ParserOptions{}
+	for option := range slices.Values(options) {
+		option(opts)
+	}
+
 	feed := &Feed{
 		FeedSource: source,
 	}
@@ -134,10 +140,10 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		SetContext(ctx).
 		Get(feedURL)
 	switch {
-	case err != nil || resp.IsError():
-		return nil, &HTTPError{Code: resp.StatusCode(), Message: resp.Status()}
+	case resp.IsError():
+		return nil, HTTPError{Code: resp.StatusCode(), Message: resp.Status()}
 	case err != nil:
-		return nil, &HTTPError{Code: http.StatusInternalServerError, Message: err.Error()}
+		return nil, HTTPError{Code: http.StatusInternalServerError, Message: err.Error()}
 	}
 
 	// Retrieve the content header so we know what format we are dealing with.
@@ -376,6 +382,6 @@ type HTTPError struct {
 	Message string
 }
 
-func (e *HTTPError) Error() string {
+func (e HTTPError) Error() string {
 	return fmt.Sprintf("%d: %s", e.Code, e.Message)
 }
