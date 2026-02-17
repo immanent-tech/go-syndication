@@ -118,7 +118,7 @@ func NewFeedFromSource[T types.FeedSource](source T) *Feed {
 }
 
 // NewFeedFromURL attempts to parse the given URL as a feed source.
-func NewFeedFromURL(ctx context.Context, url string, options ...ParseOption) (*Feed, error) {
+func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption) (*Feed, error) {
 	// Parse and set options.
 	opts := &ParserOptions{}
 	for option := range slices.Values(options) {
@@ -132,7 +132,7 @@ func NewFeedFromURL(ctx context.Context, url string, options ...ParseOption) (*F
 	// Get the feed data.
 	resp, err := opts.client.R().
 		SetContext(ctx).
-		Get(url)
+		Get(feedURL)
 	switch {
 	case err != nil || resp.IsError():
 		return nil, &HTTPError{Code: resp.StatusCode(), Message: resp.Status()}
@@ -186,10 +186,10 @@ func NewFeedFromURL(ctx context.Context, url string, options ...ParseOption) (*F
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
-		if newURL, err := DiscoverFeedURL(url, resp.Body()); err == nil && newURL != "" {
+		if newURL, err := DiscoverFeedURL(feedURL, resp.Body()); err == nil && newURL != "" {
 			return NewFeedFromURL(ctx, newURL)
 		}
-		return nil, fmt.Errorf("could not find a feed URL on page: %w", err)
+		return nil, fmt.Errorf("could not find a feed URL on page: %s", feedURL)
 	default:
 		// Cannot determine or unsupported content.
 		return nil, fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)
@@ -201,8 +201,8 @@ func NewFeedFromURL(ctx context.Context, url string, options ...ParseOption) (*F
 	}
 
 	// If the source URL is not set, set it.
-	if feed.GetSourceURL() == "" || feed.GetSourceURL() != url {
-		feed.SetSourceURL(url)
+	if feed.GetSourceURL() == "" || feed.GetSourceURL() != feedURL {
+		feed.SetSourceURL(feedURL)
 	}
 
 	return feed, nil
