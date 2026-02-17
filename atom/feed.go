@@ -64,7 +64,7 @@ func (f *Feed) SetSourceURL(url string) {
 func (f *Feed) GetLink() string {
 	for link := range slices.Values(f.Links) {
 		// If there is a rel=self link that does not point to an atom document, use that.
-		if link.Rel == LinkRelSelf {
+		if link.Rel == LinkRelSelf && link.Type != nil {
 			if !slices.Contains(types.MimeTypesAtom, *link.Type) {
 				return link.Href
 			}
