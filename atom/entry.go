@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/goforj/godump"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
@@ -157,12 +158,19 @@ func (e *Entry) GetUpdatedDate() time.Time {
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
 func (e *Entry) GetContent() string {
+	godump.Dump(e.Content)
+	if e.Content == nil {
+		return ""
+	}
 	switch {
 	case e.Content.Value != nil:
-		switch *e.Content.Type {
-		case "text":
+		switch {
+		case e.Content.Type == nil:
+			return ""
+
+		case *e.Content.Type == "text":
 			return *e.Content.Value
-		case "html", "xhtml":
+		case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
 			// Parse the value.
 			doc, err := html.Parse(strings.NewReader(*e.Content.Value))
 			if err != nil {
