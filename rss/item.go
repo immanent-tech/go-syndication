@@ -85,7 +85,10 @@ func WithItemPublishedDate(ts time.Time) ItemOption {
 // GetID returns an "id" for the item. This will be the value of the <guid> element, if present, or an empty string if
 // not present.
 func (i *Item) GetID() string {
-	return i.GUID.Value.String()
+	if i.GUID != nil {
+		return i.GUID.Value.String()
+	}
+	return ""
 }
 
 // GetTitle retrieves the <title> (if any) of the Item.
