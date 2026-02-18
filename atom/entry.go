@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/goforj/godump"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
@@ -158,7 +157,6 @@ func (e *Entry) GetUpdatedDate() time.Time {
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
 func (e *Entry) GetContent() string {
-	godump.Dump(e.Content)
 	if e.Content == nil {
 		return ""
 	}
