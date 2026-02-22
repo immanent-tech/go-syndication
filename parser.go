@@ -310,34 +310,49 @@ func DiscoverFeedURL(path string, content []byte) (string, error) {
 			}
 		case html.StartTagToken:
 			tkn := page.Token()
-			if tkn.Data != "a" {
-				continue
-			}
-			var found bool
-			// Link ends in feed...
-			if slices.ContainsFunc(tkn.Attr,
-				func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") }) {
-				found = true
-			}
-			if !found {
-				continue
-			}
-			// Get the link.
-			idx := slices.IndexFunc(
-				tkn.Attr,
-				func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") },
-			)
-			if idx == -1 {
-				continue
-			}
-			feedURL, err = url.Parse(tkn.Attr[idx].Val)
-			if err != nil {
-				return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
+			switch tkn.Data {
+			case "link":
+				// For a <link></link> look for the canonical link attributes.
+				if slices.ContainsFunc(tkn.Attr,
+					func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" }) &&
+					slices.ContainsFunc(
+						tkn.Attr,
+						func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) },
+					) {
+					// Get the link.
+					idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "href" })
+					if idx == -1 {
+						continue
+					}
+					feedURL, err = url.Parse(tkn.Attr[idx].Val)
+					if err != nil {
+						return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
+					}
+				}
+			case "a":
+				// For a <a></a> look for a well-known feed URL pattern.
+				if slices.ContainsFunc(tkn.Attr,
+					func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") }) {
+					// Get the link.
+					idx := slices.IndexFunc(
+						tkn.Attr,
+						func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") },
+					)
+					if idx == -1 {
+						continue
+					}
+					feedURL, err = url.Parse(tkn.Attr[idx].Val)
+					if err != nil {
+						return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
+					}
+				}
 			}
 		}
+		// Continue searching tags if we don't yet have a feed URL.
 		if feedURL == nil {
 			continue
 		}
+		// Check whether the URL is absolute.
 		if !feedURL.IsAbs() {
 			// Try to create an absolute URL for the feed.
 			fullPath, err := url.JoinPath("/", feedURL.Path)
