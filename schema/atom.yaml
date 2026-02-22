@@ -682,6 +682,8 @@ components:
               $ref: '#/components/schemas/Source'
             summary:
               $ref: '#/components/schemas/Summary'
+            MediaGroup:
+              $ref: 'media-rss.yaml#/components/schemas/MediaGroup'
             extensions:
               $ref: 'types.yaml#/components/schemas/Extensions'
       x-oapi-codegen-extra-tags:

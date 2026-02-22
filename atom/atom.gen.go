@@ -199,6 +199,9 @@ type Entry struct {
 	// MediaEmbed allows inclusion of player-specific information in the form of key-value (Param) pairs.
 	MediaEmbed *externalRef1.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
 
+	// MediaGroup allows grouping of <media:content> elements that are effectively the same content, yet different representations. For instance: the same song recorded in both the WAV and MP3 format.
+	MediaGroup *externalRef1.MediaGroup `json:"media_group,omitempty" xml:"http://search.yahoo.com/mrss/ group,omitempty"`
+
 	// MediaHashes a list of hashes for the object.
 	MediaHashes externalRef1.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
 
