@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
@@ -54,6 +55,8 @@ func (e *Entry) GetDescription() string {
 		return e.DCDescription.String()
 	case e.Summary != nil && e.Summary.String() != "":
 		return e.Summary.String()
+	case e.MediaGroup != nil:
+		return e.MediaGroup.GetDescription()
 	default:
 		return ""
 	}
@@ -124,9 +127,9 @@ func (e *Entry) GetCategories() []string {
 	return categories
 }
 
-// GetImage retrieves the image (if any) for the Entry. The image is returned as a types.ImageInfo object. The value will be
-// the first found of <media:thumbnail> element.
+// GetImage retrieves the image (if any) for the Entry. The image is returned as a types.ImageInfo object.
 func (e *Entry) GetImage() *types.ImageInfo {
+	// Use the first <media:thumbnail>
 	if len(e.MediaThumbnails) > 0 {
 		thumbnail := e.MediaThumbnails[0]
 		return &types.ImageInfo{
@@ -134,7 +137,20 @@ func (e *Entry) GetImage() *types.ImageInfo {
 			Title: e.GetTitle(),
 		}
 	}
+	// If <media:group> exists, use the first <media:thumbnail> in the group.
+	if e.MediaGroup != nil && len(e.MediaGroup.MediaThumbnails) > 0 {
+		thumbnail := e.MediaGroup.MediaThumbnails[0]
+		return &types.ImageInfo{
+			URL:   thumbnail.URL,
+			Title: e.GetTitle(),
+		}
+	}
 	return nil
+}
+
+// GetMediaGroup returns any media.MediaGroup object for the entry.
+func (e *Entry) GetMediaGroup() *media.MediaGroup {
+	return e.MediaGroup
 }
 
 // GetPublishedDate returns the <published> of the Entry (if any). If there is no publish date, it will return a
@@ -157,39 +173,41 @@ func (e *Entry) GetUpdatedDate() time.Time {
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
 func (e *Entry) GetContent() string {
-	if e.Content == nil {
-		return ""
-	}
 	switch {
-	case e.Content.Value != nil:
+	case e.Content != nil:
+		// Has a Content value.
 		switch {
-		case e.Content.Type == nil:
-			return ""
+		case e.Content.Value != nil && *e.Content.Value != "":
 
-		case *e.Content.Type == "text":
-			return *e.Content.Value
-		case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
-			// Parse the value.
-			doc, err := html.Parse(strings.NewReader(*e.Content.Value))
-			if err != nil {
-				slog.Error("Unable to parse content.",
-					slog.Any("error", err),
-				)
+			switch {
+			case e.Content.Type == nil:
 				return ""
+
+			case *e.Content.Type == "text":
+				return *e.Content.Value
+			case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
+				// Parse the value.
+				doc, err := html.Parse(strings.NewReader(*e.Content.Value))
+				if err != nil {
+					slog.Error("Unable to parse content.",
+						slog.Any("error", err),
+					)
+					return ""
+				}
+				// Write out.
+				var out strings.Builder
+				err = html.Render(&out, doc)
+				if err != nil {
+					slog.Error("Unable to render content.",
+						slog.Any("error", err),
+					)
+					return ""
+				}
+				return out.String()
 			}
-			// Write out.
-			var out strings.Builder
-			err = html.Render(&out, doc)
-			if err != nil {
-				slog.Error("Unable to render content.",
-					slog.Any("error", err),
-				)
-				return ""
-			}
-			return out.String()
+		case e.Content.Source != nil && *e.Content.Source != "":
+			return *e.Content.Source
 		}
-	case e.Content.Source != nil:
-		return *e.Content.Source
 	}
 	return ""
 }

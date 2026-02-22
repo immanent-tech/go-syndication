@@ -63,3 +63,10 @@ func (c *MediaContent) AsImage() *types.ImageInfo {
 
 	return nil
 }
+
+func (g *MediaGroup) GetDescription() string {
+	if g.MediaDescription != nil {
+		return sanitization.SanitizeString(g.MediaDescription.Value)
+	}
+	return ""
+}

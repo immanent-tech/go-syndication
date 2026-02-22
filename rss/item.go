@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
@@ -108,12 +109,18 @@ func (i *Item) GetLink() string {
 
 // GetDescription retrieves the <description> (if any) of the Item.
 func (i *Item) GetDescription() string {
+	// Use the non-empty description.
+	if i.Description.String() != "" {
+		return i.Description.String()
+	}
+	// Else, use a description from one of these:
 	switch {
 	case i.DCDescription != nil:
 		return i.DCDescription.String()
+	case i.MediaGroup != nil:
+		return i.MediaGroup.GetDescription()
 	default:
-		return i.Description.String()
-		// return sanitization.SanitizeString(i.Description)
+		return ""
 	}
 }
 
@@ -210,6 +217,11 @@ func (i *Item) GetImage() *types.ImageInfo {
 		}
 	}
 	return img
+}
+
+// GetMediaGroup returns any media.MediaGroup object for the entry.
+func (i *Item) GetMediaGroup() *media.MediaGroup {
+	return i.MediaGroup
 }
 
 // GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
