@@ -135,10 +135,15 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		opts.client = newWebClient()
 	}
 
+	sourceURL, err := url.Parse(feedURL)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %w", ErrParseURL, err)
+	}
+
 	// Get the feed data.
 	resp, err := opts.client.R().
 		SetContext(ctx).
-		Get(feedURL)
+		Get(sourceURL.String())
 	switch {
 	case resp.IsError():
 		return nil, HTTPError{Code: resp.StatusCode(), Message: resp.Status()}
@@ -192,7 +197,7 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
-		if newURL, err := DiscoverFeedURL(feedURL, resp.Body()); err == nil && newURL != "" {
+		if newURL, err := DiscoverFeedURL(sourceURL, resp.Body()); err == nil && newURL != "" {
 			return NewFeedFromURL(ctx, newURL)
 		}
 		return nil, fmt.Errorf("could not find a feed URL on page: %s", feedURL)
@@ -256,12 +261,7 @@ func DiscoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 // with feed, rss or atom, which would indicate a feed URL.
 //
 //nolint:gocognit,funlen
-func DiscoverFeedURL(path string, content []byte) (string, error) {
-	pageURL, err := url.Parse(path)
-	if err != nil {
-		return "", fmt.Errorf("discover feed url: %w", err)
-	}
-
+func DiscoverFeedURL(sourceURL *url.URL, content []byte) (string, error) {
 	page := html.NewTokenizer(bytes.NewReader(content))
 	for {
 		tt := page.Next()
@@ -304,6 +304,7 @@ func DiscoverFeedURL(path string, content []byte) (string, error) {
 			if idx == 0 {
 				continue
 			}
+			var err error
 			feedURL, err = url.Parse(tkn.Attr[idx].Val)
 			if err != nil {
 				return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
@@ -324,6 +325,7 @@ func DiscoverFeedURL(path string, content []byte) (string, error) {
 					if idx == -1 {
 						continue
 					}
+					var err error
 					feedURL, err = url.Parse(tkn.Attr[idx].Val)
 					if err != nil {
 						return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
@@ -341,6 +343,7 @@ func DiscoverFeedURL(path string, content []byte) (string, error) {
 					if idx == -1 {
 						continue
 					}
+					var err error
 					feedURL, err = url.Parse(tkn.Attr[idx].Val)
 					if err != nil {
 						return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
@@ -359,8 +362,8 @@ func DiscoverFeedURL(path string, content []byte) (string, error) {
 			if err != nil {
 				return "", fmt.Errorf("discover feed url: %w", err)
 			}
-			pageURL.Path = fullPath
-			return pageURL.String(), nil
+			sourceURL.Path = fullPath
+			return sourceURL.String(), nil
 		}
 		return feedURL.String(), nil
 	}
