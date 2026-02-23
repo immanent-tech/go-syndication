@@ -177,6 +177,13 @@ func (c *Channel) GetUpdatedDate() time.Time {
 	if c.LastBuildDate != nil {
 		return c.LastBuildDate.Time
 	}
+	if len(c.Items) > 0 {
+		slices.SortFunc(c.Items, func(a, b Item) int {
+			return a.GetUpdatedDate().Compare(b.GetUpdatedDate())
+		})
+		slices.Reverse(c.Items)
+		return c.Items[0].GetUpdatedDate()
+	}
 	return c.GetPublishedDate()
 }
 

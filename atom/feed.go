@@ -176,11 +176,23 @@ func (f *Feed) SetImage(image *types.ImageInfo) {
 
 // GetPublishedDate returns the <published> element of the Feed.
 func (f *Feed) GetPublishedDate() time.Time {
-	return f.Updated.Value.Time
+	if f.Published != nil {
+		return f.Published.Value.Time
+	}
+	return time.Unix(0, 0)
 }
 
 // GetUpdatedDate returns the <updated> of the Feed.
 func (f *Feed) GetUpdatedDate() time.Time {
+	if f.Updated.Value.IsZero() {
+		if len(f.Entries) > 0 {
+			slices.SortFunc(f.Entries, func(a, b Entry) int {
+				return a.GetUpdatedDate().Compare(b.GetUpdatedDate())
+			})
+			slices.Reverse(f.Entries)
+			return f.Entries[0].GetUpdatedDate()
+		}
+	}
 	return f.Updated.Value.Time
 }
 
