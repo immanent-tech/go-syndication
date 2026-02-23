@@ -451,6 +451,9 @@ type Feed struct {
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
 	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"logo,omitempty"`
 
+	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
+	Published *Published `json:"published,omitempty" xml:"published,omitempty"`
+
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
 	Rights *Rights `json:"rights,omitempty" xml:"rights,omitempty"`
 
@@ -501,6 +504,9 @@ type FeedMetadata struct {
 
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
 	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"logo,omitempty"`
+
+	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
+	Published *Published `json:"published,omitempty" xml:"published,omitempty"`
 
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
 	Rights *Rights `json:"rights,omitempty" xml:"rights,omitempty"`

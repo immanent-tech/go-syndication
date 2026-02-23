@@ -583,6 +583,8 @@ components:
               $ref: '#/components/schemas/ID'
             title:
               $ref: '#/components/schemas/Title'
+            published:
+              $ref: '#/components/schemas/Published'
             updated:
               $ref: '#/components/schemas/Updated'
             authors:
