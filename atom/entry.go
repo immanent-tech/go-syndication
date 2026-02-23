@@ -178,11 +178,9 @@ func (e *Entry) GetContent() string {
 		// Has a Content value.
 		switch {
 		case e.Content.Value != nil && *e.Content.Value != "":
-
 			switch {
 			case e.Content.Type == nil:
 				return ""
-
 			case *e.Content.Type == "text":
 				return *e.Content.Value
 			case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
