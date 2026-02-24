@@ -83,10 +83,14 @@ func (i *ID) String() string {
 }
 
 func (l *Link) String() string {
-	if l.Href == "" && l.UndefinedContent != nil {
+	switch {
+	case l.Href != "":
+		return l.Href
+	case l.UndefinedContent != nil && *l.UndefinedContent != "":
 		return *l.UndefinedContent
+	default:
+		return ""
 	}
-	return l.Href
 }
 
 func validateTypeAttr(fl validator.FieldLevel) bool {
