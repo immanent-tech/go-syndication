@@ -219,17 +219,17 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 	return feed, nil
 }
 
-// DiscoverFeedImage attempts to find a suitable image to use for a feed.
-func DiscoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, error) {
+// DiscoverPageImage attempts to find a suitable image to use for a page.
+func DiscoverPageImage(pageURL string, timeout time.Duration) (*types.ImageInfo, error) {
 	// Parse feed string as URL.
-	sourceURL, err := url.Parse(feed)
+	sourceURL, err := url.Parse(pageURL)
 	if err != nil {
-		return nil, fmt.Errorf("discover feed image: failed to parse url %s: %w", feed, err)
+		return nil, fmt.Errorf("discover page image: failed to parse url %s: %w", pageURL, err)
 	}
 	// Parse URL and extract readability content.
 	page, err := readability.FromURL(sourceURL.String(), timeout)
 	if err != nil {
-		return nil, fmt.Errorf("discover feed image: failed to parse url %s: %w", feed, err)
+		return nil, fmt.Errorf("discover page image: failed to parse url %s: %w", pageURL, err)
 	}
 	// Determine best image from readability content.
 	var img string
@@ -239,12 +239,12 @@ func DiscoverFeedImage(feed string, timeout time.Duration) (*types.ImageInfo, er
 	case page.Favicon() != "":
 		img = page.Favicon()
 	default:
-		return nil, fmt.Errorf("discover feed image: %s: %d", feed, http.StatusNotFound)
+		return nil, fmt.Errorf("discover page image: %s: %d", pageURL, http.StatusNotFound)
 	}
 	// Parse the image string as a URL.
 	imgURL, err := url.Parse(img)
 	if err != nil {
-		return nil, fmt.Errorf("discover feed image: failed to parse image url %s: %w", img, err)
+		return nil, fmt.Errorf("discover page image: failed to parse image url %s: %w", img, err)
 	}
 	// If the image URL is not absolute, assume it is based on the feed base URL and generate a new URL as appropriate.
 	if !imgURL.IsAbs() {
