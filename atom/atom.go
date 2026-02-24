@@ -59,7 +59,7 @@ func (c *Category) String() string {
 		return sanitization.SanitizeString(c.Label.Value)
 	}
 	// Use any value if present.
-	if c.UndefinedContent != nil {
+	if c.UndefinedContent != nil && *c.UndefinedContent != "" {
 		return sanitization.SanitizeString(*c.UndefinedContent)
 	}
 	// Use the term attribute.
