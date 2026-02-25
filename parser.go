@@ -14,7 +14,6 @@ import (
 	"net/url"
 	"slices"
 	"strings"
-	"sync"
 	"time"
 
 	"codeberg.org/readeck/go-readability/v2"
@@ -23,17 +22,11 @@ import (
 	htmlatom "golang.org/x/net/html/atom"
 
 	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/client"
 	"github.com/immanent-tech/go-syndication/jsonfeed"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
-)
-
-var (
-	// DefaultRequestTimeout is the maximum time allowed for a HTTP request issued by the library to execute.
-	DefaultRequestTimeout = 30 * time.Second
-	// UserAgent is the user agent that is sent when making http requests. Change this as needed.
-	UserAgent = "go-syndication (+https://github.com/immanent-tech/go-syndication)"
 )
 
 var (
@@ -132,7 +125,7 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 	}
 	// Use the default client if one is not specified.
 	if opts.client == nil {
-		opts.client = newWebClient()
+		opts.client = client.LoadHTTPClient()
 	}
 
 	sourceURL, err := url.Parse(feedURL)
@@ -390,10 +383,6 @@ func parseSource[T any](source T) SourceType {
 		return ""
 	}
 }
-
-var newWebClient = sync.OnceValue(func() *resty.Client {
-	return resty.New().SetHeader("User-Agent", UserAgent)
-})
 
 type HTTPError struct {
 	Code    int
