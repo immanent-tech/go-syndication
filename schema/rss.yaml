@@ -171,7 +171,7 @@ components:
             the image <title> and <link> should have the same value as the channel's <title> and <link>.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'link'
+            xml: 'link,omitempty'
             validate: 'required_without=URL,omitempty,url'
         width:
           description: >

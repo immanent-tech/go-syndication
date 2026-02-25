@@ -65,6 +65,18 @@ func WithItemGUID(guid *GUID) ItemOption {
 	}
 }
 
+// WithItemImage option sets the item image.
+func WithItemImage(img *types.ImageInfo) ItemOption {
+	return func(i *Item) {
+		i.Image = &Image{
+			URL: img.GetURL(),
+		}
+		if title := img.GetTitle(); title != "" {
+			i.Image.Title = title
+		}
+	}
+}
+
 // WithItemContent option sets the item content.
 func WithItemContent(content []byte) ItemOption {
 	return func(i *Item) {

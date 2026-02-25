@@ -324,7 +324,7 @@ type Image struct {
 	Height *int `json:"height,omitempty" validate:"omitempty,gt=0,lte=400" xml:"height,omitempty"`
 
 	// Link is the URL of the site, when the channel is rendered, the image is a link to the site. (Note, in practice the image <title> and <link> should have the same value as the channel's <title> and <link>.
-	Link string `json:"link" validate:"required_without=URL,omitempty,url" xml:"link"`
+	Link string `json:"link" validate:"required_without=URL,omitempty,url" xml:"link,omitempty"`
 
 	// Title describes the image, it's used in the ALT attribute of the HTML <img> tag when the channel is rendered in HTML.
 	Title string `json:"title" validate:"required" xml:"title"`
