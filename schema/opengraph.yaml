@@ -1,0 +1,98 @@
+---
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Common Types
+  description: >
+    OpenAPI schema for Opengraph.
+
+    https://ogp.me/
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
+  license:
+    identifier: MIT
+components:
+  schemas:
+    Title:
+      description: >
+        is title of your object as it should appear within the graph, e.g., "The Rock".
+      type: string
+      x-oapi-codegen-extra-tags:
+        validate: 'required'
+    ObjectType:
+      description: >
+        is the type of your object, e.g., "video.movie". Depending on the type you specify, other properties may also be
+        required.
+      type: string
+      x-oapi-codegen-extra-tags:
+        validate: 'required'
+    Image:
+      description: >
+        is an image URL which should represent your object within the graph.
+      type: string
+      x-oapi-codegen-extra-tags:
+        validate: 'required,url'
+    URL:
+      description: >
+        is the canonical URL of your object that will be used as its permanent ID in the graph, e.g.,
+        "https://www.imdb.com/title/tt0117500/".
+      type: string
+      x-go-name: URL
+      x-oapi-codegen-extra-tags:
+        validate: 'required,url'
+    Audio:
+      description: >
+        is a URL to an audio file to accompany this object.
+      type: string
+      x-oapi-codegen-extra-tags:
+        validate: 'omitempty,url'
+    Video:
+      description: >
+        is a URL to a video file to accompany this object.
+      type: string
+      x-oapi-codegen-extra-tags:
+        validate: 'omitempty,url'
+    Description:
+      description: >
+        is a one to two sentence description of your object.
+      type: string
+    Locale:
+      description: >
+        is the locale these tags are marked up in. Of the format language_TERRITORY. Default is en_US.
+      type: string
+    SiteName:
+      description: >
+        is a value that when your object is part of a larger web site, the name which should be displayed for the
+        overall site.
+      type: string
+    OpenGraph:
+      description: >
+        is an object containing all opengraph metadata.
+      type: object
+      required:
+        - title
+        - object_type
+        - image
+        - url
+      properties:
+        title:
+          $ref: '#/components/schemas/Title'
+        object_type:
+          $ref: '#/components/schemas/ObjectType'
+        image:
+          $ref: '#/components/schemas/Image'
+        url:
+          $ref: '#/components/schemas/URL'
+        description:
+          $ref: '#/components/schemas/Description'
+        site_name:
+          $ref: '#/components/schemas/SiteName'
+        audio:
+          $ref: '#/components/schemas/Audio'
+        video:
+          $ref: '#/components/schemas/Video'
+        locale:
+          $ref: '#/components/schemas/Locale'
+      additionalProperties:
+        type: string
