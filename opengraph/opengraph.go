@@ -5,6 +5,7 @@ package opengraph
 
 import (
 	"encoding/xml"
+	"fmt"
 	"slices"
 	"strings"
 )
@@ -108,6 +109,34 @@ func (og *OpenGraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 
 	return nil
+}
+
+func (og *OpenGraph) String() string {
+	var str strings.Builder
+	fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:title", og.Title)
+	fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:url", og.URL)
+	fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:image", og.Image)
+	fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:type", og.ObjectType)
+	if og.Description != nil {
+		fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:description", *og.Description)
+	}
+	if og.SiteName != nil {
+		fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:site_name", *og.SiteName)
+	}
+	if og.Audio != nil {
+		fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:audio", *og.Audio)
+	}
+	if og.Video != nil {
+		fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:video", *og.Video)
+	}
+	if og.Locale != nil {
+		fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:locale", *og.Locale)
+	}
+	for key, value := range og.AdditionalProperties {
+		fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", key, value)
+	}
+
+	return str.String()
 }
 
 // extract assigns a parsed og: property to the appropriate struct field.
