@@ -130,7 +130,7 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 
 	sourceURL, err := url.Parse(feedURL)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrParseURL, err)
+		return nil, &ParseError{Code: http.StatusInternalServerError, err: fmt.Errorf("%w: %w", ErrParseURL, err)}
 	}
 
 	// Get the feed data.
@@ -139,15 +139,18 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		Get(sourceURL.String())
 	switch {
 	case resp.IsError():
-		return nil, HTTPError{Code: resp.StatusCode(), Message: resp.Status()}
+		return nil, ParseError{Code: resp.StatusCode(), err: errors.New(resp.Status())}
 	case err != nil:
-		return nil, HTTPError{Code: http.StatusInternalServerError, Message: err.Error()}
+		return nil, ParseError{Code: http.StatusInternalServerError, err: err}
 	}
 
 	// Retrieve the content header so we know what format we are dealing with.
 	content := resp.Header().Get("Content-Type")
 	if content == "" {
-		return nil, fmt.Errorf("%w: missing Content-Type header", ErrParseURL)
+		return nil, &ParseError{
+			Code: http.StatusUnprocessableEntity,
+			err:  fmt.Errorf("%w: missing Content-Type header", ErrParseURL),
+		}
 	}
 
 	// Try to parse the response body as a valid feed type.
@@ -157,13 +160,19 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		// RSS.
 		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
 		if err != nil {
-			return nil, fmt.Errorf("could not parse as rss: %w", err)
+			return nil, &ParseError{
+				Code: http.StatusUnprocessableEntity,
+				err:  fmt.Errorf("could not parse as rss: %w", err),
+			}
 		}
 	case isMimeType(content, types.MimeTypesAtom):
 		// Atom.
 		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
 		if err != nil {
-			return nil, fmt.Errorf("could not parse as atom: %w", err)
+			return nil, &ParseError{
+				Code: http.StatusUnprocessableEntity,
+				err:  fmt.Errorf("could not parse as atom: %w", err),
+			}
 		}
 	case isMimeType(content, types.MimeTypesIndeterminate):
 		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
@@ -171,21 +180,33 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		case bytes.Contains(resp.Body(), []byte("<feed")):
 			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
 			if err != nil && errors.Is(err, &validation.StructError{}) {
-				return nil, fmt.Errorf("could not parse as atom: %w", err)
+				return nil, &ParseError{
+					Code: http.StatusUnprocessableEntity,
+					err:  fmt.Errorf("could not parse as atom: %w", err),
+				}
 			}
 		case bytes.Contains(resp.Body(), []byte("<rss")):
 			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
 			if err != nil && errors.Is(err, &validation.StructError{}) {
-				return nil, fmt.Errorf("could not parse as rss: %w", err)
+				return nil, &ParseError{
+					Code: http.StatusUnprocessableEntity,
+					err:  fmt.Errorf("could not parse as rss: %w", err),
+				}
 			}
 		default:
-			return nil, fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)
+			return nil, &ParseError{
+				Code: http.StatusUnsupportedMediaType,
+				err:  fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content),
+			}
 		}
 	case isMimeType(content, types.MimeTypesJSONFeed):
 		// JSONFeed
 		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body(), options...)
 		if err != nil {
-			return nil, fmt.Errorf("could not parse as jsonfeed: %w", err)
+			return nil, &ParseError{
+				Code: http.StatusUnprocessableEntity,
+				err:  fmt.Errorf("could not parse as jsonfeed: %w", err),
+			}
 		}
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
@@ -193,15 +214,24 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		if newURL, err := DiscoverFeedURL(sourceURL, resp.Body()); err == nil && newURL != "" {
 			return NewFeedFromURL(ctx, newURL)
 		}
-		return nil, fmt.Errorf("could not find a feed URL on page: %s", feedURL)
+		return nil, &ParseError{
+			Code: http.StatusNotFound,
+			err:  fmt.Errorf("could not find a feed URL on page: %s", feedURL),
+		}
 	default:
 		// Cannot determine or unsupported content.
-		return nil, fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content)
+		return nil, &ParseError{
+			Code: http.StatusUnsupportedMediaType,
+			err:  fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content),
+		}
 	}
 
 	// Handle getting through the switch but still not parsing the content.
 	if feed == nil {
-		return nil, fmt.Errorf("%w: %w", ErrParseURL, err)
+		return nil, &ParseError{
+			Code: http.StatusInternalServerError,
+			err:  fmt.Errorf("%w: %w", ErrParseURL, err),
+		}
 	}
 
 	// If the source URL is not set, set it.
@@ -384,11 +414,13 @@ func parseSource[T any](source T) SourceType {
 	}
 }
 
-type HTTPError struct {
-	Code    int
-	Message string
+// ParseError is our custom error type that is returned when an error occurred during parsing. The Code will be an
+// equivalent http status code.
+type ParseError struct {
+	Code int
+	err  error
 }
 
-func (e HTTPError) Error() string {
-	return fmt.Sprintf("%d: %s", e.Code, e.Message)
+func (e ParseError) Error() string {
+	return e.err.Error()
 }
