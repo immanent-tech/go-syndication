@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 // New creates a new open graph object with the given required values and any additional values as options.
@@ -64,10 +66,17 @@ func WithAdditionalProperty(key, value string) Option {
 	}
 }
 
+func (og *OpenGraph) Valid() error {
+	if err := validation.ValidateStruct(og); err != nil {
+		return fmt.Errorf("invalid opengraph data: %w", err)
+	}
+	return nil
+}
+
 // UnmarshalXML implements xml.Unmarshaler.
 // It scans all <meta> elements anywhere in the document and populates
 // OGMeta fields from those whose property/name attribute starts with "og:".
-func (og *OpenGraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (og *OpenGraph) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 	if og.AdditionalProperties == nil {
 		og.AdditionalProperties = make(map[string]string)
 	}
