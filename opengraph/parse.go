@@ -70,6 +70,9 @@ func ParseURL(ctx context.Context, pageURL string, options ...ParseOption) (*Ope
 		if err := og.UnmarshalXML(dec, se); err != nil {
 			return nil, fmt.Errorf("unmarshal xml: %w", err)
 		}
+		if err := og.Valid(); err != nil {
+			return nil, fmt.Errorf("validate: %w", err)
+		}
 		return &og, nil
 	}
 }
