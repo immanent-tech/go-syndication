@@ -6,12 +6,13 @@ package opengraph
 import (
 	"bytes"
 	"context"
-	"encoding/xml"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/immanent-tech/go-syndication/client"
+	"golang.org/x/net/html"
 )
 
 type parseOptions struct {
@@ -62,32 +63,53 @@ func ParseBytes(data []byte, options ...ParseOption) (*OpenGraph, error) {
 }
 
 func parse(data []byte) (*OpenGraph, error) {
-	// Set up a reader to just read the head element.
-	headReader := client.NewHeadReader(bytes.NewReader(data), 256*1024)
+	htmlData, err := html.Parse(bytes.NewReader(data))
+	if err != nil {
+		return nil, fmt.Errorf("parse data: %w", err)
+	}
 
-	// Set up the xml decoder.
-	dec := xml.NewDecoder(headReader)
-	dec.Strict = false
-	dec.AutoClose = xml.HTMLAutoClose
-	dec.Entity = xml.HTMLEntity
+	og := &OpenGraph{
+		AdditionalProperties: make(map[string]string),
+	}
 
-	// Advance to the <head> element.
-	for {
-		tok, err := dec.Token()
-		if err != nil {
-			return nil, fmt.Errorf("decode xml: %w", err)
+	visitNode(htmlData, og)
+
+	return og, nil
+}
+
+// visitNode recursively walks the node tree, extracting og: meta tags.
+// Returns true to signal the caller to stop descending (entered <body>).
+func visitNode(n *html.Node, og *OpenGraph) (done bool) {
+	if n.Type == html.ElementNode {
+		switch n.Data {
+		case "body":
+			return true
+		case "meta":
+			extractMeta(n, og)
+			return false
 		}
-		se, ok := tok.(xml.StartElement)
-		if !ok {
-			continue
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if visitNode(c, og) {
+			return true
 		}
-		var og OpenGraph
-		if err := og.UnmarshalXML(dec, se); err != nil {
-			return nil, fmt.Errorf("unmarshal xml: %w", err)
+	}
+	return false
+}
+
+// extractMeta reads property/name and content attributes from a <meta> node.
+func extractMeta(n *html.Node, og *OpenGraph) {
+	var property, content string
+	for _, a := range n.Attr {
+		switch strings.ToLower(a.Key) {
+		case "property", "name":
+			property = strings.ToLower(a.Val)
+		case "content":
+			content = a.Val
 		}
-		if err := og.Valid(); err != nil {
-			return nil, fmt.Errorf("validate: %w", err)
-		}
-		return &og, nil
+	}
+	if strings.HasPrefix(property, "og:") {
+		og.set(property, content)
 	}
 }

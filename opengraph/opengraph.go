@@ -76,7 +76,7 @@ func (og *OpenGraph) Valid() error {
 // UnmarshalXML implements xml.Unmarshaler.
 // It scans all <meta> elements anywhere in the document and populates
 // OGMeta fields from those whose property/name attribute starts with "og:".
-func (og *OpenGraph) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
+func (og *OpenGraph) UnmarshalXML(d *xml.Decoder, se xml.StartElement) error {
 	if og.AdditionalProperties == nil {
 		og.AdditionalProperties = make(map[string]string)
 	}
@@ -84,37 +84,41 @@ func (og *OpenGraph) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 	for {
 		tok, err := d.Token()
 		if err != nil {
-			// io.EOF is expected at end of document
 			break
 		}
 
-		se, ok := tok.(xml.StartElement)
-		if !ok {
-			continue
-		}
+		switch t := tok.(type) {
+		case xml.EndElement:
+			// </head> — we're done; don't consume any further tokens.
+			if strings.EqualFold(t.Name.Local, "head") {
+				return nil
+			}
 
-		if !strings.EqualFold(se.Name.Local, "meta") {
-			continue
-		}
+		case xml.StartElement:
+			if !strings.EqualFold(t.Name.Local, "meta") {
+				// Skip non-meta elements and all their children.
+				if err := d.Skip(); err != nil {
+					return err
+				}
+				continue
+			}
 
-		var m metaTag
-		// Decode the element (handles self-closing tags too).
-		if err := d.DecodeElement(&m, &se); err != nil {
-			continue
-		}
+			var m metaTag
+			if err := d.DecodeElement(&m, &t); err != nil {
+				continue
+			}
 
-		// Use whichever attribute is set: property takes precedence over name.
-		key := m.Property
-		if key == "" {
-			key = m.Name
-		}
-		key = strings.ToLower(strings.TrimSpace(key))
+			// property takes precedence over name.
+			key := m.Property
+			if key == "" {
+				key = m.Name
+			}
+			key = strings.ToLower(strings.TrimSpace(key))
 
-		if !strings.HasPrefix(key, "og:") {
-			continue
+			if strings.HasPrefix(key, "og:") {
+				og.set(key, m.Content)
+			}
 		}
-
-		og.extract(key, m.Content)
 	}
 
 	return nil
@@ -149,7 +153,7 @@ func (og *OpenGraph) String() string {
 }
 
 // extract assigns a parsed og: property to the appropriate struct field.
-func (og *OpenGraph) extract(property, content string) {
+func (og *OpenGraph) set(property, content string) {
 	switch property {
 	case "og:title":
 		og.Title = content
