@@ -14,9 +14,7 @@ import (
 	"net/url"
 	"slices"
 	"strings"
-	"time"
 
-	"codeberg.org/readeck/go-readability/v2"
 	"github.com/go-resty/resty/v2"
 	"golang.org/x/net/html"
 	htmlatom "golang.org/x/net/html/atom"
@@ -240,41 +238,6 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 	}
 
 	return feed, nil
-}
-
-// DiscoverPageImage attempts to find a suitable image to use for a page.
-func DiscoverPageImage(pageURL string, timeout time.Duration) (*types.ImageInfo, error) {
-	// Parse feed string as URL.
-	sourceURL, err := url.Parse(pageURL)
-	if err != nil {
-		return nil, fmt.Errorf("discover page image: failed to parse url %s: %w", pageURL, err)
-	}
-	// Parse URL and extract readability content.
-	page, err := readability.FromURL(sourceURL.String(), timeout)
-	if err != nil {
-		return nil, fmt.Errorf("discover page image: failed to parse url %s: %w", pageURL, err)
-	}
-	// Determine best image from readability content.
-	var img string
-	switch {
-	case page.ImageURL() != "":
-		img = page.ImageURL()
-	case page.Favicon() != "":
-		img = page.Favicon()
-	default:
-		return nil, fmt.Errorf("discover page image: %s: %d", pageURL, http.StatusNotFound)
-	}
-	// Parse the image string as a URL.
-	imgURL, err := url.Parse(img)
-	if err != nil {
-		return nil, fmt.Errorf("discover page image: failed to parse image url %s: %w", img, err)
-	}
-	// If the image URL is not absolute, assume it is based on the feed base URL and generate a new URL as appropriate.
-	if !imgURL.IsAbs() {
-		sourceURL.Path = imgURL.String()
-		return &types.ImageInfo{URL: sourceURL.String()}, nil
-	}
-	return &types.ImageInfo{URL: imgURL.String()}, nil
 }
 
 // DiscoverFeedURL attempts to find a feed URL within a HTML page.
