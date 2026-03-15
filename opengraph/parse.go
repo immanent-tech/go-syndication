@@ -4,11 +4,11 @@
 package opengraph
 
 import (
+	"bytes"
 	"context"
 	"encoding/xml"
 	"fmt"
 	"slices"
-	"strings"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/immanent-tech/go-syndication/client"
@@ -47,8 +47,23 @@ func ParseURL(ctx context.Context, pageURL string, options ...ParseOption) (*Ope
 		return nil, fmt.Errorf("%s: %s", resp.Status(), resp.Error())
 	}
 
+	return parse(resp.Body())
+}
+
+// ParseBytes will parse the given byte array and return any Open Graph metadata found within. Use with existing HTML
+// page data.
+func ParseBytes(data []byte, options ...ParseOption) (*OpenGraph, error) {
+	opts := &parseOptions{}
+	for option := range slices.Values(options) {
+		option(opts)
+	}
+
+	return parse(data)
+}
+
+func parse(data []byte) (*OpenGraph, error) {
 	// Set up a reader to just read the head element.
-	headReader := client.NewHeadReader(strings.NewReader(string(resp.Body())), 256*1024)
+	headReader := client.NewHeadReader(bytes.NewReader(data), 256*1024)
 
 	// Set up the xml decoder.
 	dec := xml.NewDecoder(headReader)
