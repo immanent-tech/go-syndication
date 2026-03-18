@@ -184,7 +184,8 @@ func (i *Item) GetCategories() []string {
 	for category := range slices.Values(i.Categories) {
 		categories = append(categories, category.String())
 	}
-	return categories
+	slices.Sort(categories)
+	return slices.Compact(categories)
 }
 
 // GetImage retrieves the image (if any) for the Item. The image is returned as a types.ImageInfo object. There are many

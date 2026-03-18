@@ -81,7 +81,8 @@ func (i *Item) GetLanguage() string {
 
 // GetCategories retrieves the categories (if any) of the Item.
 func (i *Item) GetCategories() []string {
-	return i.Tags
+	slices.Sort(i.Tags)
+	return slices.Compact(i.Tags)
 }
 
 // GetImage retrieves the image (if any) for the Item.
