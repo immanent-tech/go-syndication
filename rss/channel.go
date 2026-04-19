@@ -84,27 +84,27 @@ func (c *Channel) GetContributors() []string {
 
 // GetRights retrieves the rights (copyright) of the Channel. This will be the first value found from either <dc:rights>
 // or <copyright> elements.
-func (c *Channel) GetRights() string {
+func (c *Channel) GetRights() *string {
 	switch {
 	case c.DCRights != nil:
-		return c.DCRights.String()
+		return new(c.DCRights.String())
 	case c.Copyright.String() != "":
-		return c.Copyright.String()
+		return new(c.Copyright.String())
 	default:
-		return ""
+		return nil
 	}
 }
 
 // GetLanguage retrieves the language of the Channel. This will be the first value found from either <dc:language>
 // or <lang> elements.
-func (c *Channel) GetLanguage() string {
+func (c *Channel) GetLanguage() *string {
 	switch {
 	case c.DCLanguage != nil:
-		return *c.DCLanguage
+		return c.DCLanguage
 	case c.Language.String() != "":
-		return c.Language.String()
+		return new(c.Language.String())
 	default:
-		return ""
+		return nil
 	}
 }
 
@@ -164,25 +164,25 @@ func (c *Channel) SetImage(image *types.ImageInfo) {
 
 // GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (c *Channel) GetPublishedDate() time.Time {
+func (c *Channel) GetPublishedDate() *time.Time {
 	if c.PubDate != nil {
-		return c.PubDate.Time
+		return new(c.PubDate.Time)
 	}
-	return time.Unix(0, 0)
+	return nil
 }
 
 // GetUpdatedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (c *Channel) GetUpdatedDate() time.Time {
+func (c *Channel) GetUpdatedDate() *time.Time {
 	if c.LastBuildDate != nil {
-		return c.LastBuildDate.Time
+		return new(c.LastBuildDate.Time)
 	}
 	if len(c.Items) > 0 {
 		slices.SortFunc(c.Items, func(a, b Item) int {
-			return a.GetUpdatedDate().Compare(b.GetUpdatedDate())
+			return a.GetPublishedDate().Compare(*b.GetPublishedDate())
 		})
 		slices.Reverse(c.Items)
-		return c.Items[0].GetUpdatedDate()
+		return c.Items[0].GetPublishedDate()
 	}
 	return c.GetPublishedDate()
 }
@@ -211,8 +211,12 @@ func (c *Channel) GetUpdateInterval() time.Duration {
 		var intervals []time.Duration
 		for idx := range items {
 			if idx < len(items)-1 {
-				if items[idx].GetUpdatedDate() != types.UnixEpoch && items[idx+1].GetUpdatedDate() != types.UnixEpoch {
-					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(items[idx+1].GetUpdatedDate()).Abs())
+				if items[idx].GetPublishedDate() != nil &&
+					items[idx+1].GetPublishedDate() != nil {
+					intervals = append(
+						intervals,
+						items[idx].GetPublishedDate().Sub(*items[idx+1].GetPublishedDate()).Abs(),
+					)
 				}
 			}
 		}

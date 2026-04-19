@@ -10,8 +10,8 @@ type ObjectMetadata interface {
 	GetTitle() string
 	GetDescription() string
 	GetLink() string
-	GetPublishedDate() time.Time
-	GetUpdatedDate() time.Time
+	GetPublishedDate() *time.Time
+	GetUpdatedDate() *time.Time
 }
 
 // HasID contains methods for retrieving an Objects unique ID.
@@ -34,12 +34,12 @@ type MediaEditable interface {
 type HasAttribution interface {
 	GetAuthors() []string
 	GetContributors() []string
-	GetRights() string
+	GetRights() *string
 }
 
 // HasContent contains methods for retrieving any embedded content of the Object.
 type HasContent interface {
-	GetContent() string
+	GetContent() *string
 }
 
 // HasTaxonomy contains methods for retrieving categorization and taxonomy values of an Object.
@@ -49,7 +49,7 @@ type HasTaxonomy interface {
 
 // HasLocalization contains methods for retrieving localization information of an Object.
 type HasLocalization interface {
-	GetLanguage() string
+	GetLanguage() *string
 }
 
 // Source contains methods for retrieving or setting the source of the Object.

@@ -69,16 +69,16 @@ func (f *Feed) GetContributors() []string {
 }
 
 // GetRights is a no-op for a Feed.
-func (f *Feed) GetRights() string {
-	return ""
+func (f *Feed) GetRights() *string {
+	return nil
 }
 
 // GetLanguage retrieves the language (if any) of the Feed.
-func (f *Feed) GetLanguage() string {
+func (f *Feed) GetLanguage() *string {
 	if f.Language != nil {
-		return *f.Language
+		return f.Language
 	}
-	return ""
+	return nil
 }
 
 // GetCategories is a no-op for a Feed.
@@ -112,26 +112,32 @@ func (f *Feed) SetImage(image *types.ImageInfo) {
 
 // GetPublishedDate is tricky. We try to ascertain a published date from the newest published item. Otherwise this will
 // be unix epoch.
-func (f *Feed) GetPublishedDate() time.Time {
+func (f *Feed) GetPublishedDate() *time.Time {
 	published := time.Unix(0, 0)
 	for item := range slices.Values(f.Items) {
 		if item.GetPublishedDate().After(published) {
-			published = item.GetPublishedDate()
+			published = *item.GetPublishedDate()
 		}
 	}
-	return published
+	if !published.IsZero() {
+		return &published
+	}
+	return nil
 }
 
 // GetUpdatedDate is tricky. We try to ascertain a updated date from the newest modified item. Otherwise this will
 // be unix epoch.
-func (f *Feed) GetUpdatedDate() time.Time {
+func (f *Feed) GetUpdatedDate() *time.Time {
 	modified := time.Unix(0, 0)
 	for item := range slices.Values(f.Items) {
 		if item.GetUpdatedDate().After(modified) {
-			modified = item.GetUpdatedDate()
+			modified = *item.GetUpdatedDate()
 		}
 	}
-	return modified
+	if !modified.IsZero() {
+		return &modified
+	}
+	return nil
 }
 
 func (f *Feed) GetUpdateInterval() time.Duration {
@@ -139,8 +145,8 @@ func (f *Feed) GetUpdateInterval() time.Duration {
 		var intervals []time.Duration
 		for idx := range items {
 			if idx < len(items)-1 {
-				if items[idx].GetUpdatedDate() != types.UnixEpoch && items[idx+1].GetUpdatedDate() != types.UnixEpoch {
-					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(items[idx+1].GetUpdatedDate()).Abs())
+				if items[idx].GetUpdatedDate() != nil && items[idx+1].GetUpdatedDate() != nil {
+					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(*items[idx+1].GetUpdatedDate()).Abs())
 				}
 			}
 		}

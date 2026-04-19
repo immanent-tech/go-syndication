@@ -67,16 +67,13 @@ func (i *Item) GetContributors() []string {
 }
 
 // GetRights is a no-op for JSONFeed items.
-func (i *Item) GetRights() string {
-	return ""
+func (i *Item) GetRights() *string {
+	return nil
 }
 
 // GetLanguage retrieves the language (if any) of the item.
-func (i *Item) GetLanguage() string {
-	if i.Language != nil {
-		return *i.Language
-	}
-	return ""
+func (i *Item) GetLanguage() *string {
+	return i.Language
 }
 
 // GetCategories retrieves the categories (if any) of the Item.
@@ -96,24 +93,24 @@ func (i *Item) GetImage() *types.ImageInfo {
 }
 
 // GetPublishedDate returns the published date of the Item.
-func (i *Item) GetPublishedDate() time.Time {
+func (i *Item) GetPublishedDate() *time.Time {
 	if i.DatePublished != nil {
-		return i.DatePublished.Time
+		return new(i.DatePublished.Time)
 	}
-	return time.Unix(0, 0)
+	return nil
 }
 
 // GetUpdatedDate returns the updated (modified) date of the Item.
-func (i *Item) GetUpdatedDate() time.Time {
+func (i *Item) GetUpdatedDate() *time.Time {
 	if i.DateModified != nil {
-		return i.DateModified.Time
+		return new(i.DateModified.Time)
 	}
-	return time.Unix(0, 0)
+	return nil
 }
 
 // GetContent returns the content of the Item (if any). This will be either the html or text content, whichever is found
 // first.
-func (i *Item) GetContent() string {
+func (i *Item) GetContent() *string {
 	var content string
 	switch {
 	case i.ContentHTML != nil:
@@ -122,7 +119,7 @@ func (i *Item) GetContent() string {
 		content = sanitization.SanitizeString(*i.ContentText)
 	}
 	if content != "" {
-		return content
+		return &content
 	}
-	return ""
+	return nil
 }

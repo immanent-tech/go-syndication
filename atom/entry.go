@@ -94,27 +94,27 @@ func (e *Entry) GetContributors() []string {
 
 // GetRights retrieves the rights (copyright) of the Entry. This will be the first value found from either <dc:rights>
 // or <rights> elements.
-func (e *Entry) GetRights() string {
+func (e *Entry) GetRights() *string {
 	switch {
 	case e.DCRights != nil:
-		return e.DCRights.String()
+		return new(e.DCRights.String())
 	case e.Rights != nil && e.Rights.Value != "":
-		return e.Rights.Value
+		return &e.Rights.Value
 	default:
-		return ""
+		return nil
 	}
 }
 
 // GetLanguage retrieves the language of the Entry. This will be the first value found from either <dc:language>
 // or <lang> elements.
-func (e *Entry) GetLanguage() string {
+func (e *Entry) GetLanguage() *string {
 	switch {
 	case e.DCLanguage != nil:
-		return *e.DCLanguage
+		return e.DCLanguage
 	case e.Lang != nil:
-		return *e.Lang
+		return e.Lang
 	default:
-		return ""
+		return nil
 	}
 }
 
@@ -156,24 +156,24 @@ func (e *Entry) GetMediaGroup() *media.MediaGroup {
 
 // GetPublishedDate returns the <published> of the Entry (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (e *Entry) GetPublishedDate() time.Time {
+func (e *Entry) GetPublishedDate() *time.Time {
 	if e.Published != nil && !e.Published.Value.IsZero() {
-		return e.Published.Value.Time
+		return new(e.Published.Value.Time)
 	}
-	return time.Unix(0, 0)
+	return nil
 }
 
 // GetUpdatedDate returns the <updated> of the Entry.
-func (e *Entry) GetUpdatedDate() time.Time {
+func (e *Entry) GetUpdatedDate() *time.Time {
 	if !e.Updated.Value.IsZero() {
-		return e.Updated.Value.Time
+		return new(e.Updated.Value.Time)
 	}
-	return time.Unix(0, 0)
+	return nil
 }
 
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
-func (e *Entry) GetContent() string {
+func (e *Entry) GetContent() *string {
 	switch {
 	case e.Content != nil:
 		// Has a Content value.
@@ -181,9 +181,9 @@ func (e *Entry) GetContent() string {
 		case e.Content.Value != nil && *e.Content.Value != "":
 			switch {
 			case e.Content.Type == nil:
-				return ""
+				return nil
 			case *e.Content.Type == "text":
-				return *e.Content.Value
+				return e.Content.Value
 			case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
 				// Parse the value.
 				doc, err := html.Parse(strings.NewReader(*e.Content.Value))
@@ -191,7 +191,7 @@ func (e *Entry) GetContent() string {
 					slog.Error("Unable to parse content.",
 						slog.Any("error", err),
 					)
-					return ""
+					return nil
 				}
 				// Write out.
 				var out strings.Builder
@@ -200,15 +200,15 @@ func (e *Entry) GetContent() string {
 					slog.Error("Unable to render content.",
 						slog.Any("error", err),
 					)
-					return ""
+					return nil
 				}
-				return out.String()
+				return new(out.String())
 			}
 		case e.Content.Source != nil && *e.Content.Source != "":
-			return *e.Content.Source
+			return e.Content.Source
 		}
 	}
-	return ""
+	return nil
 }
 
 // Validate applies custom validation to an item.

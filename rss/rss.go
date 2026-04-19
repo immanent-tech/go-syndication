@@ -136,11 +136,11 @@ func (r *RSS) GetLink() string {
 	return r.Channel.GetLink()
 }
 
-func (r *RSS) GetUpdatedDate() time.Time {
+func (r *RSS) GetUpdatedDate() *time.Time {
 	return r.Channel.GetUpdatedDate()
 }
 
-func (r *RSS) GetPublishedDate() time.Time {
+func (r *RSS) GetPublishedDate() *time.Time {
 	return r.Channel.GetPublishedDate()
 }
 
@@ -156,11 +156,11 @@ func (r *RSS) GetContributors() []string {
 	return r.Channel.GetContributors()
 }
 
-func (r *RSS) GetRights() string {
+func (r *RSS) GetRights() *string {
 	return r.Channel.GetRights()
 }
 
-func (r *RSS) GetLanguage() string {
+func (r *RSS) GetLanguage() *string {
 	return r.Channel.GetLanguage()
 }
 

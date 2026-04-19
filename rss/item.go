@@ -160,21 +160,21 @@ func (i *Item) GetContributors() []string {
 }
 
 // GetRights retrieves the rights (copyright) of the Channel. This will be the value of <dc:rights>, if found.
-func (i *Item) GetRights() string {
+func (i *Item) GetRights() *string {
 	if i.DCRights != nil {
-		return i.DCRights.String()
+		return new(i.DCRights.String())
 	}
-	return ""
+	return nil
 }
 
 // GetLanguage retrieves the language of the Item. This will be the value found from the <dc:language> element, if
 // present.
-func (i *Item) GetLanguage() string {
+func (i *Item) GetLanguage() *string {
 	switch {
 	case i.DCLanguage != nil:
-		return *i.DCLanguage
+		return i.DCLanguage
 	default:
-		return ""
+		return nil
 	}
 }
 
@@ -239,23 +239,23 @@ func (i *Item) GetMediaGroup() *media.MediaGroup {
 
 // GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (i *Item) GetPublishedDate() time.Time {
+func (i *Item) GetPublishedDate() *time.Time {
 	if i.PubDate != nil {
-		return i.PubDate.Time
+		return &i.PubDate.Time
 	}
-	return time.Unix(0, 0)
+	return nil
 }
 
 // GetUpdatedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (i *Item) GetUpdatedDate() time.Time {
-	return i.GetPublishedDate()
+func (i *Item) GetUpdatedDate() *time.Time {
+	return nil
 }
 
 // GetContent returns the content of the Item (if any). This will be taken from any <content:encoded> element.
-func (i *Item) GetContent() string {
+func (i *Item) GetContent() *string {
 	if i.ContentEncoded == nil || i.ContentEncoded.String() == "" {
-		return ""
+		return nil
 	}
 	// Parse the value.
 	doc, err := html.Parse(strings.NewReader(i.ContentEncoded.String()))
@@ -263,7 +263,7 @@ func (i *Item) GetContent() string {
 		slog.Error("Unable to parse content:encoded.",
 			slog.Any("error", err),
 		)
-		return ""
+		return nil
 	}
 	// Write out.
 	var out strings.Builder
@@ -272,9 +272,9 @@ func (i *Item) GetContent() string {
 		slog.Error("Unable to render content:encoded.",
 			slog.Any("error", err),
 		)
-		return ""
+		return nil
 	}
-	return out.String()
+	return new(out.String())
 }
 
 // Validate applies custom validation to an item.
