@@ -211,8 +211,7 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		if newURL, err := DiscoverFeedURL(
 			sourceURL,
 			resp.Body(),
-		); err == nil && newURL != "" &&
-			newURL != sourceURL.String() {
+		); err == nil && newURL != "" && newURL != sourceURL.String() {
 			return NewFeedFromURL(ctx, newURL)
 		}
 		return nil, &ParseError{
@@ -322,12 +321,14 @@ func DiscoverFeedURL(sourceURL *url.URL, content []byte) (string, error) {
 	// Check whether the URL is absolute.
 	if !feedURL.IsAbs() {
 		// Try to create an absolute URL for the feed.
-		fullPath, err := url.JoinPath("/", feedURL.Path)
+		feedURL, err = url.Parse(sourceURL.String())
 		if err != nil {
 			return "", fmt.Errorf("discover feed url: %w", err)
 		}
-		sourceURL.Path = fullPath
-		return sourceURL.String(), nil
+		feedURL.Path, err = url.JoinPath("/", foundURL)
+		if err != nil {
+			return "", fmt.Errorf("discover feed url: %w", err)
+		}
 	}
 	return feedURL.String(), nil
 }
