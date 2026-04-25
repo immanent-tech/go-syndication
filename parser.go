@@ -17,7 +17,6 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"golang.org/x/net/html"
-	htmlatom "golang.org/x/net/html/atom"
 
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/client"
@@ -209,7 +208,11 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 	case isMimeType(content, types.MimeTypesHTML):
 		// URL points to a HTML page, not a feed source.
 		// Try to find a feed link on the page and then parse that URL.
-		if newURL, err := DiscoverFeedURL(sourceURL, resp.Body()); err == nil && newURL != "" {
+		if newURL, err := DiscoverFeedURL(
+			sourceURL,
+			resp.Body(),
+		); err == nil && newURL != "" &&
+			newURL != sourceURL.String() {
 			return NewFeedFromURL(ctx, newURL)
 		}
 		return nil, &ParseError{
@@ -246,113 +249,87 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 // element with rel="alternate" and type="application/rss+xml". Secondly, check for a link element with a URL that ends
 // with feed, rss or atom, which would indicate a feed URL.
 //
-//nolint:gocognit,funlen
+//nolint:gocognit
 func DiscoverFeedURL(sourceURL *url.URL, content []byte) (string, error) {
-	page := html.NewTokenizer(bytes.NewReader(content))
-	for {
-		tt := page.Next()
-		var feedURL *url.URL
-		switch tt { //nolint:exhaustive // we don't want to check evey token.
-		case html.ErrorToken:
-			return "", fmt.Errorf("discover feed url: %w", page.Err())
-		case html.SelfClosingTagToken:
-			tkn := page.Token()
-			if tkn.DataAtom != htmlatom.Link {
-				continue
-			}
-			var found bool
-			// Canonical link with appropriate attributes.
-			if slices.ContainsFunc(tkn.Attr,
-				func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" }) &&
-				slices.ContainsFunc(
-					tkn.Attr,
-					func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) },
-				) {
-				found = true
-			}
-			// Link ends in feed type...
-			if slices.ContainsFunc(tkn.Attr,
-				func(a html.Attribute) bool {
-					if a.Key == "href" && slices.Contains([]string{"feed", "rss", "atom"}, a.Val) {
-						return true
-					}
-					return false
-				}) {
-				found = true
-			}
-			// Dont' continue if no feed URL found.
-			if !found {
-				continue
-			}
-			idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool {
-				return a.Key == "href"
-			})
-			if idx == 0 {
-				continue
-			}
-			var err error
-			feedURL, err = url.Parse(tkn.Attr[idx].Val)
-			if err != nil {
-				return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
-			}
-		case html.StartTagToken:
-			tkn := page.Token()
-			switch tkn.Data {
-			case "link":
-				// For a <link></link> look for the canonical link attributes.
-				if slices.ContainsFunc(tkn.Attr,
-					func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" }) &&
-					slices.ContainsFunc(
-						tkn.Attr,
-						func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) },
-					) {
-					// Get the link.
-					idx := slices.IndexFunc(tkn.Attr, func(a html.Attribute) bool { return a.Key == "href" })
-					if idx == -1 {
-						continue
-					}
-					var err error
-					feedURL, err = url.Parse(tkn.Attr[idx].Val)
-					if err != nil {
-						return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
-					}
-				}
-			case "a":
-				// For a <a></a> look for a well-known feed URL pattern.
-				if slices.ContainsFunc(tkn.Attr,
-					func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") }) {
-					// Get the link.
-					idx := slices.IndexFunc(
-						tkn.Attr,
-						func(a html.Attribute) bool { return a.Key == "href" && strings.HasSuffix(a.Val, "feed") },
-					)
-					if idx == -1 {
-						continue
-					}
-					var err error
-					feedURL, err = url.Parse(tkn.Attr[idx].Val)
-					if err != nil {
-						return tkn.Attr[idx].Val, fmt.Errorf("discover feed url: %w", err)
-					}
-				}
-			}
-		}
-		// Continue searching tags if we don't yet have a feed URL.
-		if feedURL == nil {
-			continue
-		}
-		// Check whether the URL is absolute.
-		if !feedURL.IsAbs() {
-			// Try to create an absolute URL for the feed.
-			fullPath, err := url.JoinPath("/", feedURL.Path)
-			if err != nil {
-				return "", fmt.Errorf("discover feed url: %w", err)
-			}
-			sourceURL.Path = fullPath
-			return sourceURL.String(), nil
-		}
-		return feedURL.String(), nil
+	page, err := html.Parse(bytes.NewReader(content))
+	if err != nil {
+		return "", fmt.Errorf("parse html: %w", err)
 	}
+
+	findCanonicalLinkAttribute := func(elem *html.Node) string {
+		// Needs to have attributes rel="alternate".
+		if !slices.ContainsFunc(
+			elem.Attr,
+			func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" },
+		) {
+			return ""
+		}
+		// Needs to have type="{feedMimeType}".
+		if !slices.ContainsFunc(
+			elem.Attr,
+			func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) },
+		) {
+			return ""
+		}
+		// Return the href attribute value.
+		for a := range slices.Values(elem.Attr) {
+			if a.Key == "href" {
+				return a.Val
+			}
+		}
+		return ""
+	}
+
+	findCommonFeedURL := func(elem *html.Node) string {
+		for a := range slices.Values(elem.Attr) {
+			// href attribute should contain a well-known substring.
+			if a.Key == "href" &&
+				(strings.Contains(a.Val, "feed") || strings.Contains(a.Val, "rss") || strings.Contains(a.Val, "atom")) {
+				return a.Val
+			}
+		}
+		return ""
+	}
+
+	var findURL func(*html.Node) string
+	findURL = func(n *html.Node) string {
+		if n.Type == html.ElementNode && (n.Data == "a" || n.Data == "link") {
+			if foundURL := findCanonicalLinkAttribute(n); foundURL != "" {
+				return foundURL
+			}
+			if foundURL := findCommonFeedURL(n); foundURL != "" {
+				return foundURL
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			if foundURL := findURL(c); foundURL != "" {
+				return foundURL
+			}
+		}
+		return ""
+	}
+
+	foundURL := findURL(page)
+	if foundURL == "" {
+		return "", fmt.Errorf("%w: no url found", ErrParseURL)
+	}
+
+	// Parse the discovered URL.
+	feedURL, err := url.Parse(foundURL)
+	if err != nil {
+		return foundURL, fmt.Errorf("discover feed url: %w", err)
+	}
+	// Check whether the URL is absolute.
+	if !feedURL.IsAbs() {
+		// Try to create an absolute URL for the feed.
+		fullPath, err := url.JoinPath("/", feedURL.Path)
+		if err != nil {
+			return "", fmt.Errorf("discover feed url: %w", err)
+		}
+		sourceURL.Path = fullPath
+		return sourceURL.String(), nil
+	}
+	return feedURL.String(), nil
 }
 
 // isMimeType returns a boolean indicating whether the Content Type header string is included in the given mimeType
