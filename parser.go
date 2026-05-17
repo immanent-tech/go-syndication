@@ -136,9 +136,9 @@ func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption)
 		Get(sourceURL.String())
 	switch {
 	case resp.IsError():
-		return nil, ParseError{Code: resp.StatusCode(), err: errors.New(resp.Status())}
+		return nil, &ParseError{Code: resp.StatusCode(), err: errors.New(resp.Status())}
 	case err != nil:
-		return nil, ParseError{Code: http.StatusInternalServerError, err: err}
+		return nil, &ParseError{Code: resp.StatusCode(), err: err}
 	}
 
 	// Retrieve the content header so we know what format we are dealing with.
