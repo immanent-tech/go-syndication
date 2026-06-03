@@ -62,7 +62,9 @@ func WithLocale(locale Locale) Option {
 
 func WithAdditionalProperty(key, value string) Option {
 	return func(og *OpenGraph) {
-		og.Set(key, value)
+		if value != "" {
+			og.Set(key, value)
+		}
 	}
 }
 
