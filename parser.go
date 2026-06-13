@@ -4,26 +4,14 @@
 package feeds
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"mime"
-	"net/http"
-	"net/url"
-	"slices"
-	"strings"
-
-	"github.com/go-resty/resty/v2"
-	"golang.org/x/net/html"
 
 	"github.com/immanent-tech/go-syndication/atom"
-	"github.com/immanent-tech/go-syndication/client"
 	"github.com/immanent-tech/go-syndication/jsonfeed"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
-	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var (
@@ -35,36 +23,8 @@ var (
 	ErrUnsupportedFormat = errors.New("unsupported feed format")
 )
 
-type ParserOptions struct {
-	validate bool
-	client   *resty.Client
-}
-
-type ParseOption func(*ParserOptions)
-
-// PerformValidation option controls whether validation will be performed after the feed data has been parsed.
-// This allows a feed that doesn't strictly pass its format specification to be returned.
-func PerformValidation(value bool) ParseOption {
-	return func(po *ParserOptions) {
-		po.validate = value
-	}
-}
-
-// WithClient option allows using a custom client for any network requests to fetch feed resources.
-func WithClient(client *resty.Client) ParseOption {
-	return func(po *ParserOptions) {
-		po.client = client
-	}
-}
-
 // NewFeedFromBytes will create a new Feed of the given type from the given byte array.
-func NewFeedFromBytes[T any](data []byte, options ...ParseOption) (*Feed, error) {
-	// Parse and set options.
-	opts := &ParserOptions{}
-	for option := range slices.Values(options) {
-		option(opts)
-	}
-
+func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
 	var (
 		original T
 		feed     *Feed
@@ -88,259 +48,18 @@ func NewFeedFromBytes[T any](data []byte, options ...ParseOption) (*Feed, error)
 		FeedSource: source,
 	}
 	feed.SourceType = parseSource(original)
-	if opts.validate {
-		if err = feed.Validate(); err != nil {
-			return nil, fmt.Errorf("%w: feed is not valid: %w", ErrParseBytes, err)
-		}
-	}
 
 	return feed, nil
 }
 
 // NewFeedFromSource will create a new Feed from the given source that satisfies the FeedSource interface. This can be
 // used to create a Feed from an existing rss.RSS or atom.Feed object.
-func NewFeedFromSource[T types.FeedSource](source T, options ...ParseOption) *Feed {
-	// Parse and set options.
-	opts := &ParserOptions{}
-	for option := range slices.Values(options) {
-		option(opts)
-	}
-
+func NewFeedFromSource[T types.FeedSource](source T) *Feed {
 	feed := &Feed{
 		FeedSource: source,
 	}
 	feed.SourceType = parseSource(source)
 	return feed
-}
-
-// NewFeedFromURL attempts to parse the given URL as a feed source.
-func NewFeedFromURL(ctx context.Context, feedURL string, options ...ParseOption) (*Feed, error) {
-	// Parse and set options.
-	opts := &ParserOptions{}
-	for option := range slices.Values(options) {
-		option(opts)
-	}
-	// Use the default client if one is not specified.
-	if opts.client == nil {
-		opts.client = client.LoadHTTPClient()
-	}
-
-	sourceURL, err := url.Parse(feedURL)
-	if err != nil {
-		return nil, &ParseError{Code: http.StatusInternalServerError, err: fmt.Errorf("%w: %w", ErrParseURL, err)}
-	}
-
-	// Get the feed data.
-	resp, err := opts.client.R().
-		SetContext(ctx).
-		Get(sourceURL.String())
-	switch {
-	case resp.IsError():
-		return nil, &ParseError{Code: resp.StatusCode(), err: errors.New(resp.Status())}
-	case err != nil:
-		return nil, &ParseError{Code: resp.StatusCode(), err: err}
-	}
-
-	// Retrieve the content header so we know what format we are dealing with.
-	content := resp.Header().Get("Content-Type")
-	if content == "" {
-		return nil, &ParseError{
-			Code: http.StatusUnprocessableEntity,
-			err:  fmt.Errorf("%w: missing Content-Type header", ErrParseURL),
-		}
-	}
-
-	// Try to parse the response body as a valid feed type.
-	var feed *Feed
-	switch {
-	case isMimeType(content, types.MimeTypesRSS):
-		// RSS.
-		feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
-		if err != nil {
-			return nil, &ParseError{
-				Code: http.StatusUnprocessableEntity,
-				err:  fmt.Errorf("could not parse as rss: %w", err),
-			}
-		}
-	case isMimeType(content, types.MimeTypesAtom):
-		// Atom.
-		feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
-		if err != nil {
-			return nil, &ParseError{
-				Code: http.StatusUnprocessableEntity,
-				err:  fmt.Errorf("could not parse as atom: %w", err),
-			}
-		}
-	case isMimeType(content, types.MimeTypesIndeterminate):
-		// Likely a feed but mimetype is ambiguous. Try to find a relevant starting type for the specific type.
-		switch {
-		case bytes.Contains(resp.Body(), []byte("<feed")):
-			feed, err = NewFeedFromBytes[*atom.Feed](resp.Body(), options...)
-			if err != nil && errors.Is(err, &validation.StructError{}) {
-				return nil, &ParseError{
-					Code: http.StatusUnprocessableEntity,
-					err:  fmt.Errorf("could not parse as atom: %w", err),
-				}
-			}
-		case bytes.Contains(resp.Body(), []byte("<rss")):
-			feed, err = NewFeedFromBytes[*rss.RSS](resp.Body(), options...)
-			if err != nil && errors.Is(err, &validation.StructError{}) {
-				return nil, &ParseError{
-					Code: http.StatusUnprocessableEntity,
-					err:  fmt.Errorf("could not parse as rss: %w", err),
-				}
-			}
-		default:
-			return nil, &ParseError{
-				Code: http.StatusUnsupportedMediaType,
-				err:  fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content),
-			}
-		}
-	case isMimeType(content, types.MimeTypesJSONFeed):
-		// JSONFeed
-		feed, err = NewFeedFromBytes[*jsonfeed.Feed](resp.Body(), options...)
-		if err != nil {
-			return nil, &ParseError{
-				Code: http.StatusUnprocessableEntity,
-				err:  fmt.Errorf("could not parse as jsonfeed: %w", err),
-			}
-		}
-	case isMimeType(content, types.MimeTypesHTML):
-		// URL points to a HTML page, not a feed source.
-		// Try to find a feed link on the page and then parse that URL.
-		if newURL, err := DiscoverFeedURL(
-			sourceURL,
-			resp.Body(),
-		); err == nil && newURL != "" && newURL != sourceURL.String() {
-			return NewFeedFromURL(ctx, newURL)
-		}
-		return nil, &ParseError{
-			Code: http.StatusNotFound,
-			err:  fmt.Errorf("could not find a feed URL on page: %s", feedURL),
-		}
-	default:
-		// Cannot determine or unsupported content.
-		return nil, &ParseError{
-			Code: http.StatusUnsupportedMediaType,
-			err:  fmt.Errorf("%w: unsupported feed media type: %s", ErrParseURL, content),
-		}
-	}
-
-	// Handle getting through the switch but still not parsing the content.
-	if feed == nil {
-		return nil, &ParseError{
-			Code: http.StatusInternalServerError,
-			err:  fmt.Errorf("%w: %w", ErrParseURL, err),
-		}
-	}
-
-	// If the source URL is not set, set it.
-	if feed.GetSourceURL() == "" || feed.GetSourceURL() != feedURL {
-		feed.SetSourceURL(feedURL)
-	}
-
-	return feed, nil
-}
-
-// DiscoverFeedURL attempts to find a feed URL within a HTML page.
-//
-// There are a couple of "canonical" places the feed URL is located. Firstly, as per the RSS spec, look for a link
-// element with rel="alternate" and type="application/rss+xml". Secondly, check for a link element with a URL that ends
-// with feed, rss or atom, which would indicate a feed URL.
-//
-//nolint:gocognit
-func DiscoverFeedURL(sourceURL *url.URL, content []byte) (string, error) {
-	page, err := html.Parse(bytes.NewReader(content))
-	if err != nil {
-		return "", fmt.Errorf("parse html: %w", err)
-	}
-
-	findCanonicalLinkAttribute := func(elem *html.Node) string {
-		// Needs to have attributes rel="alternate".
-		if !slices.ContainsFunc(
-			elem.Attr,
-			func(a html.Attribute) bool { return a.Key == "rel" && a.Val == "alternate" },
-		) {
-			return ""
-		}
-		// Needs to have type="{feedMimeType}".
-		if !slices.ContainsFunc(
-			elem.Attr,
-			func(a html.Attribute) bool { return a.Key == "type" && slices.Contains(types.MimeTypesFeed, a.Val) },
-		) {
-			return ""
-		}
-		// Return the href attribute value.
-		for a := range slices.Values(elem.Attr) {
-			if a.Key == "href" {
-				return a.Val
-			}
-		}
-		return ""
-	}
-
-	findCommonFeedURL := func(elem *html.Node) string {
-		for a := range slices.Values(elem.Attr) {
-			// href attribute should contain a well-known substring.
-			if a.Key == "href" &&
-				(strings.Contains(a.Val, "feed") || strings.Contains(a.Val, "rss") || strings.Contains(a.Val, "atom")) {
-				return a.Val
-			}
-		}
-		return ""
-	}
-
-	var findURL func(*html.Node) string
-	findURL = func(n *html.Node) string {
-		if n.Type == html.ElementNode && (n.Data == "a" || n.Data == "link") {
-			if foundURL := findCanonicalLinkAttribute(n); foundURL != "" {
-				return foundURL
-			}
-			if foundURL := findCommonFeedURL(n); foundURL != "" {
-				return foundURL
-			}
-		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			if foundURL := findURL(c); foundURL != "" {
-				return foundURL
-			}
-		}
-		return ""
-	}
-
-	foundURL := findURL(page)
-	if foundURL == "" {
-		return "", fmt.Errorf("%w: no url found", ErrParseURL)
-	}
-
-	// Parse the discovered URL.
-	feedURL, err := url.Parse(foundURL)
-	if err != nil {
-		return foundURL, fmt.Errorf("discover feed url: %w", err)
-	}
-	// Check whether the URL is absolute.
-	if !feedURL.IsAbs() {
-		// Try to create an absolute URL for the feed.
-		feedURL, err = url.Parse(sourceURL.String())
-		if err != nil {
-			return "", fmt.Errorf("discover feed url: %w", err)
-		}
-		feedURL.Path, err = url.JoinPath("/", foundURL)
-		if err != nil {
-			return "", fmt.Errorf("discover feed url: %w", err)
-		}
-	}
-	return feedURL.String(), nil
-}
-
-// isMimeType returns a boolean indicating whether the Content Type header string is included in the given mimeType
-// slice.
-func isMimeType(content string, mimeTypes []string) bool {
-	mediatype, _, err := mime.ParseMediaType(content)
-	if err != nil {
-		return false
-	}
-	return slices.Contains(mimeTypes, mediatype)
 }
 
 // parseSource will attempt to determine the appropriate SourceType value from the given interface object.
@@ -353,15 +72,4 @@ func parseSource[T any](source T) SourceType {
 	default:
 		return ""
 	}
-}
-
-// ParseError is our custom error type that is returned when an error occurred during parsing. The Code will be an
-// equivalent http status code.
-type ParseError struct {
-	Code int
-	err  error
-}
-
-func (e ParseError) Error() string {
-	return e.err.Error()
 }
