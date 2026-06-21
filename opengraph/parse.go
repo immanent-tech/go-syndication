@@ -5,13 +5,11 @@ package opengraph
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"slices"
 	"strings"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/immanent-tech/go-syndication/client"
 	"golang.org/x/net/html"
 )
 
@@ -27,28 +25,6 @@ func WithClient(c *resty.Client) ParseOption {
 	return func(po *parseOptions) {
 		po.httpClient = c
 	}
-}
-
-// ParseURL will parse the given URL and return any Open Graph metadata found on the page.
-func ParseURL(ctx context.Context, pageURL string, options ...ParseOption) (*OpenGraph, error) {
-	opts := &parseOptions{}
-	for option := range slices.Values(options) {
-		option(opts)
-	}
-
-	if opts.httpClient == nil {
-		opts.httpClient = client.LoadHTTPClient()
-	}
-
-	resp, err := opts.httpClient.R().SetContext(ctx).Get(pageURL)
-	if err != nil {
-		return nil, fmt.Errorf("get url: %w", err)
-	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("%s: %s", resp.Status(), resp.Error())
-	}
-
-	return parse(resp.Body())
 }
 
 // ParseBytes will parse the given byte array and return any Open Graph metadata found within. Use with existing HTML
