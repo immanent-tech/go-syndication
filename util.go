@@ -7,17 +7,17 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"io"
 
 	"golang.org/x/net/html/charset"
 )
 
 // Decode will decode the byte array into the given type T, and assign values without a namespace with the given
 // namespace.
-func Decode[T any](namespace string, b []byte) (T, error) {
+func Decode[T any](namespace string, rd io.Reader) (T, error) {
 	var feed T
 
-	reader := bytes.NewReader(b)
-	decoder := xml.NewDecoder(reader)
+	decoder := xml.NewDecoder(rd)
 	if namespace != "" {
 		decoder.DefaultSpace = namespace
 	}

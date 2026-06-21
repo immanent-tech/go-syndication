@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/jsonfeed"
@@ -17,14 +18,10 @@ import (
 var (
 	// ErrParseBytes indicates an error occurred trying to parse a byte array as a feed.
 	ErrParseBytes = errors.New("unable to parse bytes as feed")
-	// ErrParseURL indicates an error occurred trying to parse a URL as a feed.
-	ErrParseURL = errors.New("unable to parse URL as feed")
-	// ErrUnsupportedFormat indicates that feed format is not known and cannot be parsed.
-	ErrUnsupportedFormat = errors.New("unsupported feed format")
 )
 
-// NewFeedFromBytes will create a new Feed of the given type from the given byte array.
-func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
+// NewDecoder will create a new Feed of the given type from the given io.Reader.
+func NewDecoder[T any](data io.Reader) (*Feed, error) {
 	var (
 		original T
 		feed     *Feed
@@ -32,7 +29,8 @@ func NewFeedFromBytes[T any](data []byte) (*Feed, error) {
 	)
 	if _, ok := any(original).(*jsonfeed.Feed); ok {
 		// If the original is JSONFeed, unmarshal as JSON.
-		err = json.Unmarshal(data, &original)
+		rd := json.NewDecoder(data)
+		err = rd.Decode(&original)
 	} else {
 		// Otherwise, unmarshal as XML.
 		original, err = Decode[T]("", data)

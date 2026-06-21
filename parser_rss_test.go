@@ -4,6 +4,7 @@
 package feeds
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"slices"
@@ -30,7 +31,7 @@ var rssMustPass = map[string]rssTestSuite{
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
 			assert.Equal(t, atom.LinkRelSelf, feed.Channel.AtomLink.Rel)
-			assert.Equal(t, "http://www.rss-world.info/", feed.Channel.AtomLink.UndefinedContent)
+			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLink.UndefinedContent)
 			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
 		},
 	},
@@ -496,7 +497,7 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			feed, err := Decode[*rss.RSS]("", tt.args.data)
+			feed, err := Decode[*rss.RSS]("", bytes.NewReader(tt.args.data))
 			if (err != nil) != tt.suite.wantDecodeErr {
 				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return

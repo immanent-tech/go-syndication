@@ -4,6 +4,7 @@
 package feeds
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"testing"
@@ -711,7 +712,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "text/html", feed.Entries[0].Links[0].Type)
+			assert.Equal(t, "text/html", *feed.Entries[0].Links[0].Type)
 		},
 	},
 	"entry_link_type2.xml": {
@@ -719,7 +720,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "application/xhtml+xml", feed.Entries[0].Links[0].Type)
+			assert.Equal(t, "application/xhtml+xml", *feed.Entries[0].Links[0].Type)
 		},
 	},
 	"entry_link_type3.xml": {
@@ -727,7 +728,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "image/jpeg", feed.Entries[0].Links[0].Type)
+			assert.Equal(t, "image/jpeg", *feed.Entries[0].Links[0].Type)
 		},
 	},
 	"entry_link_type4.xml": {
@@ -735,7 +736,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "text/plain", feed.Entries[0].Links[0].Type)
+			assert.Equal(t, "text/plain", *feed.Entries[0].Links[0].Type)
 		},
 	},
 	"entry_modified_bad_day.xml": {
@@ -980,7 +981,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "application/xhtml+xml", feed.Entries[0].Summary.Type)
+			assert.Equal(t, "application/xhtml+xml", *feed.Entries[0].Summary.Type)
 		},
 	},
 	"entry_summary_type3.xml": {
@@ -988,7 +989,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "image/jpeg", feed.Entries[0].Summary.Type)
+			assert.Equal(t, "image/jpeg", *feed.Entries[0].Summary.Type)
 		},
 	},
 	"entry_summary_type4.xml": {
@@ -996,7 +997,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "text/plain", feed.Entries[0].Summary.Type)
+			assert.Equal(t, "text/plain", *feed.Entries[0].Summary.Type)
 		},
 	},
 	"entry_summary.xml": {
@@ -1393,7 +1394,7 @@ var atomMustTests = map[string]atomTestSuite{
 	"feed_generator_name.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Equal(t, "Pretty much any name is acceptable", feed.Generator.Value)
+			assert.Equal(t, "Pretty much any name is acceptable", *feed.Generator.Value)
 		},
 	},
 	"feed_generator_not_really_uri.xml": {
@@ -1498,7 +1499,7 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			feed, err := Decode[*atom.Feed]("", tt.args.data)
+			feed, err := Decode[*atom.Feed]("", bytes.NewReader(tt.args.data))
 			if (err != nil) != tt.suite.wantDecodeErr {
 				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return
