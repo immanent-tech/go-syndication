@@ -116,6 +116,15 @@ func WithUpdatePeriod(up string) RSSOption {
 	}
 }
 
+// WithUpdateFrequency option sets the update frequency of the feed.
+func WithUpdateFrequency(freq int) RSSOption {
+	return func(r *RSS) {
+		r.Channel.SYUpdateFrequency = &rss.SYUpdateFrequency{
+			Value: freq,
+		}
+	}
+}
+
 func (r *RSS) GetTitle() string {
 	return r.Channel.GetTitle()
 }
