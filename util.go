@@ -18,6 +18,8 @@ func Decode[T any](namespace string, rd io.Reader) (T, error) {
 	var feed T
 
 	decoder := xml.NewDecoder(rd)
+	decoder.Strict = false // be lenient with malformed feeds in the wild
+
 	if namespace != "" {
 		decoder.DefaultSpace = namespace
 	}
