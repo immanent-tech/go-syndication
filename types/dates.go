@@ -87,7 +87,7 @@ func (d *DateTime) String() string {
 // MarshalText implements the encoding.TextMarshaler interface. Serializes DateTime to a plain byte slice. Uses RFC822
 // for widest compatibility.
 func (d *DateTime) MarshalText() ([]byte, error) {
-	return []byte(d.Format(time.RFC822Z)), nil
+	return []byte(d.Format("02 Jan 2006 15:04 -0700")), nil
 }
 
 // UnmarshalText will unmarshal/parse a DateTime from the given string.
