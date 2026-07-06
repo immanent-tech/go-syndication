@@ -18,25 +18,12 @@ import (
 // ErrUnmarshal indicates an error occurred trying to unmarshal data into a given feed object.
 var ErrUnmarshal = errors.New("unmarshaling object failed")
 
-const (
-	// TypeRSS indicates the source data was from an RSS feed.
-	TypeRSS SourceType = "RSS"
-	// TypeAtom indicates the source data was from an Atom feed.
-	TypeAtom SourceType = "Atom"
-	// TypeJSONFeed indicates the source data was from a JSONFeed feed.
-	TypeJSONFeed SourceType = "JSONFeed"
-)
-
-// SourceType is a string constant that indicates the underlying source data type of a Feed/Item object. This is mainly
-// used when unmarshaling from JSON where the JSON structure of the source types can be ambiguous.
-type SourceType string
-
 // Item represents a single item or entry (or article) in a feed.
 type Item struct {
 	types.ItemSource `json:"source"`
 
-	SourceType SourceType `json:"type"`
-	FeedTitle  string     `json:"feed_title"`
+	SourceType types.SourceType `json:"type"`
+	FeedTitle  string           `json:"feed_title"`
 }
 
 // UnmarshalJSON handles unmarshaling of an Item from JSON.
@@ -47,22 +34,22 @@ func (i *Item) UnmarshalJSON(v []byte) error {
 		return err
 	}
 	switch sourceType {
-	case TypeAtom:
-		i.SourceType = TypeAtom
+	case types.SourceTypeAtom:
+		i.SourceType = sourceType
 		i.ItemSource, err = unmarshalSource[*atom.Entry](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into Atom: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case TypeRSS:
-		i.SourceType = TypeRSS
+	case types.SourceTypeRSS:
+		i.SourceType = sourceType
 		i.ItemSource, err = unmarshalSource[*rss.Item](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into RSS: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case TypeJSONFeed:
-		i.SourceType = TypeJSONFeed
+	case types.SourceTypeJSONFeed:
+		i.SourceType = sourceType
 		i.ItemSource, err = unmarshalSource[*jsonfeed.Item](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into JSONFeed: %w", ErrUnmarshal, err)
@@ -76,7 +63,7 @@ func (i *Item) UnmarshalJSON(v []byte) error {
 type Feed struct {
 	types.FeedSource `json:"source"`
 
-	SourceType SourceType `json:"type"`
+	SourceType types.SourceType `json:"type"`
 }
 
 // GetItems retrieves a slice of Item for the Feed.
@@ -101,22 +88,22 @@ func (f *Feed) UnmarshalJSON(v []byte) error {
 		return err
 	}
 	switch sourceType {
-	case TypeAtom:
-		f.SourceType = TypeAtom
+	case types.SourceTypeAtom:
+		f.SourceType = sourceType
 		f.FeedSource, err = unmarshalSource[*atom.Feed](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into Atom: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case TypeRSS:
-		f.SourceType = TypeRSS
+	case types.SourceTypeRSS:
+		f.SourceType = sourceType
 		f.FeedSource, err = unmarshalSource[*rss.RSS](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into RSS: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case TypeJSONFeed:
-		f.SourceType = TypeJSONFeed
+	case types.SourceTypeJSONFeed:
+		f.SourceType = sourceType
 		f.FeedSource, err = unmarshalSource[*jsonfeed.Feed](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into JSONFeed: %w", ErrUnmarshal, err)
@@ -126,7 +113,7 @@ func (f *Feed) UnmarshalJSON(v []byte) error {
 	return fmt.Errorf("%w: unknown data type", ErrUnmarshal)
 }
 
-func sourceFromBytes(v []byte) (SourceType, json.RawMessage, error) {
+func sourceFromBytes(v []byte) (types.SourceType, json.RawMessage, error) {
 	topLevel := make(map[string]json.RawMessage)
 	err := json.Unmarshal(v, &topLevel)
 	if err != nil {
@@ -137,7 +124,7 @@ func sourceFromBytes(v []byte) (SourceType, json.RawMessage, error) {
 	if !found {
 		return "", nil, fmt.Errorf("%w: unknown data type", ErrUnmarshal)
 	}
-	var sourceType SourceType
+	var sourceType types.SourceType
 	err = json.Unmarshal(rawType, &sourceType)
 	if err != nil {
 		return "", nil, fmt.Errorf("%w: %w", ErrUnmarshal, err)

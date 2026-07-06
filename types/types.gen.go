@@ -7,6 +7,16 @@ import (
 	"encoding/xml"
 )
 
+// Defines values for SourceType.
+const (
+	SourceTypeAtom     SourceType = "Atom"
+	SourceTypeHTML     SourceType = "HTML"
+	SourceTypeJSONFeed SourceType = "JSONFeed"
+	SourceTypeRDF      SourceType = "RDF"
+	SourceTypeRSS      SourceType = "RSS"
+	SourceTypeUnknown  SourceType = "Unknown"
+)
+
 // Attributes are any attributes of the element.
 type Attributes = []xml.Attr
 
@@ -40,3 +50,6 @@ type OptionalValue = string
 
 // RequiredValue is an element value that is required.
 type RequiredValue = string
+
+// SourceType is the type of source the feed or object came from. This can be used with abstractions that generalize different feed types into a common format to preserve information on the original.
+type SourceType string

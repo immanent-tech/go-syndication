@@ -6,7 +6,7 @@ info:
   description: >
     Common/shared types across schemas.
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: AGPL-3.0-or-later
@@ -94,3 +94,11 @@ components:
             validate: 'required,url'
       x-oapi-codegen-extra-tags:
         validate: 'omitempty'
+    SourceType:
+      description: >
+        is the type of source the feed or object came from. This can be used with abstractions that generalize different
+        feed types into a common format to preserve information on the original.
+      type: string
+      enum: ['HTML', 'RSS', 'Atom', 'JSONFeed', 'RDF', 'Unknown']
+      x-oapi-codegen-extra-tags:
+        validate: 'oneof=HTML RSS Atom JSONFeed RDF Unknown'
