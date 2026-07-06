@@ -75,11 +75,7 @@ func (d *DateTime) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &dateStr); err != nil {
 		return errors.Join(ErrInvalidDateTimeFormat, err)
 	}
-	parsed, err := tryFormats(dateStr)
-	if err != nil {
-		return err
-	}
-	d.Time = parsed
+	d.Time = tryFormats(dateStr)
 	return nil
 }
 
@@ -88,17 +84,19 @@ func (d *DateTime) String() string {
 	return d.Format(DateTimeFormats[0])
 }
 
+// MarshalText implements the encoding.TextMarshaler interface. Serializes DateTime to a plain byte slice. Uses RFC822
+// for widest compatibility.
+func (d *DateTime) MarshalText() ([]byte, error) {
+	return []byte(d.Format(time.RFC822Z)), nil
+}
+
 // UnmarshalText will unmarshal/parse a DateTime from the given string.
 func (d *DateTime) UnmarshalText(data []byte) error {
-	parsed, err := tryFormats(string(data))
-	if err != nil {
-		return err
-	}
-	d.Time = parsed
+	d.Time = tryFormats(string(data))
 	return nil
 }
 
-func tryFormats(data string) (time.Time, error) {
+func tryFormats(data string) time.Time {
 	var parsed time.Time
 	for format := range slices.Values(DateTimeFormats) {
 		data = strings.TrimSpace(data)
@@ -108,7 +106,7 @@ func tryFormats(data string) (time.Time, error) {
 		}
 		parsed = value
 	}
-	return parsed, nil
+	return parsed
 }
 
 func GetMedianInterval(data []time.Duration) time.Duration {
