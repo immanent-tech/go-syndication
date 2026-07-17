@@ -5,6 +5,7 @@ package types
 
 import (
 	"encoding/xml"
+	"time"
 )
 
 // Defines values for SourceType.
@@ -53,3 +54,9 @@ type RequiredValue = string
 
 // SourceType is the type of source the feed or object came from. This can be used with abstractions that generalize different feed types into a common format to preserve information on the original.
 type SourceType string
+
+// Timestamp represents a timestamp used in feed objects.
+type Timestamp struct {
+	// Value is the timestamp value.
+	Value time.Time `json:"value"`
+}

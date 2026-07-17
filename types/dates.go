@@ -110,6 +110,7 @@ func tryFormats(data string) time.Time {
 	return parsed
 }
 
+// GetMedianInterval calculates the median of the given set of time.Duration values.
 func GetMedianInterval(data []time.Duration) time.Duration {
 	dataCopy := make([]time.Duration, len(data))
 	copy(dataCopy, data)

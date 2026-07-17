@@ -12,6 +12,16 @@ info:
     identifier: AGPL-3.0-or-later
 components:
   schemas:
+    Timestamp:
+      description: >
+        represents a timestamp used in feed objects.
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          description: is the timestamp value.
+          x-go-type: time.Time
     RequiredValue:
       description: >
         is an element value that is required.
