@@ -23,7 +23,7 @@ var _ types.ItemSource = (*Item)(nil)
 // NewItem creates a new Item with the given options.
 func NewItem(options ...ItemOption) *Item {
 	item := &Item{
-		PubDate: &types.DateTime{Time: time.Now().UTC()},
+		PubDate: new(types.NewTimestamp(time.Now().UTC())),
 	}
 
 	for option := range slices.Values(options) {
@@ -39,7 +39,7 @@ type ItemOption func(*Item)
 // WithItemTitle option sets the item title. Note to be value, an item needs either the title or description set.
 func WithItemTitle(title string) ItemOption {
 	return func(i *Item) {
-		i.Title = types.String(title)
+		i.Title = title
 	}
 }
 
@@ -47,14 +47,14 @@ func WithItemTitle(title string) ItemOption {
 // set.
 func WithItemDescription(desc string) ItemOption {
 	return func(i *Item) {
-		i.Description = types.String(desc)
+		i.Description = desc
 	}
 }
 
 // WithItemLink option sets the URL to the original page displaying the item.
 func WithItemLink(link string) ItemOption {
 	return func(i *Item) {
-		i.Link = types.String(link)
+		i.Link = link
 	}
 }
 
@@ -91,7 +91,7 @@ func WithItemPublishedDate(ts time.Time) ItemOption {
 			// Ignore zero value.
 			return
 		}
-		i.PubDate.Time = ts
+		i.PubDate = new(types.NewTimestamp(ts))
 	}
 }
 
@@ -99,7 +99,7 @@ func WithItemPublishedDate(ts time.Time) ItemOption {
 // not present.
 func (i *Item) GetID() string {
 	if i.GUID != nil {
-		return i.GUID.Value.String()
+		return i.GUID.Value
 	}
 	return ""
 }
@@ -110,20 +110,20 @@ func (i *Item) GetTitle() string {
 	case i.DCTitle != nil:
 		return i.DCTitle.String()
 	default:
-		return i.Title.String()
+		return i.Title
 	}
 }
 
 // GetLink retrieves the <link> (if any) of the Item.
 func (i *Item) GetLink() string {
-	return i.Link.String()
+	return i.Link
 }
 
 // GetDescription retrieves the <description> (if any) of the Item.
 func (i *Item) GetDescription() string {
-	// Use the non-empty description.
-	if i.Description.String() != "" {
-		return i.Description.String()
+	// Use the nonempty description.
+	if i.Description != "" {
+		return i.Description
 	}
 	// Else, use a description from one of these:
 	switch {
@@ -140,8 +140,8 @@ func (i *Item) GetDescription() string {
 // <dc:creator> elements.
 func (i *Item) GetAuthors() []string {
 	var authors []string
-	if i.Author != nil && i.Author.String() != "" {
-		authors = append(authors, i.Author.String())
+	if i.Author != nil && *i.Author != "" {
+		authors = append(authors, *i.Author)
 	}
 	if i.DCCreator != nil {
 		authors = append(authors, i.DCCreator.String())
@@ -241,7 +241,7 @@ func (i *Item) GetMediaGroup() *media.MediaGroup {
 // DateTime equal to Unix epoch.
 func (i *Item) GetPublishedDate() *time.Time {
 	if i.PubDate != nil {
-		return &i.PubDate.Time
+		return &i.PubDate.Value
 	}
 	return nil
 }
@@ -280,16 +280,16 @@ func (i *Item) GetContent() *string {
 // Validate applies custom validation to an item.
 func (i *Item) Validate() error {
 	// Either description or title must be set. Both cannot be empty.
-	if i.Description.String() == "" && i.Title.String() == "" {
+	if i.Description == "" && i.Title == "" {
 		return fmt.Errorf("%w: description or title is required", validation.ErrInvalidStruct)
 	}
 	return nil
 }
 
-// GenerateGUID creates a GUID from the given value, with the given permalink status.
-func GenerateGUID(value string, permalink bool) *GUID {
+// NewGUID creates a GUID from the given value, with the given permalink status.
+func NewGUID(value string, permalink bool) *GUID {
 	return &GUID{
 		IsPermaLink: permalink,
-		Value:       types.String(value),
+		Value:       value,
 	}
 }

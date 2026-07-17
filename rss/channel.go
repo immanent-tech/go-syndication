@@ -21,15 +21,15 @@ func (c *Channel) GetTitle() string {
 	case c.DCTitle != nil:
 		return c.DCTitle.String()
 	default:
-		return c.Title.String()
+		return c.Title
 	}
 }
 
 // GetDescription retrieves the <description> (if any) of the Channel.
 func (c *Channel) GetDescription() string {
 	switch {
-	case c.Description.String() != "":
-		return c.Description.String()
+	case c.Description != "":
+		return c.Description
 	case c.DCDescription != nil:
 		return c.DCDescription.String()
 	default:
@@ -56,10 +56,10 @@ func (c *Channel) SetSourceURL(url string) {
 
 // GetLink retrieves the <link> (if any) of the Channel. This is the link to the website associated with the RSS feed.
 func (c *Channel) GetLink() string {
-	if c.Link.String() == "" {
+	if c.Link == "" {
 		return c.GetSourceURL()
 	}
-	return c.Link.String()
+	return c.Link
 }
 
 // GetAuthors retrieves the authors (if any) of the Channel. This will be the list of values from any <dc:creator>
@@ -88,8 +88,8 @@ func (c *Channel) GetRights() *string {
 	switch {
 	case c.DCRights != nil:
 		return new(c.DCRights.String())
-	case c.Copyright.String() != "":
-		return new(c.Copyright.String())
+	case c.Copyright != nil:
+		return c.Copyright
 	default:
 		return nil
 	}
@@ -101,8 +101,8 @@ func (c *Channel) GetLanguage() *string {
 	switch {
 	case c.DCLanguage != nil:
 		return c.DCLanguage
-	case c.Language.String() != "":
-		return new(c.Language.String())
+	case c.Language != nil:
+		return c.Language
 	default:
 		return nil
 	}
@@ -166,7 +166,7 @@ func (c *Channel) SetImage(image *types.ImageInfo) {
 // DateTime equal to Unix epoch.
 func (c *Channel) GetPublishedDate() *time.Time {
 	if c.PubDate != nil {
-		return new(c.PubDate.Time)
+		return &c.PubDate.Value
 	}
 	return nil
 }
@@ -175,7 +175,7 @@ func (c *Channel) GetPublishedDate() *time.Time {
 // DateTime equal to Unix epoch.
 func (c *Channel) GetUpdatedDate() *time.Time {
 	if c.LastBuildDate != nil {
-		return new(c.LastBuildDate.Time)
+		return &c.LastBuildDate.Value
 	}
 	if len(c.Items) > 0 {
 		slices.SortFunc(c.Items, func(a, b Item) int {
