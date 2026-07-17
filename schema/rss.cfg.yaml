@@ -19,5 +19,4 @@ import-mapping:
   rdf.yaml: 'github.com/immanent-tech/go-syndication/rdf'
   atom.yaml: 'github.com/immanent-tech/go-syndication/atom'
   types.yaml: 'github.com/immanent-tech/go-syndication/types'
-  types-elements.yaml: 'github.com/immanent-tech/go-syndication/types'
   types-attributes.yaml: 'github.com/immanent-tech/go-syndication/types'

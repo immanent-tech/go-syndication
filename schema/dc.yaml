@@ -8,7 +8,7 @@ info:
 
     https://web.resource.org/rss/1.0/modules/dc/
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
@@ -111,8 +111,7 @@ components:
     DCLanguage:
       description: >
         identifies the language used by the related resource using an HTML language code.
-      allOf:
-        - $ref: 'types-elements.yaml#/components/schemas/Language'
+      type: string
       x-oapi-codegen-extra-tags:
         json: 'dc_language,omitempty'
         xml: 'http://purl.org/dc/elements/1.1/ language,omitempty'
