@@ -17,7 +17,8 @@ import (
 var ErrInvalidDateTimeFormat = errors.New("invalid datetime format")
 
 // DateTimeFormats are the valid datetime formats across different feed specifications. A DateTime object will try to
-// parse a given value as one of these formats.
+// parse a given value as one of these formats. Many of these formats come from feeds shown in the wild. As can be seen
+// from the list, nearly *nobody* respects the RSS/Atom specifications for datetime format.
 var DateTimeFormats = []string{
 	time.RFC1123Z,
 	time.RFC1123,

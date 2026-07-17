@@ -37,11 +37,12 @@
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - [Command Line Interface (CLI)](#command-line-interface-cli)
 - [Roadmap](#roadmap)
 - [Support](#support)
-- [Project assistance](#project-assistance)
+- [Project Assistance](#project-assistance)
 - [Contributing](#contributing)
-- [Authors \& contributors](#authors--contributors)
+- [Authors \& Contributors](#authors--contributors)
 - [Security](#security)
 - [License](#license)
 
@@ -76,11 +77,29 @@ TBA.
 
 ### Installation
 
-TBA.
+```shell
+go get github.com/immanent-tech/go-syndication
+```
 
 ## Usage
 
-TBA.
+### Command Line Interface (CLI)
+
+A basic CLI can be found in `cmd/` that can be used for basic reading/writing of feeds using the library.
+
+To fetch and display feed data from a URL:
+
+```shell
+go run github.com/immanent-tech/go-syndication/cmd@latest fetch http://my.site/feed
+```
+
+To read a file containing feed data:
+
+```shell
+go run github.com/immanent-tech/go-syndication/cmd@latest parse /path/to/my/feed.xml
+```
+
+The commands will auto-detect a supported feed format.
 
 ## Roadmap
 
@@ -97,7 +116,7 @@ Reach out to the maintainer at one of the following places:
 - [GitHub issues](https://github.com/immanent-tech/go-syndication/issues/new?assignees=&labels=question&template=04_SUPPORT_QUESTION.md&title=support%3A+)
 - Contact options listed on [this GitHub profile](https://github.com/joshuar)
 
-## Project assistance
+## Project Assistance
 
 If you want to say **thank you** or/and support active development of go-syndication:
 
@@ -113,7 +132,7 @@ First off, thanks for taking the time to contribute! Contributions are what make
 
 Please read [our contribution guidelines](docs/CONTRIBUTING.md), and thank you for being involved!
 
-## Authors & contributors
+## Authors & Contributors
 
 The original setup of this repository is by [joshuar](https://github.com/joshuar).
 
