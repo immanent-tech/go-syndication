@@ -13,7 +13,7 @@ func NewTimestamp(ts time.Time) Timestamp {
 
 // MarshalText implements the encoding.TextMarshaler interface. Serializes Timestamp to a plain byte slice. Uses RFC822
 // for widest compatibility.
-func (t *Timestamp) MarshalText() ([]byte, error) {
+func (t Timestamp) MarshalText() ([]byte, error) {
 	return []byte(t.Value.Format("02 Jan 2006 15:04 -0700")), nil
 }
 
