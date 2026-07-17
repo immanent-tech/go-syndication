@@ -58,22 +58,6 @@ func NewXMLAttr(name, value, namespace string) xml.Attr {
 	}
 }
 
-// String is custom string type that handles "malformed" string fields containing whitespace or forbidden input.
-//
-//nolint:recvcheck // required for unmarshal to work correctly.
-type String string
-
-// UnmarshalText provides custom unmarshaling of String that will sanitize, unescape and trim whitespace from the value.
-func (s *String) UnmarshalText(data []byte) error {
-	safeData := sanitization.SanitizeBytes(data)
-	*s = String(safeData)
-	return nil
-}
-
-func (s String) String() string {
-	return html.UnescapeString(string(s))
-}
-
 // CharData is a custom type for xml.CharData that can additionally sanitize the data.
 type CharData xml.CharData
 
