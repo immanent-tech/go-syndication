@@ -6,7 +6,7 @@ package sitemap
 import (
 	"encoding/xml"
 
-	"github.com/immanent-tech/go-syndication/types"
+	externalRef0 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for AccessRestriction.
@@ -37,14 +37,14 @@ type AccessRestriction string
 // Image contains details about an image.
 type Image struct {
 	// Loc URL to the image.
-	Loc types.String `json:"loc" validate:"required,url" xml:"http://www.google.com/schemas/sitemap-image/1.1 loc"`
+	Loc string `json:"loc" validate:"required,url" xml:"http://www.google.com/schemas/sitemap-image/1.1 loc"`
 }
 
 // LOC URL of the page. This URL must begin with the protocol (such as http) and end with a trailing slash, if your web server requires it. This value must be less than 2,048 characters.
-type LOC = types.String
+type LOC = string
 
-// LastMod The date of last modification of the page. This date should be in W3C Datetime format. This format allows you to omit the time portion, if desired, and use YYYY-MM-DD. Note that the date must be set to the date the linked page was last modified, not when the sitemap is generated. Note also that this tag is separate from the If-Modified-Since (304) header the server can return, and search engines may use the information from both sources differently.
-type LastMod = types.DateTime
+// LastMod represents a timestamp used in feed objects.
+type LastMod = externalRef0.Timestamp
 
 // News indicates a URL is a news article and contains additional related elements.
 type News struct {
@@ -67,11 +67,11 @@ type Publication struct {
 	Language *string `json:"language,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"http://www.google.com/schemas/sitemap-news/0.9 language"`
 
 	// Name is the name of the news publication. It must exactly match the name as it appears on your articles on news.google.com, omitting anything in parentheses.
-	Name *types.String `json:"name,omitempty" validate:"omitempty" xml:"http://www.google.com/schemas/sitemap-news/0.9 name"`
+	Name *string `json:"name,omitempty" validate:"omitempty" xml:"http://www.google.com/schemas/sitemap-news/0.9 name"`
 }
 
-// PublicationDate The article publication date in W3C format. Use either the "complete date" format (YYYY-MM-DD) or the "complete date plus hours, minutes, and seconds" format with time zone designator format (YYYY-MM-DDThh:mm:ssTZD). Specify the original date and time when the article was first published on your site. Don't specify the time when you added the article to your sitemap.
-type PublicationDate = types.DateTime
+// PublicationDate represents a timestamp used in feed objects.
+type PublicationDate = externalRef0.Timestamp
 
 // Sitemap encapsulates information about an individual Sitemap.
 type Sitemap struct {
@@ -92,7 +92,7 @@ type SitemapIndex struct {
 }
 
 // Title The title of the news article.
-type Title = types.String
+type Title = string
 
 // URL describes a URL in the sitemap
 type URL struct {

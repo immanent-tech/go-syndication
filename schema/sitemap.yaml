@@ -8,7 +8,7 @@ info:
 
     https://www.sitemaps.org/protocol.html
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
@@ -23,8 +23,8 @@ components:
       properties:
         loc:
           description: >
-              URL to the image.
-          x-go-type: types.String
+            URL to the image.
+          type: string
           x-oapi-codegen-extra-tags:
             xml: 'http://www.google.com/schemas/sitemap-image/1.1 loc'
             validate: 'required,url'
@@ -48,14 +48,14 @@ components:
         xml: 'http://www.google.com/schemas/sitemap-news/0.9 news'
     Publication:
       description: >
-         contains details about the publication for the news item.
+        contains details about the publication for the news item.
       type: object
       properties:
         name:
           description: >
             is the name of the news publication. It must exactly match the name as it appears on your articles on
             news.google.com, omitting anything in parentheses.
-          x-go-type: types.String
+          type: string
           x-oapi-codegen-extra-tags:
             xml: 'http://www.google.com/schemas/sitemap-news/0.9 name'
             validate: 'omitempty'
@@ -75,7 +75,8 @@ components:
         date plus hours, minutes, and seconds" format with time zone designator format (YYYY-MM-DDThh:mm:ssTZD). Specify
         the original date and time when the article was first published on your site. Don't specify the time when you
         added the article to your sitemap.
-      x-go-type: types.DateTime
+      allOf:
+        - $ref: 'types.yaml#/components/schemas/Timestamp'
       x-oapi-codegen-extra-tags:
         xml: 'http://www.google.com/schemas/sitemap-news/0.9 publication_date'
         json: 'publication_date'
@@ -83,19 +84,19 @@ components:
     Title:
       description: >
         The title of the news article.
-      x-go-type: types.String
+      type: string
       x-oapi-codegen-extra-tags:
         xml: 'http://www.google.com/schemas/sitemap-news/0.9 title'
         json: 'title'
         validate: 'omitempty'
     Access:
       description: >
-         is the accessibility of the article. Required if access is not open, otherwise this tag should be omitted.
+        is the accessibility of the article. Required if access is not open, otherwise this tag should be omitted.
       type: object
       properties:
         restriction:
           type: string
-          enum: ['Subscription','Registration']
+          enum: ['Subscription', 'Registration']
           x-oapi-codegen-extra-tags:
             xml: 'http://www.google.com/schemas/sitemap-news/0.9 restriction'
             validate: 'required,oneof=Subscription Registration'
@@ -105,26 +106,27 @@ components:
         validate: 'omitempty'
     LOC:
       description: >
-          URL of the page. This URL must begin with the protocol (such as http) and end with a trailing slash, if
-          your web server requires it. This value must be less than 2,048 characters.
-      x-go-type: types.String
+        URL of the page. This URL must begin with the protocol (such as http) and end with a trailing slash, if
+        your web server requires it. This value must be less than 2,048 characters.
+      type: string
       x-oapi-codegen-extra-tags:
         xml: 'loc'
         validate: 'required,url'
     LastMod:
       description: >
-          The date of last modification of the page. This date should be in W3C Datetime format. This format allows
-          you to omit the time portion, if desired, and use YYYY-MM-DD. Note that the date must be set to the date
-          the linked page was last modified, not when the sitemap is generated. Note also that this tag is separate
-          from the If-Modified-Since (304) header the server can return, and search engines may use the information
-          from both sources differently.
-      x-go-type: types.DateTime
+        The date of last modification of the page. This date should be in W3C Datetime format. This format allows
+        you to omit the time portion, if desired, and use YYYY-MM-DD. Note that the date must be set to the date
+        the linked page was last modified, not when the sitemap is generated. Note also that this tag is separate
+        from the If-Modified-Since (304) header the server can return, and search engines may use the information
+        from both sources differently.
+      allOf:
+        - $ref: 'types.yaml#/components/schemas/Timestamp'
       x-oapi-codegen-extra-tags:
         xml: 'lastmod'
         validate: 'omitempty'
     URLSet:
       description: >
-         Encapsulates the file and references the current protocol standard.
+        Encapsulates the file and references the current protocol standard.
       x-go-name: URLSet
       required:
         - XMLName
@@ -136,7 +138,7 @@ components:
           x-go-type: 'xml.Name'
         URLs:
           description: >
-             is the list of URLs contained within the sitemap.
+            is the list of URLs contained within the sitemap.
           type: array
           x-go-name: URLs
           items:
@@ -150,7 +152,7 @@ components:
         json: 'urlset'
     URL:
       description: >
-         describes a URL in the sitemap
+        describes a URL in the sitemap
       type: object
       required:
         - loc
@@ -161,17 +163,17 @@ components:
           $ref: '#/components/schemas/LastMod'
         changefreq:
           description: >
-             How frequently the page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.
+            How frequently the page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.
           type: string
-          enum: ['always','hourly','daily','weekly','monthly','yearly','never']
+          enum: ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never']
           x-oapi-codegen-extra-tags:
             xml: 'changefreq'
             validate: 'omitempty,oneof=always hourly daily weekly monthly yearly never'
         priority:
           description: >
-             The priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. This
-             value does not affect how your pages are compared to pages on other sites—it only lets the search engines
-             know which pages you deem most important for the crawlers.
+            The priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. This
+            value does not affect how your pages are compared to pages on other sites—it only lets the search engines
+            know which pages you deem most important for the crawlers.
           type: number
           x-oapi-codegen-extra-tags:
             xml: 'priority'
@@ -186,7 +188,7 @@ components:
         xml: 'url'
     SitemapIndex:
       description: >
-         encapsulates information about all of the Sitemaps in the file.
+        encapsulates information about all of the Sitemaps in the file.
       x-go-name: SitemapIndex
       required:
         - XMLName
