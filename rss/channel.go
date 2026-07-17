@@ -19,7 +19,7 @@ var _ types.FeedSource = (*Channel)(nil)
 func (c *Channel) GetTitle() string {
 	switch {
 	case c.DCTitle != nil:
-		return c.DCTitle.String()
+		return *c.DCTitle
 	default:
 		return c.Title
 	}
@@ -31,7 +31,7 @@ func (c *Channel) GetDescription() string {
 	case c.Description != "":
 		return c.Description
 	case c.DCDescription != nil:
-		return c.DCDescription.String()
+		return *c.DCDescription
 	default:
 		return ""
 	}
@@ -67,7 +67,7 @@ func (c *Channel) GetLink() string {
 func (c *Channel) GetAuthors() []string {
 	var authors []string
 	if c.DCCreator != nil {
-		authors = append(authors, c.DCCreator.String())
+		authors = append(authors, *c.DCCreator)
 	}
 	return authors
 }
@@ -77,7 +77,7 @@ func (c *Channel) GetAuthors() []string {
 func (c *Channel) GetContributors() []string {
 	var contributors []string
 	if c.DCContributor != nil {
-		contributors = append(contributors, c.DCContributor.String())
+		contributors = append(contributors, *c.DCContributor)
 	}
 	return contributors
 }
@@ -87,7 +87,7 @@ func (c *Channel) GetContributors() []string {
 func (c *Channel) GetRights() *string {
 	switch {
 	case c.DCRights != nil:
-		return new(c.DCRights.String())
+		return c.DCRights
 	case c.Copyright != nil:
 		return c.Copyright
 	default:

@@ -28,7 +28,7 @@ func (e *Entry) GetID() string {
 // GetTitle retrieves the <title> of the Entry.
 func (e *Entry) GetTitle() string {
 	if e.DCTitle != nil {
-		return e.DCTitle.String()
+		return *e.DCTitle
 	}
 	return e.Title.String()
 }
@@ -52,7 +52,7 @@ func (e *Entry) GetLink() string {
 func (e *Entry) GetDescription() string {
 	switch {
 	case e.DCDescription != nil:
-		return e.DCDescription.String()
+		return *e.DCDescription
 	case e.Summary != nil && e.Summary.String() != "":
 		return e.Summary.String()
 	case e.MediaGroup != nil:
@@ -72,7 +72,7 @@ func (e *Entry) GetAuthors() []string {
 		}
 	}
 	if e.DCCreator != nil {
-		authors = append(authors, e.DCCreator.String())
+		authors = append(authors, *e.DCCreator)
 	}
 	return authors
 }
@@ -87,7 +87,7 @@ func (e *Entry) GetContributors() []string {
 		}
 	}
 	if e.DCContributor != nil {
-		contributors = append(contributors, e.DCCreator.String())
+		contributors = append(contributors, *e.DCCreator)
 	}
 	return contributors
 }
@@ -97,7 +97,7 @@ func (e *Entry) GetContributors() []string {
 func (e *Entry) GetRights() *string {
 	switch {
 	case e.DCRights != nil:
-		return new(e.DCRights.String())
+		return e.DCRights
 	case e.Rights != nil && e.Rights.Value != "":
 		return &e.Rights.Value
 	default:

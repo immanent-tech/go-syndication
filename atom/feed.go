@@ -19,7 +19,7 @@ var _ types.FeedSource = (*Feed)(nil)
 func (f *Feed) GetTitle() string {
 	switch {
 	case f.DCTitle != nil:
-		return f.DCTitle.String()
+		return *f.DCTitle
 	case f.Title.String() != "":
 		return f.Title.String()
 	default:
@@ -31,7 +31,7 @@ func (f *Feed) GetTitle() string {
 func (f *Feed) GetDescription() string {
 	switch {
 	case f.DCDescription != nil:
-		return f.DCDescription.String()
+		return *f.DCDescription
 	case f.Subtitle != nil && f.Subtitle.String() != "":
 		return f.Subtitle.String()
 	default:
@@ -87,7 +87,7 @@ func (f *Feed) GetAuthors() []string {
 		}
 	}
 	if f.DCCreator != nil {
-		authors = append(authors, f.DCCreator.String())
+		authors = append(authors, *f.DCCreator)
 	}
 	return authors
 }
@@ -102,7 +102,7 @@ func (f *Feed) GetContributors() []string {
 		}
 	}
 	if f.DCContributor != nil {
-		contributors = append(contributors, f.DCCreator.String())
+		contributors = append(contributors, *f.DCCreator)
 	}
 	return contributors
 }
@@ -112,7 +112,7 @@ func (f *Feed) GetContributors() []string {
 func (f *Feed) GetRights() *string {
 	switch {
 	case f.DCRights != nil:
-		return new(f.DCRights.String())
+		return f.DCRights
 	case f.Rights != nil && f.Rights.Value != "":
 		return &f.Rights.Value
 	default:
