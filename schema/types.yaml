@@ -22,6 +22,16 @@ components:
         value:
           description: is the timestamp value.
           x-go-type: time.Time
+    SanitisedString:
+      description: >
+        represents a string that has sanitisation applied.
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          description: is the sanitised string value.
+          type: string
     RequiredValue:
       description: >
         is an element value that is required.

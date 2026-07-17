@@ -103,3 +103,24 @@ func (c *CharData) UnmarshalJSON(data []byte) error {
 func (c *CharData) String() string {
 	return html.UnescapeString(string(*c))
 }
+
+func NewSanitisedString(value string) SanitisedString {
+	return SanitisedString{
+		Value: sanitization.SanitizeString(value),
+	}
+}
+
+// MarshalText implements the encoding.TextMarshaler interface. Serializes SanitisedString to a plain byte slice.
+func (s SanitisedString) MarshalText() ([]byte, error) {
+	return []byte(s.Value), nil
+}
+
+// UnmarshalText will unmarshal/parse a SanitisedString from the given string.
+func (s *SanitisedString) UnmarshalText(data []byte) error {
+	s.Value = string(sanitization.SanitizeBytes(data))
+	return nil
+}
+
+func (s SanitisedString) String() string {
+	return s.Value
+}

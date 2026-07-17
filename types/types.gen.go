@@ -52,6 +52,12 @@ type OptionalValue = string
 // RequiredValue is an element value that is required.
 type RequiredValue = string
 
+// SanitisedString represents a string that has sanitisation applied.
+type SanitisedString struct {
+	// Value is the sanitised string value.
+	Value string `json:"value"`
+}
+
 // SourceType is the type of source the feed or object came from. This can be used with abstractions that generalize different feed types into a common format to preserve information on the original.
 type SourceType string
 
