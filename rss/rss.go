@@ -8,8 +8,10 @@ package rss
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/extensions/rss"
@@ -18,6 +20,38 @@ import (
 )
 
 var _ types.FeedSource = (*RSS)(nil)
+
+// outputLayout produces one of the profile's three recommended universal
+// forms: "Thu, 04 Oct 2007 23:59:45 +0000" (i.e. UTC, numeric zero offset).
+const outputLayout = "Mon, 02 Jan 2006 15:04:05 -0700"
+
+// namedZoneOffsets maps RFC 822 zone abbreviations to their UTC offset in
+// seconds. Go's time.Parse does NOT reliably resolve these itself -- an
+// unrecognized "MST"-style abbreviation is silently assigned a zero offset
+// by the standard library, which would misparse e.g. "EST" as UTC. We look
+// these up ourselves instead of trusting the stdlib's zone-name parsing.
+var namedZoneOffsets = map[string]int{
+	"UT": 0, "GMT": 0, "Z": 0,
+	"EST": -5 * 3600, "EDT": -4 * 3600,
+	"CST": -6 * 3600, "CDT": -5 * 3600,
+	"MST": -7 * 3600, "MDT": -6 * 3600,
+	"PST": -8 * 3600, "PDT": -7 * 3600,
+}
+
+// dateOnlyLayouts are candidate layouts, all ending in a literal "-0700"
+// placeholder for a *numeric* offset. We normalize any named zone
+// abbreviation in the input to a numeric offset before trying these, so a
+// single set of layouts covers both cases.
+var dateOnlyLayouts = []string{
+	"Mon, 02 Jan 2006 15:04:05 -0700",
+	"Mon, 02 Jan 06 15:04:05 -0700",
+	"02 Jan 2006 15:04:05 -0700",
+	"02 Jan 06 15:04:05 -0700",
+	"Mon, 02 Jan 2006 15:04 -0700", // seconds sometimes omitted in the wild
+	"Mon, 02 Jan 06 15:04 -0700",
+	"02 Jan 2006 15:04 -0700",
+	"02 Jan 06 15:04 -0700",
+}
 
 // String returns the value of the Category.
 func (c Category) String() string {
@@ -34,7 +68,7 @@ func NewRSS(title, description, link string, options ...RSSOption) *RSS {
 			Title:         title,
 			Description:   description,
 			Link:          link,
-			LastBuildDate: new(types.NewTimestamp(time.Now().UTC())),
+			LastBuildDate: NewTimestamp(time.Now().UTC()),
 			Generator:     new("go-syndication"),
 			Docs:          new("https://www.rssboard.org/rss-specification"),
 		},
@@ -81,14 +115,14 @@ func WithWebmaster(webmaster string) RSSOption {
 // WithLastBuildDate option sets the last build date of the RSS object. This will default to time.Now().UTC().
 func WithLastBuildDate(ts time.Time) RSSOption {
 	return func(r *RSS) {
-		r.Channel.LastBuildDate = new(types.NewTimestamp(ts))
+		r.Channel.LastBuildDate = NewTimestamp(ts)
 	}
 }
 
 // WithPublishedDate option sets the published date of the RSS object.
 func WithPublishedDate(ts time.Time) RSSOption {
 	return func(r *RSS) {
-		r.Channel.PubDate = new(types.NewTimestamp(ts))
+		r.Channel.PubDate = NewTimestamp(ts)
 	}
 }
 
@@ -193,5 +227,110 @@ func (r *RSS) Validate() error {
 	if err := validation.ValidateStruct(r); err != nil {
 		return fmt.Errorf("rss validation failed: %w", err)
 	}
+	return nil
+}
+
+// ParseRFC822 parses an RSS date-time value leniently: it accepts both
+// numeric zone offsets (+0100, -0600) and the named zone abbreviations
+// registered in namedZoneOffsets, with or without a weekday, with a 2- or
+// 4-digit year, and with or without seconds.
+func ParseRFC822(ts string) (time.Time, error) {
+	ts = strings.TrimSpace(ts)
+
+	fields := strings.Fields(ts)
+	if len(fields) == 0 {
+		return time.Time{}, errors.New("rss date-time: empty value")
+	}
+	lastIdx := len(fields) - 1
+	zone := fields[lastIdx]
+
+	// If the trailing token is a known named zone, rewrite it as a
+	// numeric offset so a single family of layouts handles everything.
+	if off, ok := namedZoneOffsets[strings.ToUpper(zone)]; ok {
+		sign := "+"
+		if off < 0 {
+			sign = "-"
+			off = -off
+		}
+		fields[lastIdx] = fmt.Sprintf("%s%02d%02d", sign, off/3600, (off%3600)/60)
+		ts = strings.Join(fields, " ")
+	}
+	// Otherwise, if it's already a numeric offset (+0100 / -0600) or a
+	// literal "Z", leave it as-is; the loop below will try it against
+	// each layout and Go's -0700 verb correctly parses "+HHMM"/"-HHMM".
+
+	var lastErr error
+	for _, layout := range dateOnlyLayouts {
+		if t, err := time.Parse(layout, ts); err == nil {
+			return t, nil
+		} else {
+			lastErr = err
+		}
+	}
+	return time.Time{}, fmt.Errorf("rss date-time: could not parse %q: %w", ts, lastErr)
+}
+
+// IsCanonical reports whether s is already in one of the profile's three
+// recommended universal forms -- "... +0000", "... -0000", or "... GMT" --
+// with a well-formed date-time prefix. Useful for producers who want to
+// flag non-canonical input before emitting it verbatim.
+func IsCanonical(ts string) bool {
+	switch {
+	case strings.HasSuffix(ts, " GMT"):
+		_, err := time.Parse("Mon, 02 Jan 2006 15:04:05 GMT", ts)
+		return err == nil
+	case strings.HasSuffix(ts, " +0000"), strings.HasSuffix(ts, " -0000"):
+		_, err := time.Parse(outputLayout, ts)
+		return err == nil
+	default:
+		return false
+	}
+}
+
+func NewTimestamp(value time.Time) *Timestamp {
+	return &Timestamp{Value: value}
+}
+
+func (t Timestamp) String() string {
+	return t.Value.Format(outputLayout)
+}
+
+// MarshalXML implements xml.Marshaler. Always normalizes to UTC and emits
+// the "+0000" form, one of the profile's three recommended universal
+// representations.
+func (t Timestamp) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
+	if t.Value.IsZero() {
+		return fmt.Errorf("rss timestamp: zero time.Time value for <%s>", start.Name.Local)
+	}
+	if err := enc.EncodeToken(start); err != nil {
+		return fmt.Errorf("rss timestamp: encode start element: %w", err)
+	}
+	formatted := t.Value.UTC().Format(outputLayout)
+	if err := enc.EncodeToken(xml.CharData(formatted)); err != nil {
+		return fmt.Errorf("rss timestamp: encode: %w", err)
+	}
+
+	if err := enc.EncodeToken(start.End()); err != nil {
+		return fmt.Errorf("rss timestamp: encode end element: %w", err)
+	}
+
+	return nil
+}
+
+// UnmarshalXML implements xml.Unmarshaler, accepting any RFC 822-conformant
+// value (per the profile's requirements) rather than only the canonical
+// output forms.
+func (t *Timestamp) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	var valueStruct struct {
+		Value string `xml:",chardata"`
+	}
+	if err := dec.DecodeElement(&valueStruct, &start); err != nil {
+		return fmt.Errorf("rss timestamp: decode start element: %w", err)
+	}
+	parsed, err := ParseRFC822(valueStruct.Value)
+	if err != nil {
+		return fmt.Errorf("<%s>: %w", start.Name.Local, err)
+	}
+	t.Value = parsed
 	return nil
 }

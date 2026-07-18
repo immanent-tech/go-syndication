@@ -14,11 +14,20 @@ info:
     identifier: MIT
 components:
   schemas:
+    Timestamp:
+      description: >
+        represents a timestamp for an object
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          description: is the timestamp value
+          x-go-type: time.Time
     PubDate:
       description: >
         is the publication date of the content.
-      allOf:
-        - $ref: 'types.yaml#/components/schemas/Timestamp'
+      x-go-type: Timestamp
       x-oapi-codegen-extra-tags:
         xml: 'pubDate,omitempty'
         json: 'pub_date'
@@ -26,8 +35,7 @@ components:
     LastBuildDate:
       description: >
         is the last time the content of the channel changed.
-      allOf:
-        - $ref: 'types.yaml#/components/schemas/Timestamp'
+      x-go-type: Timestamp
       x-oapi-codegen-extra-tags:
         xml: 'lastBuildDate,omitempty'
         json: 'last_build_date'

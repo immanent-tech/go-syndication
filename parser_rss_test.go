@@ -252,7 +252,7 @@ var rssMustPass = map[string]rssTestSuite{
 			assert.Equal(t, "A weblog about scripting and stuff like that.", feed.Channel.GetDescription())
 			assert.Equal(t, "en-us", *feed.Channel.GetLanguage())
 			assert.Equal(t, "Copyright 1997-2002 Dave Winer", *feed.Channel.Copyright)
-			assert.Equal(t, "Mon, 30 Sep 2002 11:00:00 GMT", feed.Channel.LastBuildDate.Value.Format(time.RFC1123))
+			assert.Equal(t, "Mon, 30 Sep 2002 11:00:00 +0000", feed.Channel.LastBuildDate.String())
 			assert.Equal(t, "http://backend.userland.com/rss", *feed.Channel.Docs)
 			assert.Equal(t, "Radio UserLand v8.0.5", *feed.Channel.Generator)
 			assert.True(t, slices.Contains(feed.Channel.GetCategories(), "1765"))
@@ -266,7 +266,7 @@ var rssMustPass = map[string]rssTestSuite{
 			// 	sanitization.SanitizeString("&quot;rssflowersalignright&quot;With any luck we should have one or two more days of namespaces stuff here on Scripting News. It feels like it's winding down. Later in the week I'm going to a &lt;a href=&quot;http://harvardbusinessonline.hbsp.harvard.edu/b02/en/conferences/conf_detail.jhtml?id=s775stg&amp;pid=144XCF&quot;&gt;conference&lt;/a&gt; put on by the Harvard Business School. So that should change the topic a bit. The following week I'm off to Colorado for the &lt;a href=&quot;http://www.digitalidworld.com/conference/2002/index.php&quot;&gt;Digital ID World&lt;/a&gt; conference. We had to go through namespaces, and it turns out that weblogs are a great way to work around mail lists that are clogged with &lt;a href=&quot;http://www.userland.com/whatIsStopEnergy&quot;&gt;stop energy&lt;/a&gt;. I think we solved the problem, have reached a consensus, and will be ready to move forward shortly."),
 			// 	feed.Channel.Items[0].GetDescription(),
 			// )
-			assert.Equal(t, "Sun, 29 Sep 2002 11:13:10 GMT", item.GetPublishedDate().Format(time.RFC1123))
+			assert.Equal(t, "Sun, 29 Sep 2002 11:13:10 +0000", item.PubDate.String())
 			assert.Equal(
 				t,
 				"http://scriptingnews.userland.com/backissues/2002/09/29#reallyEarlyMorningNocoffeeNotes",

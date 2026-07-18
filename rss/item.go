@@ -25,7 +25,7 @@ var _ types.ItemSource = (*Item)(nil)
 // NewItem creates a new Item with the given options.
 func NewItem(options ...ItemOption) *Item {
 	item := &Item{
-		PubDate: new(types.NewTimestamp(time.Now().UTC())),
+		PubDate: NewTimestamp(time.Now().UTC()),
 	}
 
 	for option := range slices.Values(options) {
@@ -93,7 +93,7 @@ func WithItemPublishedDate(ts time.Time) ItemOption {
 			// Ignore zero value.
 			return
 		}
-		i.PubDate = new(types.NewTimestamp(ts))
+		i.PubDate = NewTimestamp(ts)
 	}
 }
 

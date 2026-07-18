@@ -5,6 +5,7 @@ package rss
 
 import (
 	"encoding/xml"
+	"time"
 
 	externalRef0 "github.com/immanent-tech/go-syndication/atom"
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/dc"
@@ -507,11 +508,11 @@ type ItemDescription struct {
 	Value string `json:"value"`
 }
 
-// LastBuildDate represents a timestamp used in feed objects.
-type LastBuildDate = externalRef7.Timestamp
+// LastBuildDate is the last time the content of the channel changed.
+type LastBuildDate = Timestamp
 
-// PubDate represents a timestamp used in feed objects.
-type PubDate = externalRef7.Timestamp
+// PubDate is the publication date of the content.
+type PubDate = Timestamp
 
 // RSS represents an RSS document.
 type RSS struct {
@@ -567,4 +568,10 @@ type TextInput struct {
 
 	// Title is the label of the Submit button in the text input area.
 	Title string `json:"title" validate:"required" xml:"title"`
+}
+
+// Timestamp represents a timestamp for an object
+type Timestamp struct {
+	// Value is the timestamp value
+	Value time.Time `json:"value"`
 }
