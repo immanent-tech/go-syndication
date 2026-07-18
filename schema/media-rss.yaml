@@ -160,9 +160,19 @@ components:
             xml: 'url,attr'
             validate: 'required,url'
         height:
-          $ref: 'types-attributes.yaml#/components/schemas/AttrHeight'
+          description: >
+            is the height of the media object.
+          type: integer
+          x-oapi-codegen-extra-tags:
+            xml: 'height,attr,omitempty'
+            validate: 'omitempty,number'
         width:
-          $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
+          description: >
+            is the width of the media object. It is an optional attribute.
+          type: integer
+          x-oapi-codegen-extra-tags:
+            xml: 'width,attr,omitempty'
+            validate: 'omitempty,number'
         time:
           description: >
             specifies the time offset in relation to the media object. Typically this is used when creating multiple

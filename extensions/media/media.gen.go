@@ -763,14 +763,14 @@ type MediaThumbnail struct {
 	XMLName xml.Name `json:"XMLName"`
 
 	// Height is the height of the media object.
-	Height externalRef1.AttrHeight `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr"`
+	Height int `json:"height,omitempty,omitzero" validate:"omitempty,number" xml:"height,attr,omitempty"`
 
 	// Time specifies the time offset in relation to the media object. Typically this is used when creating multiple keyframes within a single video. The format for this attribute should be in the DSM-CC's Normal Play Time (NTP) as used in RTSP
 	Time string               `json:"time,omitempty,omitzero" xml:"time,attr,omitempty"`
 	URL  externalRef1.AttrURL `json:"url" validate:"required,url" xml:"url,attr"`
 
 	// Width is the width of the media object. It is an optional attribute.
-	Width externalRef1.AttrWidth `json:"width,omitempty,omitzero" validate:"omitempty,number" xml:"width,attr"`
+	Width int `json:"width,omitempty,omitzero" validate:"omitempty,number" xml:"width,attr,omitempty"`
 }
 
 // MediaThumbnails a list of thumbnails for the object.
