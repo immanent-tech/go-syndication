@@ -158,7 +158,7 @@ func (e *Entry) GetMediaGroup() *media.MediaGroup {
 // DateTime equal to Unix epoch.
 func (e *Entry) GetPublishedDate() *time.Time {
 	if e.Published != nil && !e.Published.Value.IsZero() {
-		return new(e.Published.Value.Time)
+		return new(e.Published.Value)
 	}
 	return nil
 }
@@ -166,7 +166,7 @@ func (e *Entry) GetPublishedDate() *time.Time {
 // GetUpdatedDate returns the <updated> of the Entry.
 func (e *Entry) GetUpdatedDate() *time.Time {
 	if !e.Updated.Value.IsZero() {
-		return new(e.Updated.Value.Time)
+		return new(e.Updated.Value)
 	}
 	return nil
 }

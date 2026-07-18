@@ -5,10 +5,10 @@ package atom
 
 import (
 	"encoding/xml"
+	"time"
 
 	externalRef0 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/media"
-	"github.com/immanent-tech/go-syndication/types"
 	externalRef2 "github.com/immanent-tech/go-syndication/types"
 )
 
@@ -111,12 +111,11 @@ type DateConstruct struct {
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
 
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name `json:"XMLName"`
-
 	// Attributes are any attributes of the element.
 	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
-	Value      types.DateTime          `json:"value" validate:"required" xml:",chardata"`
+
+	// Value is the value of the date construct.
+	Value time.Time `json:"value"`
 }
 
 // Email is an element that conveys an email address.
@@ -663,21 +662,8 @@ type PersonConstruct struct {
 	URI *URI `json:"uri,omitempty" validate:"omitempty" xml:"uri,omitempty"`
 }
 
-// Published defines model for Published.
-type Published struct {
-	// Base establishes the base URI (or IRI) for resolving any relative references found within the effective scope of the xml:base attribute.
-	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
-
-	// Lang indicates the natural language for the element and its descendents.
-	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
-
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name `json:"XMLName"`
-
-	// Attributes are any attributes of the element.
-	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
-	Value      types.DateTime          `json:"value" validate:"required" xml:",chardata"`
-}
+// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
+type Published = DateConstruct
 
 // Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
 type Rights = TextConstruct
@@ -779,18 +765,5 @@ type URI struct {
 // UndefinedContent represents additional undefined, unstructed text content for the element.
 type UndefinedContent = string
 
-// Updated defines model for Updated.
-type Updated struct {
-	// Base establishes the base URI (or IRI) for resolving any relative references found within the effective scope of the xml:base attribute.
-	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
-
-	// Lang indicates the natural language for the element and its descendents.
-	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
-
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name `json:"XMLName"`
-
-	// Attributes are any attributes of the element.
-	Attributes externalRef2.Attributes `json:"attributes" xml:",any,attr"`
-	Value      types.DateTime          `json:"value" validate:"required" xml:",chardata"`
-}
+// Updated is an element of type Date construct indicating the most recent instant in time when an entry or feed was modified in a way the publisher considers significant.
+type Updated = DateConstruct

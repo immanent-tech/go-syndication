@@ -176,19 +176,13 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
-            - XMLName
             - value
           properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
             value:
-              x-go-type: types.DateTime
-              x-oapi-codegen-extra-tags:
-                json: 'value'
-                xml: ',chardata'
-                validate: 'required'
+              description: is the value of the date construct.
+              x-go-type: time.Time
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'
     ID:
       description: >
         is an element that conveys a permanent, universally unique identifier for an entry or feed.
@@ -221,16 +215,7 @@ components:
       description: >
         is an element of type Date construct indicating the most recent instant in time when an entry or feed was modified in a
         way the publisher considers significant.
-      allOf:
-        - $ref: '#/components/schemas/DateConstruct'
-        - type: object
-          required:
-            - XMLName
-          properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
+      x-go-type: DateConstruct
       x-oapi-codegen-extra-tags:
         xml: 'updated'
         json: 'updated'
@@ -467,16 +452,7 @@ components:
       description: >
         is an element of type Date construct indicating an instant in time associated with an event early in the life
         cycle of the entry.
-      allOf:
-        - $ref: '#/components/schemas/DateConstruct'
-        - type: object
-          required:
-            - XMLName
-          properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
+      x-go-type: DateConstruct
       x-oapi-codegen-extra-tags:
         xml: 'published,omitempty'
         json: 'published,omitempty'

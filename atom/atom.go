@@ -10,6 +10,7 @@ import (
 	"mime"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/sanitization"
@@ -17,6 +18,14 @@ import (
 )
 
 const xhtmlNS = "http://www.w3.org/1999/xhtml"
+
+// dateLayout mirrors time.RFC3339Nano: "2006-01-02T15:04:05.999999999Z07:00".
+// The trailing ".999999999" is Go's convention for "trim trailing zero
+// fractional digits, omit entirely if zero" -- which naturally produces the
+// spec's *optional* fractional-seconds behavior. The literal "T" and the
+// "Z07:00" zone verb naturally produce uppercase "T" and "Z" on output,
+// exactly matching the spec's requirement.
+const dateLayout = time.RFC3339Nano
 
 func init() {
 	if err := validation.RegisterValidation("type_attr", validateTypeAttr); err != nil {
@@ -152,7 +161,7 @@ func (t TextConstruct) MarshalXML(enc *xml.Encoder, start xml.StartElement) erro
 		// what "html" type requires ("<br>" -> "&lt;br>") and is harmless
 		// (a no-op beyond normal XML escaping) for "text" type.
 		if err := enc.EncodeToken(xml.CharData(t.Value)); err != nil {
-			return fmt.Errorf("text construct: encode %s: %w", typ, err)
+			return fmt.Errorf("text construct: encode: %w", err)
 		}
 	}
 
@@ -201,5 +210,86 @@ func (t *TextConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 		return fmt.Errorf("text construct: marshal value: %w", err)
 	}
 	t.Value = valueStruct.Value
+	return nil
+}
+
+func (d DateConstruct) String() string {
+	return d.Value.Format(time.RFC3339)
+}
+
+// MarshalXML implements xml.Marshaler.
+func (d DateConstruct) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
+	if d.Value.IsZero() {
+		return fmt.Errorf("atom date construct: zero time.Time value for <%s>", start.Name.Local)
+	}
+	start.Attr = nil
+	if d.Base != nil {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: "xml", Local: "base"}, Value: *d.Base})
+	}
+	if d.Lang != nil {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: "xml", Local: "lang"}, Value: *d.Lang})
+	}
+	if err := enc.EncodeToken(start); err != nil {
+		return fmt.Errorf("date construct: encode start element: %w", err)
+	}
+	if err := enc.EncodeToken(xml.CharData(d.Value.Format(dateLayout))); err != nil {
+		return fmt.Errorf("date construct: encode: %w", err)
+	}
+
+	if err := enc.EncodeToken(start.End()); err != nil {
+		return fmt.Errorf("date construct: encode end element: %w", err)
+	}
+
+	return nil
+}
+
+// UnmarshalXML implements xml.Unmarshaler.
+//
+// We parse leniently (Go's time.Parse against the RFC3339 layout already
+// accepts an optional fractional-seconds component even though the layout
+// itself doesn't spell one out -- a documented quirk of time.Parse -- and
+// also happens to accept lowercase "t"/"z", which strictly isn't legal
+// Atom). If you need to reject non-conformant producers rather than accept
+// them liberally, call Validate on the raw text before parsing, or check
+// d.Time.Format(dateLayout) against the original string after decoding.
+func (d *DateConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	for _, a := range start.Attr {
+		switch {
+		case a.Name.Local == "base" && a.Name.Space == "xml":
+			d.Base = &a.Value
+		case a.Name.Local == "lang" && a.Name.Space == "xml":
+			d.Lang = &a.Value
+		}
+	}
+	var valueStruct struct {
+		Value string `xml:",chardata"`
+	}
+	if err := dec.DecodeElement(&valueStruct, &start); err != nil {
+		return fmt.Errorf("date construct: decode: %w", err)
+	}
+	t, err := time.Parse(time.RFC3339, valueStruct.Value)
+	if err != nil {
+		return fmt.Errorf("atom date construct: invalid date-time %q: %w", valueStruct.Value, err)
+	}
+	d.Value = t
+	return nil
+}
+
+// Validate rejects date-time strings that parse fine under RFC 3339 in
+// general but violate RFC 4287's stricter uppercase-T/Z requirement.
+func (d *DateConstruct) Validate() error {
+	raw := d.String()
+	if _, err := time.Parse(time.RFC3339, raw); err != nil {
+		return fmt.Errorf("atom date construct: invalid date-time %q: %w", raw, err)
+	}
+	// time.Parse accepts lowercase t/z against this layout too; the spec
+	// doesn't, so check the literal separator characters ourselves.
+	tIdx := 10 // "2006-01-02" is always 10 bytes before the separator
+	if tIdx >= len(raw) || raw[tIdx] != 'T' {
+		return fmt.Errorf("atom date construct: %q must use an uppercase %q separator", raw, "T")
+	}
+	if raw[len(raw)-1] == 'z' {
+		return fmt.Errorf("atom date construct: %q must use an uppercase %q zone indicator", raw, "Z")
+	}
 	return nil
 }

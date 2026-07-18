@@ -177,7 +177,7 @@ func (f *Feed) SetImage(image *types.ImageInfo) {
 // GetPublishedDate returns the <published> element of the Feed.
 func (f *Feed) GetPublishedDate() *time.Time {
 	if f.Published != nil {
-		return new(f.Published.Value.Time)
+		return new(f.Published.Value)
 	}
 	return nil
 }
@@ -193,7 +193,7 @@ func (f *Feed) GetUpdatedDate() *time.Time {
 			return f.Entries[0].GetUpdatedDate()
 		}
 	}
-	return new(f.Updated.Value.Time)
+	return new(f.Updated.Value)
 }
 
 func (f *Feed) GetUpdateInterval() time.Duration {
