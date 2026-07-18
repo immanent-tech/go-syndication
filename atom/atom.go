@@ -65,10 +65,6 @@ func (c *Category) String() string {
 	return sanitization.SanitizeString(c.Term.Value)
 }
 
-func (t *Title) String() string {
-	return sanitization.SanitizeString(t.Value)
-}
-
 func (i *ID) String() string {
 	return i.Value
 }
@@ -91,6 +87,13 @@ func validateTypeAttr(fl validator.FieldLevel) bool {
 	}
 	_, _, err := mime.ParseMediaType(value)
 	return err == nil
+}
+
+func (t TextConstruct) String() string {
+	if t.Type == nil || *t.Type != TypeXhtml {
+		return t.Value
+	}
+	return *t.XHTML
 }
 
 // MarshalXML implements xml.Marshaler. The element name itself (title,
