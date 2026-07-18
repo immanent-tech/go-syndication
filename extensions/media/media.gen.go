@@ -86,8 +86,8 @@ type Label = string
 
 // MediaBacklink is a backlink pointing to the media object.
 type MediaBacklink struct {
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaBacklinks allows inclusion of all the URLs pointing to a media object.
@@ -104,8 +104,8 @@ type MediaCategory struct {
 	// Scheme is the URI that identifies the scheme used by the element.
 	Scheme Scheme `json:"scheme,omitempty,omitzero" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaComment is a comments a media object has received.
@@ -113,8 +113,8 @@ type MediaComment struct {
 	// XMLName represents the XML namespace of an element.
 	XMLName xml.Name `json:"XMLName"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaComments is a list of comments the media object has received.
@@ -151,8 +151,8 @@ type MediaCommunityStatistics struct {
 
 // MediaCommunityTags contains user-generated tags separated by commas in the decreasing order of each tag's weight. Each tag can be assigned an integer weight in tag_name:weight format. It's up to the provider to choose the way weight is determined for a tag; for example, number of occurences can be one way to decide weight of a particular tag.
 type MediaCommunityTags struct {
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaContent defines model for MediaContent.
@@ -335,8 +335,8 @@ type MediaCopyright struct {
 	// Url is a URL that represents the element content.
 	Url externalRef1.AttrURL `json:"url,omitempty,omitzero" validate:"omitempty,url" xml:"url,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaCredit Notable entity and the contribution to the creation of the media object. Current entities can include people, companies, locations, etc. Specific entities can have multiple roles, and several entities can have the same role.
@@ -350,8 +350,8 @@ type MediaCredit struct {
 	// Scheme is the URI that identifies the scheme used by the element.
 	Scheme Scheme `json:"scheme,omitempty,omitzero" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaCredits a list of credits for the object.
@@ -365,8 +365,8 @@ type MediaDescription struct {
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaElements is the list of optional elements that can be sub-elements of <media:group>, <media:content>, <channel> or <item> elements.
@@ -549,8 +549,8 @@ type MediaHash struct {
 	// Algo indicates the algorithm used to create the hash.
 	Algo MediaHashAlgo `json:"algo,omitempty,omitzero" xml:"algo,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaHashAlgo indicates the algorithm used to create the hash.
@@ -564,8 +564,8 @@ type MediaKeywords struct {
 	// XMLName represents the XML namespace of an element.
 	XMLName xml.Name `json:"XMLName"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaLicense link to specify the machine-readable license associated with the content.
@@ -579,8 +579,8 @@ type MediaLicense struct {
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaParam is a key-value pair that defines player-specific values for an Embed element.
@@ -588,8 +588,8 @@ type MediaParam struct {
 	// Name is the name of the param.
 	Name string `json:"name" xml:"name,attr"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaPeerLink contains P2P link.
@@ -646,14 +646,14 @@ type MediaRating struct {
 	// Scheme is the URI that identifies the scheme used by the element.
 	Scheme Scheme `json:"scheme,omitempty,omitzero" validate:"omitempty,uri" xml:"scheme,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaResponse is a response a media object has received.
 type MediaResponse struct {
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaResponses allows inclusion of a list of all media responses a media object has received.
@@ -670,8 +670,8 @@ type MediaRestriction struct {
 	// Type specifies the type of restriction.
 	Type MediaRestrictionType `json:"type,omitempty,omitzero" xml:"sharing,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaRestrictionRelationship indicates the type of relationship that the restriction represents.
@@ -750,8 +750,8 @@ type MediaText struct {
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // MediaTexts a list of texts for the object.
@@ -784,8 +784,8 @@ type MediaTitle struct {
 	// Type specifies the type of text embedded in the element.
 	Type TextType `json:"type,omitempty,omitzero" validate:"omitempty,oneof=plain html" xml:"type,attr,omitempty"`
 
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // Medium is the type of object.
@@ -793,26 +793,26 @@ type Medium string
 
 // SceneDescription defines model for SceneDescription.
 type SceneDescription struct {
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // SceneEndTime defines model for SceneEndTime.
 type SceneEndTime struct {
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // SceneStartTime defines model for SceneStartTime.
 type SceneStartTime struct {
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // SceneTitle defines model for SceneTitle.
 type SceneTitle struct {
-	// Value is an element value that is required.
-	Value externalRef1.RequiredValue `json:"value" validate:"required" xml:",chardata"`
+	// Value represents an elements value.
+	Value Value `json:"value" validate:"required" xml:",chardata"`
 }
 
 // Scheme is the URI that identifies the scheme used by the element.
@@ -820,3 +820,6 @@ type Scheme = string
 
 // TextType specifies the type of text embedded in the element.
 type TextType string
+
+// Value represents an elements value.
+type Value = string

@@ -32,19 +32,6 @@ components:
         value:
           description: is the sanitised string value.
           type: string
-    RequiredValue:
-      description: >
-        is an element value that is required.
-      type: string
-      x-oapi-codegen-extra-tags:
-        xml: ',chardata'
-        validate: 'required'
-    OptionalValue:
-      description: >
-        is an element value that is optional.
-      type: string
-      x-oapi-codegen-extra-tags:
-        xml: ',chardata'
     Attributes:
       description: >
         are any attributes of the element.
@@ -70,7 +57,11 @@ components:
             json: 'xml'
             validate: 'required'
         value:
-          $ref: '#/components/schemas/OptionalValue'
+          description: >
+            is the element value.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
         attributes:
           $ref: '#/components/schemas/Attributes'
         extensions:

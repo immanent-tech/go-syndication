@@ -9,12 +9,19 @@ info:
 
     https://www.rssboard.org/media-rss
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
 components:
   schemas:
+    Value:
+      description: >
+        represents an elements value.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: ',chardata'
+        validate: 'required'
     Medium:
       description: >
         is the type of object.
@@ -67,7 +74,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         scheme:
           $ref: '#/components/schemas/Scheme'
       x-oapi-codegen-extra-tags:
@@ -87,7 +94,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         type:
           $ref: '#/components/schemas/TextType'
       x-oapi-codegen-extra-tags:
@@ -107,7 +114,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         type:
           $ref: '#/components/schemas/TextType'
       x-oapi-codegen-extra-tags:
@@ -128,7 +135,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ keywords,omitempty'
         json: 'media_keywords'
@@ -191,7 +198,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         scheme:
           $ref: '#/components/schemas/Scheme'
         label:
@@ -213,7 +220,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         algo:
           description: >
             indicates the algorithm used to create the hash.
@@ -277,7 +284,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         role:
           description: >
             specifies the role the entity played.
@@ -318,7 +325,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         url:
           $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
       x-oapi-codegen-extra-tags:
@@ -338,7 +345,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         type:
           $ref: '#/components/schemas/TextType'
         lang:
@@ -386,7 +393,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         relationship:
           description: >
             indicates the type of relationship that the restriction represents.
@@ -465,7 +472,7 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ tags,omitempty'
         json: 'media_community_tags,omitempty'
@@ -505,7 +512,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ comment,omitempty'
         json: 'media_comment'
@@ -527,7 +534,7 @@ components:
         - name
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         name:
           description: >
             is the name of the param.
@@ -575,7 +582,7 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ response,omitempty'
         json: 'media_response'
@@ -598,7 +605,7 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
         json: 'media_backlink,omitempty'
@@ -714,7 +721,7 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
         type:
           $ref: '#/components/schemas/TextType'
         href:
@@ -798,7 +805,7 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'sceneTitle,omitempty'
         json: 'sceneTitle,omitempty'
@@ -808,7 +815,7 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'sceneDescription,omitempty'
         json: 'sceneDescription,omitempty'
@@ -818,7 +825,7 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'sceneStartTime,omitempty'
         json: 'sceneStartTime,omitempty'
@@ -828,7 +835,7 @@ components:
         - value
       properties:
         value:
-          $ref: 'types.yaml#/components/schemas/RequiredValue'
+          $ref: '#/components/schemas/Value'
       x-oapi-codegen-extra-tags:
         xml: 'sceneEndTime,omitempty'
         json: 'sceneEndTime,omitempty'

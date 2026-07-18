@@ -30,8 +30,8 @@ type Extension struct {
 	Attributes Attributes  `json:"attributes" xml:",any,attr"`
 	Extensions []Extension `json:"extensions,omitempty" xml:",any"`
 
-	// Value is an element value that is optional.
-	Value OptionalValue `json:"value,omitempty,omitzero" xml:",chardata"`
+	// Value is the element value.
+	Value string `json:"value,omitempty,omitzero" xml:",chardata"`
 }
 
 // Extensions records any elements that are unknown extensions to the schema.
@@ -45,12 +45,6 @@ type ImageInfo struct {
 	// URL is the URL to the image.
 	URL string `json:"url" validate:"required,url" xml:",chardata"`
 }
-
-// OptionalValue is an element value that is optional.
-type OptionalValue = string
-
-// RequiredValue is an element value that is required.
-type RequiredValue = string
 
 // SanitisedString represents a string that has sanitisation applied.
 type SanitisedString struct {
