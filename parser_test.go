@@ -5,6 +5,7 @@ package feeds
 
 import (
 	"errors"
+	"slices"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/validation"
@@ -15,14 +16,12 @@ import (
 // rules have passed or failed.
 func getFailedValidations(err error) (map[string][]string, error) {
 	failedValidations := make(map[string][]string)
-	var invalidValidationError *validator.InvalidValidationError
-	if errors.As(err, &invalidValidationError) {
+	if invalidValidationError, ok := errors.AsType[*validator.InvalidValidationError](err); ok {
 		return nil, invalidValidationError
 	}
-	var validateErrs validation.StructError
-	if errors.Is(err, &validateErrs) {
-		for _, e := range validateErrs.Fields {
-			failedValidations[e.StructField] = append(failedValidations[e.StructNamespace], e.Tag)
+	if validateErrs, ok := errors.AsType[*validation.StructError](err); ok && validateErrs != nil {
+		for e := range slices.Values(validateErrs.Fields) {
+			failedValidations[e.StructNamespace] = append(failedValidations[e.StructNamespace], e.Tag)
 		}
 	}
 	return failedValidations, nil

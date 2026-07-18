@@ -27,11 +27,10 @@ type Extension struct {
 	XMLName xml.Name `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.
-	Attributes Attributes  `json:"attributes" xml:",any,attr"`
-	Extensions []Extension `json:"extensions,omitempty" xml:",any"`
+	Attributes Attributes `json:"attributes" xml:",any,attr"`
 
-	// Value is the element value.
-	Value string `json:"value,omitempty,omitzero" xml:",chardata"`
+	// Content is the element value.
+	Content string `json:"content" validate:"required" xml:",innerxml"`
 }
 
 // Extensions records any elements that are unknown extensions to the schema.

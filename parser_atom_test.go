@@ -1394,7 +1394,7 @@ var atomMustTests = map[string]atomTestSuite{
 	"feed_generator_name.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Equal(t, "Pretty much any name is acceptable", *feed.Generator.Value)
+			assert.Equal(t, "Pretty much any name is acceptable", feed.Generator.Value)
 		},
 	},
 	"feed_generator_not_really_uri.xml": {

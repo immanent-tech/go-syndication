@@ -48,32 +48,22 @@ components:
       type: object
       required:
         - XMLName
+        - content
       properties:
         XMLName:
-          description: >
-            represents the XML namespace of an element.
+          description: represents the XML namespace of an element.
           x-go-type: 'xml.Name'
           x-oapi-codegen-extra-tags:
             json: 'xml'
             validate: 'required'
-        value:
-          description: >
-            is the element value.
+        content:
+          description: is the element value.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: ',chardata'
+            xml: ',innerxml'
+            validate: 'required'
         attributes:
           $ref: '#/components/schemas/Attributes'
-        extensions:
-          descriptions: >
-            are any child extensions.
-          type: array
-          items:
-            $ref: '#/components/schemas/Extension'
-          x-oapi-codegen-extra-tags:
-            json: 'extensions,omitempty'
-            xml: ',any'
-          x-go-type-skip-optional-pointer: true
     Extensions:
       description: >
         records any elements that are unknown extensions to the schema.
