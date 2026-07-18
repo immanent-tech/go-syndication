@@ -474,7 +474,7 @@ type Item struct {
 	Comments *Comments `json:"comments,omitempty" validate:"omitempty,url" xml:"comments,omitempty"`
 
 	// Description is a short description of the item.
-	Description string `json:"description,omitzero" validate:"required_without=Title" xml:"description"`
+	Description ItemDescription `json:"description,omitzero" validate:"required_without=Title" xml:"description"`
 
 	// Enclosure describes a media object.
 	Enclosure *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
@@ -496,6 +496,15 @@ type Item struct {
 
 	// Title is the title of the item.
 	Title string `json:"title,omitzero" validate:"required_without=Description" xml:"title,omitempty"`
+}
+
+// ItemDescription is a short description of the item.
+type ItemDescription struct {
+	// CDATA indicates whether the data was CDATA encoded.
+	CDATA bool `json:"cdata"`
+
+	// Value is the actual value.
+	Value string `json:"value"`
 }
 
 // LastBuildDate represents a timestamp used in feed objects.

@@ -302,6 +302,25 @@ components:
       x-go-name: GUID
       x-oapi-codegen-extra-tags:
         xml: 'guid,omitempty'
+    ItemDescription:
+      description: >
+        is a short description of the item.
+      type: object
+      required:
+        - value
+        - cdata
+      properties:
+        value:
+          description: is the actual value.
+          type: string
+        cdata:
+          description: indicates whether the data was CDATA encoded.
+          x-go-name: CDATA
+          type: boolean
+      x-omitzero: true
+      x-oapi-codegen-extra-tags:
+        xml: description
+        validate: 'required_without=Title'
     Source:
       description: >
         The RSS channel that the item came from.
@@ -575,13 +594,7 @@ components:
             atom_link:
               $ref: '#/components/schemas/AtomLink'
             description:
-              description: >
-                is a short description of the item.
-              type: string
-              x-omitzero: true
-              x-oapi-codegen-extra-tags:
-                xml: description
-                validate: 'required_without=Title'
+              $ref: '#/components/schemas/ItemDescription'
             author:
               $ref: '#/components/schemas/Author'
             categories:

@@ -10,7 +10,7 @@ info:
 
     http://purl.org/rss/1.0/modules/content/
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
@@ -20,11 +20,20 @@ components:
       description: >
         is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
       type: object
-      x-go-type: 'types.CharData'
+      required:
+        - value
+        - cdata
+      properties:
+        value:
+          description: is the actual value.
+          type: string
+        cdata:
+          description: indicates whether the data was CDATA encoded.
+          x-go-name: CDATA
+          type: boolean
       x-oapi-codegen-extra-tags:
         json: 'content_encoded,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/content/ encoded,omitempty'
-      x-go-type-skip-optional-pointer: false
     SYUpdatePeriod:
       description: >
         is the period over which the channel format is updated.
@@ -42,13 +51,7 @@ components:
           default: 'daily'
           enum: ['hourly', 'daily', 'weekly', 'monthly', 'yearly']
           x-enum-varnames:
-            [
-              'UpdatedHourly',
-              'UpdatedDaily',
-              'UpdatedWeekly',
-              'UpdatedMonthly',
-              'UpdatedYearly',
-            ]
+            ['UpdatedHourly', 'UpdatedDaily', 'UpdatedWeekly', 'UpdatedMonthly', 'UpdatedYearly']
           x-oapi-codegen-extra-tags:
             xml: ',chardata'
             validate: 'required,oneof=hourly daily weekly monthly yearly'

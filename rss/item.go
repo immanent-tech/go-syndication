@@ -5,6 +5,8 @@
 package rss
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"log/slog"
 	"slices"
@@ -45,9 +47,9 @@ func WithItemTitle(title string) ItemOption {
 
 // WithItemDescription option sets the item description. Note to be value, an item needs either the title or description
 // set.
-func WithItemDescription(desc string) ItemOption {
+func WithItemDescription(desc string, cdata bool) ItemOption {
 	return func(i *Item) {
-		i.Description = desc
+		i.Description = NewItemDescription(desc, cdata)
 	}
 }
 
@@ -68,19 +70,19 @@ func WithItemGUID(guid *GUID) ItemOption {
 // WithItemImage option sets the item image.
 func WithItemImage(img *types.ImageInfo) ItemOption {
 	return func(i *Item) {
-		i.Image = &Image{
-			URL: img.GetURL(),
-		}
-		if title := img.GetTitle(); title != "" {
-			i.Image.Title = title
+		i.MediaThumbnails = media.MediaThumbnails{
+			media.MediaThumbnail{
+				XMLName: xml.Name{Local: "media:thumbnail"},
+				URL:     img.GetURL(),
+			},
 		}
 	}
 }
 
 // WithItemContent option sets the item content.
-func WithItemContent(content []byte) ItemOption {
+func WithItemContent(content string, cdata bool) ItemOption {
 	return func(i *Item) {
-		i.ContentEncoded = (*rss.ContentEncoded)(&content)
+		i.ContentEncoded = new(rss.NewContentEncoded(content, cdata))
 	}
 }
 
@@ -122,8 +124,8 @@ func (i *Item) GetLink() string {
 // GetDescription retrieves the <description> (if any) of the Item.
 func (i *Item) GetDescription() string {
 	// Use the nonempty description.
-	if i.Description != "" {
-		return i.Description
+	if i.Description.String() != "" {
+		return i.Description.String()
 	}
 	// Else, use a description from one of these:
 	switch {
@@ -280,7 +282,7 @@ func (i *Item) GetContent() *string {
 // Validate applies custom validation to an item.
 func (i *Item) Validate() error {
 	// Either description or title must be set. Both cannot be empty.
-	if i.Description == "" && i.Title == "" {
+	if i.Description.String() == "" && i.Title == "" {
 		return fmt.Errorf("%w: description or title is required", validation.ErrInvalidStruct)
 	}
 	return nil
@@ -292,4 +294,67 @@ func NewGUID(value string, permalink bool) *GUID {
 		IsPermaLink: permalink,
 		Value:       value,
 	}
+}
+
+func NewItemDescription(value string, cdata bool) ItemDescription {
+	return ItemDescription{
+		Value: value,
+		CDATA: cdata,
+	}
+}
+
+func (c ItemDescription) String() string {
+	return c.Value
+}
+
+// MarshalXML implements xml.Marshaler.
+func (c ItemDescription) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	// Force the literal element name "content:encoded". Go's xml package
+	// doesn't manage namespace prefixes well on marshal, so the common
+	// workaround is to declare xmlns:content on the root element (see
+	// RSSRoot below) and just use the literal prefixed name here.
+	start.Name = xml.Name{Local: "description"}
+
+	if c.CDATA {
+		return e.EncodeElement(struct {
+			Value string `xml:",cdata"`
+		}{c.Value}, start)
+	}
+	return e.EncodeElement(struct {
+		Value string `xml:",chardata"`
+	}{c.Value}, start)
+}
+
+// UnmarshalXML implements xml.Unmarshaler.
+//
+// Note: Go's decoder does not distinguish a CDATA section from ordinary
+// character data at the token level -- both come back as CharData and get
+// concatenated into a plain ",chardata" field. That means this single
+// implementation correctly reads content:encoded whether the source feed
+// used CDATA-escaping or entity-encoding, per the spec's "entity-encoded or
+// CDATA-escaped" wording. We can't reliably recover which form was
+// originally used, so CDATA is left at its zero value (false) after
+// decoding; set it yourself before re-marshaling if it matters.
+func (c *ItemDescription) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	var v struct {
+		Value string `xml:",chardata"`
+	}
+	if err := d.DecodeElement(&v, &start); err != nil {
+		return err
+	}
+	c.Value = v.Value
+	return nil
+}
+
+func (c ItemDescription) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.Value)
+}
+
+func (c *ItemDescription) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+	c.Value = s
+	return nil
 }

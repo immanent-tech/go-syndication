@@ -5,10 +5,7 @@
 package types
 
 import (
-	"encoding/json"
 	"encoding/xml"
-	"fmt"
-	"html"
 	"slices"
 	"time"
 
@@ -46,7 +43,7 @@ var (
 	DefaultFeedUpdateInterval = time.Hour
 )
 
-// NewXMLAttr is a convienience function to create an xml.Attr from a name/value/namespace combination. The namespace
+// NewXMLAttr is a convenience function to create an xml.Attr from a name/value/namespace combination. The namespace
 // value is optional, but the name and value should be provided.
 func NewXMLAttr(name, value, namespace string) xml.Attr {
 	return xml.Attr{
@@ -56,36 +53,6 @@ func NewXMLAttr(name, value, namespace string) xml.Attr {
 		},
 		Value: value,
 	}
-}
-
-// CharData is a custom type for xml.CharData that can additionally sanitize the data.
-type CharData xml.CharData
-
-// UnmarshalText provides custom unmarshaling of CharData that will sanitize, unescape and trim whitespace from the
-// value.
-func (c *CharData) UnmarshalText(data []byte) error {
-	*c = sanitization.SanitizeBytes(data)
-	return nil
-}
-
-// UnmarshalJSON provides custom unmarshaling of CharData that will sanitize, unescape and trim whitespace from the
-// value.
-func (c *CharData) UnmarshalJSON(data []byte) error {
-	var chardata struct {
-		CharData []byte `json:"CharData"`
-	}
-
-	if err := json.Unmarshal(data, &chardata); err != nil {
-		return fmt.Errorf("cannot unmarshal chardata: %w", err)
-	}
-
-	*c = sanitization.SanitizeBytes(chardata.CharData)
-
-	return nil
-}
-
-func (c *CharData) String() string {
-	return html.UnescapeString(string(*c))
 }
 
 func NewSanitisedString(value string) SanitisedString {

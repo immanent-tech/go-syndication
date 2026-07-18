@@ -10,7 +10,13 @@ import (
 )
 
 // ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
-type ContentEncoded = types.CharData
+type ContentEncoded struct {
+	// CDATA indicates whether the data was CDATA encoded.
+	CDATA bool `json:"cdata"`
+
+	// Value is the actual value.
+	Value string `json:"value"`
+}
 
 // PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
 type PermaLink struct {
