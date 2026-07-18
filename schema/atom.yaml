@@ -372,7 +372,7 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'hreflang,attr,omitempty'
-                validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
+                validate: 'omitempty,rfc3066lang'
             length:
               description: >
                 contains the resource's size, in bytes.
@@ -423,11 +423,12 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: 'rel,attr,omitempty'
                 validate: 'omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed'
-            undefined_content:
-              $ref: '#/components/schemas/UndefinedContent'
+            Extensions:
+              $ref: 'types.yaml#/components/schemas/Extensions'
       x-oapi-codegen-extra-tags:
         xml: 'http://www.w3.org/2005/Atom link,omitempty'
         json: 'link,omitempty'
+        validate: 'validateFn'
     Links:
       description: >
         a list of links associated with the feed.

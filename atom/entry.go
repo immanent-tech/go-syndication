@@ -22,7 +22,7 @@ var _ types.ItemSource = (*Entry)(nil)
 // GetID returns an "id" for the Entry. This will be the value of the <id> element, if present, or an empty string if
 // not present.
 func (e *Entry) GetID() string {
-	return e.ID.Value
+	return e.ID.String()
 }
 
 // GetTitle retrieves the <title> of the Entry.
@@ -98,8 +98,8 @@ func (e *Entry) GetRights() *string {
 	switch {
 	case e.DCRights != nil:
 		return e.DCRights
-	case e.Rights != nil && e.Rights.Value != "":
-		return &e.Rights.Value
+	case e.Rights != nil:
+		return new(e.Rights.String())
 	default:
 		return nil
 	}

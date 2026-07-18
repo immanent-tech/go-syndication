@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"mime"
+	"regexp"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -20,6 +21,9 @@ var validate *validator.Validate
 func init() {
 	validate = validator.New()
 	if err := validate.RegisterValidation("mimetype", validateMimetype); err != nil {
+		panic(err)
+	}
+	if err := validate.RegisterValidation("rfc3066lang", validateRFC3066Lang); err != nil {
 		panic(err)
 	}
 }
@@ -77,8 +81,7 @@ func (e *StructError) Error() string {
 func ValidateStruct(s any) *StructError {
 	if err := validate.Struct(s); err != nil {
 		errs := &StructError{}
-		var validateErrs validator.ValidationErrors
-		if errors.As(err, &validateErrs) {
+		if validateErrs, ok := errors.AsType[validator.ValidationErrors](err); ok {
 			errs.Fields = make([]FieldError, 0, len(validateErrs))
 			for _, err := range validateErrs {
 				errs.Fields = append(errs.Fields, FieldError{
@@ -109,9 +112,21 @@ func RegisterValidation(tag string, f validator.Func) error {
 	return nil
 }
 
-// validateMimetype checks that the field is a valid mimetype.
+// ValidateMimetype checks that the value is a valid mimetype.
 func validateMimetype(fl validator.FieldLevel) bool {
 	value := fl.Field().String()
 	_, _, err := mime.ParseMediaType(value)
 	return err == nil
+}
+
+// langTagRE is a pragmatic check for an [RFC3066] language tag:
+// primary subtag, optionally followed by "-" subtags.
+var langTagRE = regexp.MustCompile(`^[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8})*$`)
+
+// ValidateRFC3066Lang checks that the value is a valid RFC3066 language tag.
+func validateRFC3066Lang(fl validator.FieldLevel) bool {
+	if lang := fl.Field().String(); lang != "" && !langTagRE.MatchString(lang) {
+		return false
+	}
+	return true
 }

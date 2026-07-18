@@ -24,6 +24,15 @@ func init() {
 	}
 }
 
+func validateTypeAttr(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+	if slices.Contains([]string{"text", "html", "xhtml"}, value) {
+		return true
+	}
+	_, _, err := mime.ParseMediaType(value)
+	return err == nil
+}
+
 // String returns string-ified format of the PersonConstruct. This will be the format "name (email)". The email part is
 // omitted if the PersonConstruct has no email.
 func (p *PersonConstruct) String() string {
@@ -73,20 +82,20 @@ func (l *Link) String() string {
 	switch {
 	case l.Href != "":
 		return l.Href
-	case l.UndefinedContent != nil && *l.UndefinedContent != "":
-		return *l.UndefinedContent
 	default:
 		return ""
 	}
 }
 
-func validateTypeAttr(fl validator.FieldLevel) bool {
-	value := fl.Field().String()
-	if slices.Contains([]string{"text", "html", "xhtml"}, value) {
-		return true
+func (l *Link) Validate() error {
+	if l.Rel == LinkRelEnclosure && l.Length != nil {
+		// SHOULD, not MUST -- not a hard error, but worth flagging.
+		return fmt.Errorf("atom:link: rel=%q SHOULD include a length attribute", LinkRelEnclosure)
 	}
-	_, _, err := mime.ParseMediaType(value)
-	return err == nil
+	if err := validation.ValidateStruct(l); err != nil {
+		return fmt.Errorf("validate atom:link: %w", err)
+	}
+	return nil
 }
 
 func (t TextConstruct) String() string {

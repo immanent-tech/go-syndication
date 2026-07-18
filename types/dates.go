@@ -81,7 +81,7 @@ func (d *DateTime) UnmarshalJSON(data []byte) error {
 }
 
 // String returns a string representation of the DateTime.
-func (d *DateTime) String() string {
+func (d DateTime) String() string {
 	return d.Format(DateTimeFormats[0])
 }
 

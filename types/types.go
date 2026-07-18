@@ -75,3 +75,7 @@ func (s *SanitisedString) UnmarshalText(data []byte) error {
 func (s SanitisedString) String() string {
 	return s.Value
 }
+
+func (e Extension) String() string {
+	return e.Content
+}

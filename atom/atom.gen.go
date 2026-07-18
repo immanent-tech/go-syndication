@@ -584,6 +584,9 @@ type Link struct {
 	// Base establishes the base URI (or IRI) for resolving any relative references found within the effective scope of the xml:base attribute.
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
 
+	// Extensions records any elements that are unknown extensions to the schema.
+	Extensions externalRef2.Extensions `json:"extensions,omitempty" xml:",any"`
+
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
 
@@ -597,7 +600,7 @@ type Link struct {
 	Href string `json:"href" validate:"required,url|hostname" xml:"href,attr"`
 
 	// HrefLang identifies the language used by the related resource using an HTML language code.
-	HrefLang *string `json:"hreflang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"hreflang,attr,omitempty"`
+	HrefLang *string `json:"hreflang,omitempty" validate:"omitempty,rfc3066lang" xml:"hreflang,attr,omitempty"`
 
 	// Length contains the resource's size, in bytes.
 	Length *int `json:"length,omitempty" validate:"omitempty,number" xml:"length,attr,omitempty"`
@@ -610,9 +613,6 @@ type Link struct {
 
 	// Type identifies the resource's MIME media type.
 	Type *string `json:"type,omitempty" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
-
-	// UndefinedContent represents additional undefined, unstructed text content for the element.
-	UndefinedContent *UndefinedContent `json:"undefined_content,omitempty" xml:",chardata"`
 }
 
 // LinkRel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
