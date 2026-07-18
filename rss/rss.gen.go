@@ -4,7 +4,6 @@
 package rss
 
 import (
-	"encoding/xml"
 	"time"
 
 	externalRef0 "github.com/immanent-tech/go-syndication/atom"
@@ -516,11 +515,11 @@ type PubDate = Timestamp
 
 // RSS represents an RSS document.
 type RSS struct {
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name `json:"XMLName"`
-
 	// Channel is the element containing metadata (Channel elements) and items.
 	Channel Channel `json:"channel" validate:"required" xml:"channel"`
+
+	// Namespaces contains all namespaces in use by this RSS feed.
+	Namespaces []externalRef7.Namespace `json:"namespaces,omitempty"`
 
 	// Version specifies the version of RSS that the document conforms to.
 	Version RSSVersion `json:"version" validate:"required,oneof=0.91 0.92 2.0 2.0.1" xml:"version,attr"`

@@ -308,7 +308,7 @@ func (c ItemDescription) String() string {
 }
 
 // MarshalXML implements xml.Marshaler.
-func (c ItemDescription) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (c ItemDescription) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	// Force the literal element name "content:encoded". Go's xml package
 	// doesn't manage namespace prefixes well on marshal, so the common
 	// workaround is to declare xmlns:content on the root element (see
@@ -316,11 +316,11 @@ func (c ItemDescription) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	start.Name = xml.Name{Local: "description"}
 
 	if c.CDATA {
-		return e.EncodeElement(struct {
+		return enc.EncodeElement(struct {
 			Value string `xml:",cdata"`
 		}{c.Value}, start)
 	}
-	return e.EncodeElement(struct {
+	return enc.EncodeElement(struct {
 		Value string `xml:",chardata"`
 	}{c.Value}, start)
 }
@@ -336,24 +336,28 @@ func (c ItemDescription) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 // originally used, so CDATA is left at its zero value (false) after
 // decoding; set it yourself before re-marshaling if it matters.
 func (c *ItemDescription) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var v struct {
+	var valueStruct struct {
 		Value string `xml:",chardata"`
 	}
-	if err := d.DecodeElement(&v, &start); err != nil {
-		return err
+	if err := d.DecodeElement(&valueStruct, &start); err != nil {
+		return fmt.Errorf("decode item description: %w", err)
 	}
-	c.Value = v.Value
+	c.Value = valueStruct.Value
 	return nil
 }
 
 func (c ItemDescription) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.Value)
+	data, err := json.Marshal(c.Value)
+	if err != nil {
+		return nil, fmt.Errorf("marshal item description: %w", err)
+	}
+	return data, nil
 }
 
 func (c *ItemDescription) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
-		return err
+		return fmt.Errorf("unmarshal item description: %w", err)
 	}
 	c.Value = s
 	return nil

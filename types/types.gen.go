@@ -45,6 +45,15 @@ type ImageInfo struct {
 	URL string `json:"url" validate:"required,url" xml:",chardata"`
 }
 
+// Namespace is a single xmlns:prefix="uri" declaration.
+type Namespace struct {
+	// Prefix the unique prefix of the namespace.
+	Prefix string `json:"prefix"`
+
+	// URI the URI that points to the namespace.
+	URI string `json:"uri"`
+}
+
 // SanitisedString represents a string that has sanitisation applied.
 type SanitisedString struct {
 	// Value is the sanitised string value.

@@ -11,9 +11,11 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"sort"
 	"strings"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
@@ -62,7 +64,6 @@ func (c Category) String() string {
 // options.
 func NewRSS(title, description, link string, options ...RSSOption) *RSS {
 	rss := &RSS{
-		XMLName: xml.Name{Local: "rss"},
 		Version: N20,
 		Channel: Channel{
 			Title:         title,
@@ -83,6 +84,12 @@ func NewRSS(title, description, link string, options ...RSSOption) *RSS {
 
 // RSSOption is a functional applied to an RSS object.
 type RSSOption func(*RSS)
+
+func WithAtomLink(link *atom.Link) RSSOption {
+	return func(r *RSS) {
+		r.Channel.AtomLink = link
+	}
+}
 
 // WithCopyright option sets the RSS channel copyright.
 func WithCopyright(copyright string) RSSOption {
@@ -228,6 +235,126 @@ func (r *RSS) Validate() error {
 		return fmt.Errorf("rss validation failed: %w", err)
 	}
 	return nil
+}
+
+// MarshalXML implements xml.Marshaler. It builds the xmlns:* attribute list
+// from r.Namespaces at encode time -- this is the only way to get a
+// *dynamic* set of attributes out of encoding/xml, since struct tags are
+// necessarily static.
+func (r RSS) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	version := r.Version
+	if version == "" {
+		version = N201
+	}
+	start.Name = xml.Name{Local: "rss"}
+	start.Attr = []xml.Attr{{Name: xml.Name{Local: "version"}, Value: string(version)}}
+
+	// De-duplicate by prefix and sort for deterministic, diffable output.
+	seen := make(map[string]bool, len(r.Namespaces))
+	namespaces := make([]types.Namespace, 0, len(r.Namespaces))
+	for _, ns := range r.Namespaces {
+		if ns.Prefix == "" || ns.URI == "" || seen[ns.Prefix] {
+			continue
+		}
+		seen[ns.Prefix] = true
+		namespaces = append(namespaces, ns)
+	}
+	sort.Slice(namespaces, func(i, j int) bool { return namespaces[i].Prefix < namespaces[j].Prefix })
+
+	for _, ns := range namespaces {
+		// Literal "xmlns:prefix" as the attribute's local name -- the same
+		// workaround used elsewhere for namespaced element/attribute names,
+		// since encoding/xml doesn't manage prefix allocation for us.
+		start.Attr = append(start.Attr, xml.Attr{
+			Name:  xml.Name{Local: "xmlns:" + ns.Prefix},
+			Value: ns.URI,
+		})
+	}
+
+	if err := e.EncodeToken(start); err != nil {
+		return fmt.Errorf("encode rss: %w", err)
+	}
+	// e.Encode(r.Channel) would ignore the "channel" tag on the RSS.Channel
+	// field (struct-field tags only apply when encoding/xml walks a
+	// struct's fields itself; a custom MarshalXML steps outside that path).
+	// EncodeElement with an explicit start tag fixes it.
+	channelStart := xml.StartElement{Name: xml.Name{Local: "channel"}}
+	if err := e.EncodeElement(r.Channel, channelStart); err != nil {
+		return fmt.Errorf("encode channel: %w", err)
+	}
+	return e.EncodeToken(start.End())
+}
+
+// UnmarshalXML implements xml.Unmarshaler. It recovers whichever namespaces
+// the source document actually declared -- known or not -- so a
+// decode/re-encode round trip preserves them.
+func (r *RSS) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for attr := range slices.Values(start.Attr) {
+		switch {
+		case attr.Name.Local == "version" && attr.Name.Space == "":
+			r.Version = RSSVersion(attr.Value)
+		case attr.Name.Space == "xmlns":
+			// Go's decoder represents "xmlns:foo" attributes this way.
+			r.Namespaces = append(r.Namespaces, types.Namespace{Prefix: attr.Name.Local, URI: attr.Value})
+		case strings.HasPrefix(attr.Name.Local, "xmlns:"):
+			// Defensive fallback in case some parser instead hands us the
+			// literal, unsplit form.
+			r.Namespaces = append(r.Namespaces, types.Namespace{
+				Prefix: strings.TrimPrefix(attr.Name.Local, "xmlns:"),
+				URI:    attr.Value,
+			})
+		}
+	}
+	var wrapper struct {
+		Channel Channel `xml:"channel"`
+	}
+	if err := d.DecodeElement(&wrapper, &start); err != nil {
+		return fmt.Errorf("rss decode: %w", err)
+	}
+	r.Channel = wrapper.Channel
+	return nil
+}
+
+// AutoDeclareNamespaces inspects the populated extension fields across the
+// channel and its items and appends any missing namespace declarations for
+// the extensions this package knows how to model (content, media, atom,
+// dc, slash, syn). This directly targets the "unbound prefix" bug: as long
+// as you call this before marshaling, you can't forget to declare a
+// namespace for a typed extension field you populated.
+//
+// It does NOT cover ExtensionElement catch-all content or any custom
+// namespace you use yourself -- for those, append to r.Namespaces (or use
+// NS(...)) manually, since there's no reliable way to recover the intended
+// prefix from a raw namespace URI alone.
+func (r *RSS) AutoDeclareNamespaces() {
+	need := map[string]bool{}
+	if r.Channel.AtomLink != nil {
+		need["atom"] = true
+	}
+	if r.Channel.SYUdatePeriod != nil || r.Channel.SYUpdateFrequency != nil {
+		need["syn"] = true
+	}
+	for item := range slices.Values(r.Channel.Items) {
+		if item.ContentEncoded != nil {
+			need["content"] = true
+		}
+		if len(item.MediaThumbnails) > 0 {
+			need["media"] = true
+		}
+		if item.DCCreator != nil {
+			need["dc"] = true
+		}
+	}
+
+	existing := make(map[string]bool, len(r.Namespaces))
+	for _, ns := range r.Namespaces {
+		existing[ns.Prefix] = true
+	}
+	for prefix := range need {
+		if !existing[prefix] {
+			r.Namespaces = append(r.Namespaces, types.NewNamespace(prefix))
+		}
+	}
 }
 
 // ParseRFC822 parses an RSS date-time value leniently: it accepts both
