@@ -584,11 +584,11 @@ type Link struct {
 	// Base establishes the base URI (or IRI) for resolving any relative references found within the effective scope of the xml:base attribute.
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
 
-	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions externalRef2.Extensions `json:"extensions,omitempty" xml:",any"`
-
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
+
+	// UndefinedContent represents additional undefined, unstructed text content for the element.
+	UndefinedContent *UndefinedContent `json:"undefined_content,omitempty" xml:",chardata"`
 
 	// XMLName represents the XML namespace of an element.
 	XMLName xml.Name `json:"XMLName"`

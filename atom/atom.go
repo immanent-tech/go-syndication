@@ -82,6 +82,8 @@ func (l Link) String() string {
 	switch {
 	case l.Href != "":
 		return l.Href
+	case l.UndefinedContent != nil:
+		return *l.UndefinedContent
 	default:
 		return ""
 	}
