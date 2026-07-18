@@ -4,7 +4,7 @@
 // Package jsonfeed contains objects and methods defining the JSONFeed syndication format.
 package jsonfeed
 
-func (a *Author) String() string {
+func (a Author) String() string {
 	if a.Name != nil {
 		return *a.Name
 	}

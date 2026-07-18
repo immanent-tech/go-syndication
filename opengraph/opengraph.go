@@ -126,7 +126,7 @@ func (og *OpenGraph) UnmarshalXML(d *xml.Decoder, se xml.StartElement) error {
 	return nil
 }
 
-func (og *OpenGraph) String() string {
+func (og OpenGraph) String() string {
 	var str strings.Builder
 	fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:title", og.Title)
 	fmt.Fprintf(&str, "<meta property=%q content=%q/>\n", "og:url", og.URL)

@@ -35,7 +35,7 @@ func validateTypeAttr(fl validator.FieldLevel) bool {
 
 // String returns string-ified format of the PersonConstruct. This will be the format "name (email)". The email part is
 // omitted if the PersonConstruct has no email.
-func (p *PersonConstruct) String() string {
+func (p PersonConstruct) String() string {
 	var value strings.Builder
 	value.WriteString(p.Name.Value)
 	if p.Email != nil && p.Email.Value != "" {
@@ -61,7 +61,7 @@ func (p *PersonConstruct) Validate() error {
 
 // String returns the string-ified format of the Category. It will return the first found of: any human-readable label,
 // the element value or the term attribute value, in that order.
-func (c *Category) String() string {
+func (c Category) String() string {
 	// Use the label attribute if present.
 	if c.Label != nil && c.Label.Value != "" {
 		return sanitization.SanitizeString(c.Label.Value)
@@ -74,11 +74,11 @@ func (c *Category) String() string {
 	return sanitization.SanitizeString(c.Term.Value)
 }
 
-func (i *ID) String() string {
+func (i ID) String() string {
 	return i.Value
 }
 
-func (l *Link) String() string {
+func (l Link) String() string {
 	switch {
 	case l.Href != "":
 		return l.Href

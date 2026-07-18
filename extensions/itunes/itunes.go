@@ -9,7 +9,7 @@ import (
 	"github.com/immanent-tech/go-syndication/sanitization"
 )
 
-func (c *Category) String() string {
+func (c Category) String() string {
 	return sanitization.SanitizeString(c.Text)
 }
 

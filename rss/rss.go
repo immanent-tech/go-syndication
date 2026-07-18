@@ -20,7 +20,7 @@ import (
 var _ types.FeedSource = (*RSS)(nil)
 
 // String returns the value of the Category.
-func (c *Category) String() string {
+func (c Category) String() string {
 	return c.Value
 }
 
