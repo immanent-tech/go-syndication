@@ -34,9 +34,11 @@
 - [About](#about)
   - [Built With](#built-with)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - [Encoding and Decoding](#encoding-and-decoding)
+  - [Validation](#validation)
+  - [Generic Feed/Item Types](#generic-feeditem-types)
   - [Command Line Interface (CLI)](#command-line-interface-cli)
 - [Roadmap](#roadmap)
 - [Support](#support)
@@ -61,7 +63,7 @@
 - OPML
 - Various RSS/Atom extensions such as media, dublin core, itunes, and googleplay.
 
-The package can read and write all formats. It includes built-in validation and sanitisation of elements.
+The package can read and write all formats. It includes built-in validation of elements.
 
 ### Built With
 
@@ -71,10 +73,6 @@ The package can read and write all formats. It includes built-in validation and 
 
 ## Getting Started
 
-### Prerequisites
-
-TBA.
-
 ### Installation
 
 ```shell
@@ -82,6 +80,60 @@ go get github.com/immanent-tech/go-syndication
 ```
 
 ## Usage
+
+### Encoding and Decoding
+
+You can decode a `io.Reader` containing feed data into a format using `func Decode[T any](namespace string, rd
+io.Reader) (T, error)`. `T` would be one of `*atom.Feed`, `*rss.RSS` or `*jsonfeed.Feed`:
+
+```go
+// Decode RSS feed data.
+// use bytes.NewReader(data) for a []byte
+rss, err := Decode[*rss.RSS]("", data)
+```
+
+Likewise, `func Encode[T any](feed T) ([]byte, error)` can be used to encode feed data:
+
+```go
+data, err := Encode[*rss.RSS](rss)
+```
+
+### Validation
+
+By default, encoding/decoding performs no validation. As long as the XML data is well-formed and can be read by the Go
+XML parser, your feed data should be encoded/decoded. This means the package will handle invalid feed data (feeds that
+don't adhere to the RSS/Atom specs).
+
+If you want to check that the feed data is valid, you can use the validation sub-package:
+
+```go
+// Decode atom feed data.
+// use bytes.NewReader(data) for a []byte
+rss, err := Decode[*rss.RSS]("", data)
+
+// Validate the atom feed.
+err := validation.ValidateStruct(rss)
+```
+
+### Generic Feed/Item Types
+
+In addition to providing the source-specific `atom.Feed`, `rss.RSS` and `jsonfeed.Feed` types and their item
+counterparts, this library provides generic `feeds.Feed` and `feeds.Item` types, that wrap the source types with common
+methods for accessing their fields.
+
+Use `func NewDecoder[T any](data io.Reader) (*Feed, error)` to read data into the generic object:
+
+```go
+// data is a []byte containing an atom feed.
+feed, err = feeds.NewDecoder[*rss.RSS](bytes.NewReader(data))
+```
+
+`Feed` exposes the original data as the `FeedSource`, which can be converted back to the original source format with a
+type conversion:
+
+```go
+atom, ok := feed.FeedSource.(*atom.Feed)
+```
 
 ### Command Line Interface (CLI)
 
@@ -122,37 +174,35 @@ If you want to say **thank you** or/and support active development of go-syndica
 
 - Add a [GitHub Star](https://github.com/immanent-tech/go-syndication) to the project.
 - Tweet about the go-syndication.
-- Write interesting articles about the project on [Dev.to](https://dev.to/), [Medium](https://medium.com/) or your personal blog.
+- Write interesting articles about the project on [Dev.to](https://dev.to/), [Medium](https://medium.com/) or your
+  personal blog.
 
 Together, we can make go-syndication **better**!
 
 ## Contributing
 
-First off, thanks for taking the time to contribute! Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make will benefit everybody else and are **greatly appreciated**.
+First off, thanks for taking the time to contribute! Contributions are what make the open-source community such an
+amazing place to learn, inspire, and create. Any contributions you make will benefit everybody else and are **greatly
+appreciated**.
 
-Please read [our contribution guidelines](docs/CONTRIBUTING.md), and thank you for being involved!
+Please read [our contribution guidelines](CONTRIBUTING.md), and thank you for being involved!
 
 ## Authors & Contributors
 
 The original setup of this repository is by [joshuar](https://github.com/joshuar).
 
-For a full list of all authors and contributors, see [the contributors page](https://github.com/immanent-tech/go-syndication/contributors).
+For a full list of all authors and contributors, see [the contributors
+page](https://github.com/immanent-tech/go-syndication/contributors).
 
 ## Security
 
 go-syndication follows good practices of security, but 100% security cannot be assured.
 go-syndication is provided **"as is"** without any **warranty**. Use at your own risk.
 
-_For more information and to report security issues, please refer to our [security documentation](docs/SECURITY.md)._
+_For more information and to report security issues, please refer to our [security documentation](SECURITY.md)._
 
 ## License
 
 This project is licensed under the **MIT license**.
 
 See [LICENSE](LICENSE) for more information.
-
-<!-- ## Acknowledgements
-
-> **[?]**
-> If your work was funded by any organization or institution, acknowledge their support here.
-> In addition, if your work relies on other software libraries, or was inspired by looking at other work, it is appropriate to acknowledge this intellectual debt too. -->
