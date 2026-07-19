@@ -778,120 +778,117 @@ components:
       description: >
         /terms/ namespace: the full, "qualified" DCMI Terms set. DCMI itself now gently encourages this namespace over
         /elements/1.1/ for new usage. Only the Terms for vocabulary description (domainIncludes, memberOf,
-        rangeIncludes) are omitted -- those describe the vocabulary itself rather than a resource, and essentially never
+        rangeIncludes) are omitted. Those describe the vocabulary itself rather than a resource, and essentially never
         appear in feed content.
       type: object
-      allOf:
-        - $ref: '#/components/schemas/DCElements'
-        - type: object
-          properties:
-            abstract:
-              $ref: '#/components/schemas/Abstract'
-            accessRights:
-              $ref: '#/components/schemas/AccessRights'
-            accrualMethod:
-              $ref: '#/components/schemas/AccrualMethod'
-            accrualPeriodicity:
-              $ref: '#/components/schemas/AccrualPeriodicity'
-            accrualPolicy:
-              $ref: '#/components/schemas/AccrualPolicy'
-            alternative:
-              $ref: '#/components/schemas/Alternative'
-            audience:
-              $ref: '#/components/schemas/Audience'
-            available:
-              $ref: '#/components/schemas/Available'
-            bibliographicCitation:
-              $ref: '#/components/schemas/BibliographicCitation'
-            conformsTo:
-              $ref: '#/components/schemas/ConformsTo'
-            contributor:
-              $ref: '#/components/schemas/Contributor'
-            coverage:
-              $ref: '#/components/schemas/Coverage'
-            creator:
-              $ref: '#/components/schemas/Creator'
-            created:
-              $ref: '#/components/schemas/Created'
-            date:
-              $ref: '#/components/schemas/Date'
-            dateAccepted:
-              $ref: '#/components/schemas/DateAccepted'
-            dateCopyrighted:
-              $ref: '#/components/schemas/DateCopyrighted'
-            dateSubmitted:
-              $ref: '#/components/schemas/DateSubmitted'
-            description:
-              $ref: '#/components/schemas/Description'
-            educationLevel:
-              $ref: '#/components/schemas/EducationLevel'
-            extent:
-              $ref: '#/components/schemas/Extent'
-            format:
-              $ref: '#/components/schemas/Format'
-            hasFormat:
-              $ref: '#/components/schemas/HasFormat'
-            hasPart:
-              $ref: '#/components/schemas/HasPart'
-            hasVersion:
-              $ref: '#/components/schemas/HasVersion'
-            identifier:
-              $ref: '#/components/schemas/Identifier'
-            instructionalMethod:
-              $ref: '#/components/schemas/InstructionalMethod'
-            isFormatOf:
-              $ref: '#/components/schemas/IsFormatOf'
-            isPartOf:
-              $ref: '#/components/schemas/IsPartOf'
-            isReferencedBy:
-              $ref: '#/components/schemas/IsReferencedBy'
-            isReplacedBy:
-              $ref: '#/components/schemas/IsReplacedBy'
-            isRequiredBy:
-              $ref: '#/components/schemas/IsRequiredBy'
-            issued:
-              $ref: '#/components/schemas/Issued'
-            isVersionOf:
-              $ref: '#/components/schemas/IsVersionOf'
-            language:
-              $ref: '#/components/schemas/Language'
-            license:
-              $ref: '#/components/schemas/License'
-            mediator:
-              $ref: '#/components/schemas/Mediator'
-            medium:
-              $ref: '#/components/schemas/Medium'
-            modified:
-              $ref: '#/components/schemas/Modified'
-            provenance:
-              $ref: '#/components/schemas/Provenance'
-            publisher:
-              $ref: '#/components/schemas/Publisher'
-            references:
-              $ref: '#/components/schemas/References'
-            relation:
-              $ref: '#/components/schemas/Relation'
-            replaces:
-              $ref: '#/components/schemas/Replaces'
-            requires:
-              $ref: '#/components/schemas/Requires'
-            rights:
-              $ref: '#/components/schemas/Rights'
-            rightsHolder:
-              $ref: '#/components/schemas/RightsHolder'
-            source:
-              $ref: '#/components/schemas/Source'
-            spatial:
-              $ref: '#/components/schemas/Spatial'
-            subject:
-              $ref: '#/components/schemas/Subject'
-            tableOfContents:
-              $ref: '#/components/schemas/TableOfContents'
-            temporal:
-              $ref: '#/components/schemas/Temporal'
-            title:
-              $ref: '#/components/schemas/Title'
-            type:
-              $ref: '#/components/schemas/Type'
-            valid:
-              $ref: '#/components/schemas/Valid'
+      properties:
+        abstract:
+          $ref: '#/components/schemas/Abstract'
+        accessRights:
+          $ref: '#/components/schemas/AccessRights'
+        accrualMethod:
+          $ref: '#/components/schemas/AccrualMethod'
+        accrualPeriodicity:
+          $ref: '#/components/schemas/AccrualPeriodicity'
+        accrualPolicy:
+          $ref: '#/components/schemas/AccrualPolicy'
+        alternative:
+          $ref: '#/components/schemas/Alternative'
+        audience:
+          $ref: '#/components/schemas/Audience'
+        available:
+          $ref: '#/components/schemas/Available'
+        bibliographicCitation:
+          $ref: '#/components/schemas/BibliographicCitation'
+        conformsTo:
+          $ref: '#/components/schemas/ConformsTo'
+        contributor:
+          $ref: '#/components/schemas/Contributor'
+        coverage:
+          $ref: '#/components/schemas/Coverage'
+        creator:
+          $ref: '#/components/schemas/Creator'
+        created:
+          $ref: '#/components/schemas/Created'
+        date:
+          $ref: '#/components/schemas/Date'
+        dateAccepted:
+          $ref: '#/components/schemas/DateAccepted'
+        dateCopyrighted:
+          $ref: '#/components/schemas/DateCopyrighted'
+        dateSubmitted:
+          $ref: '#/components/schemas/DateSubmitted'
+        description:
+          $ref: '#/components/schemas/Description'
+        educationLevel:
+          $ref: '#/components/schemas/EducationLevel'
+        extent:
+          $ref: '#/components/schemas/Extent'
+        format:
+          $ref: '#/components/schemas/Format'
+        hasFormat:
+          $ref: '#/components/schemas/HasFormat'
+        hasPart:
+          $ref: '#/components/schemas/HasPart'
+        hasVersion:
+          $ref: '#/components/schemas/HasVersion'
+        identifier:
+          $ref: '#/components/schemas/Identifier'
+        instructionalMethod:
+          $ref: '#/components/schemas/InstructionalMethod'
+        isFormatOf:
+          $ref: '#/components/schemas/IsFormatOf'
+        isPartOf:
+          $ref: '#/components/schemas/IsPartOf'
+        isReferencedBy:
+          $ref: '#/components/schemas/IsReferencedBy'
+        isReplacedBy:
+          $ref: '#/components/schemas/IsReplacedBy'
+        isRequiredBy:
+          $ref: '#/components/schemas/IsRequiredBy'
+        issued:
+          $ref: '#/components/schemas/Issued'
+        isVersionOf:
+          $ref: '#/components/schemas/IsVersionOf'
+        language:
+          $ref: '#/components/schemas/Language'
+        license:
+          $ref: '#/components/schemas/License'
+        mediator:
+          $ref: '#/components/schemas/Mediator'
+        medium:
+          $ref: '#/components/schemas/Medium'
+        modified:
+          $ref: '#/components/schemas/Modified'
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+        publisher:
+          $ref: '#/components/schemas/Publisher'
+        references:
+          $ref: '#/components/schemas/References'
+        relation:
+          $ref: '#/components/schemas/Relation'
+        replaces:
+          $ref: '#/components/schemas/Replaces'
+        requires:
+          $ref: '#/components/schemas/Requires'
+        rights:
+          $ref: '#/components/schemas/Rights'
+        rightsHolder:
+          $ref: '#/components/schemas/RightsHolder'
+        source:
+          $ref: '#/components/schemas/Source'
+        spatial:
+          $ref: '#/components/schemas/Spatial'
+        subject:
+          $ref: '#/components/schemas/Subject'
+        tableOfContents:
+          $ref: '#/components/schemas/TableOfContents'
+        temporal:
+          $ref: '#/components/schemas/Temporal'
+        title:
+          $ref: '#/components/schemas/Title'
+        type:
+          $ref: '#/components/schemas/Type'
+        valid:
+          $ref: '#/components/schemas/Valid'

@@ -156,7 +156,7 @@ type DCElements struct {
 	Type *Type `json:"type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 }
 
-// DCTerms /terms/ namespace: the full, "qualified" DCMI Terms set. DCMI itself now gently encourages this namespace over /elements/1.1/ for new usage. Only the Terms for vocabulary description (domainIncludes, memberOf, rangeIncludes) are omitted -- those describe the vocabulary itself rather than a resource, and essentially never appear in feed content.
+// DCTerms /terms/ namespace: the full, "qualified" DCMI Terms set. DCMI itself now gently encourages this namespace over /elements/1.1/ for new usage. Only the Terms for vocabulary description (domainIncludes, memberOf, rangeIncludes) are omitted. Those describe the vocabulary itself rather than a resource, and essentially never appear in feed content.
 type DCTerms struct {
 	// Abstract is a summary of the resource.
 	Abstract *Abstract `json:"abstract,omitempty" xml:"http://purl.org/dc/terms/ abstract,omitempty"`
