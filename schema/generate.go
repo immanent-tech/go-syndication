@@ -15,3 +15,4 @@ package schema
 //go:generate go tool oapi-codegen -config rss.cfg.yaml rss.yaml
 //go:generate go tool oapi-codegen -config jsonfeed-cfg.yaml jsonfeed.yaml
 //go:generate go tool oapi-codegen -config opml-cfg.yaml opml.yaml
+//go:generate go tool oapi-codegen -config extensions-cfg.yaml extensions.yaml

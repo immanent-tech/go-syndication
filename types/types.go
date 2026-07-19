@@ -9,7 +9,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/sanitization"
 )
 
@@ -79,14 +78,4 @@ func (s SanitisedString) String() string {
 
 func (e Extension) String() string {
 	return e.Content
-}
-
-// NewNamespace builds a Namespace. NS("content") looks up the canonical URI from the
-// well-known registry above. NS("foo", "http://example.com/foo") declares
-// an arbitrary namespace not in the registry.
-func NewNamespace(prefix string, uri ...string) Namespace {
-	if len(uri) > 0 {
-		return Namespace{Prefix: prefix, URI: uri[0]}
-	}
-	return Namespace{Prefix: prefix, URI: extensions.WellKnownNamespaces[prefix]}
 }

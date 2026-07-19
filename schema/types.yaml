@@ -103,18 +103,3 @@ components:
       enum: ['HTML', 'RSS', 'Atom', 'JSONFeed', 'RDF', 'Unknown']
       x-oapi-codegen-extra-tags:
         validate: 'oneof=HTML RSS Atom JSONFeed RDF Unknown'
-    Namespace:
-      description: >
-        is a single xmlns:prefix="uri" declaration.
-      type: object
-      required:
-        - prefix
-        - uri
-      properties:
-        prefix:
-          description: the unique prefix of the namespace.
-          type: string
-        uri:
-          description: the URI that points to the namespace.
-          type: string
-          x-go-name: URI

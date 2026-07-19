@@ -3,9 +3,8 @@
 
 package extensions
 
-// WellKnownNamespaces is a convenience registry of namespace URIs commonly
-// seen in RSS feeds. It's just a lookup table for NS(prefix) below --
-// declaring a namespace is never limited to entries in this list.
+// WellKnownNamespaces is a convenience registry of namespace URIs commonly seen in RSS feeds. It's just a lookup table
+// that can be used to lookup commonly used namespaces. It does not reflect all known namespaces and can be overridden.
 var WellKnownNamespaces = map[string]string{
 	"content": "http://purl.org/rss/1.0/modules/content/",
 	"media":   "http://search.yahoo.com/mrss/",
@@ -18,4 +17,11 @@ var WellKnownNamespaces = map[string]string{
 	"wfw":     "http://wellformedweb.org/CommentAPI/",
 }
 
-
+// NewNamespace builds a Namespace. NewNamespace("content") looks up the canonical URI from the well-known registry
+// above. NewNamespace("foo", "http://example.com/foo") declares an arbitrary namespace not in the registry.
+func NewNamespace(prefix string, uri ...string) Namespace {
+	if len(uri) > 0 {
+		return Namespace{Prefix: prefix, URI: uri[0]}
+	}
+	return Namespace{Prefix: prefix, URI: WellKnownNamespaces[prefix]}
+}

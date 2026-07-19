@@ -1,0 +1,29 @@
+---
+openapi: '3.1.0'
+info:
+  version: 1.0.0
+  title: Extensions Plumbing Code
+  description: >
+    Additional types and methods that provide plumbing for specific extensions functionality.
+  contact:
+    name: 'Joshua Rich'
+    email: joshua.rich@gmail.com
+  license:
+    identifier: MIT
+components:
+  schemas:
+    Namespace:
+      description: >
+        is a single xmlns:prefix="uri" declaration.
+      type: object
+      required:
+        - prefix
+        - uri
+      properties:
+        prefix:
+          description: the unique prefix of the namespace.
+          type: string
+        uri:
+          description: the URI that points to the namespace.
+          type: string
+          x-go-name: URI

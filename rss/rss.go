@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
@@ -250,7 +251,7 @@ func (r RSS) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	start.Attr = []xml.Attr{{Name: xml.Name{Local: "version"}, Value: string(version)}}
 
 	seen := make(map[string]bool, len(r.Namespaces))
-	namespaces := make([]types.Namespace, 0, len(r.Namespaces))
+	namespaces := make([]extensions.Namespace, 0, len(r.Namespaces))
 	for _, ns := range r.Namespaces {
 		if ns.Prefix == "" || ns.URI == "" || seen[ns.Prefix] {
 			continue
@@ -294,11 +295,11 @@ func (r *RSS) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 			r.Version = RSSVersion(attr.Value)
 		case attr.Name.Space == "xmlns":
 			// Go's decoder represents "xmlns:foo" attributes this way.
-			r.Namespaces = append(r.Namespaces, types.Namespace{Prefix: attr.Name.Local, URI: attr.Value})
+			r.Namespaces = append(r.Namespaces, extensions.Namespace{Prefix: attr.Name.Local, URI: attr.Value})
 		case strings.HasPrefix(attr.Name.Local, "xmlns:"):
 			// Defensive fallback in case some parser instead hands us the
 			// literal form.
-			r.Namespaces = append(r.Namespaces, types.Namespace{
+			r.Namespaces = append(r.Namespaces, extensions.Namespace{
 				Prefix: strings.TrimPrefix(attr.Name.Local, "xmlns:"),
 				URI:    attr.Value,
 			})
@@ -346,7 +347,7 @@ func (r *RSS) AutoDeclareNamespaces() {
 	}
 	for prefix := range need {
 		if !existing[prefix] {
-			r.Namespaces = append(r.Namespaces, types.NewNamespace(prefix))
+			r.Namespaces = append(r.Namespaces, extensions.NewNamespace(prefix))
 		}
 	}
 }

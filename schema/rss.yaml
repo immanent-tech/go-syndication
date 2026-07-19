@@ -341,7 +341,11 @@ components:
           x-oapi-codegen-extra-tags:
             xml: ',chardata'
         url:
-          $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
+          type: string
+          x-go-name: URL
+          x-oapi-codegen-extra-tags:
+            xml: 'url,attr'
+            validate: 'required,url'
       x-oapi-codegen-extra-tags:
         xml: 'source,omitempty'
     SkipHours:
@@ -416,7 +420,7 @@ components:
             contains all namespaces in use by this RSS feed.
           type: array
           items:
-            $ref: 'types.yaml#/components/schemas/Namespace'
+            $ref: 'extensions.yaml#/components/schemas/Namespace'
           x-go-type-skip-optional-pointer: true
     Channel:
       description: >

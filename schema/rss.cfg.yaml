@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
 
 # Copyright 2024 Joshua Rich <joshua.rich@gmail.com>.
-# SPDX-License-Identifier: 	AGPL-3.0-or-later
+# SPDX-License-Identifier: 	MIT
 
 package: rss
 output: ../rss/rss.gen.go
@@ -11,6 +11,7 @@ output-options:
   # to make sure that all types are generated
   skip-prune: true
 import-mapping:
+  extensions.yaml: 'github.com/immanent-tech/go-syndication/extensions'
   rss-ext.yaml: 'github.com/immanent-tech/go-syndication/extensions/rss'
   dc.yaml: 'github.com/immanent-tech/go-syndication/extensions/dc'
   media-rss.yaml: 'github.com/immanent-tech/go-syndication/extensions/media'
@@ -19,4 +20,3 @@ import-mapping:
   rdf.yaml: 'github.com/immanent-tech/go-syndication/rdf'
   atom.yaml: 'github.com/immanent-tech/go-syndication/atom'
   types.yaml: 'github.com/immanent-tech/go-syndication/types'
-  types-attributes.yaml: 'github.com/immanent-tech/go-syndication/types'
