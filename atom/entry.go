@@ -92,7 +92,10 @@ func (e *Entry) GetContributors() []string {
 // GetRights retrieves the rights (copyright) of the Entry. This will be the first value found from either <dc:rights>
 // or <rights> elements.
 func (e *Entry) GetRights() *string {
-	return new(e.Rights.String())
+	if e.Rights != nil {
+		return new(e.Rights.String())
+	}
+	return nil
 }
 
 // GetLanguage retrieves the language of the Entry. This will be the first value found from either <dc:language>
