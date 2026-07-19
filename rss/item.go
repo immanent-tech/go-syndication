@@ -304,18 +304,23 @@ func (c ItemDescription) String() string {
 func (c ItemDescription) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	// Force the literal element name "content:encoded". Go's xml package
 	// doesn't manage namespace prefixes well on marshal, so the common
-	// workaround is to declare xmlns:content on the root element (see
-	// RSSRoot below) and just use the literal prefixed name here.
+	// workaround is to declare xmlns:content on the root element.
 	start.Name = xml.Name{Local: "description"}
 
 	if c.CDATA {
-		return enc.EncodeElement(struct {
+		if err := enc.EncodeElement(struct {
 			Value string `xml:",cdata"`
-		}{c.Value}, start)
+		}{c.Value}, start); err != nil {
+			return fmt.Errorf("encode description: %w", err)
+		}
 	}
-	return enc.EncodeElement(struct {
+	if err := enc.EncodeElement(struct {
 		Value string `xml:",chardata"`
-	}{c.Value}, start)
+	}{c.Value}, start); err != nil {
+		return fmt.Errorf("encode description: %w", err)
+	}
+
+	return nil
 }
 
 // UnmarshalXML implements xml.Unmarshaler.
