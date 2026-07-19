@@ -412,10 +412,10 @@ var rssMedia = map[string]rssTestSuite{
 			item := feed.Channel.Items[0]
 			assert.NotNil(t, item.MediaContent)
 			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
-			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
-			assert.Equal(t, 12216320, item.MediaContent.FileSize)
-			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
-			assert.Equal(t, media.Sample, item.MediaContent.Expression)
+			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.URL)
+			assert.Equal(t, 12216320, *item.MediaContent.FileSize)
+			assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
+			assert.Equal(t, media.Sample, *item.MediaContent.Expression)
 			assert.Equal(t, "nonadult", item.MediaRating.Value)
 		},
 	},
@@ -428,25 +428,25 @@ var rssMedia = map[string]rssTestSuite{
 			item := feed.Channel.Items[0]
 			assert.Equal(t, "The latest video from an artist", item.GetTitle())
 			if assert.NotNil(t, item.MediaContent) {
-				assert.Equal(t, "http://www.foo.com/movie.mov", item.MediaContent.Url)
-				assert.Equal(t, 12216320, item.MediaContent.FileSize)
-				assert.Equal(t, "video/quicktime", item.MediaContent.Type)
-				assert.Equal(t, media.Full, item.MediaContent.Expression)
+				assert.Equal(t, "http://www.foo.com/movie.mov", item.MediaContent.URL)
+				assert.Equal(t, 12216320, *item.MediaContent.FileSize)
+				assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
+				assert.Equal(t, media.Full, *item.MediaContent.Expression)
 				if assert.NotNil(t, item.MediaContent.MediaPlayer) {
 					assert.Equal(t, "http://www.foo.com/player?id=1111", item.MediaContent.MediaPlayer.URL)
-					assert.Equal(t, 200, item.MediaContent.MediaPlayer.Height)
-					assert.Equal(t, 400, item.MediaContent.MediaPlayer.Width)
+					assert.Equal(t, 200, *item.MediaContent.MediaPlayer.Height)
+					assert.Equal(t, 400, *item.MediaContent.MediaPlayer.Width)
 				} else {
 					t.Fail()
 				}
 				assert.Len(t, item.MediaContent.MediaHashes, 1)
-				assert.Equal(t, media.Md5, item.MediaContent.MediaHashes[0].Algo)
+				assert.Equal(t, media.Md5, *item.MediaContent.MediaHashes[0].Algo)
 				assert.Equal(t, "dfdec888b72151965a34b4b59031290a", item.MediaContent.MediaHashes[0].Value)
 				assert.Len(t, item.MediaContent.MediaCredits, 2)
-				assert.Equal(t, "producer", item.MediaContent.MediaCredits[0].Role)
+				assert.Equal(t, "producer", *item.MediaContent.MediaCredits[0].Role)
 				assert.Equal(t, "producer's name", item.MediaContent.MediaCredits[0].Value)
 				assert.Equal(t, "music/artist \n                name/album/song", item.MediaContent.GetCategory())
-				assert.Equal(t, "http://blah.com/scheme", item.MediaContent.MediaCategory.Scheme)
+				assert.Equal(t, "http://blah.com/scheme", *item.MediaContent.MediaCategory.Scheme)
 				assert.Len(t, item.MediaContent.MediaTexts, 1)
 				assert.Equal(
 					t,
@@ -468,14 +468,14 @@ var rssMedia = map[string]rssTestSuite{
 			item := feed.Channel.Items[0]
 			assert.Equal(t, "Movie Title: Is this a good movie?", item.GetTitle())
 			assert.Equal(t, "http://www.foo.com/item1.htm", item.GetLink())
-			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.Url)
-			assert.Equal(t, 12216320, item.MediaContent.FileSize)
-			assert.Equal(t, "video/quicktime", item.MediaContent.Type)
-			assert.Equal(t, media.Sample, item.MediaContent.Expression)
+			assert.Equal(t, "http://www.foo.com/trailer.mov", item.MediaContent.URL)
+			assert.Equal(t, 12216320, *item.MediaContent.FileSize)
+			assert.Equal(t, "video/quicktime", *item.MediaContent.Type)
+			assert.Equal(t, media.Sample, *item.MediaContent.Expression)
 			assert.Len(t, item.MediaThumbnails, 1)
 			assert.NotNil(t, item.GetImage())
 			assert.Equal(t, "http://example.com/thumbnail", item.GetImage().GetURL())
-			assert.Equal(t, "12:34:56", item.MediaThumbnails[0].Time)
+			assert.Equal(t, "12:34:56", *item.MediaThumbnails[0].Time)
 		},
 	},
 }
