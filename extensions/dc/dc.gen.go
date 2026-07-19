@@ -7,6 +7,54 @@ import (
 	"time"
 )
 
+// Defines values for TypeVocabulary.
+const (
+	Collection          TypeVocabulary = "Collection"
+	Dataset             TypeVocabulary = "Dataset"
+	Event               TypeVocabulary = "Event"
+	Image               TypeVocabulary = "Image"
+	InteractiveResource TypeVocabulary = "InteractiveResource"
+	MovingImage         TypeVocabulary = "MovingImage"
+	PhysicalObject      TypeVocabulary = "PhysicalObject"
+	Service             TypeVocabulary = "Service"
+	Software            TypeVocabulary = "Software"
+	Sound               TypeVocabulary = "Sound"
+	StillImage          TypeVocabulary = "StillImage"
+	Text                TypeVocabulary = "Text"
+)
+
+// Valid indicates whether the value is a known member of the TypeVocabulary enum.
+func (e TypeVocabulary) Valid() bool {
+	switch e {
+	case Collection:
+		return true
+	case Dataset:
+		return true
+	case Event:
+		return true
+	case Image:
+		return true
+	case InteractiveResource:
+		return true
+	case MovingImage:
+		return true
+	case PhysicalObject:
+		return true
+	case Service:
+		return true
+	case Software:
+		return true
+	case Sound:
+		return true
+	case StillImage:
+		return true
+	case Text:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for W3CDTFPrecision.
 const (
 	PrecisionDay    W3CDTFPrecision = 2
@@ -521,7 +569,10 @@ type Title []string
 
 // Type is the nature or genre of the resource.
 // Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
-type Type []string
+type Type []TypeVocabulary
+
+// TypeVocabulary are the DCMI Type Vocabulary: the recommended controlled vocabulary of values for dc:type / dcterms:type.
+type TypeVocabulary string
 
 // Valid is a date (often a range) of validity of a resource.
 // Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
