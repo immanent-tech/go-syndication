@@ -1,5 +1,5 @@
 ---
-openapi: '3.0.3'
+openapi: '3.1.0'
 info:
   version: 1.0.0
   title: RSS 2.0 OpenAPI schema
@@ -423,7 +423,7 @@ components:
         is the element containing metadata (Channel elements) and items.
       allOf:
         - $ref: 'rss-ext.yaml#/components/schemas/SyndicationElements'
-        - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
+        - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
         - $ref: 'itunes.yaml#/components/schemas/ItunesElements'
         - $ref: 'googleplay.yaml#/components/schemas/GooglePlayElements'
         - $ref: 'dc.yaml#/components/schemas/DCElements'
@@ -562,7 +562,7 @@ components:
         omitted. All elements of an item are optional, however at least one of title or description must be present.
       allOf:
         - $ref: 'dc.yaml#/components/schemas/DCElements'
-        - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
+        - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
         - type: object
           required:
             - title

@@ -1,5 +1,5 @@
 ---
-openapi: '3.0.3'
+openapi: '3.1.0'
 info:
   version: 1.0.0
   title: OPML
@@ -8,7 +8,7 @@ info:
 
     https://opml.org/spec2.opml
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: MIT

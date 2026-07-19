@@ -1,5 +1,5 @@
 ---
-openapi: '3.0.3'
+openapi: '3.1.0'
 info:
   version: 1.0.0
   title: iTunes RSS extension
@@ -8,7 +8,7 @@ info:
 
     https://help.apple.com/itc/podcasts_connect/#/itcb54353390
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
