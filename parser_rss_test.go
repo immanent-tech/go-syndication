@@ -55,17 +55,21 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, "2002-12-31", feed.Channel.DCDate.Value.Format(time.DateOnly))
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
+			assert.Equal(t, "2002-12-31", date[0].Value.Format(time.DateOnly))
 		},
 	},
 	"dcdate_fractional_second.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
 			assert.Equal(
 				t,
 				"2002-12-31T19:20:30.45+01:00",
-				feed.Channel.DCDate.Value.Format("2006-01-02T15:04:05.00Z07:00"),
+				date[0].Value.Format("2006-01-02T15:04:05.00Z07:00"),
 			)
 		},
 	},
@@ -73,7 +77,9 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, "2002-12-31T19:20+01:00", feed.Channel.DCDate.Value.Format(time.DateOnly+"T"+"15:04-07:00"))
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
+			assert.Equal(t, "2002-12-31T19:20+01:00", date[0].Value.Format(time.DateOnly+"T"+"15:04-07:00"))
 		},
 	},
 	// "dc_date_must_include_timezone.xml": {
@@ -83,54 +89,61 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, "2002-12-31T19:20:30+01:00", feed.Channel.DCDate.Value.Format(time.RFC3339))
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
+			assert.Equal(t, "2002-12-31T19:20:30+01:00", date[0].Value.Format(time.RFC3339))
 		},
 	},
 	"dc_date_with_just_day.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, "2003-09-24", feed.Channel.DCDate.Value.Format(time.DateOnly))
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
+			assert.Equal(t, "2003-09-24", date[0].Value.Format(time.DateOnly))
 		},
 	},
 	"dcdate.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-
-			assert.Equal(t, "2002-12-31T01:15:07-05:00", feed.Channel.DCDate.Value.Format(time.RFC3339))
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
+			assert.Equal(t, "2002-12-31T01:15:07-05:00", date[0].Value.Format(time.RFC3339))
 		},
 	},
 	"dcdate_year_and_month.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-
-			assert.Equal(t, "2002-12", feed.Channel.DCDate.Value.Format("2006-01"))
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
+			assert.Equal(t, "2002-12", date[0].Value.Format("2006-01"))
 		},
 	},
 	"dcdate_year_only.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-
-			assert.Equal(t, "2002", feed.Channel.DCDate.Value.Format("2006"))
+			assert.NotNil(t, feed.Channel.Date)
+			date := *feed.Channel.Date
+			assert.Equal(t, "2002", date[0].Value.Format("2006"))
 		},
 	},
 	"dclanguage_country_code.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-
-			assert.Equal(t, "en-us", *feed.Channel.DCLanguage)
+			assert.NotNil(t, feed.Channel.Language)
+			assert.Equal(t, "en-us", *feed.Channel.Language)
 		},
 	},
 	"dclanguage.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-
-			assert.Equal(t, "en", *feed.Channel.DCLanguage)
+			assert.NotNil(t, feed.Channel.Language)
+			assert.Equal(t, "en", *feed.Channel.Language)
 		},
 	},
 	// "doctype_not_entity.xml": {
@@ -420,7 +433,7 @@ var rssMedia = map[string]rssTestSuite{
 				assert.Equal(t, "video/quicktime", item.MediaContent.Type)
 				assert.Equal(t, media.Full, item.MediaContent.Expression)
 				if assert.NotNil(t, item.MediaContent.MediaPlayer) {
-					assert.Equal(t, "http://www.foo.com/player?id=1111", item.MediaContent.MediaPlayer.Url)
+					assert.Equal(t, "http://www.foo.com/player?id=1111", item.MediaContent.MediaPlayer.URL)
 					assert.Equal(t, 200, item.MediaContent.MediaPlayer.Height)
 					assert.Equal(t, 400, item.MediaContent.MediaPlayer.Width)
 				} else {

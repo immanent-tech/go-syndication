@@ -426,6 +426,7 @@ components:
         - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
         - $ref: 'itunes.yaml#/components/schemas/ItunesElements'
         - $ref: 'googleplay.yaml#/components/schemas/GooglePlayElements'
+        - $ref: 'dc.yaml#/components/schemas/DCElements'
         - type: object
           required:
             - title
