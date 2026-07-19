@@ -23,6 +23,7 @@
 
 !README.md
 !LICENSE
+!SECURITY.md
 !.devcontainer/*
 
 # ...even if they are in subdirectories

@@ -8,8 +8,6 @@
 <div align="center">
   go-syndication
   <br />
-  <!-- <a href="#about"><strong>Explore the screenshots »</strong></a> -->
-  <br />
   <br />
   <a href="https://github.com/immanent-tech/go-syndication/issues/new?assignees=&labels=bug&template=01_BUG_REPORT.md&title=bug%3A+">Report a Bug</a>
   ·
@@ -59,9 +57,8 @@
 - RSS
 - Atom
 - JSONFeed
-- Sitemaps
 - OPML
-- Various RSS/Atom extensions such as media, dublin core, itunes, and googleplay.
+- Various RSS/Atom extensions such as media, Dublin Core, iTunes, and GooglePlay, with more to come...
 
 The package can read and write all formats. It includes built-in validation of elements.
 
@@ -134,6 +131,9 @@ type conversion:
 ```go
 atom, ok := feed.FeedSource.(*atom.Feed)
 ```
+
+This gives you the best of both worlds; a generic container with common methods for canonical fields across all formats,
+with access to the original source to manipulate the format directly as needed.
 
 ### Command Line Interface (CLI)
 
