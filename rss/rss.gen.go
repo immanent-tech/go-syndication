@@ -140,13 +140,13 @@ type Channel struct {
 	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty"`
+	MediaComments externalRef4.MediaComments `json:"media_comments"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
 	MediaCopyright *externalRef4.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
@@ -188,7 +188,7 @@ type Channel struct {
 	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
@@ -226,9 +226,6 @@ type Channel struct {
 
 	// Cloud specifies a web service that supports the rssCloud interface which can be implemented in HTTP-POST, XML-RPC or SOAP 1.1.
 	// Its purpose is to allow processes to register with a cloud to be notified of updates to the channel, implementing a lightweight publish-subscribe protocol for RSS feeds.
-	//
-	//
-	// Example: {"domain":"rpc.sys.com","path":"/RPC2","port":80,"protocol":"soap","registerProcedure":"pingMe"}
 	Cloud *Cloud `json:"cloud,omitempty" xml:"cloud,omitempty"`
 
 	// Contributor is an entity responsible for making contributions to the resource.
@@ -335,8 +332,6 @@ type Channel struct {
 
 // Cloud specifies a web service that supports the rssCloud interface which can be implemented in HTTP-POST, XML-RPC or SOAP 1.1.
 // Its purpose is to allow processes to register with a cloud to be notified of updates to the channel, implementing a lightweight publish-subscribe protocol for RSS feeds.
-//
-// Example: {"domain":"rpc.sys.com","path":"/RPC2","port":80,"protocol":"soap","registerProcedure":"pingMe"}
 type Cloud struct {
 	Domain            string        `json:"domain" validate:"required" xml:"domain,attr"`
 	Path              string        `json:"path" validate:"required" xml:"path,attr"`
@@ -403,13 +398,13 @@ type Item struct {
 	MediaCategory *externalRef4.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef4.MediaComments `json:"MediaComments,omitempty"`
+	MediaComments externalRef4.MediaComments `json:"media_comments"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
 	MediaCommunity *externalRef4.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef4.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
 	MediaCopyright *externalRef4.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
@@ -451,7 +446,7 @@ type Item struct {
 	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`

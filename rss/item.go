@@ -72,8 +72,7 @@ func WithItemImage(img *types.ImageInfo) ItemOption {
 	return func(i *Item) {
 		i.MediaThumbnails = media.MediaThumbnails{
 			media.MediaThumbnail{
-				XMLName: xml.Name{Local: "media:thumbnail"},
-				URL:     img.GetURL(),
+				URL: img.GetURL(),
 			},
 		}
 	}
