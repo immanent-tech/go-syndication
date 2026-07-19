@@ -56,34 +56,38 @@ func (d DCDate) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 		layout = "2006-01-02T15:04:05.999999999Z07:00"
 	}
 	if err := enc.EncodeToken(start); err != nil {
-		return err
+		return fmt.Errorf("marshal dcdate: %w", err)
 	}
 	if err := enc.EncodeToken(xml.CharData(d.Value.Format(layout))); err != nil {
-		return err
+		return fmt.Errorf("marshal dcdate: %w", err)
 	}
-	return enc.EncodeToken(start.End())
+	if err := enc.EncodeToken(start.End()); err != nil {
+		return fmt.Errorf("marshal dcdate: %w", err)
+	}
+
+	return nil
 }
 
 // UnmarshalXML implements xml.Unmarshaler, detecting which of the five legal W3CDTF forms was used and parsing (and
 // remembering the precision of) it accordingly.
 func (d *DCDate) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-	var v struct {
+	var value struct {
 		Value string `xml:",chardata"`
 	}
-	if err := dec.DecodeElement(&v, &start); err != nil {
-		return err
+	if err := dec.DecodeElement(&value, &start); err != nil {
+		return fmt.Errorf("unmarshal dcdate: %w", err)
 	}
 	for _, candidate := range w3cdtfLayouts {
-		if !candidate.pattern.MatchString(v.Value) {
+		if !candidate.pattern.MatchString(value.Value) {
 			continue
 		}
-		t, err := time.Parse(candidate.layout, v.Value)
+		t, err := time.Parse(candidate.layout, value.Value)
 		if err != nil {
-			return fmt.Errorf("<%s>: invalid W3CDTF value %q: %w", start.Name.Local, v.Value, err)
+			return fmt.Errorf("<%s>: invalid W3CDTF value %q: %w", start.Name.Local, value.Value, err)
 		}
 		d.Value = t
 		d.Precision = candidate.prec
 		return nil
 	}
-	return fmt.Errorf("<%s>: %q does not match any legal W3CDTF form", start.Name.Local, v.Value)
+	return fmt.Errorf("<%s>: %q does not match any legal W3CDTF form", start.Name.Local, value.Value)
 }

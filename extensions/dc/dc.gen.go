@@ -138,7 +138,7 @@ type Creator []string
 
 // DCDate represents a Date-typed DC/DCTERMS property value (http://purl.org/dc/elements/1.1/ date, dcterms:created, dcterms:modified, dcterms:issued, dcterms:valid, dcterms:available, dcterms:dateAccepted, dcterms:dateCopyrighted, dcterms:dateSubmitted), encoded per W3CDTF.
 type DCDate struct {
-	// Precision W3CDTFPrecision records which of the six legal W3CDTF forms a DCDate was expressed in, so re-marshaling doesn't invent false precision (e.g. turning a bare "1997" into "1997-01-01T00:00:00Z").
+	// Precision records which of the six legal W3CDTF forms a DCDate was expressed in, so re-marshaling doesn't invent false precision (e.g. turning a bare "1997" into "1997-01-01T00:00:00Z").
 	Precision W3CDTFPrecision `json:"precision"`
 	Value     time.Time       `json:"value"`
 }
@@ -578,5 +578,5 @@ type TypeVocabulary string
 // Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
 type Valid []DCDate
 
-// W3CDTFPrecision W3CDTFPrecision records which of the six legal W3CDTF forms a DCDate was expressed in, so re-marshaling doesn't invent false precision (e.g. turning a bare "1997" into "1997-01-01T00:00:00Z").
+// W3CDTFPrecision records which of the six legal W3CDTF forms a DCDate was expressed in, so re-marshaling doesn't invent false precision (e.g. turning a bare "1997" into "1997-01-01T00:00:00Z").
 type W3CDTFPrecision int
