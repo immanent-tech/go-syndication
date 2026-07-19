@@ -341,7 +341,7 @@ func (r *RSS) AutoDeclareNamespaces() {
 		if len(item.MediaThumbnails) > 0 {
 			need["media"] = true
 		}
-		if item.DCCreator != nil {
+		if item.Creator != nil {
 			need["dc"] = true
 		}
 	}

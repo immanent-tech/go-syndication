@@ -108,12 +108,7 @@ func (i *Item) GetID() string {
 
 // GetTitle retrieves the <title> (if any) of the Item.
 func (i *Item) GetTitle() string {
-	switch {
-	case i.DCTitle != nil:
-		return *i.DCTitle
-	default:
-		return i.Title
-	}
+	return i.Title
 }
 
 // GetLink retrieves the <link> (if any) of the Item.
@@ -129,8 +124,6 @@ func (i *Item) GetDescription() string {
 	}
 	// Else, use a description from one of these:
 	switch {
-	case i.DCDescription != nil:
-		return *i.DCDescription
 	case i.MediaGroup != nil:
 		return i.MediaGroup.GetDescription()
 	default:
@@ -145,8 +138,8 @@ func (i *Item) GetAuthors() []string {
 	if i.Author != nil && *i.Author != "" {
 		authors = append(authors, *i.Author)
 	}
-	if i.DCCreator != nil {
-		authors = append(authors, *i.DCCreator)
+	if i.Creator != nil {
+		authors = append(authors, *i.Creator...)
 	}
 	return authors
 }
@@ -155,16 +148,16 @@ func (i *Item) GetAuthors() []string {
 // <dc:contributor> element.
 func (i *Item) GetContributors() []string {
 	var contributors []string
-	if i.DCContributor != nil {
-		contributors = append(contributors, *i.DCContributor)
+	if i.Contributor != nil {
+		contributors = append(contributors, *i.Contributor...)
 	}
 	return contributors
 }
 
 // GetRights retrieves the rights (copyright) of the Channel. This will be the value of <dc:rights>, if found.
 func (i *Item) GetRights() *string {
-	if i.DCRights != nil {
-		return i.DCRights
+	if i.Rights != nil {
+		return new(strings.Join(*i.Rights, " "))
 	}
 	return nil
 }
@@ -173,8 +166,8 @@ func (i *Item) GetRights() *string {
 // present.
 func (i *Item) GetLanguage() *string {
 	switch {
-	case i.DCLanguage != nil:
-		return i.DCLanguage
+	case i.Language != nil:
+		return new(strings.Join(*i.Language, " "))
 	default:
 		return nil
 	}

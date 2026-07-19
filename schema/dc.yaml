@@ -1,12 +1,12 @@
 ---
-openapi: '3.0.3'
+openapi: '3.1.0'
 info:
   version: 1.0.0
   title: Dublin Core RSS Extension
   description: >
-    RDF Site Summary 1.0 Modules: Dublin Core OpenAPI model schema.
+    DCMI metadata terms are expressed in RDF vocabularies for use in Linked Data.
 
-    https://web.resource.org/rss/1.0/modules/dc/
+    https://www.dublincore.org/specifications/dublin-core/dcmi-terms/
   contact:
     name: 'Joshua Rich'
     email: joshua.rich@gmail.com
@@ -14,147 +14,884 @@ info:
     identifier: MIT
 components:
   schemas:
-    DCTitle:
+    W3CDTFPrecision:
       description: >
-        is a name by which the resource is formally known.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_title,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ title,omitempty'
-    DCDescription:
+        W3CDTFPrecision records which of the six legal W3CDTF forms a DCDate was expressed in, so re-marshaling doesn't
+        invent false precision (e.g. turning a bare "1997" into "1997-01-01T00:00:00Z").
+      type: integer
+      oneof:
+        - title: PrecisionYear
+          const: 0
+        - title: PrecisionMonth
+          const: 1
+        - title: PrecisionDay
+          const: 2
+        - title: PrecisionMinute
+          const: 3
+        - title: PrecisionSecond
+          const: 4
+    DCDate:
       description: >
-        may include but is not limited to: an abstract, table of contents, reference to a graphical representation of
-        content or a free-text account of the content.
-      type: string
+        represents a Date-typed DC/DCTERMS property value (http://purl.org/dc/elements/1.1/ date, dcterms:created, dcterms:modified, dcterms:issued,
+        dcterms:valid, dcterms:available, dcterms:dateAccepted, dcterms:dateCopyrighted, dcterms:dateSubmitted), encoded
+        per W3CDTF.
+      type: object
+      required:
+        - value
+        - precision
+      properties:
+        value:
+          x-go-type: time.Time
+        precision:
+          $ref: '#/components/schemas/W3CDTFPrecision'
       x-oapi-codegen-extra-tags:
-        json: 'dc_description,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ description,omitempty'
-    DCContributor:
+        xml: 'http://purl.org/dc/terms/ date,omitempty'
+    Abstract:
+      description: is a summary of the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'abstract,omitempty'
+        xml: 'http://purl.org/dc/terms/ abstract,omitempty'
+    AccessRights:
+      description: >
+        is information about who access the resource or an indication of its security status.
+
+        Access Rights may include information regarding access or restrictions based on privacy, security, or other
+        policies.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'accessRights,omitempty'
+        xml: 'http://purl.org/dc/terms/ accessRights,omitempty'
+    AccrualMethod:
+      description: >
+        is information about who access the resource or an indication of its security status.
+
+        Recommended practice is to use a value from the Collection Description Accrual Method Vocabulary
+        [DCMI-ACCRUALMETHOD].
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'accrualMethod,omitempty'
+        xml: 'http://purl.org/dc/terms/ accrualMethod,omitempty'
+    AccrualPeriodicity:
+      description: >
+        is the frequency with which items are added to a collection.
+
+        Recommended practice is to use a value from the Collection Description Frequency Vocabulary [DCMI-COLLFREQ].
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'accrualPeriodicity,omitempty'
+        xml: 'http://purl.org/dc/terms/ accrualPeriodicity,omitempty'
+    AccrualPolicy:
+      description: >
+        is the policy governing the addition of items to a collection.
+
+        Recommended practice is to use a value from the Collection Description Accrual Policy Vocabulary
+        [DCMI-ACCRUALPOLICY].
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'accrualPolicy,omitempty'
+        xml: 'http://purl.org/dc/terms/ accrualPolicy,omitempty'
+    Alternative:
+      description: >
+        is an alternative name for the resource.
+
+        The distinction between titles and alternative titles is application-specific.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'alternative,omitempty'
+        xml: 'http://purl.org/dc/terms/ alternative,omitempty'
+    Audience:
+      description: >
+        is a class of agents for whom the resource is intended or useful.
+
+        Recommended practice is to use this property with non-literal values from a vocabulary of audience types.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'audience,omitempty'
+        xml: 'http://purl.org/dc/terms/ audience,omitempty'
+    Available:
+      description: >
+        is the frequency with which items are added to a collection.
+
+        Recommended practice is to use a value from the Collection Description Frequency Vocabulary [DCMI-COLLFREQ].
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
+      x-oapi-codegen-extra-tags:
+        json: 'available,omitempty'
+        xml: 'http://purl.org/dc/terms/ available,omitempty'
+    BibliographicCitation:
+      description: >
+        is a bibliographic reference for the resource.
+
+        Recommended practice is to include sufficient bibliographic detail to identify the resource as unambiguously as
+        possible.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'bibliographicCitation,omitempty'
+        xml: 'http://purl.org/dc/terms/ bibliographicCitation,omitempty'
+    ConformsTo:
+      description: >
+        is an established standard to which the described resource conforms.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'conformsTo,omitempty'
+        xml: 'http://purl.org/dc/terms/ conformsTo,omitempty'
+    Contributor:
       description: >
         is an entity responsible for making contributions to the resource.
-      type: string
+
+        The guidelines for using names of persons or organizations as creators apply to contributors.
+      type: array
+      items:
+        type: string
       x-oapi-codegen-extra-tags:
-        json: 'dc_contributor,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ contributor,omitempty'
-    DCCreator:
-      description: >
-        is an entity primarily responsible for making the resource.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_creator,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ creator,omitempty'
-    DCCoverage:
+        json: 'contributor,omitempty'
+        xml: 'http://purl.org/dc/terms/ contributor,omitempty'
+    Coverage:
       description: >
         is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under
         which the resource is relevant.
-      type: string
+
+        Spatial topic and spatial applicability may be a named place or a location specified by its geographic
+        coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named
+        administrative entity or a geographic place to which the resource applies. Recommended practice is to use a
+        controlled vocabulary such as the Getty Thesaurus of Geographic Names [TGN]. Where appropriate, named places or
+        time periods may be used in preference to numeric identifiers such as sets of coordinates or date ranges.
+        Because coverage is so broadly defined, it is preferable to use the more specific subproperties Temporal
+        Coverage and Spatial Coverage.
+      type: array
+      items:
+        type: string
       x-oapi-codegen-extra-tags:
-        json: 'dc_coverage,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ coverage,omitempty'
-    DCFormat:
+        json: 'coverage,omitempty'
+        xml: 'http://purl.org/dc/terms/ coverage,omitempty'
+    Created:
       description: >
-        is the file format, physical medium, or dimensions of the resource.
-      type: string
+        is the date of creation of the resource.
+
+        Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date,
+        of which this is a subproperty.
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
       x-oapi-codegen-extra-tags:
-        json: 'dc_format,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ format,omitempty'
-    DCIdentifier:
+        json: 'created,omitempty'
+        xml: 'http://purl.org/dc/terms/ created,omitempty'
+    Creator:
       description: >
-        is an unambiguous reference to the resource within a given context.
-      type: string
+        is an entity responsible for making the resource.
+
+        Recommended practice is to identify the creator with a URI. If this is not possible or feasible, a literal value
+        that identifies the creator may be provided.
+      type: array
+      items:
+        type: string
       x-oapi-codegen-extra-tags:
-        json: 'dc_identifier,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ identifier,omitempty'
-    DCPublisher:
-      description: >
-        is an entity responsible for making the resource available.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_publisher,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ publisher,omitempty'
-    DCRelation:
-      description: >
-        is a related resource.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_relation,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ relation,omitempty'
-    DCRights:
-      description: >
-        is information about rights held in and over the resource.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_rights,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ rights,omitempty'
-    DCSubject:
-      description: >
-        is the topic of the resource.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_subject,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ subject,omitempty'
-    DCType:
-      description: >
-        is the nature or genre of the resource.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_type,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ type,omitempty'
-    DCSource:
-      description: >
-        is a related resource from which the described resource is derived.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_source,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ source,omitempty'
-    DCLanguage:
-      description: >
-        identifies the language used by the related resource using an HTML language code.
-      type: string
-      x-oapi-codegen-extra-tags:
-        json: 'dc_language,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ language,omitempty'
-        validate: 'omitempty,bcp47_language_tag'
-    DCDate:
+        json: 'creator,omitempty'
+        xml: 'http://purl.org/dc/terms/ creator,omitempty'
+    Date:
       description: >
         is a point or period of time associated with an event in the lifecycle of the resource.
-      allOf:
-        - $ref: 'types.yaml#/components/schemas/Timestamp'
+
+        Date may be used to express temporal information at any level of granularity. Recommended practice is to express
+        the date, date/time, or period of time according to ISO 8601-1 [ISO 8601-1] or a published profile of the ISO
+        standard, such as the W3C Note on Date and Time Formats [W3CDTF] or the Extended Date/Time Format Specification
+        [EDTF]. If the full date is unknown, month and year (YYYY-MM) or just year (YYYY) may be used. Date ranges may
+        be specified using ISO 8601 period of time specification in which start and end dates are separated by a '/'
+        (slash) character. Either the start or end date may be missing.
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
       x-oapi-codegen-extra-tags:
-        json: 'dc_date,omitempty'
-        xml: 'http://purl.org/dc/elements/1.1/ date,omitempty'
-    DublinCoreElements:
+        json: 'date,omitempty'
+        xml: 'http://purl.org/dc/terms/ date,omitempty'
+    DateAccepted:
       description: >
-        contains Dublin Core extension elements.
+        is the date of acceptance of the resource.
+
+        Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date,
+        of which this is a subproperty. Examples of resources to which a date of acceptance may be relevant are a thesis
+        (accepted by a university department) or an article (accepted by a journal).
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
+      x-oapi-codegen-extra-tags:
+        json: 'dateAccepted,omitempty'
+        xml: 'http://purl.org/dc/terms/ dateAccepted,omitempty'
+    DateCopyrighted:
+      description: >
+        is the date of copyright of the resource.
+
+        Typically a year. Recommended practice is to describe the date, date/time, or period of time as recommended for
+        the property Date, of which this is a subproperty.
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
+      x-oapi-codegen-extra-tags:
+        json: 'dateCopyrighted,omitempty'
+        xml: 'http://purl.org/dc/terms/ dateCopyrighted,omitempty'
+    DateSubmitted:
+      description: >
+        is the date of submission of the resource.
+
+        Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date,
+        of which this is a subproperty. Examples of resources to which a 'Date Submitted' may be relevant include a
+        thesis (submitted to a university department) or an article (submitted to a journal).
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
+      x-oapi-codegen-extra-tags:
+        json: 'dateSubmitted,omitempty'
+        xml: 'http://purl.org/dc/terms/ dateSubmitted,omitempty'
+    Description:
+      description: >
+        is an account of the resource.
+
+        Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or
+        a free-text account of the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'description,omitempty'
+        xml: 'http://purl.org/dc/terms/ description,omitempty'
+    EducationLevel:
+      description: >
+        is the audience Education Level
+
+        A class of agents, defined in terms of progression through an educational or training context, for which the
+        described resource is intended.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'educationLevel,omitempty'
+        xml: 'http://purl.org/dc/terms/ educationLevel,omitempty'
+    Extent:
+      description: >
+        is the size or duration of the resource.
+
+        Recommended practice is to specify the file size in megabytes and duration in ISO 8601 format.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'extent,omitempty'
+        xml: 'http://purl.org/dc/terms/ extent,omitempty'
+    Format:
+      description: >
+        is the file format, physical medium, or dimensions of the resource.
+
+        Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could
+        use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'format,omitempty'
+        xml: 'http://purl.org/dc/terms/ format,omitempty'
+    HasFormat:
+      description: >
+        is a related resource that is substantially the same as the pre-existing described resource, but in another
+        format.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of Is Format
+        Of.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'hasFormat,omitempty'
+        xml: 'http://purl.org/dc/terms/ hasFormat,omitempty'
+    HasPart:
+      description: >
+        is a related resource that is included either physically or logically in the described resource.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of Is Part
+        Of.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'hasPart,omitempty'
+        xml: 'http://purl.org/dc/terms/ hasPart,omitempty'
+    HasVersion:
+      description: >
+        is a related resource that is a version, edition, or adaptation of the described resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'hasVersion,omitempty'
+        xml: 'http://purl.org/dc/terms/ hasVersion,omitempty'
+    Identifier:
+      description: >
+        is an unambiguous reference to the resource within a given context.
+
+        Recommended practice is to identify the resource by means of a string conforming to an identification system.
+        Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform
+        Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'identifier,omitempty'
+        xml: 'http://purl.org/dc/terms/ identifier,omitempty'
+    InstructionalMethod:
+      description: >
+        is a process, used to engender knowledge, attitudes and skills, that the described resource is designed to
+        support.
+
+        Instructional Method typically includes ways of presenting instructional materials or conducting instructional
+        activities, patterns of learner-to-learner and learner-to-instructor interactions, and mechanisms by which group
+        and individual levels of learning are measured. Instructional methods include all aspects of the instruction and
+        learning processes from planning and implementation through evaluation and feedback.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'instructionalMethod,omitempty'
+        xml: 'http://purl.org/dc/terms/ instructionalMethod,omitempty'
+    IsFormatOf:
+      description: >
+        is a pre-existing related resource that is substantially the same as the described resource, but in another
+        format.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of Has
+        Format.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'isFormatOf,omitempty'
+        xml: 'http://purl.org/dc/terms/ isFormatOf,omitempty'
+    IsPartOf:
+      description: >
+        is a related resource in which the described resource is physically or logically included.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of Has Part.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'isPartOf,omitempty'
+        xml: 'http://purl.org/dc/terms/ isPartOf,omitempty'
+    IsReferencedBy:
+      description: >
+        is a related resource that references, cites, or otherwise points to the described resource.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of
+        References.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'isReferencedBy,omitempty'
+        xml: 'http://purl.org/dc/terms/ isReferencedBy,omitempty'
+    IsReplacedBy:
+      description: >
+        is a related resource that supplants, displaces, or supersedes the described resource.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of
+        Replaces.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'isReplacedBy,omitempty'
+        xml: 'http://purl.org/dc/terms/ isReplacedBy,omitempty'
+    IsRequiredBy:
+      description: >
+        is a related resource that requires the described resource to support its function, delivery, or coherence.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of
+        Requires.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'isRequiredBy,omitempty'
+        xml: 'http://purl.org/dc/terms/ isRequiredBy,omitempty'
+    Issued:
+      description: >
+        is the date of formal issuance of the resource.
+
+        Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date,
+        of which this is a subproperty.
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
+      x-oapi-codegen-extra-tags:
+        json: 'issued,omitempty'
+        xml: 'http://purl.org/dc/terms/ issued,omitempty'
+    IsVersionOf:
+      description: >
+        is a related resource of which the described resource is a version, edition, or adaptation.
+
+        Changes in version imply substantive changes in content rather than differences in format. This property is
+        intended to be used with non-literal values. This property is an inverse property of Has Version.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'isVersionOf,omitempty'
+        xml: 'http://purl.org/dc/terms/ isVersionOf,omitempty'
+    Language:
+      description: >
+        is a language of the resource.
+
+        Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary
+        such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47]
+        language tag.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'language,omitempty'
+        xml: 'http://purl.org/dc/terms/ language,omitempty'
+    License:
+      description: >
+        is a legal document giving official permission to do something with the resource.
+
+        Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a
+        literal value that identifies the license may be provided.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'license,omitempty'
+        xml: 'http://purl.org/dc/terms/ license,omitempty'
+    Mediator:
+      description: >
+        is an entity that mediates access to the resource.
+
+        In an educational context, a mediator might be a parent, teacher, teaching assistant, or care-giver.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'mediator,omitempty'
+        xml: 'http://purl.org/dc/terms/ mediator,omitempty'
+    Medium:
+      description: >
+        is the material or physical carrier of the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'medium,omitempty'
+        xml: 'http://purl.org/dc/terms/ medium,omitempty'
+    Modified:
+      description: >
+        is the date on which the resource was changed.
+
+        Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date,
+        of which this is a subproperty.
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
+      x-oapi-codegen-extra-tags:
+        json: 'modified,omitempty'
+        xml: 'http://purl.org/dc/terms/ modified,omitempty'
+    Provenance:
+      description: >
+        is a statement of any changes in ownership and custody of the resource since its creation that are significant
+        for its authenticity, integrity, and interpretation.
+
+        The statement may include a description of any changes successive custodians made to the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'provenance,omitempty'
+        xml: 'http://purl.org/dc/terms/ provenance,omitempty'
+    Publisher:
+      description: >
+        is an entity responsible for making the resource available.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'publisher,omitempty'
+        xml: 'http://purl.org/dc/terms/ publisher,omitempty'
+    References:
+      description: >
+        is a related resource that is referenced, cited, or otherwise pointed to by the described resource.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of Is
+        Referenced By.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'references,omitempty'
+        xml: 'http://purl.org/dc/terms/ references,omitempty'
+    Relation:
+      description: >
+        is a related resource.
+
+        Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible,
+        a string conforming to a formal identification system may be provided.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'relation,omitempty'
+        xml: 'http://purl.org/dc/terms/ relation,omitempty'
+    Replaces:
+      description: >
+        is a related resource that is supplanted, displaced, or superseded by the described resource.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of Is
+        Replaced By.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'replaces,omitempty'
+        xml: 'http://purl.org/dc/terms/ replaces,omitempty'
+    Requires:
+      description: >
+        is a related resource that is required by the described resource to support its function, delivery, or
+        coherence.
+
+        This property is intended to be used with non-literal values. This property is an inverse property of Is
+        Required By.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'requires,omitempty'
+        xml: 'http://purl.org/dc/terms/ requires,omitempty'
+    Rights:
+      description: >
+        is information about rights held in and over the resource.
+
+        Typically, rights information includes a statement about various property rights associated with the resource,
+        including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If
+        this is not possible or feasible, a literal value (name, label, or short text) may be provided.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'rights,omitempty'
+        xml: 'http://purl.org/dc/terms/ rights,omitempty'
+    RightsHolder:
+      description: >
+        is a person or organization owning or managing rights over the resource.
+
+        Recommended practice is to refer to the rights holder with a URI. If this is not possible or feasible, a literal
+        value that identifies the rights holder may be provided.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'rightsHolder,omitempty'
+        xml: 'http://purl.org/dc/terms/ rightsHolder,omitempty'
+    Source:
+      description: >
+        is a related resource from which the described resource is derived.
+
+        This property is intended to be used with non-literal values. The described resource may be derived from the
+        related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a
+        string conforming to a formal identification system.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'source,omitempty'
+        xml: 'http://purl.org/dc/terms/ source,omitempty'
+    Spatial:
+      description: >
+        is spatial characteristics of the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'spatial,omitempty'
+        xml: 'http://purl.org/dc/terms/ spatial,omitempty'
+    Subject:
+      description: >
+        is a topic of the resource.
+
+        Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value
+        that identifies the subject may be provided. Both should preferably refer to a subject in a controlled
+        vocabulary.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'subject,omitempty'
+        xml: 'http://purl.org/dc/terms/ subject,omitempty'
+    TableOfContents:
+      description: >
+        is a list of subunits of the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'tableOfContents,omitempty'
+        xml: 'http://purl.org/dc/terms/ tableOfContents,omitempty'
+    Temporal:
+      description: >
+        is temporal characteristics of the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'temporal,omitempty'
+        xml: 'http://purl.org/dc/terms/ temporal,omitempty'
+    Title:
+      description: >
+        is a name given to the resource.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'title,omitempty'
+        xml: 'http://purl.org/dc/terms/ title,omitempty'
+    Type:
+      description: >
+        is the nature or genre of the resource.
+
+        Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe
+        the file format, physical medium, or dimensions of the resource, use the property Format.
+      type: array
+      items:
+        type: string
+      x-oapi-codegen-extra-tags:
+        json: 'type,omitempty'
+        xml: 'http://purl.org/dc/terms/ type,omitempty'
+    Valid:
+      description: >
+        is a date (often a range) of validity of a resource.
+
+        Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date,
+        of which this is a subproperty.
+      type: array
+      items:
+        $ref: '#/components/schemas/DCDate'
+      x-oapi-codegen-extra-tags:
+        json: 'valid,omitempty'
+        xml: 'http://purl.org/dc/terms/ valid,omitempty'
+    DCElements:
+      description: >
+        /elements/1.1/ namespace: the legacy fifteen-element "Simple Dublin Core", most commonly what feeds actually use
+        (xmlns:dc=".../elements/1.1/"). All properties are repeatable in general RDF usage, hence []string.
       type: object
       properties:
-        DCTitle:
-          $ref: '#/components/schemas/DCTitle'
-        DCDescription:
-          $ref: '#/components/schemas/DCDescription'
-        DCContributor:
-          $ref: '#/components/schemas/DCContributor'
-        DCCreator:
-          $ref: '#/components/schemas/DCCreator'
-        DCCoverage:
-          $ref: '#/components/schemas/DCCoverage'
-        DCFormat:
-          $ref: '#/components/schemas/DCFormat'
-        DCIdentifier:
-          $ref: '#/components/schemas/DCIdentifier'
-        DCPublisher:
-          $ref: '#/components/schemas/DCPublisher'
-        DCRelation:
-          $ref: '#/components/schemas/DCRelation'
-        DCRights:
-          $ref: '#/components/schemas/DCRights'
-        DCSubject:
-          $ref: '#/components/schemas/DCSubject'
-        DCType:
-          $ref: '#/components/schemas/DCType'
-        DCSource:
-          $ref: '#/components/schemas/DCSource'
-        DCLanguage:
-          $ref: '#/components/schemas/DCLanguage'
-        DCDate:
-          $ref: '#/components/schemas/DCDate'
+        contributor:
+          $ref: '#/components/schemas/Contributor'
+          x-oapi-codegen-extra-tags:
+            json: 'contributor,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ contributor,omitempty'
+        coverage:
+          $ref: '#/components/schemas/Coverage'
+          x-oapi-codegen-extra-tags:
+            json: 'coverage,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ coverage,omitempty'
+        creator:
+          $ref: '#/components/schemas/Creator'
+          x-oapi-codegen-extra-tags:
+            json: 'creator,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ creator,omitempty'
+        date:
+          $ref: '#/components/schemas/Date'
+          x-oapi-codegen-extra-tags:
+            json: 'date,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ date,omitempty'
+        description:
+          $ref: '#/components/schemas/Description'
+          x-oapi-codegen-extra-tags:
+            json: 'description,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ description,omitempty'
+        format:
+          $ref: '#/components/schemas/Format'
+          x-oapi-codegen-extra-tags:
+            json: 'format,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ format,omitempty'
+        identifier:
+          $ref: '#/components/schemas/Identifier'
+          x-oapi-codegen-extra-tags:
+            json: 'identifier,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ identifier,omitempty'
+        language:
+          $ref: '#/components/schemas/Language'
+          x-oapi-codegen-extra-tags:
+            json: 'language,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ language,omitempty'
+        publisher:
+          $ref: '#/components/schemas/Publisher'
+          x-oapi-codegen-extra-tags:
+            json: 'publisher,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ publisher,omitempty'
+        relation:
+          $ref: '#/components/schemas/Relation'
+          x-oapi-codegen-extra-tags:
+            json: 'relation,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ relation,omitempty'
+        rights:
+          $ref: '#/components/schemas/Rights'
+          x-oapi-codegen-extra-tags:
+            json: 'rights,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ rights,omitempty'
+        source:
+          $ref: '#/components/schemas/Source'
+          x-oapi-codegen-extra-tags:
+            json: 'source,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ source,omitempty'
+        subject:
+          $ref: '#/components/schemas/Subject'
+          x-oapi-codegen-extra-tags:
+            json: 'subject,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ subject,omitempty'
+        title:
+          $ref: '#/components/schemas/Title'
+          x-oapi-codegen-extra-tags:
+            json: 'title,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ title,omitempty'
+        type:
+          $ref: '#/components/schemas/Type'
+          x-oapi-codegen-extra-tags:
+            json: 'type,omitempty'
+            xml: 'http://purl.org/dc/elements/1.1/ type,omitempty'
+    DCTerms:
+      description: >
+        /terms/ namespace: the full, "qualified" DCMI Terms set. DCMI itself now gently encourages this namespace over
+        /elements/1.1/ for new usage. Only the Terms for vocabulary description (domainIncludes, memberOf,
+        rangeIncludes) are omitted -- those describe the vocabulary itself rather than a resource, and essentially never
+        appear in feed content.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/DCElements'
+        - type: object
+          properties:
+            abstract:
+              $ref: '#/components/schemas/Abstract'
+            accessRights:
+              $ref: '#/components/schemas/AccessRights'
+            accrualMethod:
+              $ref: '#/components/schemas/AccrualMethod'
+            accrualPeriodicity:
+              $ref: '#/components/schemas/AccrualPeriodicity'
+            accrualPolicy:
+              $ref: '#/components/schemas/AccrualPolicy'
+            alternative:
+              $ref: '#/components/schemas/Alternative'
+            audience:
+              $ref: '#/components/schemas/Audience'
+            available:
+              $ref: '#/components/schemas/Available'
+            bibliographicCitation:
+              $ref: '#/components/schemas/BibliographicCitation'
+            conformsTo:
+              $ref: '#/components/schemas/ConformsTo'
+            contributor:
+              $ref: '#/components/schemas/Contributor'
+            coverage:
+              $ref: '#/components/schemas/Coverage'
+            creator:
+              $ref: '#/components/schemas/Creator'
+            created:
+              $ref: '#/components/schemas/Created'
+            date:
+              $ref: '#/components/schemas/Date'
+            dateAccepted:
+              $ref: '#/components/schemas/DateAccepted'
+            dateCopyrighted:
+              $ref: '#/components/schemas/DateCopyrighted'
+            dateSubmitted:
+              $ref: '#/components/schemas/DateSubmitted'
+            description:
+              $ref: '#/components/schemas/Description'
+            educationLevel:
+              $ref: '#/components/schemas/EducationLevel'
+            extent:
+              $ref: '#/components/schemas/Extent'
+            format:
+              $ref: '#/components/schemas/Format'
+            hasFormat:
+              $ref: '#/components/schemas/HasFormat'
+            hasPart:
+              $ref: '#/components/schemas/HasPart'
+            hasVersion:
+              $ref: '#/components/schemas/HasVersion'
+            identifier:
+              $ref: '#/components/schemas/Identifier'
+            instructionalMethod:
+              $ref: '#/components/schemas/InstructionalMethod'
+            isFormatOf:
+              $ref: '#/components/schemas/IsFormatOf'
+            isPartOf:
+              $ref: '#/components/schemas/IsPartOf'
+            isReferencedBy:
+              $ref: '#/components/schemas/IsReferencedBy'
+            isReplacedBy:
+              $ref: '#/components/schemas/IsReplacedBy'
+            isRequiredBy:
+              $ref: '#/components/schemas/IsRequiredBy'
+            issued:
+              $ref: '#/components/schemas/Issued'
+            isVersionOf:
+              $ref: '#/components/schemas/IsVersionOf'
+            language:
+              $ref: '#/components/schemas/Language'
+            license:
+              $ref: '#/components/schemas/License'
+            mediator:
+              $ref: '#/components/schemas/Mediator'
+            medium:
+              $ref: '#/components/schemas/Medium'
+            modified:
+              $ref: '#/components/schemas/Modified'
+            provenance:
+              $ref: '#/components/schemas/Provenance'
+            publisher:
+              $ref: '#/components/schemas/Publisher'
+            references:
+              $ref: '#/components/schemas/References'
+            relation:
+              $ref: '#/components/schemas/Relation'
+            replaces:
+              $ref: '#/components/schemas/Replaces'
+            requires:
+              $ref: '#/components/schemas/Requires'
+            rights:
+              $ref: '#/components/schemas/Rights'
+            rightsHolder:
+              $ref: '#/components/schemas/RightsHolder'
+            source:
+              $ref: '#/components/schemas/Source'
+            spatial:
+              $ref: '#/components/schemas/Spatial'
+            subject:
+              $ref: '#/components/schemas/Subject'
+            tableOfContents:
+              $ref: '#/components/schemas/TableOfContents'
+            temporal:
+              $ref: '#/components/schemas/Temporal'
+            title:
+              $ref: '#/components/schemas/Title'
+            type:
+              $ref: '#/components/schemas/Type'
+            valid:
+              $ref: '#/components/schemas/Valid'

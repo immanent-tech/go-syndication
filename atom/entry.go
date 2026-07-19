@@ -27,9 +27,6 @@ func (e *Entry) GetID() string {
 
 // GetTitle retrieves the <title> of the Entry.
 func (e *Entry) GetTitle() string {
-	if e.DCTitle != nil {
-		return *e.DCTitle
-	}
 	return e.Title.String()
 }
 
@@ -51,8 +48,8 @@ func (e *Entry) GetLink() string {
 // GetDescription retrieves the <summary> (if any) of the Entry.
 func (e *Entry) GetDescription() string {
 	switch {
-	case e.DCDescription != nil:
-		return *e.DCDescription
+	case e.Description != nil:
+		return strings.Join(*e.Description, " ")
 	case e.Summary != nil && e.Summary.String() != "":
 		return e.Summary.String()
 	case e.MediaGroup != nil:
@@ -71,8 +68,8 @@ func (e *Entry) GetAuthors() []string {
 			authors = append(authors, author.String())
 		}
 	}
-	if e.DCCreator != nil {
-		authors = append(authors, *e.DCCreator)
+	if e.Creator != nil {
+		authors = append(authors, *e.Creator...)
 	}
 	return authors
 }
@@ -86,8 +83,8 @@ func (e *Entry) GetContributors() []string {
 			contributors = append(contributors, contributor.String())
 		}
 	}
-	if e.DCContributor != nil {
-		contributors = append(contributors, *e.DCCreator)
+	if e.Contributor != nil {
+		contributors = append(contributors, *e.Contributor...)
 	}
 	return contributors
 }
@@ -95,22 +92,15 @@ func (e *Entry) GetContributors() []string {
 // GetRights retrieves the rights (copyright) of the Entry. This will be the first value found from either <dc:rights>
 // or <rights> elements.
 func (e *Entry) GetRights() *string {
-	switch {
-	case e.DCRights != nil:
-		return e.DCRights
-	case e.Rights != nil:
-		return new(e.Rights.String())
-	default:
-		return nil
-	}
+	return new(e.Rights.String())
 }
 
 // GetLanguage retrieves the language of the Entry. This will be the first value found from either <dc:language>
 // or <lang> elements.
 func (e *Entry) GetLanguage() *string {
 	switch {
-	case e.DCLanguage != nil:
-		return e.DCLanguage
+	case e.Language != nil:
+		return new(strings.Join(*e.Language, " "))
 	case e.Lang != nil:
 		return e.Lang
 	default:

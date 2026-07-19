@@ -567,9 +567,9 @@ components:
         is the document (i.e., top-level) element of an Atom Feed Document, acting as a container for metadata and data
         associated with the feed.
       allOf:
-        - $ref: '#/components/schemas/FeedMetadata'
         - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
-        - $ref: 'dc.yaml#/components/schemas/DublinCoreElements'
+        - $ref: 'dc.yaml#/components/schemas/DCElements'
+        - $ref: '#/components/schemas/FeedMetadata'
         - type: object
           properties:
             XMLName:
@@ -613,9 +613,9 @@ components:
         represents an individual entry, acting as a container for metadata and data associated with the entry.
       type: object
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
         - $ref: 'media-rss.yaml#/components/schemas/MediaElements'
-        - $ref: 'dc.yaml#/components/schemas/DublinCoreElements'
+        - $ref: 'dc.yaml#/components/schemas/DCElements'
+        - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
             - XMLName

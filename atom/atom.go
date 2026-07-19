@@ -110,10 +110,14 @@ func (l *Link) Validate() error {
 }
 
 func (t TextConstruct) String() string {
-	if t.Type == nil || *t.Type != TypeXhtml {
+	switch {
+	case t.Type == nil || *t.Type != TypeXhtml:
 		return t.Value
+	case t.XHTML != nil:
+		return *t.XHTML
+	default:
+		return ""
 	}
-	return *t.XHTML
 }
 
 // MarshalXML implements xml.Marshaler. The element name itself (title,

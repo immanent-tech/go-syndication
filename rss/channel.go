@@ -17,24 +17,12 @@ var _ types.FeedSource = (*Channel)(nil)
 
 // GetTitle retrieves the <title> (if any) of the Channel.
 func (c *Channel) GetTitle() string {
-	switch {
-	case c.DCTitle != nil:
-		return *c.DCTitle
-	default:
-		return c.Title
-	}
+	return c.Title
 }
 
 // GetDescription retrieves the <description> (if any) of the Channel.
 func (c *Channel) GetDescription() string {
-	switch {
-	case c.Description != "":
-		return c.Description
-	case c.DCDescription != nil:
-		return *c.DCDescription
-	default:
-		return ""
-	}
+	return c.Description
 }
 
 // GetSourceURL retrieves the URL that links to the RSS file for the channel. This will be any <atom:link> element
@@ -65,47 +53,31 @@ func (c *Channel) GetLink() string {
 // GetAuthors retrieves the authors (if any) of the Channel. This will be the list of values from any <dc:creator>
 // elements.
 func (c *Channel) GetAuthors() []string {
-	var authors []string
-	if c.DCCreator != nil {
-		authors = append(authors, *c.DCCreator)
+	if c.WebMaster != nil {
+		return []string{*c.WebMaster}
 	}
-	return authors
+	return nil
 }
 
 // GetContributors retrieves the contributors (if any) of the Channel. This will be the list of values from the
 // <dc:contributor> element.
 func (c *Channel) GetContributors() []string {
-	var contributors []string
-	if c.DCContributor != nil {
-		contributors = append(contributors, *c.DCContributor)
+	if c.ManagingEditor != nil {
+		return []string{*c.ManagingEditor}
 	}
-	return contributors
+	return nil
 }
 
 // GetRights retrieves the rights (copyright) of the Channel. This will be the first value found from either <dc:rights>
 // or <copyright> elements.
 func (c *Channel) GetRights() *string {
-	switch {
-	case c.DCRights != nil:
-		return c.DCRights
-	case c.Copyright != nil:
-		return c.Copyright
-	default:
-		return nil
-	}
+	return c.Copyright
 }
 
 // GetLanguage retrieves the language of the Channel. This will be the first value found from either <dc:language>
 // or <lang> elements.
 func (c *Channel) GetLanguage() *string {
-	switch {
-	case c.DCLanguage != nil:
-		return c.DCLanguage
-	case c.Language != nil:
-		return c.Language
-	default:
-		return nil
-	}
+	return c.Language
 }
 
 // GetCategories retrieves the categories (if any) of the Channel. The categories are returned as strings.

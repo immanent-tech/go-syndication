@@ -6,6 +6,7 @@ package atom
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/extensions/media"
@@ -17,21 +18,14 @@ var _ types.FeedSource = (*Feed)(nil)
 
 // GetTitle retrieves the <title> of the Feed.
 func (f *Feed) GetTitle() string {
-	switch {
-	case f.DCTitle != nil:
-		return *f.DCTitle
-	case f.Title.String() != "":
-		return f.Title.String()
-	default:
-		return ""
-	}
+	return f.Title.String()
 }
 
 // GetDescription retrieves the <description> (if any) of the Feed.
 func (f *Feed) GetDescription() string {
 	switch {
-	case f.DCDescription != nil:
-		return *f.DCDescription
+	case f.Description != nil:
+		return strings.Join(*f.Description, " ")
 	case f.Subtitle != nil && f.Subtitle.String() != "":
 		return f.Subtitle.String()
 	default:
@@ -86,8 +80,8 @@ func (f *Feed) GetAuthors() []string {
 			authors = append(authors, author.String())
 		}
 	}
-	if f.DCCreator != nil {
-		authors = append(authors, *f.DCCreator)
+	if f.Creator != nil {
+		authors = append(authors, *f.Creator...)
 	}
 	return authors
 }
@@ -101,8 +95,8 @@ func (f *Feed) GetContributors() []string {
 			contributors = append(contributors, contributor.String())
 		}
 	}
-	if f.DCContributor != nil {
-		contributors = append(contributors, *f.DCCreator)
+	if f.Contributor != nil {
+		contributors = append(contributors, *f.Contributor...)
 	}
 	return contributors
 }
@@ -110,22 +104,18 @@ func (f *Feed) GetContributors() []string {
 // GetRights retrieves the rights (copyright) of the Feed. This will be the first value found from either <dc:rights>
 // or <rights> elements.
 func (f *Feed) GetRights() *string {
-	switch {
-	case f.DCRights != nil:
-		return f.DCRights
-	case f.Rights != nil && f.Rights.Value != "":
-		return &f.Rights.Value
-	default:
-		return nil
+	if f.Rights != nil {
+		return new(f.Rights.String())
 	}
+	return nil
 }
 
 // GetLanguage retrieves the language of the Feed. This will be the first value found from either <dc:language>
 // or <lang> elements.
 func (f *Feed) GetLanguage() *string {
 	switch {
-	case f.DCLanguage != nil:
-		return f.DCLanguage
+	case f.Language != nil:
+		return new(strings.Join(*f.Language, " "))
 	case f.Lang != nil:
 		return f.Lang
 	default:

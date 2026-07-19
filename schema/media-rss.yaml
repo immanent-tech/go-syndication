@@ -15,6 +15,20 @@ info:
     identifier: MIT
 components:
   schemas:
+    Height:
+      description: >
+        is the height of the media object.
+      type: integer
+      x-oapi-codegen-extra-tags:
+        xml: 'height,attr,omitempty'
+        validate: 'omitempty,number'
+    Width:
+      description: >
+        is the width of the media object.
+      type: integer
+      x-oapi-codegen-extra-tags:
+        xml: 'width,attr,omitempty'
+        validate: 'omitempty,number'
     Value:
       description: >
         represents an elements value.
@@ -149,30 +163,19 @@ components:
         - url
       properties:
         XMLName:
-          description: >
-            represents the XML namespace of an element.
+          description: represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         url:
-          allOf:
-            - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
+          description: specifies the url of the thumbnail
+          type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
             xml: 'url,attr'
             validate: 'required,url'
         height:
-          description: >
-            is the height of the media object.
-          type: integer
-          x-oapi-codegen-extra-tags:
-            xml: 'height,attr,omitempty'
-            validate: 'omitempty,number'
+          $ref: '#/components/schemas/Height'
         width:
-          description: >
-            is the width of the media object. It is an optional attribute.
-          type: integer
-          x-oapi-codegen-extra-tags:
-            xml: 'width,attr,omitempty'
-            validate: 'omitempty,number'
+          $ref: '#/components/schemas/Width'
         time:
           description: >
             specifies the time offset in relation to the media object. Typically this is used when creating multiple
@@ -266,15 +269,16 @@ components:
             represents the XML namespace of an element.
           x-go-type: 'xml.Name'
         url:
-          allOf:
-            - $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
+          description: is the URL of the player console that plays the media.
+          type: string
+          x-go-name: URL
           x-oapi-codegen-extra-tags:
             xml: 'url,attr'
             validate: 'required,url'
         height:
-          $ref: 'types-attributes.yaml#/components/schemas/AttrHeight'
+          $ref: '#/components/schemas/Height'
         width:
-          $ref: 'types-attributes.yaml#/components/schemas/AttrWidth'
+          $ref: '#/components/schemas/Width'
       x-oapi-codegen-extra-tags:
         xml: 'http://search.yahoo.com/mrss/ player,omitempty'
         json: 'media_player'
@@ -337,7 +341,14 @@ components:
         value:
           $ref: '#/components/schemas/Value'
         url:
-          $ref: 'types-attributes.yaml#/components/schemas/AttrURL'
+          description: >
+            s the URL for a terms of use page or additional copyright information. If the media is operating under a
+            Creative Commons license, the Creative Commons module should be used instead.
+          type: string
+          x-go-name: URL
+          x-oapi-codegen-extra-tags:
+            xml: 'url,attr,omitempty'
+            validate: 'omitempty,url'
       x-oapi-codegen-extra-tags:
         xml: 'media copyright,omitempty'
         json: 'media_copyright'
@@ -937,7 +948,7 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/MediaElements'
-        - $ref: 'dc.yaml#/components/schemas/DublinCoreElements'
+        - $ref: 'dc.yaml#/components/schemas/DCElements'
         - type: object
           required:
             - XMLName
