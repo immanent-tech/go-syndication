@@ -23,6 +23,8 @@ import (
 	"github.com/go-resty/resty/v2"
 	feeds "github.com/immanent-tech/go-syndication"
 	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/jsonfeed"
+	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
 )
@@ -175,10 +177,22 @@ func parseFeedData(r io.Reader) (*feeds.Feed, error) {
 			return nil, fmt.Errorf("parse atom: %w", err)
 		}
 	case feedType == types.SourceTypeRSS:
-		// RSS feed.
+		// RSS 2.0 feed.
 		feedData, err = feeds.NewDecoder[*rss.RSS](bytes.NewReader(data))
 		if err != nil {
 			return nil, fmt.Errorf("parse rss: %w", err)
+		}
+	case feedType == types.SourceTypeRDF:
+		// RDF/RSS 1.0 feed.
+		feedData, err = feeds.NewDecoder[*rdf.RDF](bytes.NewReader(data))
+		if err != nil {
+			return nil, fmt.Errorf("parse rdf: %w", err)
+		}
+	case feedType == types.SourceTypeJSONFeed:
+		// JSONFeed.
+		feedData, err = feeds.NewDecoder[*jsonfeed.Feed](bytes.NewReader(data))
+		if err != nil {
+			return nil, fmt.Errorf("parse jsonfeed: %w", err)
 		}
 	case feedType == types.SourceTypeHTML:
 		return nil, errors.New("go html, not feed format")
@@ -217,9 +231,11 @@ func showFeedDetails(feed *feeds.Feed) {
 		str.WriteString(feed.GetPublishedDate().Format(time.DateTime))
 		str.WriteRune('\n')
 	}
-	str.WriteString("Updated: ")
-	str.WriteString(feed.GetUpdatedDate().Format(time.DateTime))
-	str.WriteRune('\n')
+	if feed.GetUpdatedDate() != nil {
+		str.WriteString("Updated: ")
+		str.WriteString(feed.GetUpdatedDate().Format(time.DateTime))
+		str.WriteRune('\n')
+	}
 	if len(feed.GetCategories()) > 0 {
 		str.WriteString("Categories: ")
 		str.WriteString(strings.Join(feed.GetCategories(), ","))
