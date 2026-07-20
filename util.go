@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/immanent-tech/go-syndication/rdf"
+	"github.com/immanent-tech/go-syndication/rss"
 	"golang.org/x/net/html/charset"
 )
 
@@ -33,13 +35,25 @@ func Decode[T any](namespace string, rd io.Reader) (T, error) {
 
 // Encode will encode the given type T into a byte array.
 func Encode[T any](feed T) ([]byte, error) {
-	var b []byte
+	switch v := any(feed).(type) {
+	case *rss.RSS:
+		v.AutoDeclareNamespaces()
+		return encode(v)
+	case *rdf.RDF:
+		v.Link()
+		v.AutoDeclareNamespaces()
+		return encode(v)
+	default:
+		return encode(feed)
+	}
+}
 
+func encode(v any) ([]byte, error) {
+	var b []byte
 	reader := bytes.NewBuffer(b)
 	encoder := xml.NewEncoder(reader)
-	if err := encoder.Encode(&feed); err != nil {
+	if err := encoder.Encode(v); err != nil {
 		return nil, fmt.Errorf("could not encode byte array: %w", err)
 	}
-
 	return reader.Bytes(), nil
 }
