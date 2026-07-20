@@ -4,6 +4,7 @@
 package rss
 
 import (
+	"encoding/xml"
 	"time"
 
 	externalRef0 "github.com/immanent-tech/go-syndication/atom"
@@ -219,6 +220,7 @@ type Channel struct {
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
 	SYUpdateFrequency *externalRef6.SYUpdateFrequency `json:"update_frequency,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	XMLName           xml.Name                        `json:"XMLName" validate:"required" xml:"channel"`
 	AtomLink          *AtomLink                       `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
@@ -602,8 +604,8 @@ type SkipHours struct {
 
 // Source The RSS channel that the item came from.
 type Source struct {
-	URL   *string `json:"url,omitempty" validate:"required,url" xml:"url,attr"`
-	Value string  `json:"value" xml:",chardata"`
+	URL   string `json:"url" validate:"required,url" xml:"url,attr"`
+	Value string `json:"value" xml:",chardata"`
 }
 
 // TTL stands for time to live. It's a number of minutes that indicates how long a channel can be cached before refreshing from the source.

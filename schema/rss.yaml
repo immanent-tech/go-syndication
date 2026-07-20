@@ -335,6 +335,7 @@ components:
       type: object
       required:
         - value
+        - url
       properties:
         value:
           type: string
@@ -433,10 +434,16 @@ components:
         - $ref: 'dc.yaml#/components/schemas/DCElements'
         - type: object
           required:
+            - XMLName
             - title
             - link
             - description
           properties:
+            XMLName:
+              x-go-type: xml.Name
+              x-oapi-codegen-extra-tags:
+                xml: channel
+                validate: required
             title:
               description: >
                 is the name of the channel. It's how people refer to your service. If you have an HTML website that
@@ -539,6 +546,10 @@ components:
               $ref: '#/components/schemas/SkipHours'
             skipDays:
               $ref: '#/components/schemas/SkipDays'
+            MediaContent:
+              $ref: 'media-rss.yaml#/components/schemas/MediaContent'
+            MediaGroup:
+              $ref: 'media-rss.yaml#/components/schemas/MediaGroup'
             items:
               description: >
                 is a list of the current items published to the channel.
@@ -549,12 +560,6 @@ components:
                 xml: 'item,omitempty'
                 validate: 'omitempty,dive,validateFn'
               x-go-type-skip-optional-pointer: true
-            MediaContent:
-              $ref: 'media-rss.yaml#/components/schemas/MediaContent'
-            MediaGroup:
-              $ref: 'media-rss.yaml#/components/schemas/MediaGroup'
-            # extensions:
-            #   $ref: 'types.yaml#/components/schemas/Extensions'
       x-oapi-codegen-extra-tags:
         xml: 'channel'
         validate: 'required'
