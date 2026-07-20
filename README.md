@@ -54,7 +54,7 @@
 
 `go-syndication` is Go package for dealing with various feed syndication formats. It supports:
 
-- RSS
+- RSS (1.x and 2.x)
 - Atom
 - JSONFeed
 - OPML

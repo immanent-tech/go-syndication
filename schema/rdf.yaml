@@ -1,0 +1,319 @@
+---
+openapi: '3.1.0'
+info:
+  version: 1.0.0
+  title: RDF Site Summary (RSS) 1.0
+  description: >
+    Provides an OpenAPI schema to represent RDF documents.
+
+    RDF Site Summary (RSS) is a lightweight multipurpose extensible metadata description and syndication format. RSS is
+    an XML application, conforms to the W3C's RDF Specification and is extensible via XML-namespace and/or RDF based
+    modularization.
+
+    https://web.resource.org/rss/1.0/spec
+  contact:
+    name: 'Joshua Rich'
+    email: joshua.rich@gmail.com
+  license:
+    identifier: MIT
+components:
+  schemas:
+    RDFResource:
+      description: >
+        embeds the rdf:about attribute required on every top-level channel/image/item/textinput element ("Each
+        second-level element... must include an rdf:about attribute").
+      type: object
+      required:
+        - about
+      properties:
+        about:
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.w3.org/1999/02/22-rdf-syntax-ns# about,attr'
+            validate: required
+    ResourceRef:
+      description: >
+        is channel's <image rdf:resource="..."/> / <textinput rdf:resource="..."/>. It's an empty element whose only
+        content is a pointer to another top-level element's rdf:about URI.
+      type: object
+      required:
+        - resource
+      properties:
+        resource:
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.w3.org/1999/02/22-rdf-syntax-ns# resource,attr'
+    ItemRefs:
+      description: >
+        are channel's <items><rdf:Seq><rdf:li resource="..."/>...</rdf:Seq></items> table of contents, presented to
+        callers as a simple ordered []string of item URIs rather than the three-level RDF nesting on the wire.
+      type: array
+      items:
+        type: string
+    Channel:
+      description: >
+        contains metadata describing the channel itself, including a title, brief description, and URL link to the
+        described resource (the channel provider's home page, for instance). The {resource} URL of the channel element's
+        rdf:about attribute must be unique with respect to any other rdf:about attributes in the RSS document and is a
+        URI which identifies the channel. Most commonly, this is either the URL of the homepage being described or a URL
+        where the RSS file can be found.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RDFResource'
+        - $ref: 'rss-ext.yaml#/components/schemas/SyndicationElements'
+        - $ref: 'dc.yaml#/components/schemas/DCElements'
+        - type: object
+          required:
+            - XMLName
+            - title
+            - link
+            - description
+            - items
+          properties:
+            XMLName:
+              x-go-type: xml.Name
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ channel'
+            title:
+              description: is a descriptive title for the channel.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ title'
+                validate: 'required,max=48'
+            link:
+              description: >
+                is the URL to which an HTML rendering of the channel title will link, commonly the parent site's home
+                or news page.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ link'
+                validate: 'required,max=500,url'
+            description:
+              description: is a brief description of the channel's content, function, source, etc.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ description'
+                validate: 'required,max=500'
+            image:
+              description: >
+                establishes an RDF association between the optional image element [5.4] and this particular RSS
+                channel. The rdf:resource's {image_uri} must be the same as the image element's rdf:about {image_uri}.
+              $ref: '#/components/schemas/ResourceRef'
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ image'
+            items:
+              description:
+                are an RDF table of contents, associating the document's items [5.5] with this particular RSS channel. Each
+                item's rdf:resource {item_uri} must be the same as the associated item element's rdf:about {item_uri}.
+
+                An RDF Seq (sequence) is used to contain all the items rather than an RDF Bag to denote item order for
+                rendering and reconstruction.
+
+                Note that items appearing in the document but not as members of the channel level items sequence are
+                likely to be discarded by RDF parsers.
+              $ref: '#/components/schemas/ItemRefs'
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ items'
+                validate: required
+            textInput:
+              description: >
+                Establishes an RDF association between the optional textinput element [5.6] and this particular RSS
+                channel. The {textinput_uri} rdf:resource must be the same as the textinput element's rdf:about
+                {textinput_uri}.
+              $ref: '#/components/schemas/ResourceRef'
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ textinput'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://purl.org/rss/1.0/ channel'
+    Image:
+      description: >
+        is an image to be associated with an HTML rendering of the channel. This image should be of a format supported by
+        the majority of Web browsers. While the later 0.91 specification allowed for a width of 1-144 and height of
+        1-400, convention (and the 0.9 specification) dictate 88x31.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RDFResource'
+        - type: object
+          required:
+            - XMLName
+            - title
+            - link
+            - url
+          properties:
+            XMLName:
+              x-go-type: xml.Name
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ image'
+            title:
+              description: >
+                is the alternative text ("alt" attribute) associated with the channel's image tag when rendered as HTML.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ title'
+                validate: required,max=40
+            link:
+              description: >
+                is the URL to which an HTML rendering of the channel image will link. This, as with the channel's title
+                link, is commonly the parent site's home or news page.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ link'
+                validate: required,max=500,url
+            url:
+              description: >
+                is the URL of the image to used in the "src" attribute of the channel's image tag when rendered as HTML.
+              type: string
+              x-go-name: URL
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ url'
+                validate: required,max=500,url
+      x-oapi-codegen-extra-tags:
+        xml: 'http://purl.org/rss/1.0/ image'
+    Item:
+      description: >
+        while commonly a news headline, with RSS 1.0's modular extensibility, this can be just about anything:
+        discussion posting, job listing, software patch -- any object with a URI. There may be a minimum of one item per
+        RSS document. While RSS 1.0 does not enforce an upper limit, for backward compatibility with RSS 0.9 and 0.91, a
+        maximum of fifteen items is recommended.
+
+        {item_uri} must be unique with respect to any other rdf:about attributes in the RSS document and is a URI which
+        identifies the item. {item_uri} should be identical to the value of the <link> sub-element of the <item>
+        element, if possible.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RDFResource'
+        - $ref: 'dc.yaml#/components/schemas/DCElements'
+        - type: object
+          required:
+            - XMLName
+            - title
+            - link
+          properties:
+            XMLName:
+              x-go-type: xml.Name
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ item'
+            title:
+              description: >
+                is the item's title.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ title'
+                validate: required,max=100
+            link:
+              description: >
+                is the item's URL.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ link'
+                validate: required,max=500,url
+            description:
+              description: >
+                is a brief description/abstract of the item.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ description'
+                validate: omitempty,max=500
+      x-oapi-codegen-extra-tags:
+        xml: 'http://purl.org/rss/1.0/ item'
+    TextInput:
+      description: >
+        affords a method for submitting form data to an arbitrary URL -- usually located at the parent website. The form
+        processor at the receiving end only is assumed to handle the HTTP GET method.
+
+        The field is typically used as a search box or subscription form -- among others. While this is of some use when
+        RSS documents are rendered as channels (see MNN) and accompanied by human readable title and description, the
+        ambiguity in automatic determination of meaning of this overloaded element renders it otherwise not particularly
+        useful. RSS 1.0 therefore suggests either deprecation or augmentation with some form of resource discovery of
+        this element in future versions while maintaining it for backward compatiblity with RSS 0.9.
+
+        {textinput_uri} must be unique with respect to any other rdf:about attributes in the RSS document and is a URI
+        which identifies the textinput. {textinput_uri} should be identical to the value of the <link> sub-element of
+        the <textinput> element, if possible.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RDFResource'
+        - type: object
+          required:
+            - XMLName
+            - title
+            - description
+            - name
+            - link
+          properties:
+            XMLName:
+              x-go-type: xml.Name
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ textinput'
+            title:
+              description: >
+                is a descriptive title for the textinput field. For example: "Subscribe" or "Search!"
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ title'
+                validate: required,max=40
+            description:
+              description: >
+                is a brief description of the textinput field's purpose. For example: "Subscribe to our newsletter
+                for..." or "Search our site's archive of..."
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ description'
+                validate: omitempty,max=100
+            name:
+              description: >
+                is the text input field's (variable) name.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ name'
+                validate: required,max=500
+            link:
+              description: >
+                is the URL to which a textinput submission will be directed (using GET).
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'http://purl.org/rss/1.0/ link'
+                validate: required,max=500,url
+      x-oapi-codegen-extra-tags:
+        xml: 'http://purl.org/rss/1.0/ textinput'
+    RDF:
+      description: represents an RDF document
+      type: object
+      required:
+        - DefaultNamespace
+        - XMLName
+        - channel
+      properties:
+        channel:
+          $ref: '#/components/schemas/Channel'
+        image:
+          $ref: '#/components/schemas/Image'
+        items:
+          description: >
+            is an RDF table of contents, associating the document's items [5.5] with this particular RSS channel. Each
+            item's rdf:resource {item_uri} must be the same as the associated item element's rdf:about {item_uri}.
+
+            An RDF Seq (sequence) is used to contain all the items rather than an RDF Bag to denote item order for
+            rendering and reconstruction.
+
+            Note that items appearing in the document but not as members of the channel level items sequence are likely
+            to be discarded by RDF parsers.
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: 'http://purl.org/rss/1.0/ item'
+        textInput:
+          $ref: '#/components/schemas/TextInput'
+        DefaultNamespace:
+          type: string
+        namespaces:
+          description: >
+            contains all namespaces in use by this RSS feed.
+          type: array
+          items:
+            $ref: 'extensions.yaml#/components/schemas/Namespace'
+          x-go-type-skip-optional-pointer: true
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'

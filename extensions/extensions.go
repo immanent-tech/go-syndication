@@ -6,6 +6,7 @@ package extensions
 // WellKnownNamespaces is a convenience registry of namespace URIs commonly seen in RSS feeds. It's just a lookup table
 // that can be used to lookup commonly used namespaces. It does not reflect all known namespaces and can be overridden.
 var WellKnownNamespaces = map[string]string{
+	"rdf":     "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
 	"content": "http://purl.org/rss/1.0/modules/content/",
 	"media":   "http://search.yahoo.com/mrss/",
 	"atom":    "http://www.w3.org/2005/Atom",
