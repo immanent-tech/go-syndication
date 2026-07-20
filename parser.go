@@ -18,6 +18,7 @@ import (
 	"github.com/immanent-tech/go-syndication/jsonfeed"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
+	"golang.org/x/net/html/charset"
 )
 
 var (
@@ -113,6 +114,7 @@ func looksLikeHTML(peek []byte) bool {
 
 func detectFeedSourceType(r io.Reader) (types.SourceType, error) {
 	decoder := xml.NewDecoder(r)
+	decoder.CharsetReader = charset.NewReaderLabel
 	decoder.Strict = false // be lenient with malformed feeds in the wild
 
 	for {
