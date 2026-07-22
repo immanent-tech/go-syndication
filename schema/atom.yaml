@@ -164,6 +164,7 @@ components:
               type: string
               x-oapi-codegen-extra-tags:
                 xml: ',chardata'
+                validate: 'required'
       x-go-name: ID
       x-oapi-codegen-extra-tags:
         xml: 'id'
@@ -498,7 +499,7 @@ components:
         $ref: '#/components/schemas/PersonConstruct'
       x-oapi-codegen-extra-tags:
         xml: 'author,omitempty'
-        validate: 'omitempty,gt=0,dive'
+        validate: 'gt=0,dive'
       x-go-type-skip-optional-pointer: true
     FeedMetadata:
       description: >

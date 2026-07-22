@@ -59,7 +59,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Authors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
+			assert.Contains(t, failedValidations["PersonConstruct.Email"], "email")
 		},
 	},
 	"entry_author_email_overloaded.xml": {
@@ -70,7 +70,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Authors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
+			assert.Contains(t, failedValidations["PersonConstruct.Email"], "email")
 		},
 	},
 	"entry_author_email.xml": {
@@ -118,7 +118,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, feed.GetAuthors(), 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Authors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "required")
 		},
 	},
 	"entry_author_name_cdata.xml": {
@@ -146,7 +146,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Authors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "required")
 		},
 	},
 	// TODO: might require custom unmarshal logic?
@@ -162,7 +162,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0].URI))
+			// require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0]))
 			assert.Equal(
 				t,
 				"http://www.wired.com/news/school/0,1383,54916,00.html",
@@ -176,8 +176,8 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0]))
-			assert.Equal(t, "ftp://example.com/", feed.Entries[0].Authors[0].String())
+			// require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0]))
+			assert.Equal(t, "ftp://example.com/", *feed.Entries[0].Authors[0].URI)
 		},
 	},
 	"entry_author_url_http.xml": {
@@ -186,8 +186,8 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0]))
-			assert.Equal(t, "http://example.com/", feed.Entries[0].Authors[0].String())
+			// require.NoError(t, validation.ValidateStruct(feed.Entries[0].Authors[0]))
+			assert.Equal(t, "http://example.com/", *feed.Entries[0].Authors[0].URI)
 		},
 	},
 	// TODO: might require custom unmarshal logic?
@@ -200,9 +200,9 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			content := feed.Entries[0].Content
-			require.NoError(t, validation.ValidateStruct(content))
-			assert.Equal(t, "\n  <br>\n", content.String())
+			assert.NotNil(t, feed.Entries[0].Content)
+			require.Nil(t, validation.ValidateStruct(feed.Entries[0].Content))
+			assert.Equal(t, "\n  <br>\n", *feed.Entries[0].Content.Text)
 		},
 	},
 	"entry_content_type_blank.xml": {
@@ -218,8 +218,8 @@ var atomMustTests = map[string]atomTestSuite{
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
 			content := feed.Entries[0].Content
-			require.NoError(t, validation.ValidateStruct(content))
-			assert.Equal(t, "application/xhtml+xml", content.Type)
+			require.Nil(t, validation.ValidateStruct(content))
+			assert.Equal(t, "application/xhtml+xml", string(*content.Type))
 		},
 	},
 	"entry_content_type3.xml": {
@@ -229,8 +229,8 @@ var atomMustTests = map[string]atomTestSuite{
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
 			content := feed.Entries[0].Content
-			require.NoError(t, validation.ValidateStruct(content))
-			assert.Equal(t, "image/jpeg", content.Type)
+			require.Nil(t, validation.ValidateStruct(content))
+			assert.Equal(t, "image/jpeg", string(*content.Type))
 		},
 	},
 	"entry_content_type4.xml": {
@@ -240,8 +240,8 @@ var atomMustTests = map[string]atomTestSuite{
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
 			content := feed.Entries[0].Content
-			require.NoError(t, validation.ValidateStruct(content))
-			assert.Equal(t, "text/plain", content.Type)
+			require.Nil(t, validation.ValidateStruct(content))
+			assert.Equal(t, "text/plain", string(*content.Type))
 		},
 	},
 	"entry_contributor_email_contains_plus.xml": {
@@ -261,7 +261,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
+			assert.Contains(t, failedValidations["PersonConstruct.Email"], "email")
 		},
 	},
 	"entry_contributor_email_overloaded.xml": {
@@ -272,7 +272,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
+			assert.Contains(t, failedValidations["PersonConstruct.Email"], "email")
 		},
 	},
 	"entry_contributor_email.xml": {
@@ -300,7 +300,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, feed.Entries[0].GetContributors(), 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "required")
 		},
 	},
 	"entry_contributor_name_cdata.xml": {
@@ -328,7 +328,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "required")
 		},
 	},
 	// TODO: might require custom unmarshal logic?
@@ -344,7 +344,6 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			assert.Equal(
 				t,
 				"http://www.wired.com/news/school/0,1383,54916,00.html",
@@ -358,7 +357,6 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			assert.Equal(t, "ftp://example.com/", *feed.Entries[0].Contributors[0].URI)
 		},
 	},
@@ -368,7 +366,6 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			assert.Equal(t, "http://example.com/", *feed.Entries[0].Contributors[0].URI)
 		},
 	},

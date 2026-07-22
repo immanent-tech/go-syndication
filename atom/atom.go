@@ -135,7 +135,7 @@ func (l *Link) Validate() error {
 
 func (t TextConstruct) String() string {
 	switch {
-	case t.Type == nil || *t.Type != TypeXhtml:
+	case t.Type == nil || (*t.Type != TypeXhtml && !isXMLMediaType(*t.Type)):
 		return strings.TrimSpace(t.Value)
 	case t.XHTML != nil:
 		return *t.XHTML
@@ -213,16 +213,30 @@ func (t *TextConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 	}
 	t.Type = new(typ)
 
-	if typ == "xhtml" {
+	if typ == TypeXhtml {
 		var wrapper struct {
 			Div struct {
 				Inner string `xml:",innerxml"`
 			} `xml:"div"` // matches any namespace's local-name "div"
 		}
+
 		if err := dec.DecodeElement(&wrapper, &start); err != nil {
 			return fmt.Errorf("text construct: unmarshal: %w", err)
 		}
 		t.XHTML = new(strings.TrimSpace(wrapper.Div.Inner))
+		return nil
+	}
+	// Leniency for non-conformant producers that put a MIME type here that really belongs on atom:content (e.g.
+	// "application/xhtml+xml" instead of the spec's own "xhtml"). Unlike the xhtml case above, there's no required
+	// wrapper element to unwrap; whatever child markup is present (e.g. a bare <code>...</code>) is captured as-is.
+	if isXMLMediaType(typ) {
+		var wrapper struct {
+			Inner string `xml:",innerxml"`
+		}
+		if err := dec.DecodeElement(&wrapper, &start); err != nil {
+			return fmt.Errorf("text construct: unmarshal: %w", err)
+		}
+		t.XHTML = new(strings.TrimSpace(wrapper.Inner))
 		return nil
 	}
 
@@ -323,7 +337,7 @@ func isXMLMediaType(t Type) bool {
 		(strings.HasSuffix(string(t), "+xml") || strings.HasSuffix(string(t), "/xml"))
 }
 
-func (c Content) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	var typ Type
 	if c.Type == nil {
 		typ = TypeText
@@ -350,10 +364,10 @@ func (c Content) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		wrapper := struct {
 			Inner string `xml:",innerxml"`
 		}{Inner: *c.XML}
-		return e.EncodeElement(wrapper, start)
+		return enc.EncodeElement(wrapper, start)
 	}
 
-	if err := e.EncodeToken(start); err != nil {
+	if err := enc.EncodeToken(start); err != nil {
 		return err
 	}
 	switch {
@@ -365,22 +379,22 @@ func (c Content) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			XMLNS   string   `xml:"xmlns,attr"`
 			Inner   string   `xml:",innerxml"`
 		}{XMLName: xml.Name{Local: "div"}, XMLNS: "http://www.w3.org/1999/xhtml", Inner: *c.XHTML}
-		if err := e.Encode(div); err != nil {
+		if err := enc.Encode(div); err != nil {
 			return err
 		}
 	case typ == TypeText || typ == TypeHtml || strings.HasPrefix(string(typ), "text/"):
-		if err := e.EncodeToken(xml.CharData(*c.Text)); err != nil {
+		if err := enc.EncodeToken(xml.CharData(*c.Text)); err != nil {
 			return err
 		}
 	default:
-		if err := e.EncodeToken(xml.CharData(base64.StdEncoding.EncodeToString(c.Base64))); err != nil {
+		if err := enc.EncodeToken(xml.CharData(base64.StdEncoding.EncodeToString(c.Base64))); err != nil {
 			return err
 		}
 	}
-	return e.EncodeToken(start.End())
+	return enc.EncodeToken(start.End())
 }
 
-func (c *Content) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	typ := TypeText
 	for _, a := range start.Attr {
 		switch {
@@ -397,7 +411,7 @@ func (c *Content) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	c.Type = &typ
 
 	if c.Source != nil {
-		return d.Skip() // element is empty; nothing further to decode
+		return dec.Skip() // element is empty; nothing further to decode
 	}
 
 	switch {
@@ -407,7 +421,7 @@ func (c *Content) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				Inner string `xml:",innerxml"`
 			} `xml:"div"`
 		}
-		if err := d.DecodeElement(&wrapper, &start); err != nil {
+		if err := dec.DecodeElement(&wrapper, &start); err != nil {
 			return err
 		}
 		c.XHTML = new(strings.TrimSpace(wrapper.Div.Inner))
@@ -416,7 +430,7 @@ func (c *Content) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		var v struct {
 			Value string `xml:",chardata"`
 		}
-		if err := d.DecodeElement(&v, &start); err != nil {
+		if err := dec.DecodeElement(&v, &start); err != nil {
 			return err
 		}
 		c.Text = &v.Value
@@ -425,7 +439,7 @@ func (c *Content) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		var v struct {
 			Inner string `xml:",innerxml"`
 		}
-		if err := d.DecodeElement(&v, &start); err != nil {
+		if err := dec.DecodeElement(&v, &start); err != nil {
 			return err
 		}
 		c.XML = new(strings.TrimSpace(v.Inner))
@@ -434,7 +448,7 @@ func (c *Content) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		var v struct {
 			Value string `xml:",chardata"`
 		}
-		if err := d.DecodeElement(&v, &start); err != nil {
+		if err := dec.DecodeElement(&v, &start); err != nil {
 			return err
 		}
 		decoded, err := base64.StdEncoding.DecodeString(strings.TrimSpace(v.Value))

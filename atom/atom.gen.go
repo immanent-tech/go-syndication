@@ -259,7 +259,7 @@ type Entry struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"omitempty,gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
@@ -430,7 +430,7 @@ type Feed struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"omitempty,gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
@@ -538,7 +538,7 @@ type FeedMetadata struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"omitempty,gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
@@ -603,7 +603,7 @@ type ID struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Value is the value of the ID
-	Value string `json:"value" xml:",chardata"`
+	Value string `json:"value" validate:"required" xml:",chardata"`
 }
 
 // Icon is an element that contains a URI to an icon suitable for representing a feed.
@@ -800,7 +800,7 @@ type StandaloneEntry struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"omitempty,gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
