@@ -38,6 +38,13 @@
   - [Validation](#validation)
   - [Generic Feed/Item Types](#generic-feeditem-types)
   - [Command Line Interface (CLI)](#command-line-interface-cli)
+- [Design](#design)
+  - [OpenAPI for Models](#openapi-for-models)
+  - [Validation Built In](#validation-built-in)
+  - [Dynamic Namespace Support](#dynamic-namespace-support)
+  - [Custom Marshal/Unmarshal](#custom-marshalunmarshal)
+- [Development](#development)
+  - [Setup](#setup)
 - [Roadmap](#roadmap)
 - [Support](#support)
 - [Project Assistance](#project-assistance)
@@ -58,7 +65,7 @@
 - Atom
 - JSONFeed
 - OPML
-- Various RSS/Atom extensions such as media, Dublin Core, iTunes, and GooglePlay, with more to come...
+- Various RSS/Atom extensions such as media, Dublin Core, iTunes, and GooglePlay, with more to come…
 
 The package can read and write all formats. It includes built-in validation of elements.
 
@@ -152,6 +159,39 @@ go run github.com/immanent-tech/go-syndication/cmd@latest parse /path/to/my/feed
 ```
 
 The commands will auto-detect a supported feed format.
+
+## Design
+
+### OpenAPI for Models
+
+go-syndication uses OpenAPI schemas (through [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen)) to define the
+custom types for each syndication format and all extensions. This provides a way to have consistent, reusable types
+across the package.
+
+### Validation Built In
+
+go-syndication attempts to build validation into all types using
+[go-playground/validator](https://github.com/go-playground/validator). Wherever possible, types will be annotated with
+struct tags that then allow the validation to work.
+
+### Dynamic Namespace Support
+
+The formats in go-syndication provide dynamic namespace support. This means you can use extensions not defined in this
+package on top of it and get correct marshaling/unmarshaling behavior.
+
+### Custom Marshal/Unmarshal
+
+go-syndication provides a custom `Encode` and `Decode` methods for marshaling/unmarshaling of formats (see
+[Usage](#encoding-and-decoding)). While you can directly marshal/unmarshal, you'll lose some features (like dynamic
+namespaces). It's therefore recommended to always use the Encode/Decode methods in this package.
+
+## Development
+
+### Setup
+
+1. Clone the go-syndication repo.
+2. Run `./setup-feedvalidator-submodule.sh` to correctly clone and filter the feedvalidator submobule to `testcases`
+   directory only.
 
 ## Roadmap
 
