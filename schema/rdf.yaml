@@ -308,6 +308,8 @@ components:
           $ref: '#/components/schemas/TextInput'
         DefaultNamespace:
           type: string
+          x-oapi-codegen-extra-tags:
+            xml: '-'
         namespaces:
           description: >
             contains all namespaces in use by this RSS feed.
@@ -315,5 +317,7 @@ components:
           items:
             $ref: 'extensions.yaml#/components/schemas/Namespace'
           x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: '-'
       x-oapi-codegen-extra-tags:
         validate: 'validateFn'

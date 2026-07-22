@@ -43,7 +43,6 @@ type Attributes = []xml.Attr
 
 // Extension represents an element that is not defined in the schema.
 type Extension struct {
-	// XMLName represents the XML namespace of an element.
 	XMLName xml.Name `json:"xml" validate:"required"`
 
 	// Attributes are any attributes of the element.

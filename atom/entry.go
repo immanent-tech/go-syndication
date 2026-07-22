@@ -5,16 +5,16 @@
 package atom
 
 import (
+	"encoding/xml"
 	"fmt"
-	"log/slog"
 	"slices"
 	"strings"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
-	"golang.org/x/net/html"
 )
 
 var _ types.ItemSource = (*Entry)(nil)
@@ -171,32 +171,33 @@ func (e *Entry) GetContent() *string {
 	case e.Content != nil:
 		// Has a Content value.
 		switch {
-		case e.Content.Value != nil && *e.Content.Value != "":
-			switch {
-			case e.Content.Type == nil:
-				return nil
-			case *e.Content.Type == "text":
-				return e.Content.Value
-			case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
-				// Parse the value.
-				doc, err := html.Parse(strings.NewReader(*e.Content.Value))
-				if err != nil {
-					slog.Error("Unable to parse content.",
-						slog.Any("error", err),
-					)
-					return nil
-				}
-				// Write out.
-				var out strings.Builder
-				err = html.Render(&out, doc)
-				if err != nil {
-					slog.Error("Unable to render content.",
-						slog.Any("error", err),
-					)
-					return nil
-				}
-				return new(out.String())
-			}
+		case e.Content != nil && e.Content.String() != "":
+			return new(e.Content.String())
+		// 	switch {
+		// 	case e.Content.Type == nil:
+		// 		return nil
+		// 	case *e.Content.Type == "text":
+		// 		return e.Content.Value
+		// 	case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
+		// 		// Parse the value.
+		// 		doc, err := html.Parse(strings.NewReader(*e.Content.Value))
+		// 		if err != nil {
+		// 			slog.Error("Unable to parse content.",
+		// 				slog.Any("error", err),
+		// 			)
+		// 			return nil
+		// 		}
+		// 		// Write out.
+		// 		var out strings.Builder
+		// 		err = html.Render(&out, doc)
+		// 		if err != nil {
+		// 			slog.Error("Unable to render content.",
+		// 				slog.Any("error", err),
+		// 			)
+		// 			return nil
+		// 		}
+		// 		return new(out.String())
+		// 	}
 		case e.Content.Source != nil && *e.Content.Source != "":
 			return e.Content.Source
 		}
@@ -208,6 +209,34 @@ func (e *Entry) GetContent() *string {
 func (e *Entry) Validate() error {
 	if err := validation.ValidateStruct(e); err != nil {
 		return fmt.Errorf("entry validation failed: %w", err)
+	}
+	return nil
+}
+
+func (s StandaloneEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Local: "entry"}
+	defaultNS := s.DefaultNamespace
+	if defaultNS == nil {
+		defaultNS = new(atomNS)
+	}
+	start.Attr = []xml.Attr{{Name: xml.Name{Local: "xmlns"}, Value: *defaultNS}}
+	for _, ns := range s.Namespaces {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "xmlns:" + ns.Prefix}, Value: ns.URI})
+	}
+	return e.EncodeElement(s, start)
+}
+
+func (s *StandaloneEntry) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, a := range start.Attr {
+		switch {
+		case a.Name.Local == "xmlns" && a.Name.Space == "":
+			s.DefaultNamespace = &a.Value
+		case a.Name.Space == "xmlns":
+			s.Namespaces = append(s.Namespaces, extensions.NewNamespace(a.Name.Local, a.Value))
+		}
+	}
+	if err := d.DecodeElement(s, &start); err != nil {
+		return err
 	}
 	return nil
 }

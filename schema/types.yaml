@@ -51,7 +51,6 @@ components:
         - content
       properties:
         XMLName:
-          description: represents the XML namespace of an element.
           x-go-type: 'xml.Name'
           x-oapi-codegen-extra-tags:
             json: 'xml'

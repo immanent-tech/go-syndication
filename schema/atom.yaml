@@ -53,7 +53,15 @@ components:
             json: 'lang,omitempty'
             validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
         attributes:
-          $ref: 'types.yaml#/components/schemas/Attributes'
+          description: >
+            are any additional attributes of the element.
+          type: array
+          items:
+            x-go-type: xml.Attr
+          x-oapi-codegen-extra-tags:
+            xml: ',any,attr'
+            json: 'attributes'
+          x-go-type-skip-optional-pointer: true
     UndefinedContent:
       description: >
         represents additional undefined, unstructed text content for the element.
@@ -61,71 +69,6 @@ components:
       x-oapi-codegen-extra-tags:
         xml: ',chardata'
         json: 'undefined_content,omitempty'
-    URI:
-      description: >
-        is an element that conveys an IRI (URI).
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          description: >
-            represents the XML namespace of an element.
-          x-go-type: 'xml.Name'
-        value:
-          type: string
-          x-oapi-codegen-extra-tags:
-            json: 'value'
-            xml: ',chardata'
-            validate: 'required,uri|urn_rfc2141|uuid'
-      x-go-name: URI
-      x-oapi-codegen-extra-tags:
-        xml: 'uri,omitempty'
-        json: 'uri,omitempty'
-        validate: 'omitempty'
-    Name:
-      description: >
-        is an element that conveys a human-readable name.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          description: >
-            represents the XML namespace of an element.
-          x-go-type: 'xml.Name'
-        value:
-          type: string
-          x-oapi-codegen-extra-tags:
-            json: 'value'
-            xml: ',chardata'
-            validate: 'required'
-      x-oapi-codegen-extra-tags:
-        xml: 'name,omitempty'
-        json: 'name,omitempty'
-    Email:
-      description: >
-        is an element that conveys an email address.
-      type: object
-      required:
-        - XMLName
-        - value
-      properties:
-        XMLName:
-          description: >
-            represents the XML namespace of an element.
-          x-go-type: 'xml.Name'
-        value:
-          type: string
-          x-oapi-codegen-extra-tags:
-            json: 'value'
-            xml: ',chardata'
-            validate: 'omitempty,email'
-      x-oapi-codegen-extra-tags:
-        xml: 'email,omitempty'
-        json: 'email,omitempty'
     TextConstruct:
       description: contains human-readable text, usually in small quantities.
       type: object
@@ -139,11 +82,15 @@ components:
               description: >
                 is the value of the element for type=text/html.
               type: string
+              x-oapi-codegen-extra-tags:
+                validate: 'required_if=Type html|required_if=Type text'
             xhtml:
               description: >
                 is the value of the element for type=xhtml
               type: string
               x-go-name: XHTML
+              x-oapi-codegen-extra-tags:
+                validate: 'required_if=Type xhtml'
             type:
               $ref: '#/components/schemas/Type'
     PersonConstruct:
@@ -155,20 +102,39 @@ components:
             - name
           properties:
             name:
-              allOf:
-                - $ref: '#/components/schemas/Name'
+              description: is an element that conveys a human-readable name.
+              type: string
               x-oapi-codegen-extra-tags:
                 xml: 'name'
                 json: 'name'
                 validate: 'required'
             uri:
-              $ref: '#/components/schemas/URI'
+              description: >
+                is an element that conveys an IRI (URI).
+              type: string
+              x-go-name: URI
+              x-oapi-codegen-extra-tags:
+                xml: 'uri,omitempty'
+                json: 'uri,omitempty'
+                validate: 'omitempty'
             email:
-              $ref: '#/components/schemas/Email'
-            extensions:
-              $ref: 'types.yaml#/components/schemas/Extensions'
-      x-oapi-codegen-extra-tags:
-        validate: 'validateFn'
+              description: >
+                is an element that conveys an email address.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: 'email,omitempty'
+                json: 'email,omitempty'
+                validate: 'omitempty,email'
+            Extensions:
+              description: >
+                records any elements that are unknown extensions to the schema.
+              type: array
+              items:
+                $ref: 'types.yaml#/components/schemas/Extension'
+              x-oapi-codegen-extra-tags:
+                json: 'extensions,omitempty'
+                xml: ',any'
+              x-go-type-skip-optional-pointer: true
     DateConstruct:
       description: >
         is an element whose content MUST conform to the "date-time" production in [RFC3339].
@@ -188,8 +154,9 @@ components:
         is an element that conveys a permanent, universally unique identifier for an entry or feed.
       allOf:
         - $ref: '#/components/schemas/CommonAttributes'
-        - $ref: '#/components/schemas/URI'
         - type: object
+          required:
+            - value
           properties:
             value:
               description: >
@@ -197,7 +164,6 @@ components:
               type: string
               x-oapi-codegen-extra-tags:
                 xml: ',chardata'
-                validate: 'required,uri|urn_rfc2141|ascii'
       x-go-name: ID
       x-oapi-codegen-extra-tags:
         xml: 'id'
@@ -227,15 +193,18 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
-            - XMLName
             - term
           properties:
-            XMLName:
+            extensions:
               description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
-            undefined_content:
-              $ref: '#/components/schemas/UndefinedContent'
+                represents any additional, undefined content for this element.
+              type: array
+              items:
+                $ref: 'types.yaml#/components/schemas/Extension'
+              x-go-type-skip-optional-pointer: true
+              x-oapi-codegen-extra-tags:
+                json: 'extensions,omitempty'
+                xml: ',any'
             term:
               description: >
                 is a string that identifies the category to which the entry or feed belongs.
@@ -284,13 +253,8 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
-            - XMLName
             - value
           properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
             value:
               description: >
                 is the element value.
@@ -321,7 +285,15 @@ components:
         is an element that contains a URI to an icon suitable for representing a feed.
       allOf:
         - $ref: '#/components/schemas/CommonAttributes'
-        - $ref: '#/components/schemas/URI'
+        - type: object
+          required:
+            - value
+          properties:
+            value:
+              description: is the value as a valid IRI.
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: ',chardata'
       x-oapi-codegen-extra-tags:
         xml: 'icon,omitempty'
         json: 'icon,omitempty'
@@ -332,13 +304,8 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
-            - XMLName
             - href
           properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
             href:
               description: >
                 contains the URL of the related resource.
@@ -430,13 +397,14 @@ components:
       allOf:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
+          required:
+            - value
           properties:
             value:
               type: string
               x-oapi-codegen-extra-tags:
                 json: 'value'
                 xml: ',chardata'
-                validate: 'required,uri|urn_rfc2141|uuid'
       x-oapi-codegen-extra-tags:
         xml: 'logo,omitempty'
         json: 'logo,omitempty'
@@ -476,13 +444,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
-          required:
-            - XMLName
           properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
             type:
               $ref: '#/components/schemas/Type'
             src:
@@ -495,12 +457,26 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: 'src,attr,omitempty'
                 json: 'src,omitempty'
-                validate: 'omitempty,uri'
-            value:
+                validate: 'omitempty,required_without=Value,uri'
+            text:
+              description: >
+                contains the value when Type is "text"/"html", or a "text/*" MIME type.
               type: string
-              x-oapi-codegen-extra-tags:
-                xml: ',chardata'
-                json: 'value,omitempty'
+            XHTML:
+              description: >
+                contains the value when Type == "xhtml": inner markup of the <div>.
+              type: string
+              x-go-name: XHTML
+            XML:
+              description: >
+                contains the value when Type ends in "+xml" or "/xml" (and isn't "text/..."): embedded XML, raw.
+              type: string
+              x-go-name: XML
+            Base64:
+              description: >
+                contains the value when any other MIME type: out-of-band binary content.
+              x-go-type: '[]byte'
+              x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         xml: 'content,omitempty'
         json: 'content,omitempty'
@@ -572,12 +548,19 @@ components:
         - $ref: '#/components/schemas/FeedMetadata'
         - type: object
           properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
+            DefaultNamespace:
+              type: string
               x-oapi-codegen-extra-tags:
-                xml: 'feed'
+                xml: '-'
+            namespaces:
+              description: >
+                contains all namespaces in use by this RSS feed.
+              type: array
+              items:
+                $ref: 'extensions.yaml#/components/schemas/Namespace'
+              x-go-type-skip-optional-pointer: true
+              x-oapi-codegen-extra-tags:
+                xml: '-'
             entries:
               description: >
                 is the list of <entry> elements for the feed.
@@ -589,6 +572,16 @@ components:
                 json: 'entry,omitempty'
                 validate: 'dive'
               x-go-type-skip-optional-pointer: true
+            Extensions:
+              description: >
+                represents any additional, undefined content for this element.
+              type: array
+              items:
+                $ref: 'types.yaml#/components/schemas/Extension'
+              x-go-type-skip-optional-pointer: true
+              x-oapi-codegen-extra-tags:
+                json: 'extensions,omitempty'
+                xml: ',any'
       x-oapi-codegen-extra-tags:
         json: 'feed'
         validate: 'validateFn'
@@ -597,14 +590,6 @@ components:
         contains the metadata from the source feed for the entry.
       allOf:
         - $ref: '#/components/schemas/FeedMetadata'
-        - type: object
-          properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
-              x-oapi-codegen-extra-tags:
-                xml: 'source'
       x-oapi-codegen-extra-tags:
         json: 'source,omitempty'
         validate: 'omitempty'
@@ -618,17 +603,10 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
-            - XMLName
             - ID
             - title
             - updated
           properties:
-            XMLName:
-              description: >
-                represents the XML namespace of an element.
-              x-go-type: 'xml.Name'
-              x-oapi-codegen-extra-tags:
-                xml: 'entry'
             ID:
               $ref: '#/components/schemas/ID'
             title:
@@ -655,9 +633,40 @@ components:
               $ref: '#/components/schemas/Summary'
             MediaGroup:
               $ref: 'media-rss.yaml#/components/schemas/MediaGroup'
-            extensions:
-              $ref: 'types.yaml#/components/schemas/Extensions'
+            Extensions:
+              description: >
+                records any elements that are unknown extensions to the schema.
+              type: array
+              items:
+                $ref: 'types.yaml#/components/schemas/Extension'
+              x-oapi-codegen-extra-tags:
+                json: 'extensions,omitempty'
+                xml: ',any'
+              x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         xml: 'entry'
         json: 'entry'
         validate: 'validateFn'
+    StandaloneEntry:
+      description: >
+        is a document whose root element is atom:entry rather than atom:feed. Kept as a distinct wrapper rather than
+        giving Entry itself a namespace-declaring MarshalXML, so the common case (Entry nested inside Feed.Entries)
+        stays simple and un-verbose.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Entry'
+        - type: object
+          properties:
+            DefaultNamespace:
+              type: string
+              x-oapi-codegen-extra-tags:
+                xml: '-'
+            namespaces:
+              description: >
+                contains all namespaces in use by this RSS feed.
+              type: array
+              items:
+                $ref: 'extensions.yaml#/components/schemas/Namespace'
+              x-go-type-skip-optional-pointer: true
+              x-oapi-codegen-extra-tags:
+                xml: '-'

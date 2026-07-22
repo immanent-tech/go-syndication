@@ -183,7 +183,7 @@ type ItemRefs []string
 
 // RDF represents an RDF document
 type RDF struct {
-	DefaultNamespace string `json:"DefaultNamespace"`
+	DefaultNamespace string `json:"DefaultNamespace" xml:"-"`
 
 	// Channel contains metadata describing the channel itself, including a title, brief description, and URL link to the described resource (the channel provider's home page, for instance). The {resource} URL of the channel element's rdf:about attribute must be unique with respect to any other rdf:about attributes in the RSS document and is a URI which identifies the channel. Most commonly, this is either the URL of the homepage being described or a URL where the RSS file can be found.
 	Channel Channel `json:"channel" xml:"http://purl.org/rss/1.0/ channel"`
@@ -197,7 +197,7 @@ type RDF struct {
 	Items []Item `json:"items,omitempty" xml:"http://purl.org/rss/1.0/ item"`
 
 	// Namespaces contains all namespaces in use by this RSS feed.
-	Namespaces []externalRef0.Namespace `json:"namespaces,omitempty"`
+	Namespaces []externalRef0.Namespace `json:"namespaces,omitempty" xml:"-"`
 
 	// TextInput affords a method for submitting form data to an arbitrary URL -- usually located at the parent website. The form processor at the receiving end only is assumed to handle the HTTP GET method.
 	// The field is typically used as a search box or subscription form -- among others. While this is of some use when RSS documents are rendered as channels (see MNN) and accompanied by human readable title and description, the ambiguity in automatic determination of meaning of this overloaded element renders it otherwise not particularly useful. RSS 1.0 therefore suggests either deprecation or augmentation with some form of resource discovery of this element in future versions while maintaining it for backward compatiblity with RSS 0.9.

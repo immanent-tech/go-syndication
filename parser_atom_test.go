@@ -57,7 +57,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Authors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -68,7 +68,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Authors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -116,7 +116,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetAuthors(), 1)
-			failedValidations, err := getFailedValidations(feed.Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Authors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
 		},
@@ -144,7 +144,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Authors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
 		},
@@ -166,7 +166,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(
 				t,
 				"http://www.wired.com/news/school/0,1383,54916,00.html",
-				feed.Entries[0].Authors[0].URI.Value,
+				*feed.Entries[0].Authors[0].URI,
 			)
 		},
 	},
@@ -202,7 +202,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			content := feed.Entries[0].Content
 			require.NoError(t, validation.ValidateStruct(content))
-			assert.Equal(t, "\n  <br>\n", content.Value)
+			assert.Equal(t, "\n  <br>\n", content.String())
 		},
 	},
 	"entry_content_type_blank.xml": {
@@ -259,7 +259,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -270,7 +270,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -298,7 +298,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.Entries[0].GetContributors(), 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
 		},
@@ -326,7 +326,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
 		},
@@ -344,11 +344,11 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0].URI))
+			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0]))
 			assert.Equal(
 				t,
 				"http://www.wired.com/news/school/0,1383,54916,00.html",
-				feed.Entries[0].Contributors[0].URI.Value,
+				*feed.Entries[0].Contributors[0].URI,
 			)
 		},
 	},
@@ -358,8 +358,8 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0].URI))
-			assert.Equal(t, "ftp://example.com/", feed.Entries[0].Contributors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0]))
+			assert.Equal(t, "ftp://example.com/", *feed.Entries[0].Contributors[0].URI)
 		},
 	},
 	"entry_contributor_url_http.xml": {
@@ -368,8 +368,8 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0].URI))
-			assert.Equal(t, "http://example.com/", feed.Entries[0].Contributors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Entries[0].Contributors[0]))
+			assert.Equal(t, "http://example.com/", *feed.Entries[0].Contributors[0].URI)
 		},
 	},
 	// TODO: might require custom unmarshal logic?
@@ -691,7 +691,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "pretty much anything is OK here", feed.Entries[0].Links[0].Title)
+			assert.Equal(t, "pretty much anything is OK here", *feed.Entries[0].Links[0].Title)
 		},
 	},
 	// TODO: how to validate this?
@@ -851,7 +851,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "<b>Bold summary</b>", feed.Entries[0].GetDescription())
+			assert.Equal(t, "<b>Bold summary</b>", feed.Entries[0].Summary.String())
 		},
 	},
 	// TODO: this fails as we sanitise the summary field and remove <code> blocks
@@ -860,7 +860,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].GetDescription())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].Summary.String())
 		},
 	},
 	// TODO: this fails as we sanitise the summary field and remove <code> blocks
@@ -1180,7 +1180,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetAuthors(), 1)
-			failedValidations, err := getFailedValidations(feed.Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Authors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -1190,7 +1190,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetAuthors(), 1)
-			failedValidations, err := getFailedValidations(feed.Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Authors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -1239,8 +1239,8 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetAuthors(), 1)
-			require.NoError(t, validation.ValidateStruct(feed.Authors[0].URI))
-			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", feed.Authors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Authors[0]))
+			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", *feed.Authors[0].URI)
 		},
 	},
 	"feed_author_url_ftp.xml": {
@@ -1248,8 +1248,8 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetAuthors(), 1)
-			require.NoError(t, validation.ValidateStruct(feed.Authors[0].URI))
-			assert.Equal(t, "ftp://example.com/", feed.Authors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Authors[0]))
+			assert.Equal(t, "ftp://example.com/", *feed.Authors[0].URI)
 		},
 	},
 	"feed_author_url_http.xml": {
@@ -1257,8 +1257,8 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetAuthors(), 1)
-			require.NoError(t, validation.ValidateStruct(feed.Authors[0].URI))
-			assert.Equal(t, "http://example.com/", feed.Authors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Authors[0]))
+			assert.Equal(t, "http://example.com/", *feed.Authors[0].URI)
 		},
 	},
 	"feed_contributor_email_contains_plus.xml": {
@@ -1274,7 +1274,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetContributors(), 1)
-			failedValidations, err := getFailedValidations(feed.Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -1284,7 +1284,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetContributors(), 1)
-			failedValidations, err := getFailedValidations(feed.Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Email.Value"], "email")
 		},
@@ -1310,7 +1310,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetContributors(), 1)
-			failedValidations, err := getFailedValidations(feed.Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
 		},
@@ -1336,7 +1336,7 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetContributors(), 1)
-			failedValidations, err := getFailedValidations(feed.Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Contributors[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["PersonConstruct.Name.Value"], "required")
 		},
@@ -1353,24 +1353,24 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetContributors(), 1)
-			require.NoError(t, validation.ValidateStruct(feed.Contributors[0].URI))
-			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", feed.Contributors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Contributors[0]))
+			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", *feed.Contributors[0].URI)
 		},
 	},
 	"feed_contributor_url_ftp.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetContributors(), 1)
-			require.NoError(t, validation.ValidateStruct(feed.Contributors[0].URI))
-			assert.Equal(t, "ftp://example.com/", feed.Contributors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Contributors[0]))
+			assert.Equal(t, "ftp://example.com/", *feed.Contributors[0].URI)
 		},
 	},
 	"feed_contributor_url_http.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetContributors(), 1)
-			require.NoError(t, validation.ValidateStruct(feed.Contributors[0].URI))
-			assert.Equal(t, "http://example.com/", feed.Contributors[0].URI.Value)
+			require.NoError(t, validation.ValidateStruct(feed.Contributors[0]))
+			assert.Equal(t, "http://example.com/", *feed.Contributors[0].URI)
 		},
 	},
 	// TODO: might require custom unmarshal logic?

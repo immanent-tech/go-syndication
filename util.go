@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
 	"golang.org/x/net/html/charset"
@@ -41,6 +42,9 @@ func Encode[T any](feed T) ([]byte, error) {
 		return encode(v)
 	case *rdf.RDF:
 		v.Link()
+		v.AutoDeclareNamespaces()
+		return encode(v)
+	case *atom.Feed:
 		v.AutoDeclareNamespaces()
 		return encode(v)
 	default:

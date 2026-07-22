@@ -4,11 +4,14 @@
 package atom
 
 import (
+	"encoding/xml"
 	"fmt"
 	"slices"
+	"sort"
 	"strings"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
@@ -138,7 +141,7 @@ func (f *Feed) GetImage() *types.ImageInfo {
 	switch {
 	case f.Logo != nil:
 		return &types.ImageInfo{
-			URL:   *f.Logo.Value,
+			URL:   f.Logo.String(),
 			Title: f.GetTitle(),
 		}
 	case f.Icon != nil:
@@ -233,4 +236,123 @@ func (f *Feed) Validate() error {
 		return fmt.Errorf("feed validation failed: %w", err)
 	}
 	return nil
+}
+
+// MarshalXML builds the dynamic xmlns attribute list, then delegates
+// everything else to ordinary tag-driven marshaling via the type-alias
+// idiom.
+func (f Feed) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Local: "feed"}
+	defaultNS := f.DefaultNamespace
+	if defaultNS == nil {
+		defaultNS = new(atomNS)
+	}
+	start.Attr = []xml.Attr{{Name: xml.Name{Local: "xmlns"}, Value: *defaultNS}}
+
+	seen := map[string]bool{}
+	namespaces := make([]extensions.Namespace, 0, len(f.Namespaces))
+	for _, ns := range f.Namespaces {
+		if ns.Prefix == "" || ns.URI == "" || seen[ns.Prefix] {
+			continue
+		}
+		seen[ns.Prefix] = true
+		namespaces = append(namespaces, ns)
+	}
+	sort.Slice(namespaces, func(i, j int) bool { return namespaces[i].Prefix < namespaces[j].Prefix })
+	for _, ns := range namespaces {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "xmlns:" + ns.Prefix}, Value: ns.URI})
+	}
+
+	type feedAlias Feed // sheds Feed's MarshalXML method, breaking recursion
+	if err := enc.EncodeElement(feedAlias(f), start); err != nil {
+		return fmt.Errorf("feed: marshal: %w", err)
+	}
+	return nil
+}
+
+func (f *Feed) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	var defaultNS string
+	var namespaces []extensions.Namespace
+	for attr := range slices.Values(start.Attr) {
+		switch {
+		case attr.Name.Local == "xmlns" && attr.Name.Space == "":
+			defaultNS = attr.Value
+		case attr.Name.Space == "xmlns":
+			namespaces = append(namespaces, extensions.NewNamespace(attr.Name.Local, attr.Value))
+		case strings.HasPrefix(attr.Name.Local, "xmlns:"):
+			namespaces = append(
+				namespaces,
+				extensions.NewNamespace(strings.TrimPrefix(attr.Name.Local, "xmlns:"), attr.Value),
+			)
+		}
+	}
+	type feedAlias Feed
+	var alias feedAlias
+	if err := dec.DecodeElement(&alias, &start); err != nil {
+		return fmt.Errorf("feed: unmarshal: %w", err)
+	}
+	*f = Feed(alias)
+	f.DefaultNamespace = &defaultNS
+	f.Namespaces = namespaces
+	return nil
+}
+
+// AutoDeclareNamespaces scans Feed and its entries/sources for ExtensionElement content in namespaces not yet declared.
+// Known URIs get their canonical prefix (media, georss, thr, app); unknown ones get an auto-generated "extN" prefix,
+// since there's no reliable way to recover an intended short name from a bare URI alone.
+func (f *Feed) AutoDeclareNamespaces() {
+	declared := make(map[string]bool, len(f.Namespaces))
+	for namespace := range slices.Values(f.Namespaces) {
+		declared[namespace.URI] = true
+	}
+	reverse := make(map[string]string, len(extensions.WellKnownNamespaces))
+	for prefix, uri := range extensions.WellKnownNamespaces {
+		reverse[uri] = prefix
+	}
+
+	var uris []string
+	seenURI := map[string]bool{}
+	collect := func(exts []types.Extension) {
+		for ext := range slices.Values(exts) {
+			uri := ext.XMLName.Space
+			if uri == "" || uri == atomNS || declared[uri] || seenURI[uri] {
+				continue
+			}
+			seenURI[uri] = true
+			uris = append(uris, uri)
+		}
+	}
+	collect(f.Extensions)
+	for entry := range slices.Values(f.Entries) {
+		collect(entry.Extensions)
+		if entry.Source != nil {
+			// Source has no Extensions field in this implementation's
+			// scope; skip.
+		}
+	}
+
+	next := 0
+	for uri := range slices.Values(uris) {
+		prefix, ok := reverse[uri]
+		if !ok {
+			for {
+				candidate := fmt.Sprintf("ext%d", next)
+				next++
+				if !hasPrefix(f.Namespaces, candidate) {
+					prefix = candidate
+					break
+				}
+			}
+		}
+		f.Namespaces = append(f.Namespaces, extensions.NewNamespace(prefix, uri))
+	}
+}
+
+func hasPrefix(namespaces []extensions.Namespace, prefix string) bool {
+	for _, ns := range namespaces {
+		if ns.Prefix == prefix {
+			return true
+		}
+	}
+	return false
 }
