@@ -25,6 +25,7 @@
 !LICENSE
 !SECURITY.md
 !.devcontainer/*
-
+!test/setup-feedvalidator-submodule.sh
+!test/feedvalidator
 # ...even if they are in subdirectories
 !*/
