@@ -27,6 +27,7 @@ import (
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 type Globals struct{}
@@ -79,7 +80,8 @@ var LoadHTTPClient = sync.OnceValue(func() *resty.Client {
 
 // FetchCMD command will fetch a feed at the given URL and display it.
 type FetchCMD struct {
-	URL string `arg:"" help:"The URL of the feed"`
+	URL      string `arg:"" help:"The URL of the feed"`
+	Validate bool   `       help:"Validate the feed"`
 }
 
 func (c *FetchCMD) Run() error {
@@ -133,12 +135,19 @@ func (c *FetchCMD) Run() error {
 	}
 	showFeedDetails(feed)
 
+	if c.Validate {
+		if err := validation.ValidateStruct(feed); err != nil {
+			return fmt.Errorf("feed is invalid: %w", err)
+		}
+	}
+
 	return nil
 }
 
 // ParseCMD command will parse the given file as a feed and display it.
 type ParseCMD struct {
-	File string `arg:"" help:"The file contaning the feed"`
+	File     string `arg:"" help:"The file contaning the feed"`
+	Validate bool   `       help:"Validate the feed"`
 }
 
 func (c *ParseCMD) Run() error {
@@ -153,6 +162,12 @@ func (c *ParseCMD) Run() error {
 	}
 
 	showFeedDetails(feed)
+
+	if c.Validate {
+		if err := validation.ValidateStruct(feed); err != nil {
+			return fmt.Errorf("feed is invalid: %w", err)
+		}
+	}
 
 	return nil
 }
