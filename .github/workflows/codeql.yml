@@ -1,16 +1,30 @@
 ---
-name: CodeQL
+name: 📋 CodeQL Analysis
 
 on:
   push:
+    branches: ['main']
   pull_request:
+    branches: ['main']
   schedule:
-    - cron: '30 1 * * 0'
+    - cron: '38 13 * * 4'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   codeql:
     name: 🏭 Scanning
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
