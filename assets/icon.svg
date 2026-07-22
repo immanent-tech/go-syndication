@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-labelledby="c1-title c1-desc">
+  <title id="c1-title">go-syndication logo — Broadcast Badge</title>
+  <desc id="c1-desc">A retro rounded badge with a classic radio-wave feed symbol in burnt orange and teal, dark brown border, cream background.</desc>
+  <defs>
+    <style>
+      .bg { fill: #FDF3E1; }
+      .border { fill: none; stroke: #3A2618; stroke-width: 6; }
+      .ray { stroke: #F2A93B; stroke-width: 3; opacity: 0.5; }
+      .arc-outer { fill: none; stroke: #2A6F77; stroke-width: 16; stroke-linecap: round; }
+      .arc-inner { fill: none; stroke: #E85D25; stroke-width: 16; stroke-linecap: round; }
+      .dot { fill: #F2A93B; stroke: #3A2618; stroke-width: 3; }
+      .accent { fill: #00ADD8; stroke: #3A2618; stroke-width: 2.5; }
+    </style>
+  </defs>
+
+  <!-- badge background -->
+  <rect x="10" y="10" width="180" height="180" rx="34" class="bg"/>
+
+  <!-- subtle retro sunburst rays -->
+  <g transform="translate(100,100)">
+    <g class="ray">
+      <line x1="0" y1="-84" x2="0" y2="-70"/>
+      <line x1="42" y1="-72.7" x2="35" y2="-60.6"/>
+      <line x1="72.7" y1="-42" x2="60.6" y2="-35"/>
+      <line x1="84" y1="0" x2="70" y2="0"/>
+      <line x1="-42" y1="-72.7" x2="-35" y2="-60.6"/>
+      <line x1="-72.7" y1="-42" x2="-60.6" y2="-35"/>
+      <line x1="-84" y1="0" x2="-70" y2="0"/>
+    </g>
+  </g>
+
+  <!-- rounded badge border -->
+  <rect x="10" y="10" width="180" height="180" rx="34" class="border"/>
+
+  <!-- classic feed / broadcast mark, retro thick strokes -->
+  <circle cx="66" cy="144" r="13" class="dot"/>
+  <path d="M 66,104 A 40,40 0 0 1 106,144" class="arc-inner"/>
+  <path d="M 66,68 A 76,76 0 0 1 142,144" class="arc-outer"/>
+
+  <!-- playful Go-blue signal ping accent -->
+  <circle cx="148" cy="58" r="9" class="accent"/>
+</svg>

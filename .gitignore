@@ -27,6 +27,7 @@
 !README.md
 !LICENSE
 !SECURITY.md
+!assets/*
 !.devcontainer/*
 !test/setup-feedvalidator-submodule.sh
 !test/feedvalidator

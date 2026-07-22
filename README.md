@@ -1,7 +1,6 @@
 <h1 align="center">
   <a href="https://github.com/immanent-tech/go-syndication">
-    <!-- Please provide path to your logo here -->
-    <!-- <img src="docs/images/logo.svg" alt="Logo" width="100" height="100"> -->
+    <img src="assets/logo-horizontal.svg" alt="Logo" width="512" height="100">
   </a>
 </h1>
 

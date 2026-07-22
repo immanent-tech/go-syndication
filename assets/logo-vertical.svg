@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 480" width="460" height="480" role="img" aria-labelledby="c1v-title c1v-desc">
+  <title id="c1v-title">go-syndication logo — Broadcast Badge, vertical</title>
+  <desc id="c1v-desc">Retro badge icon with feed symbol stacked above a two-tone wordmark reading go-syndication, for profile and app-icon use.</desc>
+  <defs>
+    <style>
+      .bg { fill: #FDF3E1; }
+      .border { fill: none; stroke: #3A2618; stroke-width: 6; }
+      .ray { stroke: #F2A93B; stroke-width: 3; opacity: 0.5; }
+      .arc-outer { fill: none; stroke: #2A6F77; stroke-width: 16; stroke-linecap: round; }
+      .arc-inner { fill: none; stroke: #E85D25; stroke-width: 16; stroke-linecap: round; }
+      .dot { fill: #F2A93B; stroke: #3A2618; stroke-width: 3; }
+      .accent { fill: #00ADD8; stroke: #3A2618; stroke-width: 2.5; }
+      .word-go { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-style: italic; font-size: 52px; fill: #E85D25; }
+      .word-rest { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-style: italic; font-size: 52px; fill: #2A6F77; }
+      .tagline { font-family: 'Courier New', monospace; font-size: 15px; letter-spacing: 3px; fill: #3A2618; }
+    </style>
+  </defs>
+
+  <!-- icon badge, centered -->
+  <g transform="translate(158,24)">
+    <rect x="0" y="0" width="144" height="144" rx="28" class="bg"/>
+    <g transform="translate(72,72)">
+      <g class="ray">
+        <line x1="0" y1="-64" x2="0" y2="-53"/>
+        <line x1="32" y1="-55.4" x2="26.6" y2="-46"/>
+        <line x1="55.4" y1="-32" x2="46" y2="-26.6"/>
+        <line x1="64" y1="0" x2="53" y2="0"/>
+        <line x1="-32" y1="-55.4" x2="-26.6" y2="-46"/>
+        <line x1="-55.4" y1="-32" x2="-46" y2="-26.6"/>
+        <line x1="-64" y1="0" x2="-53" y2="0"/>
+      </g>
+    </g>
+    <rect x="0" y="0" width="144" height="144" rx="28" class="border"/>
+    <circle cx="52" cy="115" r="10.5" class="dot"/>
+    <path d="M 52,83 A 32,32 0 0 1 84,115" class="arc-inner"/>
+    <path d="M 52,54 A 61,61 0 0 1 113,115" class="arc-outer"/>
+    <circle cx="118" cy="46" r="7.2" class="accent"/>
+  </g>
+
+  <!-- wordmark, centered below icon -->
+  <text x="230" y="248" text-anchor="middle"><tspan class="word-go">go</tspan><tspan class="word-rest">-syndication</tspan></text>
+  <text x="230" y="278" text-anchor="middle" class="tagline">RSS · ATOM · JSONFEED</text>
+</svg>
