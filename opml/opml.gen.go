@@ -7,7 +7,6 @@ import (
 	"encoding/xml"
 
 	externalRef0 "github.com/immanent-tech/go-syndication/rss"
-	"github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for BreakpointState.
@@ -96,9 +95,6 @@ func (e RSSOutlineVersion) Valid() bool {
 
 // Body represents the OPML <body> element.
 type Body = []Outline
-
-// Date is a date-time.
-type Date = types.DateTime
 
 // Head represents the OPML <head> element.
 type Head struct {

@@ -239,7 +239,7 @@ func (r *RDF) AutoDeclareNamespaces() {
 		need["dc"] = true
 	}
 	if r.Channel.SYUdatePeriod != nil ||
-		(r.Channel.SYUpdateFrequency != nil && r.Channel.SYUpdateFrequency.Value != 0) ||
+		(r.Channel.SYUpdateFrequency != nil && *r.Channel.SYUpdateFrequency != 0) ||
 		r.Channel.SYUpdateBase != nil {
 		need["sy"] = true
 	}

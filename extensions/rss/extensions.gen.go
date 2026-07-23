@@ -4,10 +4,35 @@
 package rss
 
 import (
-	"encoding/xml"
-
-	"github.com/immanent-tech/go-syndication/types"
+	externalRef0 "github.com/immanent-tech/go-syndication/extensions/dc"
 )
+
+// Defines values for SYUpdatePeriod.
+const (
+	UpdatedDaily   SYUpdatePeriod = "daily"
+	UpdatedHourly  SYUpdatePeriod = "hourly"
+	UpdatedMonthly SYUpdatePeriod = "monthly"
+	UpdatedWeekly  SYUpdatePeriod = "weekly"
+	UpdatedYearly  SYUpdatePeriod = "yearly"
+)
+
+// Valid indicates whether the value is a known member of the SYUpdatePeriod enum.
+func (e SYUpdatePeriod) Valid() bool {
+	switch e {
+	case UpdatedDaily:
+		return true
+	case UpdatedHourly:
+		return true
+	case UpdatedMonthly:
+		return true
+	case UpdatedWeekly:
+		return true
+	case UpdatedYearly:
+		return true
+	default:
+		return false
+	}
+}
 
 // ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
 type ContentEncoded struct {
@@ -28,34 +53,22 @@ type PermaLink struct {
 }
 
 // SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
-type SYUpdateBase struct {
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name       `json:"XMLName"`
-	Value   types.DateTime `json:"value" validate:"omitempty" xml:",chardata"`
-}
+type SYUpdateBase = externalRef0.DCDate
 
 // SYUpdateFrequency describes the frequency of updates in relation to the update period.
-type SYUpdateFrequency struct {
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name `json:"XMLName"`
-	Value   int      `json:"value" validate:"required,number,gte=1" xml:",chardata"`
-}
+type SYUpdateFrequency = int
 
 // SYUpdatePeriod is the period over which the channel format is updated.
-type SYUpdatePeriod struct {
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name `json:"XMLName"`
-	Value   string   `json:"value" validate:"required,oneof=hourly daily weekly monthly yearly" xml:",chardata"`
-}
+type SYUpdatePeriod string
 
 // SyndicationElements contains all syndication extension elements.
 type SyndicationElements struct {
 	// SYUdatePeriod is the period over which the channel format is updated.
-	SYUdatePeriod *SYUpdatePeriod `json:"update_period,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
+	SYUdatePeriod *SYUpdatePeriod `json:"update_period,omitempty" validate:"required,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
 
 	// SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
 	SYUpdateBase *SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
-	SYUpdateFrequency *SYUpdateFrequency `json:"update_frequency,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	SYUpdateFrequency *SYUpdateFrequency `json:"update_frequency,omitempty" validate:"required,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
 }

@@ -17,7 +17,8 @@ import (
 
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions"
-	"github.com/immanent-tech/go-syndication/extensions/rss"
+	ext "github.com/immanent-tech/go-syndication/extensions/rss"
+
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 )
@@ -151,18 +152,14 @@ func WithChannelImage(image *Image) RSSOption {
 // WithUpdatePeriod option sets the update period of the feed.
 func WithUpdatePeriod(up string) RSSOption {
 	return func(r *RSS) {
-		r.Channel.SYUdatePeriod = &rss.SYUpdatePeriod{
-			Value: up,
-		}
+		r.Channel.SYUdatePeriod = new(ext.SYUpdatePeriod(up))
 	}
 }
 
 // WithUpdateFrequency option sets the update frequency of the feed.
 func WithUpdateFrequency(freq int) RSSOption {
 	return func(r *RSS) {
-		r.Channel.SYUpdateFrequency = &rss.SYUpdateFrequency{
-			Value: freq,
-		}
+		r.Channel.SYUpdateFrequency = &freq
 	}
 }
 

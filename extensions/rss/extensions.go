@@ -7,28 +7,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-
-	"github.com/immanent-tech/go-syndication/sanitization"
 )
-
-func (c *SYUpdatePeriod) UnmarshalText(data []byte) error {
-	c.Value = string(sanitization.SanitizeBytes(data))
-	return nil
-}
-
-func (c *SYUpdatePeriod) UnmarshalJSON(data []byte) error {
-	var chardata struct {
-		CharData []byte `json:"CharData"`
-	}
-
-	if err := json.Unmarshal(data, &chardata); err != nil {
-		return fmt.Errorf("cannot unmarshal chardata: %w", err)
-	}
-
-	c.Value = string(sanitization.SanitizeBytes(chardata.CharData))
-
-	return nil
-}
 
 func NewContentEncoded(value string, cdata bool) ContentEncoded {
 	return ContentEncoded{
@@ -42,7 +21,7 @@ func (c ContentEncoded) String() string {
 }
 
 // MarshalXML implements xml.Marshaler.
-func (c ContentEncoded) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (c ContentEncoded) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	// Force the literal element name "content:encoded". Go's xml package
 	// doesn't manage namespace prefixes well on marshal, so the common
 	// workaround is to declare xmlns:content on the root element (see
@@ -50,11 +29,11 @@ func (c ContentEncoded) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	start.Name = xml.Name{Local: "content:encoded"}
 
 	if c.CDATA {
-		return e.EncodeElement(struct {
+		return enc.EncodeElement(struct {
 			Value string `xml:",cdata"`
 		}{c.Value}, start)
 	}
-	return e.EncodeElement(struct {
+	return enc.EncodeElement(struct {
 		Value string `xml:",chardata"`
 	}{c.Value}, start)
 }
@@ -69,25 +48,29 @@ func (c ContentEncoded) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 // CDATA-escaped" wording. We can't reliably recover which form was
 // originally used, so CDATA is left at its zero value (false) after
 // decoding; set it yourself before re-marshaling if it matters.
-func (c *ContentEncoded) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (c *ContentEncoded) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	var v struct {
 		Value string `xml:",chardata"`
 	}
-	if err := d.DecodeElement(&v, &start); err != nil {
-		return err
+	if err := dec.DecodeElement(&v, &start); err != nil {
+		return fmt.Errorf("unmarshal content:encoded: %w", err)
 	}
 	c.Value = v.Value
 	return nil
 }
 
 func (c ContentEncoded) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.Value)
+	data, err := json.Marshal(c.Value)
+	if err != nil {
+		return nil, fmt.Errorf("marshal content:encoded: %w", err)
+	}
+	return data, nil
 }
 
 func (c *ContentEncoded) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
-		return err
+		return fmt.Errorf("unmarshal content:encoded: %w", err)
 	}
 	c.Value = s
 	return nil

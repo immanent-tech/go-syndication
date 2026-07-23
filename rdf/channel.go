@@ -74,7 +74,7 @@ func (c *Channel) GetRights() *string {
 func (c *Channel) GetUpdateInterval() time.Duration {
 	if c.SYUdatePeriod != nil {
 		var baseInterval time.Duration
-		switch c.SYUdatePeriod.Value {
+		switch *c.SYUdatePeriod {
 		case "hourly":
 			baseInterval = time.Hour
 		case "daily":
@@ -86,8 +86,8 @@ func (c *Channel) GetUpdateInterval() time.Duration {
 		default:
 			baseInterval = 5 * time.Hour
 		}
-		if c.SYUpdateFrequency != nil && c.SYUpdateFrequency.Value > 1 {
-			return time.Duration(int64(float64(baseInterval) / float64(c.SYUpdateFrequency.Value)))
+		if c.SYUpdateFrequency != nil && *c.SYUpdateFrequency > 1 {
+			return time.Duration(int64(float64(baseInterval) / float64(*c.SYUpdateFrequency)))
 		}
 		return baseInterval
 	}

@@ -191,8 +191,8 @@ var rssMustPass = map[string]rssTestSuite{
 	"invalid_rss_version.xml": {wantInvalid: true},
 	// TODO: implement slash hit parade.
 	// "invalid_slash_hit_parade.xml":            true,
-	"invalid_sy_updateBase_blank.xml":         {wantInvalid: true},
-	"invalid_sy_updateBase.xml":               {wantInvalid: true},
+	"invalid_sy_updateBase_blank.xml":         {wantDecodeErr: true},
+	"invalid_sy_updateBase.xml":               {wantDecodeErr: true},
 	"invalid_sy_updateFrequency_blank.xml":    {wantInvalid: true},
 	"invalid_sy_updateFrequency_decimal.xml":  {wantDecodeErr: true},
 	"invalid_sy_updateFrequency_negative.xml": {wantInvalid: true},

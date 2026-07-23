@@ -15,10 +15,6 @@ info:
 paths: {}
 components:
   schemas:
-    Date:
-      description: >
-        is a date-time.
-      x-go-type: types.DateTime
     OPML:
       description: >
         represents an OPML document.

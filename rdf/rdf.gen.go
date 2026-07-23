@@ -14,13 +14,13 @@ import (
 // Channel contains metadata describing the channel itself, including a title, brief description, and URL link to the described resource (the channel provider's home page, for instance). The {resource} URL of the channel element's rdf:about attribute must be unique with respect to any other rdf:about attributes in the RSS document and is a URI which identifies the channel. Most commonly, this is either the URL of the homepage being described or a URL where the RSS file can be found.
 type Channel struct {
 	// SYUdatePeriod is the period over which the channel format is updated.
-	SYUdatePeriod *externalRef2.SYUpdatePeriod `json:"update_period,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
+	SYUdatePeriod *externalRef2.SYUpdatePeriod `json:"update_period,omitempty" validate:"required,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
 
 	// SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
 	SYUpdateBase *externalRef2.SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
-	SYUpdateFrequency *externalRef2.SYUpdateFrequency `json:"update_frequency,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	SYUpdateFrequency *externalRef2.SYUpdateFrequency `json:"update_frequency,omitempty" validate:"required,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
 	XMLName           xml.Name                        `json:"XMLName" xml:"http://purl.org/rss/1.0/ channel"`
 	About             string                          `json:"about" validate:"required" xml:"http://www.w3.org/1999/02/22-rdf-syntax-ns# about,attr"`
 
