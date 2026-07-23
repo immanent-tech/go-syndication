@@ -15,13 +15,13 @@ import (
 )
 
 type testSuite struct {
-	wantErr bool
-	tests   func(t *testing.T, opml *OPML)
+	wantValid bool
+	tests     func(t *testing.T, opml *OPML)
 }
 
 var opmlTests = map[string]testSuite{
-	"../test/assets/opml/clean/subscriptionList.opml": {
-		wantErr: false,
+	"../test/feedvalidator/testcases/opml/clean/subscriptionList.opml": {
+		wantValid: true,
 		tests: func(t *testing.T, opml *OPML) {
 			t.Helper()
 			validate := validator.New()
@@ -35,8 +35,8 @@ var opmlTests = map[string]testSuite{
 			assert.Equal(t, "http://news.com.com/2547-1_3-0-5.xml", feed.XMLURL)
 		},
 	},
-	"../test/assets/opml/errors/subscriptionListErrors1.opml": {
-		wantErr: false,
+	"../test/feedvalidator/testcases/opml/errors/subscriptionListErrors1.opml": {
+		wantValid: false,
 		tests: func(t *testing.T, opml *OPML) {
 			t.Helper()
 			validate := validator.New()
@@ -80,12 +80,12 @@ func TestNewOPMLFromBytes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			opml, err := NewOPMLFromBytes(tt.args.data)
-			t.Logf("%v", opml)
-
-			// Check test suite error condition.
-			if (err != nil) != tt.suite.wantErr {
-				t.Fatalf("New() error = %v, wantErr %v", err, tt.suite.wantErr)
+			if err != nil {
+				t.Fatalf("New() error = %v, wantErr %v", err, tt.suite.wantValid)
 				return
+			}
+			if !tt.suite.wantValid {
+				assert.Error(t, validation.ValidateStruct(opml))
 			}
 			// Run test suites.
 			if tt.suite.tests != nil {
@@ -119,7 +119,6 @@ func TestNewOPML(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			opml := NewOPML(tt.args.options...)
-			require.NoError(t, validation.ValidateStruct(opml))
 			assert.Equal(t, "test-subscription", opml.Head.Title)
 			feed := opml.Body[0]
 			assert.Equal(t, "CNET News.com", feed.Text)

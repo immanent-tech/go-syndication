@@ -65,7 +65,7 @@ components:
           description: >
             is a date-time, indicating when the document was created.
           allOf:
-            - $ref: '#/components/schemas/Date'
+            - $ref: 'rss.yaml#/components/schemas/Timestamp'
           x-oapi-codegen-extra-tags:
             xml: 'dateCreated,omitempty'
             validate: 'omitempty'
@@ -73,7 +73,7 @@ components:
           description: >
             is a date-time, indicating when the document was last modified.
           allOf:
-            - $ref: '#/components/schemas/Date'
+            - $ref: 'rss.yaml#/components/schemas/Timestamp'
           x-oapi-codegen-extra-tags:
             xml: 'dateModified,omitempty'
             validate: 'omitempty'

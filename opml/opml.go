@@ -10,7 +10,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/rss"
 	"golang.org/x/net/html/charset"
 )
 
@@ -36,8 +36,8 @@ func NewOPML(options ...Option) *OPML {
 		},
 		Version: "2.0",
 		Head: Head{
-			DateCreated:  types.DateTime{Time: time.Now()},
-			DateModified: types.DateTime{Time: time.Now()},
+			DateCreated:  *rss.NewTimestamp(time.Now().UTC()),
+			DateModified: *rss.NewTimestamp(time.Now().UTC()),
 		},
 	}
 

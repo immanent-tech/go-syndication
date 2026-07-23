@@ -6,6 +6,7 @@ package opml
 import (
 	"encoding/xml"
 
+	externalRef0 "github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
 )
 
@@ -102,10 +103,10 @@ type Date = types.DateTime
 // Head represents the OPML <head> element.
 type Head struct {
 	// DateCreated is a date-time, indicating when the document was created.
-	DateCreated Date `json:"dateCreated,omitempty,omitzero" validate:"omitempty" xml:"dateCreated,omitempty"`
+	DateCreated externalRef0.Timestamp `json:"dateCreated,omitempty,omitzero" validate:"omitempty" xml:"dateCreated,omitempty"`
 
 	// DateModified is a date-time, indicating when the document was last modified.
-	DateModified Date `json:"dateModified,omitempty,omitzero" validate:"omitempty" xml:"dateModified,omitempty"`
+	DateModified externalRef0.Timestamp `json:"dateModified,omitempty,omitzero" validate:"omitempty" xml:"dateModified,omitempty"`
 
 	// Docs is the http address of documentation for the format used in the OPML file. It's probably a pointer to this page for people who might stumble across the file on a web server 25 years from now and wonder what it is.
 	Docs string `json:"docs,omitempty,omitzero" validate:"omitempty,url" xml:"docs,omitempty"`
