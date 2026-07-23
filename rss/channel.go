@@ -13,6 +13,12 @@ import (
 	"github.com/immanent-tech/go-syndication/validation"
 )
 
+var (
+	// DefaultFeedUpdateInterval defines the update interval for feeds that do not define an update interval or where
+	// one cannot be calculated based off item frequency.
+	DefaultFeedUpdateInterval = time.Hour
+)
+
 var _ types.FeedSource = (*Channel)(nil)
 
 // GetTitle retrieves the <title> (if any) of the Channel.
@@ -196,7 +202,7 @@ func (c *Channel) GetUpdateInterval() time.Duration {
 			return types.GetMedianInterval(intervals)
 		}
 	}
-	return types.DefaultFeedUpdateInterval
+	return DefaultFeedUpdateInterval
 }
 
 // GetItems retrieves a slice of Item values for the Channel.

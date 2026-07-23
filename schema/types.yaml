@@ -12,26 +12,6 @@ info:
     identifier: MIT
 components:
   schemas:
-    Timestamp:
-      description: >
-        represents a timestamp used in feed objects.
-      type: object
-      required:
-        - value
-      properties:
-        value:
-          description: is the timestamp value.
-          x-go-type: time.Time
-    SanitisedString:
-      description: >
-        represents a string that has sanitisation applied.
-      type: object
-      required:
-        - value
-      properties:
-        value:
-          description: is the sanitised string value.
-          type: string
     Attributes:
       description: >
         are any attributes of the element.
@@ -63,16 +43,6 @@ components:
             validate: 'required'
         attributes:
           $ref: '#/components/schemas/Attributes'
-    Extensions:
-      description: >
-        records any elements that are unknown extensions to the schema.
-      type: array
-      items:
-        $ref: '#/components/schemas/Extension'
-      x-oapi-codegen-extra-tags:
-        json: 'extensions,omitempty'
-        xml: ',any'
-      x-go-type-skip-optional-pointer: true
     ImageInfo:
       description: >
         is an abstraction of an Image across different types of specifications.

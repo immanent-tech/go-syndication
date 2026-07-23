@@ -5,7 +5,6 @@
 package schema
 
 //go:generate go tool oapi-codegen -config types-cfg.yaml types.yaml
-//go:generate go tool oapi-codegen -config types-attributes-cfg.yaml types-attributes.yaml
 //go:generate go tool oapi-codegen -config atom-cfg.yaml atom.yaml
 //go:generate go tool oapi-codegen -config dc-cfg.yaml dc.yaml
 //go:generate go tool oapi-codegen -config media-rss-cfg.yaml media-rss.yaml

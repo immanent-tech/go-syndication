@@ -21,6 +21,12 @@ const (
 	rss1NS = "http://purl.org/rss/1.0/"
 )
 
+var (
+	// DefaultFeedUpdateInterval defines the update interval for feeds that do not define an update interval or where
+	// one cannot be calculated based off item frequency.
+	DefaultFeedUpdateInterval = time.Hour
+)
+
 var _ types.FeedSource = (*RDF)(nil)
 
 func (r *RDF) GetAuthors() []string {
@@ -115,7 +121,7 @@ func (r *RDF) GetUpdateInterval() time.Duration {
 			return types.GetMedianInterval(intervals)
 		}
 	}
-	return types.DefaultFeedUpdateInterval
+	return DefaultFeedUpdateInterval
 }
 
 // MarshalXML implements xml.Marshaler, building the default-namespace and

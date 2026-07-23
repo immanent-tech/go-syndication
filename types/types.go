@@ -5,11 +5,7 @@
 package types
 
 import (
-	"encoding/xml"
 	"slices"
-	"time"
-
-	"github.com/immanent-tech/go-syndication/sanitization"
 )
 
 var (
@@ -36,46 +32,3 @@ const (
 	// MimeTypeOPML indicates the canonical mimetype for an OPML file.
 	MimeTypeOPML = "text/x-opml+xml"
 )
-
-var (
-	// DefaultFeedUpdateInterval defines the update interval for feeds that do not define an update interval or where
-	// one cannot be calculated based off item frequency.
-	DefaultFeedUpdateInterval = time.Hour
-)
-
-// NewXMLAttr is a convenience function to create an xml.Attr from a name/value/namespace combination. The namespace
-// value is optional, but the name and value should be provided.
-func NewXMLAttr(name, value, namespace string) xml.Attr {
-	return xml.Attr{
-		Name: xml.Name{
-			Space: namespace,
-			Local: name,
-		},
-		Value: value,
-	}
-}
-
-func NewSanitisedString(value string) SanitisedString {
-	return SanitisedString{
-		Value: sanitization.SanitizeString(value),
-	}
-}
-
-// MarshalText implements the encoding.TextMarshaler interface. Serializes SanitisedString to a plain byte slice.
-func (s SanitisedString) MarshalText() ([]byte, error) {
-	return []byte(s.Value), nil
-}
-
-// UnmarshalText will unmarshal/parse a SanitisedString from the given string.
-func (s *SanitisedString) UnmarshalText(data []byte) error {
-	s.Value = string(sanitization.SanitizeBytes(data))
-	return nil
-}
-
-func (s SanitisedString) String() string {
-	return s.Value
-}
-
-func (e Extension) String() string {
-	return e.Content
-}

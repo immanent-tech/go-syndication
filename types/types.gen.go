@@ -5,7 +5,6 @@ package types
 
 import (
 	"encoding/xml"
-	"time"
 )
 
 // Defines values for SourceType.
@@ -52,9 +51,6 @@ type Extension struct {
 	Content string `json:"content" validate:"required" xml:",innerxml"`
 }
 
-// Extensions records any elements that are unknown extensions to the schema.
-type Extensions = []Extension
-
 // ImageInfo is an abstraction of an Image across different types of specifications.
 type ImageInfo struct {
 	// Title the description of the image
@@ -64,17 +60,5 @@ type ImageInfo struct {
 	URL string `json:"url" validate:"required,url" xml:",chardata"`
 }
 
-// SanitisedString represents a string that has sanitisation applied.
-type SanitisedString struct {
-	// Value is the sanitised string value.
-	Value string `json:"value"`
-}
-
 // SourceType is the type of source the feed or object came from. This can be used with abstractions that generalize different feed types into a common format to preserve information on the original.
 type SourceType string
-
-// Timestamp represents a timestamp used in feed objects.
-type Timestamp struct {
-	// Value is the timestamp value.
-	Value time.Time `json:"value"`
-}

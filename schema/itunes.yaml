@@ -58,7 +58,12 @@ components:
         - href
       properties:
         href:
-          $ref: 'types-attributes.yaml#/components/schemas/AttrHref'
+          description: >
+            is a URL that represents the element content.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'href,attr,omitempty'
+            validate: 'omitempty,url'
       x-oapi-codegen-extra-tags:
         xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty'
         json: 'itunes_image'
