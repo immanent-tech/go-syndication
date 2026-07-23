@@ -6,8 +6,6 @@ package jsonfeed
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/immanent-tech/go-syndication/types"
 )
 
 // Attachment is a related resource.
@@ -121,10 +119,10 @@ type Item struct {
 	ContentText *string `json:"content_text,omitempty"`
 
 	// DateModified is the datetime when the item was modified.
-	DateModified *types.DateTime `json:"date_modified,omitempty"`
+	DateModified *string `json:"date_modified,omitempty"`
 
 	// DatePublished is the datetime when the item was published.
-	DatePublished *types.DateTime `json:"date_published,omitempty"`
+	DatePublished *string `json:"date_published,omitempty"`
 
 	// ExternalURL is the URL of a page elsewhere. This is especially useful for linkblogs. If url links to where you’re talking about a thing, then external_url links to the thing you’re talking about.
 	ExternalURL *string `json:"external_url,omitempty" validate:"omitempty,url"`

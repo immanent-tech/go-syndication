@@ -10,5 +10,3 @@ generate:
 output-options:
   # to make sure that all types are generated
   skip-prune: true
-import-mapping:
-  types.yaml: 'github.com/immanent-tech/go-syndication/types'

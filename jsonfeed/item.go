@@ -95,7 +95,11 @@ func (i *Item) GetImage() *types.ImageInfo {
 // GetPublishedDate returns the published date of the Item.
 func (i *Item) GetPublishedDate() *time.Time {
 	if i.DatePublished != nil {
-		return new(i.DatePublished.Time)
+		ts, err := time.Parse(time.RFC3339, *i.DatePublished)
+		if err != nil {
+			return nil
+		}
+		return &ts
 	}
 	return nil
 }
@@ -103,7 +107,11 @@ func (i *Item) GetPublishedDate() *time.Time {
 // GetUpdatedDate returns the updated (modified) date of the Item.
 func (i *Item) GetUpdatedDate() *time.Time {
 	if i.DateModified != nil {
-		return new(i.DateModified.Time)
+		ts, err := time.Parse(time.RFC3339, *i.DateModified)
+		if err != nil {
+			return nil
+		}
+		return &ts
 	}
 	return nil
 }

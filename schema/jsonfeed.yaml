@@ -1,5 +1,5 @@
 ---
-openapi: "3.0.3"
+openapi: '3.0.3'
 info:
   version: 1.0.0
   title: JSONFeed
@@ -8,7 +8,7 @@ info:
 
     https://www.jsonfeed.org/version/1.1/
   contact:
-    name: "Joshua Rich"
+    name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
@@ -30,13 +30,13 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         avatar:
           description: >
             is the URL for an image for the author.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
       additionalProperties: true
     Hub:
       description: >
@@ -56,7 +56,7 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            validate: "required,url"
+            validate: 'required,url'
     Attachment:
       description: >
         is a related resource.
@@ -70,7 +70,7 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            validate: "required,url"
+            validate: 'required,url'
         mime_type:
           description: >
             specifies the type of the attachment.
@@ -106,7 +106,7 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         external_url:
           description: >
             is the URL of a page elsewhere. This is especially useful for linkblogs. If url links to where you’re
@@ -114,7 +114,7 @@ components:
           type: string
           x-go-name: ExternalURL
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         title:
           description: >
             is the title of the item.
@@ -130,36 +130,36 @@ components:
           type: string
         summary:
           description: >
-             is a plain text sentence or two describing the item.
+            is a plain text sentence or two describing the item.
           type: string
         image:
           description: >
             is the URL of the main image for the item.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         banner_image:
           description: >
             is the URL of an image to use as a banner.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         date_published:
           description: >
             is the datetime when the item was published.
-          x-go-type: types.DateTime
+          type: string
         date_modified:
           description: >
             is the datetime when the item was modified.
-          x-go-type: types.DateTime
+          type: string
         author:
-          $ref: "#/components/schemas/Author"
+          $ref: '#/components/schemas/Author'
         authors:
           description: >
             specifies one or more item authors.
           type: array
           items:
-            $ref: "#/components/schemas/Author"
+            $ref: '#/components/schemas/Author'
           x-go-type-skip-optional-pointer: true
         tags:
           description: >
@@ -173,13 +173,13 @@ components:
             is the primary language for the feed.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,bcp47_language_tag"
+            validate: 'omitempty,bcp47_language_tag'
         attachments:
           description: >
             lists related resources.
           type: array
           items:
-            $ref: "#/components/schemas/Attachment"
+            $ref: '#/components/schemas/Attachment'
           x-go-type-skip-optional-pointer: true
       additionalProperties: true
     Feed:
@@ -196,7 +196,7 @@ components:
             is the URL of the version of the format the feed uses.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "required,url"
+            validate: 'required,url'
         title:
           description: >
             is the name of the feed, which will often correspond to the name of the website (blog, for instance), though
@@ -211,14 +211,14 @@ components:
           type: string
           x-go-name: HomePageURL
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         feed_url:
           description: >
             is the URL of the feed, and serves as the unique identifier for the feed.
           type: string
           x-go-name: FeedURL
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         description:
           description: >
             provides more detail, beyond the title, on what the feed is about.
@@ -235,34 +235,34 @@ components:
           type: string
           x-go-name: NextURL
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         icon:
           description: >
             is the URL of an image for the feed suitable to be used in a timeline, much the way an avatar might be used.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         favicon:
           description: >
             is the URL of an image for the feed suitable to be used in a source list.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,url"
+            validate: 'omitempty,url'
         author:
-          $ref: "#/components/schemas/Author"
+          $ref: '#/components/schemas/Author'
         authors:
           description: >
             specifies one or more feed authors.
           type: array
           items:
-            $ref: "#/components/schemas/Author"
+            $ref: '#/components/schemas/Author'
           x-go-type-skip-optional-pointer: true
         language:
           description: >
             is the primary language for the feed.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: "omitempty,bcp47_language_tag"
+            validate: 'omitempty,bcp47_language_tag'
         expired:
           description: >
             says whether or not the feed is finished — that is, whether or not it will ever update again.
@@ -273,12 +273,12 @@ components:
             feed.
           type: array
           items:
-            $ref: "#/components/schemas/Hub"
+            $ref: '#/components/schemas/Hub'
           x-go-type-skip-optional-pointer: true
         items:
           description: >
             the individual entries in the feed.
           type: array
           items:
-            $ref: "#/components/schemas/Item"
+            $ref: '#/components/schemas/Item'
       additionalProperties: true
