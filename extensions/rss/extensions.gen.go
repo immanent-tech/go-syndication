@@ -64,11 +64,11 @@ type SYUpdatePeriod string
 // SyndicationElements contains all syndication extension elements.
 type SyndicationElements struct {
 	// SYUdatePeriod is the period over which the channel format is updated.
-	SYUdatePeriod *SYUpdatePeriod `json:"update_period,omitempty" validate:"required,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
+	SYUdatePeriod *SYUpdatePeriod `json:"update_period,omitempty" validate:"omitempty,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
 
 	// SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
 	SYUpdateBase *SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
-	SYUpdateFrequency *SYUpdateFrequency `json:"update_frequency,omitempty" validate:"required,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	SYUpdateFrequency *SYUpdateFrequency `json:"update_frequency,omitempty" validate:"omitempty,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
 }

@@ -213,13 +213,13 @@ type Channel struct {
 	MediaTitle *externalRef5.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// SYUdatePeriod is the period over which the channel format is updated.
-	SYUdatePeriod *externalRef6.SYUpdatePeriod `json:"update_period,omitempty" validate:"required,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
+	SYUdatePeriod *externalRef6.SYUpdatePeriod `json:"update_period,omitempty" validate:"omitempty,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
 
 	// SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
 	SYUpdateBase *externalRef6.SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
-	SYUpdateFrequency *externalRef6.SYUpdateFrequency `json:"update_frequency,omitempty" validate:"required,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	SYUpdateFrequency *externalRef6.SYUpdateFrequency `json:"update_frequency,omitempty" validate:"omitempty,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
 	XMLName           xml.Name                        `json:"XMLName" validate:"required" xml:"channel"`
 	AtomLink          *AtomLink                       `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 

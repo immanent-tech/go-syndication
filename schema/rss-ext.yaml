@@ -45,7 +45,7 @@ components:
       x-oapi-codegen-extra-tags:
         json: 'update_period,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty'
-        validate: 'required,oneof=hourly daily weekly monthly yearly'
+        validate: 'omitempty,oneof=hourly daily weekly monthly yearly'
       x-go-type-skip-optional-pointer: false
     SYUpdateFrequency:
       description: >
@@ -54,7 +54,7 @@ components:
       x-oapi-codegen-extra-tags:
         json: 'update_frequency,omitempty'
         xml: 'http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty'
-        validate: 'required,number,gte=1'
+        validate: 'omitempty,number,gte=1'
       x-go-type-skip-optional-pointer: false
     SYUpdateBase:
       description: >
