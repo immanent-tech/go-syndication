@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Maintain dependencies for Go
+  - package-ecosystem: 'gomod'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    commit-message:
+      prefix: 'build(go): ⬆️'
+    cooldown:
+      default-days: 7
+    groups:
+      monthly-batch:
+        patterns:
+          - '*'
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    commit-message:
+      prefix: 'ci(github): ⬆️'
+    cooldown:
+      default-days: 7
+    groups:
+      monthly-batch:
+        patterns:
+          - '*'
