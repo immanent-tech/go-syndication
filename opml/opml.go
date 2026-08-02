@@ -14,6 +14,11 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
+const (
+	// MimeType indicates the canonical mimetype for an OPML file.
+	MimeType = "text/x-opml+xml"
+)
+
 // NewOPMLFromBytes generates an OPML object from the given byte array.
 func NewOPMLFromBytes(b []byte) (*OPML, error) {
 	var root OPML

@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+var (
+	MimeTypesImage = []string{"image/avif", "image/gif", "image/jpeg", "image/png", "image/svg+xml", "image/webp"}
+)
+
 // GetTitle returns the title (if any) of the image.
 func (i *ImageInfo) GetTitle() string {
 	return i.Title

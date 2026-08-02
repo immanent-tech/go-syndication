@@ -18,6 +18,11 @@ import (
 	"github.com/immanent-tech/go-syndication/validation"
 )
 
+var (
+	// MimeTypes contains canonical/standard mimetypes for Atom.
+	MimeTypes = []string{"application/atom+xml"}
+)
+
 const atomNS = "http://www.w3.org/1999/xhtml"
 
 // dateLayout mirrors time.RFC3339Nano: "2006-01-02T15:04:05.999999999Z07:00". The trailing ".999999999" is Go's
@@ -364,11 +369,14 @@ func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 		wrapper := struct {
 			Inner string `xml:",innerxml"`
 		}{Inner: *c.XML}
-		return enc.EncodeElement(wrapper, start)
+		if err := enc.EncodeElement(wrapper, start); err != nil {
+			return fmt.Errorf("marshal content: %w", err)
+		}
+		return nil
 	}
 
 	if err := enc.EncodeToken(start); err != nil {
-		return err
+		return fmt.Errorf("marshal content: %w", err)
 	}
 	switch {
 	case c.Source != nil:
@@ -380,38 +388,44 @@ func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 			Inner   string   `xml:",innerxml"`
 		}{XMLName: xml.Name{Local: "div"}, XMLNS: "http://www.w3.org/1999/xhtml", Inner: *c.XHTML}
 		if err := enc.Encode(div); err != nil {
-			return err
+			return fmt.Errorf("marshal content: %w", err)
 		}
 	case typ == TypeText || typ == TypeHtml || strings.HasPrefix(string(typ), "text/"):
 		if err := enc.EncodeToken(xml.CharData(*c.Text)); err != nil {
-			return err
+			return fmt.Errorf("marshal content: %w", err)
 		}
 	default:
 		if err := enc.EncodeToken(xml.CharData(base64.StdEncoding.EncodeToString(c.Base64))); err != nil {
-			return err
+			return fmt.Errorf("marshal content: %w", err)
 		}
 	}
-	return enc.EncodeToken(start.End())
+	if err := enc.EncodeToken(start.End()); err != nil {
+		return fmt.Errorf("marshal content: %w", err)
+	}
+	return nil
 }
 
 func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	typ := TypeText
-	for _, a := range start.Attr {
+	for attr := range slices.Values(start.Attr) {
 		switch {
-		case a.Name.Local == "type" && a.Name.Space == "":
-			typ = Type(a.Value)
-		case a.Name.Local == "src" && a.Name.Space == "":
-			c.Source = &a.Value
-		case a.Name.Local == "base" && a.Name.Space == "xml":
-			c.Base = &a.Value
-		case a.Name.Local == "lang" && a.Name.Space == "xml":
-			c.Lang = &a.Value
+		case attr.Name.Local == "type" && attr.Name.Space == "":
+			typ = Type(attr.Value)
+		case attr.Name.Local == "src" && attr.Name.Space == "":
+			c.Source = &attr.Value
+		case attr.Name.Local == "base" && attr.Name.Space == "xml":
+			c.Base = &attr.Value
+		case attr.Name.Local == "lang" && attr.Name.Space == "xml":
+			c.Lang = &attr.Value
 		}
 	}
 	c.Type = &typ
 
 	if c.Source != nil {
-		return dec.Skip() // element is empty; nothing further to decode
+		if err := dec.Skip(); err != nil { // element is empty; nothing further to decode
+			return fmt.Errorf("unmarshal content: %w", err)
+		}
+		return nil
 	}
 
 	switch {

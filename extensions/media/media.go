@@ -17,6 +17,11 @@ import (
 	"github.com/immanent-tech/go-syndication/types"
 )
 
+var (
+	// ImageExt contains canonical/standard/common file extensions for images.
+	ImageExt = []string{"jpg", "jpeg", "png", "webp", "gif"}
+)
+
 // AsImage returns the <media:thumbnail> object as a types.ImageInfo object.
 func (t *MediaThumbnail) AsImage() *types.ImageInfo {
 	return &types.ImageInfo{
@@ -56,7 +61,7 @@ func (c *MediaContent) AsImage() *types.ImageInfo {
 	}
 	// Ugh, maybe try parsing the URL and see if it ends in a well-known image file extension...
 	if url, err := url.Parse(c.URL); err == nil {
-		for imgext := range slices.Values(types.MediaImageExt) {
+		for imgext := range slices.Values(ImageExt) {
 			if strings.HasSuffix(url.Path, imgext) {
 				return &types.ImageInfo{
 					URL: c.URL,

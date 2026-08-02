@@ -25,6 +25,9 @@ var (
 	// DefaultFeedUpdateInterval defines the update interval for feeds that do not define an update interval or where
 	// one cannot be calculated based off item frequency.
 	DefaultFeedUpdateInterval = time.Hour
+
+	// MimeTypesRDF contains canonical/standard mimetypes for RDF.
+	MimeTypes = []string{"application/rdf+xml"}
 )
 
 var _ types.FeedSource = (*RDF)(nil)

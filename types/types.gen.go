@@ -7,36 +7,6 @@ import (
 	"encoding/xml"
 )
 
-// Defines values for SourceType.
-const (
-	SourceTypeAtom     SourceType = "Atom"
-	SourceTypeHTML     SourceType = "HTML"
-	SourceTypeJSONFeed SourceType = "JSONFeed"
-	SourceTypeRDF      SourceType = "RDF"
-	SourceTypeRSS      SourceType = "RSS"
-	SourceTypeUnknown  SourceType = "Unknown"
-)
-
-// Valid indicates whether the value is a known member of the SourceType enum.
-func (e SourceType) Valid() bool {
-	switch e {
-	case SourceTypeAtom:
-		return true
-	case SourceTypeHTML:
-		return true
-	case SourceTypeJSONFeed:
-		return true
-	case SourceTypeRDF:
-		return true
-	case SourceTypeRSS:
-		return true
-	case SourceTypeUnknown:
-		return true
-	default:
-		return false
-	}
-}
-
 // Attributes are any attributes of the element.
 type Attributes = []xml.Attr
 
@@ -59,6 +29,3 @@ type ImageInfo struct {
 	// URL is the URL to the image.
 	URL string `json:"url" validate:"required,url" xml:",chardata"`
 }
-
-// SourceType is the type of source the feed or object came from. This can be used with abstractions that generalize different feed types into a common format to preserve information on the original.
-type SourceType string

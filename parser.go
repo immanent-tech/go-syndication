@@ -16,6 +16,7 @@ import (
 
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/jsonfeed"
+	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"golang.org/x/net/html/charset"
@@ -25,6 +26,53 @@ var (
 	// ErrParseBytes indicates an error occurred trying to parse a byte array as a feed.
 	ErrParseBytes = errors.New("unable to parse bytes as feed")
 )
+
+// Decode will decode the byte array into the given type T, and assign values without a namespace with the given
+// namespace.
+func Decode[T any](namespace string, rd io.Reader) (T, error) {
+	var feed T
+
+	decoder := xml.NewDecoder(rd)
+	decoder.Strict = false // be lenient with malformed feeds in the wild
+
+	if namespace != "" {
+		decoder.DefaultSpace = namespace
+	}
+	decoder.CharsetReader = charset.NewReaderLabel
+	if err := decoder.Decode(&feed); err != nil {
+		return feed, fmt.Errorf("could not decode byte array: %w", err)
+	}
+
+	return feed, nil
+}
+
+// Encode will encode the given type T into a byte array.
+func Encode[T any](feed T) ([]byte, error) {
+	switch source := any(feed).(type) {
+	case *rss.RSS:
+		source.AutoDeclareNamespaces()
+		return encode(source)
+	case *rdf.RDF:
+		source.Link()
+		source.AutoDeclareNamespaces()
+		return encode(source)
+	case *atom.Feed:
+		source.AutoDeclareNamespaces()
+		return encode(source)
+	default:
+		return encode(feed)
+	}
+}
+
+func encode(v any) ([]byte, error) {
+	var b []byte
+	reader := bytes.NewBuffer(b)
+	encoder := xml.NewEncoder(reader)
+	if err := encoder.Encode(v); err != nil {
+		return nil, fmt.Errorf("could not encode byte array: %w", err)
+	}
+	return reader.Bytes(), nil
+}
 
 // NewDecoder will create a new Feed of the given type from the given io.Reader.
 func NewDecoder[T any](data io.Reader) (*Feed, error) {
@@ -67,12 +115,12 @@ func NewFeedFromSource[T types.FeedSource](source T) *Feed {
 }
 
 // parseSource will attempt to determine the appropriate SourceType value from the given interface object.
-func parseSource[T any](source T) types.SourceType {
+func parseSource[T any](source T) SourceType {
 	switch any(source).(type) {
 	case *atom.Feed:
-		return types.SourceTypeAtom
+		return SourceTypeAtom
 	case *rss.RSS:
-		return types.SourceTypeRSS
+		return SourceTypeRSS
 	default:
 		return ""
 	}
@@ -80,17 +128,17 @@ func parseSource[T any](source T) types.SourceType {
 
 // DetectSourceType determines the feed source by extracting key signatures from the data. It can detect supported feed
 // formats as well as HTML.
-func DetectSourceType(r io.Reader) (types.SourceType, error) {
+func DetectSourceType(r io.Reader) (SourceType, error) {
 	data := bufio.NewReader(r)
 
 	// Peek enough bytes for content sniffing without consuming the reader.
 	peek, err := data.Peek(512)
 	if err != nil {
-		return types.SourceTypeUnknown, fmt.Errorf("peek at source file: %w", err)
+		return SourceTypeUnknown, fmt.Errorf("peek at source file: %w", err)
 	}
 
 	if looksLikeHTML(peek) {
-		return types.SourceTypeHTML, nil
+		return SourceTypeHTML, nil
 	}
 
 	// Fall back to XML-based root element detection for feeds (and XHTML).
@@ -112,7 +160,7 @@ func looksLikeHTML(peek []byte) bool {
 		bytes.HasPrefix(lower, []byte("<html"))
 }
 
-func detectFeedSourceType(r io.Reader) (types.SourceType, error) {
+func detectFeedSourceType(r io.Reader) (SourceType, error) {
 	decoder := xml.NewDecoder(r)
 	decoder.CharsetReader = charset.NewReaderLabel
 	decoder.Strict = false // be lenient with malformed feeds in the wild
@@ -120,24 +168,24 @@ func detectFeedSourceType(r io.Reader) (types.SourceType, error) {
 	for {
 		tok, err := decoder.Token()
 		if errors.Is(err, io.EOF) {
-			return types.SourceTypeUnknown, fmt.Errorf("%w: no root element found", ErrParseBytes)
+			return SourceTypeUnknown, fmt.Errorf("%w: no root element found", ErrParseBytes)
 		}
 		if err != nil {
-			return types.SourceTypeUnknown, fmt.Errorf("decode source: %w", err)
+			return SourceTypeUnknown, fmt.Errorf("decode source: %w", err)
 		}
 
 		if startElement, ok := tok.(xml.StartElement); ok {
 			switch {
 			case startElement.Name.Local == "rss":
-				return types.SourceTypeRSS, nil
+				return SourceTypeRSS, nil
 			case startElement.Name.Local == "feed" && startElement.Name.Space == "http://www.w3.org/2005/Atom":
-				return types.SourceTypeAtom, nil
+				return SourceTypeAtom, nil
 			case startElement.Name.Local == "feed": // some feeds omit/misdeclare namespace
-				return types.SourceTypeAtom, nil
+				return SourceTypeAtom, nil
 			case startElement.Name.Local == "RDF":
-				return types.SourceTypeRDF, nil
+				return SourceTypeRDF, nil
 			default:
-				return types.SourceTypeUnknown, fmt.Errorf("unrecognized root element: %s", startElement.Name.Local)
+				return SourceTypeUnknown, fmt.Errorf("unrecognized root element: %s", startElement.Name.Local)
 			}
 		}
 	}

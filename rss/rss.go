@@ -18,9 +18,15 @@ import (
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions"
 	ext "github.com/immanent-tech/go-syndication/extensions/rss"
+	"github.com/immanent-tech/go-syndication/rdf"
 
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
+)
+
+var (
+	// MimeTypes contains canonical/standard mimetypes for RSS feeds.
+	MimeTypes = slices.Concat([]string{"application/rss+xml"}, rdf.MimeTypes)
 )
 
 var _ types.FeedSource = (*RSS)(nil)

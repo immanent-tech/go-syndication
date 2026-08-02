@@ -26,7 +26,6 @@ import (
 	"github.com/immanent-tech/go-syndication/jsonfeed"
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
-	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 )
 
@@ -183,33 +182,33 @@ func parseFeedData(r io.Reader) (*feeds.Feed, error) {
 	switch feedType, err := feeds.DetectSourceType(bytes.NewReader(data)); {
 	case err != nil:
 		return nil, fmt.Errorf("detect feed type: %w", err)
-	case feedType == types.SourceTypeUnknown:
+	case feedType == feeds.SourceTypeUnknown:
 		return nil, errors.New("cannot determine feed type")
-	case feedType == types.SourceTypeAtom:
+	case feedType == feeds.SourceTypeAtom:
 		// Atom feed.
 		feedData, err = feeds.NewDecoder[*atom.Feed](bytes.NewReader(data))
 		if err != nil {
 			return nil, fmt.Errorf("parse atom: %w", err)
 		}
-	case feedType == types.SourceTypeRSS:
+	case feedType == feeds.SourceTypeRSS:
 		// RSS 2.0 feed.
 		feedData, err = feeds.NewDecoder[*rss.RSS](bytes.NewReader(data))
 		if err != nil {
 			return nil, fmt.Errorf("parse rss: %w", err)
 		}
-	case feedType == types.SourceTypeRDF:
+	case feedType == feeds.SourceTypeRDF:
 		// RDF/RSS 1.0 feed.
 		feedData, err = feeds.NewDecoder[*rdf.RDF](bytes.NewReader(data))
 		if err != nil {
 			return nil, fmt.Errorf("parse rdf: %w", err)
 		}
-	case feedType == types.SourceTypeJSONFeed:
+	case feedType == feeds.SourceTypeJSONFeed:
 		// JSONFeed.
 		feedData, err = feeds.NewDecoder[*jsonfeed.Feed](bytes.NewReader(data))
 		if err != nil {
 			return nil, fmt.Errorf("parse jsonfeed: %w", err)
 		}
-	case feedType == types.SourceTypeHTML:
+	case feedType == feeds.SourceTypeHTML:
 		return nil, errors.New("go html, not feed format")
 	default:
 		return nil, errors.New("unsupported media type")
