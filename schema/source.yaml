@@ -1,0 +1,320 @@
+---
+openapi: '3.1.0'
+info:
+  version: 2.0.0
+  title: The 'source' namespace
+  description: >
+    The source namespace is a collection of add-ons to RSS 2.0 that provide information about where the content in the
+    feed comes from, so it's possible that aggregators can provide a richer experience for readers.
+
+    https://source.scripting.com/
+  contact:
+    name: 'Joshua Rich'
+    email: joshua.rich@gmail.com
+  license:
+    identifier: MIT
+components:
+  schemas:
+    Account:
+      description: >
+        The value of source:account is the username or screenname of the author of the feed on the indicated service.
+      type: object
+      required:
+        - service
+        - value
+      properties:
+        service:
+          description: >
+            is the name of a service such as "instagram" or "mastodon". The value is case insensitive, so Bluesky is the
+            same as blueSky.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'service,attr'
+            validate: 'required'
+        value:
+          description: >
+            is the account name or id.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
+            validate: 'required'
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ account,omitempty'
+        json: account,omitempty
+    Markdown:
+      description: >
+        is the source of the item-level description sub-element using Markdown to encode styling and links. If your feed
+        presenter can understand Markdown, you should use this as the source for the display of the item.
+      type: object
+      required:
+        - value
+        - as_cdata
+      properties:
+        value:
+          description: is the markdown content.
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: 'required'
+        as_cdata:
+          description: indicates the content is CDATA encoded.
+          type: boolean
+          x-go-name: AsCDATA
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ markdown,omitempty'
+        json: markdown,omitempty
+    Outline:
+      type: object
+      properties:
+        text:
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'text,attr,omitempty'
+        created:
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'created,attr,omitempty'
+        attrs:
+          type: array
+          items:
+            x-go-type: xml.Attr
+          x-oapi-codegen-extra-tags:
+            xml: ',any,attr'
+          x-go-type-skip-optional-pointer: true
+        outlines:
+          type: array
+          items:
+            x-go-type: Outline
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: 'https://source.scripting.com/ outline,omitempty'
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ outline,omitempty'
+        json: outline,omitempty
+    LocalTime:
+      description: >
+        is a simple entirely human-readable way for the editor of the site to see what time, in his or her time zone,
+        the feed was last updated. Must-have for debugging and sanity-preservation if you have trouble converting GMT to
+        local time in your head (as I do). The format here is entirely up to the editor of the site.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ localTime,omitempty'
+        json: localTime,omitempty
+    LinkFull:
+      description: >
+        is the unshortened version of <link>.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ linkFull,omitempty'
+        json: linkFull,omitempty
+    Likes:
+      description: >
+        is an instance of the the scripting.com likes software (a Node application) or a server that emulates its API.
+
+        Feed readers can use the server URL to form a like icon for each item that integrates with other feed readers.
+        Perhaps the beginning of a way to build a connection between people who read a blog via various feed reader
+        software. A demo app provides example code in JavaScript.
+      type: object
+      required:
+        - server
+      properties:
+        server:
+          description: is the server URL.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'server,attr'
+            validate: 'required,url'
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ likes,omitempty'
+        json: likes,omitempty
+    ArchiveDay:
+      description: >
+        is source:archive's startDay/endDay: a bare yyyy-mm-dd date (no time-of-day or zone).
+      type: object
+      required:
+        - time
+      properties:
+        time:
+          x-go-type: time.Time
+    Archive:
+      description: >
+        is links to the calendar-structured archive for the feed.  The folder pointed to by this address contains one
+        folder for each year, 2009, 2010, 2011, etc. Each of those folders contains one folder for each month, 01, 02,
+        03, 04, 05, 06, 07, 08, 09, 10, 11, 12. The month folders must be zero-padded to two places. Folders may be
+        missing, indicating that there is no archived content for the month. Each of the month folders contains folders
+        for the days of the month. Day folder names are also zero-padded to two places and may be missing if there were
+        no updates on the given day. Each day folder contains a file named rss.xml, unless the optional
+        <source:filename> sub-element is supplied, which overrides the default. This makes it possible for a single
+        calendar structure to store the archive of more than one feed.
+      type: object
+      required:
+        - URL
+        - startDay
+      properties:
+        URL:
+          description: is the address of the archive.
+          type: string
+          x-go-name: URL
+          x-oapi-codegen-extra-tags:
+            validate: 'required,url'
+            xml: 'https://source.scripting.com/ url'
+        startDay:
+          description: >
+            is a hyphen-delimited date, formatted as yyyy-mm-dd, for the first element of the archive.
+          $ref: '#/components/schemas/ArchiveDay'
+          x-oapi-codegen-extra-tags:
+            validate: 'required'
+            xml: 'https://source.scripting.com/ startDay'
+        endDay:
+          description: >
+            is a hyphen-delimited date (yyyy-mm-dd) for the last element in the archive.
+          $ref: '#/components/schemas/ArchiveDay'
+          x-oapi-codegen-extra-tags:
+            xml: 'https://source.scripting.com/ endDay'
+        filename:
+          description: >
+            is the filename in the directory.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'https://source.scripting.com/ filename,omitempty'
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ archive,omitempty'
+        json: archive,omitempty
+    SubscriptionList:
+      description: >
+        is the list of feeds the author of the feed follows.
+      type: object
+      required:
+        - URL
+      properties:
+        URL:
+          description: is the http address of an OPML subscription list.
+          type: string
+          x-go-name: URL
+          x-oapi-codegen-extra-tags:
+            validate: 'required,url'
+            xml: 'url,attr'
+        value:
+          description: >
+            is the account name or id.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ subscriptionList,omitempty'
+        json: subscriptionList,omitempty
+    Cloud:
+      description: >
+        provides a lot of information about the cloud server in a verbose way, specifying the domain, port, path and
+        protocol.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ cloud,omitempty'
+        json: cloud,omitempty
+        validate: 'omitempty,url'
+    Blogroll:
+      description: >
+        points to the blogroll for the site associated with the feed, an OPML subscription list.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ blogroll,omitempty'
+        validate: 'omitempty,url'
+        json: blogroll,omitempty
+    Self:
+      description: >
+        is the canonical URL for the feed.
+      type: string
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ self,omitempty'
+        validate: 'omitempty,url'
+        json: self,omitempty
+    InReplyTo:
+      description: >
+        identifies the item that this item is in reply to.
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          description: >
+            is a URL to the the original item.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: ',chardata'
+            validate: 'required,url'
+        isPermalink:
+          description: >
+            indicates whether the value is a permalink.
+          type: boolean
+          x-oapi-codegen-extra-tags:
+            xml: 'isPermalink,attr'
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ inReplyTo,omitempty'
+        json: inReplyTo,omitempty
+    Comments:
+      description: >
+        are links to comments for this item.
+      type: object
+      required:
+        - count
+        - feedURL
+      properties:
+        count:
+          description: is a number which says how many comments there are on this item.
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: 'required,gte=0'
+            xml: 'count,attr'
+        feedURL:
+          description: is the address of the feed containing the comments.
+          type: string
+          x-go-name: FeedURL
+          x-oapi-codegen-extra-tags:
+            validate: 'required,url'
+            xml: 'feedUrl,attr'
+      x-oapi-codegen-extra-tags:
+        xml: 'https://source.scripting.com/ comments,omitempty'
+        json: comments,omitempty
+    ChannelSource:
+      description: contains all channel-level items in the source namespace.
+      type: object
+      properties:
+        SourceAccount:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+          x-oapi-codegen-extra-tags:
+            xml: 'https://source.scripting.com/ account,omitempty'
+          x-go-type-skip-optional-pointer: true
+        SourceLocalTime:
+          $ref: '#/components/schemas/LocalTime'
+        SourceLikes:
+          $ref: '#/components/schemas/Likes'
+        SourceArchive:
+          $ref: '#/components/schemas/Archive'
+        SourceCloud:
+          $ref: '#/components/schemas/Cloud'
+        SourceBlogroll:
+          $ref: '#/components/schemas/Blogroll'
+        SourceSelf:
+          $ref: '#/components/schemas/Self'
+        SourceSubscriptionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionList'
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: 'https://source.scripting.com/ subscriptionList,omitempty'
+    ItemSource:
+      description: contains all item-level items in the source namespace.
+      type: object
+      properties:
+        SourceMarkdown:
+          $ref: '#/components/schemas/Markdown'
+        SourceOutline:
+          $ref: '#/components/schemas/Outline'
+        SourceLinkFill:
+          $ref: '#/components/schemas/LinkFull'
+        SourceInReplyTo:
+          $ref: '#/components/schemas/InReplyTo'
+        SourceComments:
+          $ref: '#/components/schemas/Comments'

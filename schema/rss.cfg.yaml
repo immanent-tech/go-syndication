@@ -17,6 +17,7 @@ import-mapping:
   media-rss.yaml: 'github.com/immanent-tech/go-syndication/extensions/media'
   itunes.yaml: 'github.com/immanent-tech/go-syndication/extensions/itunes'
   googleplay.yaml: 'github.com/immanent-tech/go-syndication/extensions/googleplay'
+  source.yaml: 'github.com/immanent-tech/go-syndication/extensions/source'
   rdf.yaml: 'github.com/immanent-tech/go-syndication/rdf'
   atom.yaml: 'github.com/immanent-tech/go-syndication/atom'
   types.yaml: 'github.com/immanent-tech/go-syndication/types'

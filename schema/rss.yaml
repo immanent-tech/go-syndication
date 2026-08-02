@@ -100,7 +100,7 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             xml: 'registerProcedure,attr'
-            validate: 'required'
+            validate: 'omitempty,required'
         protocol:
           type: string
           enum: ['xml-rpc', 'soap', 'http-post']
@@ -432,6 +432,7 @@ components:
         - $ref: 'itunes.yaml#/components/schemas/ItunesElements'
         - $ref: 'googleplay.yaml#/components/schemas/GooglePlayElements'
         - $ref: 'dc.yaml#/components/schemas/DCElements'
+        - $ref: 'source.yaml#/components/schemas/ChannelSource'
         - type: object
           required:
             - XMLName
@@ -572,6 +573,7 @@ components:
       allOf:
         - $ref: 'dc.yaml#/components/schemas/DCElements'
         - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
+        - $ref: 'source.yaml#/components/schemas/ItemSource'
         - type: object
           required:
             - title

@@ -10,7 +10,8 @@ import (
 	externalRef0 "github.com/immanent-tech/go-syndication/extensions"
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef2 "github.com/immanent-tech/go-syndication/extensions/media"
-	externalRef3 "github.com/immanent-tech/go-syndication/types"
+	externalRef3 "github.com/immanent-tech/go-syndication/extensions/source"
+	externalRef4 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for LinkRel.
@@ -94,7 +95,7 @@ type Category struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Extensions represents any additional, undefined content for this element.
-	Extensions []externalRef3.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// Label provides a human-readable label for display in end-user applications.
 	Label *xml.Attr `json:"label,omitempty" xml:"label,attr,omitempty"`
@@ -172,7 +173,7 @@ type Entry struct {
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions []externalRef3.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
 	ID ID `json:"id" validate:"required" xml:"id"`
@@ -254,6 +255,19 @@ type Entry struct {
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *externalRef2.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+
+	// SourceComments are links to comments for this item.
+	SourceComments *externalRef3.Comments `json:"comments,omitempty" xml:"https://source.scripting.com/ comments,omitempty"`
+
+	// SourceInReplyTo identifies the item that this item is in reply to.
+	SourceInReplyTo *externalRef3.InReplyTo `json:"inReplyTo,omitempty" xml:"https://source.scripting.com/ inReplyTo,omitempty"`
+
+	// SourceLinkFill is the unshortened version of <link>.
+	SourceLinkFill *externalRef3.LinkFull `json:"linkFull,omitempty" xml:"https://source.scripting.com/ linkFull,omitempty"`
+
+	// SourceMarkdown is the source of the item-level description sub-element using Markdown to encode styling and links. If your feed presenter can understand Markdown, you should use this as the source for the display of the item.
+	SourceMarkdown *externalRef3.Markdown `json:"markdown,omitempty" xml:"https://source.scripting.com/ markdown,omitempty"`
+	SourceOutline  *externalRef3.Outline  `json:"outline,omitempty" xml:"https://source.scripting.com/ outline,omitempty"`
 
 	// Attributes are any additional attributes of the element.
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
@@ -346,7 +360,7 @@ type Feed struct {
 	DefaultNamespace *string `json:"DefaultNamespace,omitempty" xml:"-"`
 
 	// Extensions represents any additional, undefined content for this element.
-	Extensions []externalRef3.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
 	ID ID `json:"id" validate:"required" xml:"id"`
@@ -424,7 +438,28 @@ type Feed struct {
 	MediaThumbnails externalRef2.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle *externalRef2.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+	MediaTitle    *externalRef2.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+	SourceAccount []externalRef3.Account   `json:"SourceAccount,omitempty" xml:"https://source.scripting.com/ account,omitempty"`
+
+	// SourceArchive is links to the calendar-structured archive for the feed.  The folder pointed to by this address contains one folder for each year, 2009, 2010, 2011, etc. Each of those folders contains one folder for each month, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12. The month folders must be zero-padded to two places. Folders may be missing, indicating that there is no archived content for the month. Each of the month folders contains folders for the days of the month. Day folder names are also zero-padded to two places and may be missing if there were no updates on the given day. Each day folder contains a file named rss.xml, unless the optional <source:filename> sub-element is supplied, which overrides the default. This makes it possible for a single calendar structure to store the archive of more than one feed.
+	SourceArchive *externalRef3.Archive `json:"archive,omitempty" xml:"https://source.scripting.com/ archive,omitempty"`
+
+	// SourceBlogroll points to the blogroll for the site associated with the feed, an OPML subscription list.
+	SourceBlogroll *externalRef3.Blogroll `json:"blogroll,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ blogroll,omitempty"`
+
+	// SourceCloud provides a lot of information about the cloud server in a verbose way, specifying the domain, port, path and protocol.
+	SourceCloud *externalRef3.Cloud `json:"cloud,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ cloud,omitempty"`
+
+	// SourceLikes is an instance of the the scripting.com likes software (a Node application) or a server that emulates its API.
+	// Feed readers can use the server URL to form a like icon for each item that integrates with other feed readers. Perhaps the beginning of a way to build a connection between people who read a blog via various feed reader software. A demo app provides example code in JavaScript.
+	SourceLikes *externalRef3.Likes `json:"likes,omitempty" xml:"https://source.scripting.com/ likes,omitempty"`
+
+	// SourceLocalTime is a simple entirely human-readable way for the editor of the site to see what time, in his or her time zone, the feed was last updated. Must-have for debugging and sanity-preservation if you have trouble converting GMT to local time in your head (as I do). The format here is entirely up to the editor of the site.
+	SourceLocalTime *externalRef3.LocalTime `json:"localTime,omitempty" xml:"https://source.scripting.com/ localTime,omitempty"`
+
+	// SourceSelf is the canonical URL for the feed.
+	SourceSelf             *externalRef3.Self              `json:"self,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ self,omitempty"`
+	SourceSubscriptionList []externalRef3.SubscriptionList `json:"SourceSubscriptionList,omitempty" xml:"https://source.scripting.com/ subscriptionList,omitempty"`
 
 	// Attributes are any additional attributes of the element.
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
@@ -679,7 +714,7 @@ type PersonConstruct struct {
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions []externalRef3.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
@@ -713,7 +748,7 @@ type StandaloneEntry struct {
 	DefaultNamespace *string `json:"DefaultNamespace,omitempty" xml:"-"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions []externalRef3.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
 	ID ID `json:"id" validate:"required" xml:"id"`
@@ -795,6 +830,19 @@ type StandaloneEntry struct {
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *externalRef2.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+
+	// SourceComments are links to comments for this item.
+	SourceComments *externalRef3.Comments `json:"comments,omitempty" xml:"https://source.scripting.com/ comments,omitempty"`
+
+	// SourceInReplyTo identifies the item that this item is in reply to.
+	SourceInReplyTo *externalRef3.InReplyTo `json:"inReplyTo,omitempty" xml:"https://source.scripting.com/ inReplyTo,omitempty"`
+
+	// SourceLinkFill is the unshortened version of <link>.
+	SourceLinkFill *externalRef3.LinkFull `json:"linkFull,omitempty" xml:"https://source.scripting.com/ linkFull,omitempty"`
+
+	// SourceMarkdown is the source of the item-level description sub-element using Markdown to encode styling and links. If your feed presenter can understand Markdown, you should use this as the source for the display of the item.
+	SourceMarkdown *externalRef3.Markdown `json:"markdown,omitempty" xml:"https://source.scripting.com/ markdown,omitempty"`
+	SourceOutline  *externalRef3.Outline  `json:"outline,omitempty" xml:"https://source.scripting.com/ outline,omitempty"`
 
 	// Attributes are any additional attributes of the element.
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`

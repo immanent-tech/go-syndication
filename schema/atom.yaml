@@ -547,6 +547,7 @@ components:
         - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
         - $ref: 'dc.yaml#/components/schemas/DCElements'
         - $ref: '#/components/schemas/FeedMetadata'
+        - $ref: 'source.yaml#/components/schemas/ChannelSource'
         - type: object
           properties:
             DefaultNamespace:
@@ -602,6 +603,7 @@ components:
         - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
         - $ref: 'dc.yaml#/components/schemas/DCElements'
         - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: 'source.yaml#/components/schemas/ItemSource'
         - type: object
           required:
             - ID
