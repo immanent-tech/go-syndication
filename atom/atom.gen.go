@@ -11,7 +11,6 @@ import (
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef2 "github.com/immanent-tech/go-syndication/extensions/media"
 	externalRef3 "github.com/immanent-tech/go-syndication/extensions/source"
-	externalRef4 "github.com/immanent-tech/go-syndication/types"
 )
 
 // Defines values for LinkRel.
@@ -95,7 +94,7 @@ type Category struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Extensions represents any additional, undefined content for this element.
-	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// Label provides a human-readable label for display in end-user applications.
 	Label *xml.Attr `json:"label,omitempty" xml:"label,attr,omitempty"`
@@ -173,7 +172,7 @@ type Entry struct {
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
 	ID ID `json:"id" validate:"required" xml:"id"`
@@ -360,7 +359,7 @@ type Feed struct {
 	DefaultNamespace *string `json:"DefaultNamespace,omitempty" xml:"-"`
 
 	// Extensions represents any additional, undefined content for this element.
-	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
 	ID ID `json:"id" validate:"required" xml:"id"`
@@ -714,7 +713,7 @@ type PersonConstruct struct {
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
@@ -748,7 +747,7 @@ type StandaloneEntry struct {
 	DefaultNamespace *string `json:"DefaultNamespace,omitempty" xml:"-"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
-	Extensions []externalRef4.Extension `json:"extensions,omitempty" xml:",any"`
+	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
 	ID ID `json:"id" validate:"required" xml:"id"`

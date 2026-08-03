@@ -15,6 +15,5 @@ compatibility:
 import-mapping:
   extensions.yaml: 'github.com/immanent-tech/go-syndication/extensions'
   source.yaml: 'github.com/immanent-tech/go-syndication/extensions/source'
-  types.yaml: 'github.com/immanent-tech/go-syndication/types'
   media-rss.yaml: 'github.com/immanent-tech/go-syndication/extensions/media'
   dc.yaml: 'github.com/immanent-tech/go-syndication/extensions/dc'

@@ -130,7 +130,7 @@ components:
                 records any elements that are unknown extensions to the schema.
               type: array
               items:
-                $ref: 'types.yaml#/components/schemas/Extension'
+                $ref: 'extensions.yaml#/components/schemas/Extension'
               x-oapi-codegen-extra-tags:
                 json: 'extensions,omitempty'
                 xml: ',any'
@@ -201,7 +201,7 @@ components:
                 represents any additional, undefined content for this element.
               type: array
               items:
-                $ref: 'types.yaml#/components/schemas/Extension'
+                $ref: 'extensions.yaml#/components/schemas/Extension'
               x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
                 json: 'extensions,omitempty'
@@ -579,7 +579,7 @@ components:
                 represents any additional, undefined content for this element.
               type: array
               items:
-                $ref: 'types.yaml#/components/schemas/Extension'
+                $ref: 'extensions.yaml#/components/schemas/Extension'
               x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
                 json: 'extensions,omitempty'
@@ -641,7 +641,7 @@ components:
                 records any elements that are unknown extensions to the schema.
               type: array
               items:
-                $ref: 'types.yaml#/components/schemas/Extension'
+                $ref: 'extensions.yaml#/components/schemas/Extension'
               x-oapi-codegen-extra-tags:
                 json: 'extensions,omitempty'
                 xml: ',any'

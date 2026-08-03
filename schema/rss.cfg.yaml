@@ -20,4 +20,3 @@ import-mapping:
   source.yaml: 'github.com/immanent-tech/go-syndication/extensions/source'
   rdf.yaml: 'github.com/immanent-tech/go-syndication/rdf'
   atom.yaml: 'github.com/immanent-tech/go-syndication/atom'
-  types.yaml: 'github.com/immanent-tech/go-syndication/types'

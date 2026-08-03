@@ -318,7 +318,7 @@ func (f *Feed) AutoDeclareNamespaces() {
 
 	var uris []string
 	seenURI := map[string]bool{}
-	collect := func(exts []types.Extension) {
+	collect := func(exts []extensions.Extension) {
 		for ext := range slices.Values(exts) {
 			uri := ext.XMLName.Space
 			if uri == "" || uri == atomNS || declared[uri] || seenURI[uri] {
