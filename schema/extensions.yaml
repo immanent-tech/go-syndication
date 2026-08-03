@@ -27,3 +27,30 @@ components:
           description: the URI that points to the namespace.
           type: string
           x-go-name: URI
+    Extension:
+      description: >
+        represents an element that is not defined in the schema.
+      type: object
+      required:
+        - XMLName
+        - content
+      properties:
+        XMLName:
+          x-go-type: 'xml.Name'
+          x-oapi-codegen-extra-tags:
+            json: 'xml'
+            validate: 'required'
+        content:
+          description: is the element value.
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: ',innerxml'
+            validate: 'required'
+        attributes:
+          description: are any attributes of the element.
+          type: array
+          items:
+            x-go-type: xml.Attr
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: ',any,attr'

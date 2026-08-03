@@ -15,32 +15,69 @@ info:
 paths: {}
 components:
   schemas:
+    RFC822Time:
+      description: >
+        is the ELEMENT-context version (dateCreated, dateModified).
+      type: object
+      required:
+        - time
+      properties:
+        time:
+          x-go-type: time.Time
+    RFC822AttrTime:
+      description: >
+        is the ATTRIBUTE-context version (outline's "created" attribute).
+      type: object
+      required:
+        - time
+      properties:
+        time:
+          x-go-type: time.Time
+    Categories:
+      description: >
+        is a string of comma-separated, slash-delimited category strings.
+
+        e.g. []string{"/Boston/Weather"} or {"/Harvard/Berkman", "/Politics"}.
+      type: array
+      items:
+        type: string
+      x-go-type-skip-optional-pointer: true
+    ExpansionState:
+      description: >
+        is a comma-separated list of line numbers.
+      type: array
+      items:
+        type: integer
+      x-go-type-skip-optional-pointer: true
     OPML:
       description: >
         represents an OPML document.
       type: object
       required:
-        - XMLName
-        - head
         - body
         - version
       properties:
-        XMLName:
-          description: >
-            represents the XML namespace of an element.
-          x-go-type: 'xml.Name'
         head:
           $ref: '#/components/schemas/Head'
         body:
           $ref: '#/components/schemas/Body'
+        namespaces:
+          type: array
+          items:
+            $ref: 'extensions.yaml#/components/schemas/Namespace'
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            xml: '-'
         version:
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'version,attr'
+            xml: '-'
           xml:
             attribute: true
       xml:
         name: 'opml'
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'
     Head:
       description: >
         represents the OPML <head> element.
@@ -61,18 +98,16 @@ components:
           description: >
             is a date-time, indicating when the document was created.
           allOf:
-            - $ref: 'rss.yaml#/components/schemas/Timestamp'
+            - $ref: '#/components/schemas/RFC822Time'
           x-oapi-codegen-extra-tags:
             xml: 'dateCreated,omitempty'
-            validate: 'omitempty'
         dateModified:
           description: >
             is a date-time, indicating when the document was last modified.
           allOf:
-            - $ref: 'rss.yaml#/components/schemas/Timestamp'
+            - $ref: '#/components/schemas/RFC822Time'
           x-oapi-codegen-extra-tags:
             xml: 'dateModified,omitempty'
-            validate: 'omitempty'
         ownerName:
           description: >
             is the owner of the document.
@@ -88,10 +123,9 @@ components:
             validate: 'omitempty,email'
         ownerId:
           description: >
-            is the http address of a web page that contains information that
-            allows a human reader to communicate with the author of the document
-            via email or other means. It also may be used to identify the
-            author. No two authors have the same ownerId.
+            is the http address of a web page that contains information that allows a human reader to communicate with
+            the author of the document via email or other means. It also may be used to identify the author. No two
+            authors have the same ownerId.
           type: string
           x-go-name: OwnerID
           x-oapi-codegen-extra-tags:
@@ -99,54 +133,50 @@ components:
             validate: 'omitempty,url'
         docs:
           description: >
-            is the http address of documentation for the format used in the OPML
-            file. It's probably a pointer to this page for people who might
-            stumble across the file on a web server 25 years from now and wonder
-            what it is.
+            is the http address of documentation for the format used in the OPML file. It's probably a pointer to this
+            page for people who might stumble across the file on a web server 25 years from now and wonder what it is.
           type: string
           x-oapi-codegen-extra-tags:
             xml: 'docs,omitempty'
             validate: 'omitempty,url'
         expansionState:
           description: >
-            is a comma-separated list of line numbers that are expanded. The
-            line numbers in the list tell you which headlines to expand. The
-            order is important. For each element in the list, X, starting at the
-            first summit, navigate flatdown X times and expand. Repeat for each
-            element in the list.
-          type: string
+            is a comma-separated list of line numbers that are expanded. The line numbers in the list tell you which
+            headlines to expand. The order is important. For each element in the list, X, starting at the first summit,
+            navigate flatdown X times and expand. Repeat for each element in the list.
+          allOf:
+            - $ref: '#/components/schemas/ExpansionState'
           x-oapi-codegen-extra-tags:
             xml: 'expansionState,omitempty'
         vertScrollState:
           description: >
-            is a number, saying which line of the outline is displayed on the
-            top line of the window. This number is calculated with the expansion
-            state already applied.
-          type: string
+            is a number, saying which line of the outline is displayed on the top line of the window. This number is
+            calculated with the expansion state already applied.
+          type: integer
           x-oapi-codegen-extra-tags:
             xml: 'vertScrollState,omitempty'
         windowTop:
           description: >
             is a number, the pixel location of the top edge of the window.
-          type: string
+          type: integer
           x-oapi-codegen-extra-tags:
             xml: 'windowTop,omitempty'
         windowLeft:
           description: >
             is a number, the pixel location of the left edge of the window.
-          type: string
+          type: integer
           x-oapi-codegen-extra-tags:
             xml: 'windowLeft,omitempty'
         windowBottom:
           description: >
             is a number, the pixel location of the bottom edge of the window.
-          type: string
+          type: integer
           x-oapi-codegen-extra-tags:
             xml: 'windowBottom,omitempty'
         windowRight:
           description: >
             is a number, the pixel location of the right edge of the window.
-          type: string
+          type: integer
           x-oapi-codegen-extra-tags:
             xml: 'windowRight,omitempty'
     Body:
@@ -159,15 +189,14 @@ components:
         name: 'body'
       x-oapi-codegen-extra-tags:
         xml: 'body>outline'
-        validate: 'required,dive'
+        validate: 'required,gte=1'
     Outline:
       description: >
-        is an XML element containing at least one required attribute, text, and
-        zero or more additional attributes. An <outline> may contain zero or
-        more <outline> sub-elements. No attribute may be repeated within the
-        same <outline> element.
+        is an XML element containing at least one required attribute, text, and zero or more additional attributes. An
+        <outline> may contain zero or more <outline> sub-elements. No attribute may be repeated within the same
+        <outline> element.
       allOf:
-        - $ref: '#/components/schemas/RSSOutline'
+        # - $ref: '#/components/schemas/RSSOutline'
         - type: object
           required:
             - text
@@ -181,6 +210,7 @@ components:
                 validate: 'required'
               xml:
                 attribute: true
+              x-order: 1
             type:
               description: >
                 defines how the other attributes of the element are interpreted.
@@ -189,54 +219,60 @@ components:
                 xml: 'type,omitempty,attr'
               xml:
                 attribute: true
+              x-order: 2
             isComment:
               description: >
-                is a string, either "true" or "false", indicating whether the outline
-                is commented or not. By convention if an outline is commented, all
-                subordinate outlines are considered to also be commented. If it's
-                not present, the value is false.
-              type: string
-              enum: ['true', 'false']
-              default: 'false'
+                indicates whether the outline is commented or not. By convention if an outline is commented, all
+                subordinate outlines are considered to also be commented. If it's not present, the value is false.
+              type: boolean
               xml:
                 attribute: true
-              x-enum-varnames: ['Commented', 'NotCommented']
-              x-go-type-name: CommentState
               x-oapi-codegen-extra-tags:
                 xml: 'isComment,omitempty,attr'
+              x-order: 3
             isBreakpoint:
               description: >
-                is a string, either "true" or "false", indicating whether a
-                breakpoint is set on this outline. This attribute is mainly
-                necessary for outlines used to edit scripts. If it's not present,
-                the value is false.
-              type: string
-              enum: ['true', 'false']
-              default: 'false'
+                indicates whether a breakpoint is set on this outline. This attribute is mainly necessary for outlines
+                used to edit scripts. If it's not present, the value is false.
+              type: boolean
               xml:
                 attribute: true
-              x-enum-varnames: ['Breakpoint', 'NoBreakpoint']
-              x-go-type-name: BreakpointState
               x-oapi-codegen-extra-tags:
                 xml: 'isBreakpoint,omitempty,attr'
+              x-order: 4
             created:
               description: >
                 is the date-time that the outline node was created.
-              type: string
+              allOf:
+                - $ref: '#/components/schemas/RFC822AttrTime'
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'created,omitempty,attr'
+              x-order: 5
             category:
               description: >
                 is a string of comma-separated slash-delimited category strings, in
                 the format defined by the RSS 2.0 category element. To represent a
                 "tag," the category string should contain no slashes.
-              type: string
+              allOf:
+                - $ref: '#/components/schemas/Categories'
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'category,omitempty,attr'
+              x-order: 6
+            attrs:
+              description: >
+                is a catch-all for xmlUrl/htmlUrl/description/language/title/version.
+              type: array
+              items:
+                x-go-type: xml.Attr
+              x-go-type-skip-optional-pointer: true
+              x-oapi-codegen-extra-tags:
+                xml: ',any,attr'
+                validate: 'omitempty,unique'
+              x-order: 7
             outlines:
               description: >
                 contains any nested outlines of this outline.
@@ -244,12 +280,25 @@ components:
               items:
                 $ref: '#/components/schemas/Outline'
               x-oapi-codegen-extra-tags:
-                xml: outline
+                xml: 'outline,omitempty'
+                validate: 'omitempty,dive'
+              x-go-type-skip-optional-pointer: true
+              x-order: 8
+            extensions:
+              description: >
+                is a catch-all for any additional extensions.
+              type: array
+              items:
+                $ref: 'extensions.yaml#/components/schemas/Extension'
+              x-go-type-skip-optional-pointer: true
+              x-oapi-codegen-extra-tags:
+                xml: ',any'
+              x-order: 9
       xml:
         name: outline
       x-oapi-codegen-extra-tags:
         xml: 'outline'
-        validate: 'omitempty'
+        validate: 'omitempty,validateFn'
     RSSOutline:
       description: >
         is a possibly multiple-level list of subscriptions to feeds. Each

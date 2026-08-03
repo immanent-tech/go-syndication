@@ -8,10 +8,10 @@ import "slices"
 // NewSubscriptionOutline creates a new OPML feed outline object from the given options.
 func NewSubscriptionOutline(text, url string, options ...OutlineOption) *Outline {
 	outline := &Outline{
-		Text:   text,
-		XMLURL: url,
-		Type:   "rss",
+		Text: text,
+		Type: new("rss"),
 	}
+	outline.SetAttr("xmlUrl", url)
 
 	for option := range slices.Values(options) {
 		option(outline)
@@ -26,34 +26,34 @@ type OutlineOption func(*Outline)
 // WithOutlineTitle option sets the title of the subscription.
 func WithOutlineTitle(title string) OutlineOption {
 	return func(o *Outline) {
-		o.Title = title
+		o.SetAttr("title", title)
 	}
 }
 
 // WithDescription option sets description of the subscription.
 func WithDescription(desc string) OutlineOption {
 	return func(o *Outline) {
-		o.Description = desc
+		o.SetAttr("description", desc)
 	}
 }
 
 // WithHTMLURL option sets a URL for the canonical HTML location (usually the source website) of the subscription.
 func WithHTMLURL(url string) OutlineOption {
 	return func(o *Outline) {
-		o.HTMLURL = url
+		o.SetAttr("htmlUrl", url)
 	}
 }
 
 // WithLanguage option sets the language the subscription contains.
 func WithLanguage(lang string) OutlineOption {
 	return func(o *Outline) {
-		o.Language = lang
+		o.SetAttr("language", lang)
 	}
 }
 
 // WithVersion sets the subscription version.
-func WithVersion(version OutlineVersion) OutlineOption {
+func WithVersion(version RSSOutlineVersion) OutlineOption {
 	return func(o *Outline) {
-		o.Version = version
+		o.SetAttr("version", string(version))
 	}
 }

@@ -5,88 +5,29 @@ package opml
 
 import (
 	"encoding/xml"
+	"time"
 
-	externalRef0 "github.com/immanent-tech/go-syndication/rss"
+	externalRef0 "github.com/immanent-tech/go-syndication/extensions"
 )
-
-// Defines values for BreakpointState.
-const (
-	Breakpoint   BreakpointState = "true"
-	NoBreakpoint BreakpointState = "false"
-)
-
-// Valid indicates whether the value is a known member of the BreakpointState enum.
-func (e BreakpointState) Valid() bool {
-	switch e {
-	case Breakpoint:
-		return true
-	case NoBreakpoint:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CommentState.
-const (
-	Commented    CommentState = "true"
-	NotCommented CommentState = "false"
-)
-
-// Valid indicates whether the value is a known member of the CommentState enum.
-func (e CommentState) Valid() bool {
-	switch e {
-	case Commented:
-		return true
-	case NotCommented:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for OutlineVersion.
-const (
-	OutlineVersionRSS           OutlineVersion = "RSS"
-	OutlineVersionRSS1          OutlineVersion = "RSS1"
-	OutlineVersionRSS2          OutlineVersion = "RSS2"
-	OutlineVersionScriptingNews OutlineVersion = "scriptingNews"
-)
-
-// Valid indicates whether the value is a known member of the OutlineVersion enum.
-func (e OutlineVersion) Valid() bool {
-	switch e {
-	case OutlineVersionRSS:
-		return true
-	case OutlineVersionRSS1:
-		return true
-	case OutlineVersionRSS2:
-		return true
-	case OutlineVersionScriptingNews:
-		return true
-	default:
-		return false
-	}
-}
 
 // Defines values for RSSOutlineVersion.
 const (
-	RSSOutlineVersionRSS           RSSOutlineVersion = "RSS"
-	RSSOutlineVersionRSS1          RSSOutlineVersion = "RSS1"
-	RSSOutlineVersionRSS2          RSSOutlineVersion = "RSS2"
-	RSSOutlineVersionScriptingNews RSSOutlineVersion = "scriptingNews"
+	RSS           RSSOutlineVersion = "RSS"
+	RSS1          RSSOutlineVersion = "RSS1"
+	RSS2          RSSOutlineVersion = "RSS2"
+	ScriptingNews RSSOutlineVersion = "scriptingNews"
 )
 
 // Valid indicates whether the value is a known member of the RSSOutlineVersion enum.
 func (e RSSOutlineVersion) Valid() bool {
 	switch e {
-	case RSSOutlineVersionRSS:
+	case RSS:
 		return true
-	case RSSOutlineVersionRSS1:
+	case RSS1:
 		return true
-	case RSSOutlineVersionRSS2:
+	case RSS2:
 		return true
-	case RSSOutlineVersionScriptingNews:
+	case ScriptingNews:
 		return true
 	default:
 		return false
@@ -94,130 +35,124 @@ func (e RSSOutlineVersion) Valid() bool {
 }
 
 // Body represents the OPML <body> element.
-type Body = []Outline
+type Body []Outline
+
+// Categories is a string of comma-separated, slash-delimited category strings.
+// e.g. []string{"/Boston/Weather"} or {"/Harvard/Berkman", "/Politics"}.
+type Categories []string
+
+// ExpansionState is a comma-separated list of line numbers.
+type ExpansionState []int
 
 // Head represents the OPML <head> element.
 type Head struct {
 	// DateCreated is a date-time, indicating when the document was created.
-	DateCreated externalRef0.Timestamp `json:"dateCreated,omitempty,omitzero" validate:"omitempty" xml:"dateCreated,omitempty"`
+	DateCreated *RFC822Time `json:"dateCreated,omitempty" xml:"dateCreated,omitempty"`
 
 	// DateModified is a date-time, indicating when the document was last modified.
-	DateModified externalRef0.Timestamp `json:"dateModified,omitempty,omitzero" validate:"omitempty" xml:"dateModified,omitempty"`
+	DateModified *RFC822Time `json:"dateModified,omitempty" xml:"dateModified,omitempty"`
 
 	// Docs is the http address of documentation for the format used in the OPML file. It's probably a pointer to this page for people who might stumble across the file on a web server 25 years from now and wonder what it is.
-	Docs string `json:"docs,omitempty,omitzero" validate:"omitempty,url" xml:"docs,omitempty"`
+	Docs *string `json:"docs,omitempty" validate:"omitempty,url" xml:"docs,omitempty"`
 
 	// ExpansionState is a comma-separated list of line numbers that are expanded. The line numbers in the list tell you which headlines to expand. The order is important. For each element in the list, X, starting at the first summit, navigate flatdown X times and expand. Repeat for each element in the list.
-	ExpansionState string `json:"expansionState,omitempty,omitzero" xml:"expansionState,omitempty"`
+	ExpansionState ExpansionState `json:"expansionState,omitempty" xml:"expansionState,omitempty"`
 
 	// OwnerEmail is the email address of the owner of the document.
-	OwnerEmail string `json:"ownerEmail,omitempty,omitzero" validate:"omitempty,email" xml:"ownerEmail,omitempty"`
+	OwnerEmail *string `json:"ownerEmail,omitempty" validate:"omitempty,email" xml:"ownerEmail,omitempty"`
 
 	// OwnerID is the http address of a web page that contains information that allows a human reader to communicate with the author of the document via email or other means. It also may be used to identify the author. No two authors have the same ownerId.
-	OwnerID string `json:"ownerId,omitempty,omitzero" validate:"omitempty,url" xml:"ownerId,omitempty"`
+	OwnerID *string `json:"ownerId,omitempty" validate:"omitempty,url" xml:"ownerId,omitempty"`
 
 	// OwnerName is the owner of the document.
-	OwnerName string `json:"ownerName,omitempty,omitzero" xml:"ownerName,omitempty"`
+	OwnerName *string `json:"ownerName,omitempty" xml:"ownerName,omitempty"`
 
 	// Title is the title of the document.
-	Title string `json:"title,omitempty,omitzero" xml:"title,omitempty"`
+	Title *string `json:"title,omitempty" xml:"title,omitempty"`
 
 	// VertScrollState is a number, saying which line of the outline is displayed on the top line of the window. This number is calculated with the expansion state already applied.
-	VertScrollState string `json:"vertScrollState,omitempty,omitzero" xml:"vertScrollState,omitempty"`
+	VertScrollState *int `json:"vertScrollState,omitempty" xml:"vertScrollState,omitempty"`
 
 	// WindowBottom is a number, the pixel location of the bottom edge of the window.
-	WindowBottom string `json:"windowBottom,omitempty,omitzero" xml:"windowBottom,omitempty"`
+	WindowBottom *int `json:"windowBottom,omitempty" xml:"windowBottom,omitempty"`
 
 	// WindowLeft is a number, the pixel location of the left edge of the window.
-	WindowLeft string `json:"windowLeft,omitempty,omitzero" xml:"windowLeft,omitempty"`
+	WindowLeft *int `json:"windowLeft,omitempty" xml:"windowLeft,omitempty"`
 
 	// WindowRight is a number, the pixel location of the right edge of the window.
-	WindowRight string `json:"windowRight,omitempty,omitzero" xml:"windowRight,omitempty"`
+	WindowRight *int `json:"windowRight,omitempty" xml:"windowRight,omitempty"`
 
 	// WindowTop is a number, the pixel location of the top edge of the window.
-	WindowTop string `json:"windowTop,omitempty,omitzero" xml:"windowTop,omitempty"`
+	WindowTop *int `json:"windowTop,omitempty" xml:"windowTop,omitempty"`
 }
 
 // OPML represents an OPML document.
 type OPML struct {
-	// XMLName represents the XML namespace of an element.
-	XMLName xml.Name `json:"XMLName"`
-
 	// Body represents the OPML <body> element.
-	Body Body `json:"body" validate:"required,dive" xml:"body>outline"`
+	Body Body `json:"body" validate:"required,gte=1" xml:"body>outline"`
 
 	// Head represents the OPML <head> element.
-	Head    Head   `json:"head" validate:"required" xml:"head"`
-	Version string `json:"version" xml:"version,attr"`
+	Head       *Head                    `json:"head,omitempty" validate:"required" xml:"head"`
+	Namespaces []externalRef0.Namespace `json:"namespaces,omitempty" xml:"-"`
+	Version    string                   `json:"version" xml:"-"`
 }
 
 // Outline is an XML element containing at least one required attribute, text, and zero or more additional attributes. An <outline> may contain zero or more <outline> sub-elements. No attribute may be repeated within the same <outline> element.
 type Outline struct {
-	// Category is a string of comma-separated slash-delimited category strings, in the format defined by the RSS 2.0 category element. To represent a "tag," the category string should contain no slashes.
-	Category string `json:"category,omitempty,omitzero" xml:"category,omitempty,attr"`
-
-	// Created is the date-time that the outline node was created.
-	Created string `json:"created,omitempty,omitzero" xml:"created,omitempty,attr"`
-
-	// Description is the top-level description element from the feed.
-	Description string `json:"description,omitempty,omitzero" xml:"description,omitempty,attr"`
-
-	// HTMLURL is the top-level link element.
-	HTMLURL string `json:"htmlUrl,omitempty,omitzero" validate:"omitempty,url" xml:"htmlUrl,omitempty,attr"`
-
-	// IsBreakpoint is a string, either "true" or "false", indicating whether a breakpoint is set on this outline. This attribute is mainly necessary for outlines used to edit scripts. If it's not present, the value is false.
-	IsBreakpoint BreakpointState `json:"isBreakpoint,omitempty,omitzero" xml:"isBreakpoint,omitempty,attr"`
-
-	// IsComment is a string, either "true" or "false", indicating whether the outline is commented or not. By convention if an outline is commented, all subordinate outlines are considered to also be commented. If it's not present, the value is false.
-	IsComment CommentState `json:"isComment,omitempty,omitzero" xml:"isComment,omitempty,attr"`
-
-	// Language is the value of the top-level language element.
-	Language string `json:"language,omitempty,omitzero" xml:"language,omitempty,attr"`
-
-	// Outlines contains any nested outlines of this outline.
-	Outlines []Outline `json:"outlines,omitempty,omitzero" xml:"outline"`
-
 	// Text is a textual description of the element.
 	Text string `json:"text" validate:"required" xml:"text,attr"`
 
-	// Title contains the top-level title element from the feed.
-	Title string `json:"title,omitempty,omitzero" xml:"title,omitempty,attr"`
-
 	// Type defines how the other attributes of the element are interpreted.
-	Type string `json:"type,omitempty,omitzero" xml:"type,omitempty,attr"`
+	Type *string `json:"type,omitempty" xml:"type,omitempty,attr"`
 
-	// Version is the top-level description element from the feed.
-	Version OutlineVersion `json:"version,omitempty,omitzero" validate:"omitempty,oneof=RSS2 RSS1 RSS scriptingNews" xml:"version,omitempty,attr"`
+	// IsComment indicates whether the outline is commented or not. By convention if an outline is commented, all subordinate outlines are considered to also be commented. If it's not present, the value is false.
+	IsComment *bool `json:"isComment,omitempty" xml:"isComment,omitempty,attr"`
 
-	// XMLURL is the http address of the feed.
-	XMLURL string `json:"xmlUrl" validate:"required,url" xml:"xmlUrl,attr"`
+	// IsBreakpoint indicates whether a breakpoint is set on this outline. This attribute is mainly necessary for outlines used to edit scripts. If it's not present, the value is false.
+	IsBreakpoint *bool `json:"isBreakpoint,omitempty" xml:"isBreakpoint,omitempty,attr"`
+
+	// Created is the date-time that the outline node was created.
+	Created *RFC822AttrTime `json:"created,omitempty" xml:"created,omitempty,attr"`
+
+	// Category is a string of comma-separated slash-delimited category strings, in the format defined by the RSS 2.0 category element. To represent a "tag," the category string should contain no slashes.
+	Category Categories `json:"category,omitempty" xml:"category,omitempty,attr"`
+
+	// Attrs is a catch-all for xmlUrl/htmlUrl/description/language/title/version.
+	Attrs []xml.Attr `json:"attrs,omitempty" validate:"omitempty,unique" xml:",any,attr"`
+
+	// Outlines contains any nested outlines of this outline.
+	Outlines []Outline `json:"outlines,omitempty" validate:"omitempty,dive" xml:"outline,omitempty"`
+
+	// Extensions is a catch-all for any additional extensions.
+	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 }
 
-// BreakpointState is a string, either "true" or "false", indicating whether a breakpoint is set on this outline. This attribute is mainly necessary for outlines used to edit scripts. If it's not present, the value is false.
-type BreakpointState string
+// RFC822AttrTime is the ATTRIBUTE-context version (outline's "created" attribute).
+type RFC822AttrTime struct {
+	Time time.Time `json:"time"`
+}
 
-// CommentState is a string, either "true" or "false", indicating whether the outline is commented or not. By convention if an outline is commented, all subordinate outlines are considered to also be commented. If it's not present, the value is false.
-type CommentState string
-
-// OutlineVersion is the top-level description element from the feed.
-type OutlineVersion string
+// RFC822Time is the ELEMENT-context version (dateCreated, dateModified).
+type RFC822Time struct {
+	Time time.Time `json:"time"`
+}
 
 // RSSOutline is a possibly multiple-level list of subscriptions to feeds. Each sub-element of the body of the OPML document is a node of type rss or an outline element that contains nodes of type rss.
 type RSSOutline struct {
 	// Description is the top-level description element from the feed.
-	Description string `json:"description,omitempty,omitzero" xml:"description,omitempty,attr"`
+	Description *string `json:"description,omitempty" xml:"description,omitempty,attr"`
 
 	// HTMLURL is the top-level link element.
-	HTMLURL string `json:"htmlUrl,omitempty,omitzero" validate:"omitempty,url" xml:"htmlUrl,omitempty,attr"`
+	HTMLURL *string `json:"htmlUrl,omitempty" validate:"omitempty,url" xml:"htmlUrl,omitempty,attr"`
 
 	// Language is the value of the top-level language element.
-	Language string `json:"language,omitempty,omitzero" xml:"language,omitempty,attr"`
+	Language *string `json:"language,omitempty" xml:"language,omitempty,attr"`
 
 	// Title contains the top-level title element from the feed.
-	Title string `json:"title,omitempty,omitzero" xml:"title,omitempty,attr"`
+	Title *string `json:"title,omitempty" xml:"title,omitempty,attr"`
 
 	// Version is the top-level description element from the feed.
-	Version RSSOutlineVersion `json:"version,omitempty,omitzero" validate:"omitempty,oneof=RSS2 RSS1 RSS scriptingNews" xml:"version,omitempty,attr"`
+	Version *RSSOutlineVersion `json:"version,omitempty" validate:"omitempty,oneof=RSS2 RSS1 RSS scriptingNews" xml:"version,omitempty,attr"`
 
 	// XMLURL is the http address of the feed.
 	XMLURL string `json:"xmlUrl" validate:"required,url" xml:"xmlUrl,attr"`

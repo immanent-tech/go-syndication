@@ -9,7 +9,8 @@ generate:
   models: true
 output-options:
   skip-prune: true
-  prefer-skip-optional-pointer: true
-  prefer-skip-optional-pointer-with-omitzero: true
+  disable-type-aliases-for-type:
+    - array
 import-mapping:
   rss.yaml: 'github.com/immanent-tech/go-syndication/rss'
+  extensions.yaml: 'github.com/immanent-tech/go-syndication/extensions'
