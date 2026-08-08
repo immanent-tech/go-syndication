@@ -31,15 +31,14 @@ var (
 
 var _ types.FeedSource = (*RSS)(nil)
 
-// outputLayout produces one of the profile's three recommended universal
-// forms: "Thu, 04 Oct 2007 23:59:45 +0000" (i.e. UTC, numeric zero offset).
+// outputLayout produces one of the profile's three recommended universal forms: "Thu, 04 Oct 2007 23:59:45 +0000" (i.e.
+// UTC, numeric zero offset).
 const outputLayout = "Mon, 02 Jan 2006 15:04:05 -0700"
 
-// namedZoneOffsets maps RFC 822 zone abbreviations to their UTC offset in
-// seconds. Go's time.Parse does NOT reliably resolve these itself -- an
-// unrecognized "MST"-style abbreviation is silently assigned a zero offset
-// by the standard library, which would misparse e.g. "EST" as UTC. We look
-// these up ourselves instead of trusting the stdlib's zone-name parsing.
+// namedZoneOffsets maps RFC 822 zone abbreviations to their UTC offset in seconds. Go's time.Parse does NOT reliably
+// resolve these itself -- an unrecognized "MST"-style abbreviation is silently assigned a zero offset by the standard
+// library, which would misparse e.g. "EST" as UTC. We look these up ourselves instead of trusting the stdlib's
+// zone-name parsing.
 var namedZoneOffsets = map[string]int{
 	"UT": 0, "GMT": 0, "Z": 0,
 	"EST": -5 * 3600, "EDT": -4 * 3600,
@@ -48,17 +47,21 @@ var namedZoneOffsets = map[string]int{
 	"PST": -8 * 3600, "PDT": -7 * 3600,
 }
 
-// dateOnlyLayouts are candidate layouts, all ending in a literal "-0700"
-// placeholder for a *numeric* offset. We normalize any named zone
-// abbreviation in the input to a numeric offset before trying these, so a
-// single set of layouts covers both cases.
+// dateOnlyLayouts are candidate layouts, all ending in a literal "-0700" placeholder for a *numeric* offset. We
+// normalize any named zone abbreviation in the input to a numeric offset before trying these, so a single set of
+// layouts covers both cases. Note that not all these formats conform strictly to the spec; they are gathered from
+// real-world usage.
 var dateOnlyLayouts = []string{
 	"Mon, 02 Jan 2006 15:04:05 -0700",
 	"Mon, 02 Jan 06 15:04:05 -0700",
+	"Mon, 2 Jan 2006 15:04:05 -0700", // No leading zero sometimes found in the wild.
+	"Mon, 2 Jan 06 15:04:05 -0700",
 	"02 Jan 2006 15:04:05 -0700",
 	"02 Jan 06 15:04:05 -0700",
-	"Mon, 02 Jan 2006 15:04 -0700", // seconds sometimes omitted in the wild
+	"Mon, 02 Jan 2006 15:04 -0700", // Seconds sometimes omitted in the wild.
 	"Mon, 02 Jan 06 15:04 -0700",
+	"Mon, 2 Jan 2006 15:04 -0700",
+	"Mon, 2 Jan 06 15:04 -0700",
 	"02 Jan 2006 15:04 -0700",
 	"02 Jan 06 15:04 -0700",
 }
@@ -241,10 +244,8 @@ func (r *RSS) Validate() error {
 	return nil
 }
 
-// MarshalXML implements xml.Marshaler. It builds the xmlns:* attribute list
-// from r.Namespaces at encode time -- this is the only way to get a
-// *dynamic* set of attributes out of encoding/xml, since struct tags are
-// necessarily static.
+// MarshalXML implements xml.Marshaler. It builds the xmlns:* attribute list from r.Namespaces at encode time -- this is
+// the only way to get a *dynamic* set of attributes out of encoding/xml, since struct tags are necessarily static.
 func (r RSS) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	version := r.Version
 	if version == "" {
@@ -288,9 +289,8 @@ func (r RSS) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-// UnmarshalXML implements xml.Unmarshaler. It recovers whichever namespaces
-// the source document actually declared -- known or not -- so a
-// decode/re-encode round trip preserves them.
+// UnmarshalXML implements xml.Unmarshaler. It recovers whichever namespaces the source document actually declared --
+// known or not -- so a decode/re-encode round trip preserves them.
 func (r *RSS) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	for attr := range slices.Values(start.Attr) {
 		switch {
@@ -318,12 +318,10 @@ func (r *RSS) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-// AutoDeclareNamespaces inspects the populated extension fields across the
-// channel and its items and appends any missing namespace declarations for
-// the extensions this package knows how to model (content, media, atom,
-// dc, slash, syn). This directly targets the "unbound prefix" bug: as long
-// as you call this before marshaling, you can't forget to declare a
-// namespace for a typed extension field you populated.
+// AutoDeclareNamespaces inspects the populated extension fields across the channel and its items and appends any
+// missing namespace declarations for the extensions this package knows how to model (content, media, atom, dc, slash,
+// syn). This directly targets the "unbound prefix" bug: as long as you call this before marshaling, you can't forget to
+// declare a namespace for a typed extension field you populated.
 func (r *RSS) AutoDeclareNamespaces() {
 	need := map[string]bool{}
 	if r.Channel.AtomLink != nil {
@@ -355,10 +353,9 @@ func (r *RSS) AutoDeclareNamespaces() {
 	}
 }
 
-// ParseRFC822 parses an RSS date-time value leniently: it accepts both
-// numeric zone offsets (+0100, -0600) and the named zone abbreviations
-// registered in namedZoneOffsets, with or without a weekday, with a 2- or
-// 4-digit year, and with or without seconds.
+// ParseRFC822 parses an RSS date-time value leniently: it accepts both numeric zone offsets (+0100, -0600) and the
+// named zone abbreviations registered in namedZoneOffsets, with or without a weekday, with a 2- or 4-digit year, and
+// with or without seconds.
 func ParseRFC822(ts string) (time.Time, error) {
 	ts = strings.TrimSpace(ts)
 
@@ -380,9 +377,8 @@ func ParseRFC822(ts string) (time.Time, error) {
 		fields[lastIdx] = fmt.Sprintf("%s%02d%02d", sign, off/3600, (off%3600)/60)
 		ts = strings.Join(fields, " ")
 	}
-	// Otherwise, if it's already a numeric offset (+0100 / -0600) or a
-	// literal "Z", leave it as-is; the loop below will try it against
-	// each layout and Go's -0700 verb correctly parses "+HHMM"/"-HHMM".
+	// Otherwise, if it's already a numeric offset (+0100 / -0600) or a literal "Z", leave it as-is; the loop below will
+	// try it against each layout and Go's -0700 verb correctly parses "+HHMM"/"-HHMM".
 
 	var lastErr error
 	for _, layout := range dateOnlyLayouts {
@@ -395,10 +391,9 @@ func ParseRFC822(ts string) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("rss date-time: could not parse %q: %w", ts, lastErr)
 }
 
-// IsCanonical reports whether s is already in one of the profile's three
-// recommended universal forms -- "... +0000", "... -0000", or "... GMT" --
-// with a well-formed date-time prefix. Useful for producers who want to
-// flag non-canonical input before emitting it verbatim.
+// IsCanonical reports whether s is already in one of the profile's three recommended universal forms -- "... +0000",
+// "... -0000", or "... GMT" -- with a well-formed date-time prefix. Useful for producers who want to flag non-canonical
+// input before emitting it verbatim.
 func IsCanonical(ts string) bool {
 	switch {
 	case strings.HasSuffix(ts, " GMT"):
@@ -420,9 +415,8 @@ func (t Timestamp) String() string {
 	return t.Value.Format(outputLayout)
 }
 
-// MarshalXML implements xml.Marshaler. Always normalizes to UTC and emits
-// the "+0000" form, one of the profile's three recommended universal
-// representations.
+// MarshalXML implements xml.Marshaler. Always normalizes to UTC and emits the "+0000" form, one of the profile's three
+// recommended universal representations.
 func (t Timestamp) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	if t.Value.IsZero() {
 		return fmt.Errorf("rss timestamp: zero time.Time value for <%s>", start.Name.Local)
@@ -442,9 +436,8 @@ func (t Timestamp) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-// UnmarshalXML implements xml.Unmarshaler, accepting any RFC 822-conformant
-// value (per the profile's requirements) rather than only the canonical
-// output forms.
+// UnmarshalXML implements xml.Unmarshaler, accepting any RFC 822-conformant value (per the profile's requirements)
+// rather than only the canonical output forms.
 func (t *Timestamp) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	var valueStruct struct {
 		Value string `xml:",chardata"`
