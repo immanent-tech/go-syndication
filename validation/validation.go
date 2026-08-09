@@ -6,7 +6,7 @@ package validation
 import (
 	"errors"
 	"fmt"
-	"mime"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -20,10 +20,10 @@ var validate *validator.Validate
 
 func init() {
 	validate = validator.New()
-	if err := validate.RegisterValidation("mimetype", validateMimetype); err != nil {
+	if err := validate.RegisterValidation("rfc3066lang", validateRFC3066Lang); err != nil {
 		panic(err)
 	}
-	if err := validate.RegisterValidation("rfc3066lang", validateRFC3066Lang); err != nil {
+	if err := validate.RegisterValidation("absolute_uri", validateAbsoluteURI); err != nil {
 		panic(err)
 	}
 }
@@ -112,13 +112,6 @@ func RegisterValidation(tag string, f validator.Func) error {
 	return nil
 }
 
-// ValidateMimetype checks that the value is a valid mimetype.
-func validateMimetype(fl validator.FieldLevel) bool {
-	value := fl.Field().String()
-	_, _, err := mime.ParseMediaType(value)
-	return err == nil
-}
-
 // langTagRE is a pragmatic check for an [RFC3066] language tag:
 // primary subtag, optionally followed by "-" subtags.
 var langTagRE = regexp.MustCompile(`^[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8})*$`)
@@ -129,4 +122,15 @@ func validateRFC3066Lang(fl validator.FieldLevel) bool {
 		return false
 	}
 	return true
+}
+
+func validateAbsoluteURI(fl validator.FieldLevel) bool {
+	switch value, err := url.Parse(fl.Field().String()); {
+	case err != nil:
+		return false
+	case !value.IsAbs():
+		return false
+	default:
+		return true
+	}
 }
