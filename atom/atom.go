@@ -7,6 +7,7 @@ package atom
 import (
 	"encoding/base64"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"mime"
 	"slices"
@@ -140,7 +141,7 @@ func (l *Link) Validate() error {
 
 func (t TextConstruct) String() string {
 	switch {
-	case t.Type == nil || (*t.Type != TypeXhtml && !isXMLMediaType(*t.Type)):
+	case t.Type == nil || (*t.Type != TextConstructTypeXhtml && !contentIsXMLMediaType(ContentType(*t.Type))):
 		return strings.TrimSpace(t.Value)
 	case t.XHTML != nil:
 		return *t.XHTML
@@ -152,13 +153,13 @@ func (t TextConstruct) String() string {
 // MarshalXML implements xml.Marshaler. The element name itself (title, summary, subtitle, rights, ...) comes from
 // `start`, as set by the enclosing struct's field tag -- e.g. `Title TextConstruct \`xml:"title"\“.
 func (t TextConstruct) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
-	var typ Type
+	var typ TextConstructType
 	if t.Type == nil {
-		typ = TypeText
+		typ = TextConstructTypeText
 	} else {
 		typ = *t.Type
 	}
-	if typ != TypeText && typ != TypeHtml && typ != TypeXhtml {
+	if typ != TextConstructTypeText && typ != TextConstructTypeHtml && typ != TextConstructTypeXhtml {
 		return fmt.Errorf("text construct: invalid type %q (must be text, html, or xhtml)", typ)
 	}
 
@@ -175,7 +176,7 @@ func (t TextConstruct) MarshalXML(enc *xml.Encoder, start xml.StartElement) erro
 		return fmt.Errorf("text construct: marshal: %w", err)
 	}
 
-	if typ == TypeXhtml {
+	if typ == TextConstructTypeXhtml {
 		div := struct {
 			XMLName xml.Name `xml:"div"`
 			XMLNS   string   `xml:"xmlns,attr"`
@@ -205,11 +206,11 @@ func (t TextConstruct) MarshalXML(enc *xml.Encoder, start xml.StartElement) erro
 
 // UnmarshalXML implements xml.Unmarshaler.
 func (t *TextConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-	typ := TypeText // spec: absent type attribute defaults to "text"
+	typ := TextConstructTypeText // spec: absent type attribute defaults to "text"
 	for attr := range slices.Values(start.Attr) {
 		switch {
 		case attr.Name.Local == "type" && attr.Name.Space == "":
-			typ = Type(attr.Value)
+			typ = TextConstructType(attr.Value)
 		case attr.Name.Local == "lang" && attr.Name.Space == "xml":
 			t.Lang = new(attr.Value)
 		case attr.Name.Local == "base" && attr.Name.Space == "xml":
@@ -218,7 +219,7 @@ func (t *TextConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 	}
 	t.Type = new(typ)
 
-	if typ == TypeXhtml {
+	if typ == TextConstructTypeXhtml {
 		var wrapper struct {
 			Div struct {
 				Inner string `xml:",innerxml"`
@@ -234,7 +235,7 @@ func (t *TextConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 	// Leniency for non-conformant producers that put a MIME type here that really belongs on atom:content (e.g.
 	// "application/xhtml+xml" instead of the spec's own "xhtml"). Unlike the xhtml case above, there's no required
 	// wrapper element to unwrap; whatever child markup is present (e.g. a bare <code>...</code>) is captured as-is.
-	if isXMLMediaType(typ) {
+	if contentIsXMLMediaType(ContentType(typ)) {
 		var wrapper struct {
 			Inner string `xml:",innerxml"`
 		}
@@ -325,9 +326,8 @@ func (d *DateConstruct) Validate() error {
 		return fmt.Errorf("date construct: invalid date-time %q: %w", raw, err)
 	}
 	// time.Parse accepts lowercase t/z against this layout too; the spec doesn't, so check the literal separator
-	// characters ourselves.
-	tIdx := 10 // "2006-01-02" is always 10 bytes before the separator
-	if tIdx >= len(raw) || raw[tIdx] != 'T' {
+	// characters ourselves. "2006-01-02" is always 10 bytes before the separator
+	if tIdx := 10; tIdx >= len(raw) || raw[tIdx] != 'T' {
 		return fmt.Errorf("date construct: %q must use an uppercase %q separator", raw, "T")
 	}
 	if raw[len(raw)-1] == 'z' {
@@ -336,16 +336,16 @@ func (d *DateConstruct) Validate() error {
 	return nil
 }
 
-func isXMLMediaType(t Type) bool {
-	return t != TypeText && t != TypeHtml && t != TypeXhtml &&
+func contentIsXMLMediaType(t ContentType) bool {
+	return t != ContentTypeText && t != ContentTypeHtml && t != ContentTypeXhtml &&
 		!strings.HasPrefix(string(t), "text/") &&
 		(strings.HasSuffix(string(t), "+xml") || strings.HasSuffix(string(t), "/xml"))
 }
 
 func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
-	var typ Type
+	var typ ContentType
 	if c.Type == nil {
-		typ = TypeText
+		typ = ContentTypeText
 	} else {
 		typ = *c.Type
 	}
@@ -365,7 +365,7 @@ func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	// addition to being how Unmarshal captures raw XML, is also how Marshal writes a string out UNESCAPED rather than
 	// as normal character data, as opposed to text.CharData's automatic escaping). xml.Encoder has no public raw-write
 	// method, so this indirection through a throwaway struct is the idiomatic way to get unescaped output.
-	if c.Source == nil && isXMLMediaType(typ) {
+	if c.Source == nil && contentIsXMLMediaType(typ) {
 		wrapper := struct {
 			Inner string `xml:",innerxml"`
 		}{Inner: *c.XML}
@@ -381,7 +381,7 @@ func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	switch {
 	case c.Source != nil:
 		// out-of-line: element must be empty regardless of type
-	case typ == TypeXhtml:
+	case typ == ContentTypeXhtml:
 		div := struct {
 			XMLName xml.Name `xml:"div"`
 			XMLNS   string   `xml:"xmlns,attr"`
@@ -390,7 +390,7 @@ func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 		if err := enc.Encode(div); err != nil {
 			return fmt.Errorf("marshal content: %w", err)
 		}
-	case typ == TypeText || typ == TypeHtml || strings.HasPrefix(string(typ), "text/"):
+	case typ == ContentTypeText || typ == ContentTypeHtml || strings.HasPrefix(string(typ), "text/"):
 		if err := enc.EncodeToken(xml.CharData(*c.Text)); err != nil {
 			return fmt.Errorf("marshal content: %w", err)
 		}
@@ -406,11 +406,11 @@ func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 }
 
 func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-	typ := TypeText
+	typ := ContentTypeText
 	for attr := range slices.Values(start.Attr) {
 		switch {
 		case attr.Name.Local == "type" && attr.Name.Space == "":
-			typ = Type(attr.Value)
+			typ = ContentType(attr.Value)
 		case attr.Name.Local == "src" && attr.Name.Space == "":
 			c.Source = &attr.Value
 		case attr.Name.Local == "base" && attr.Name.Space == "xml":
@@ -429,7 +429,7 @@ func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	}
 
 	switch {
-	case typ == TypeXhtml:
+	case typ == ContentTypeXhtml:
 		var wrapper struct {
 			Div struct {
 				Inner string `xml:",innerxml"`
@@ -440,7 +440,7 @@ func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 		}
 		c.XHTML = new(strings.TrimSpace(wrapper.Div.Inner))
 		return nil
-	case typ == TypeText || typ == TypeHtml || strings.HasPrefix(string(typ), "text/"):
+	case typ == ContentTypeText || typ == ContentTypeHtml || strings.HasPrefix(string(typ), "text/"):
 		var v struct {
 			Value string `xml:",chardata"`
 		}
@@ -449,7 +449,7 @@ func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 		}
 		c.Text = &v.Value
 		return nil
-	case isXMLMediaType(typ):
+	case contentIsXMLMediaType(typ):
 		var v struct {
 			Inner string `xml:",innerxml"`
 		}
@@ -478,11 +478,11 @@ func (c Content) String() string {
 	switch {
 	case c.Type == nil && c.Text != nil:
 		return *c.Text
-	case *c.Type == TypeText || *c.Type == TypeHtml:
+	case *c.Type == ContentTypeText || *c.Type == ContentTypeHtml:
 		return *c.Text
-	case *c.Type == TypeXhtml:
+	case *c.Type == ContentTypeXhtml:
 		return *c.XHTML
-	case isXMLMediaType(*c.Type):
+	case contentIsXMLMediaType(*c.Type):
 		return *c.XML
 	case c.Base64 != nil:
 		return string(c.Base64)
@@ -498,8 +498,31 @@ func (c Content) RequiresSummary() bool {
 		return true
 	}
 	typ := *c.Type
-	if typ == "" || typ == TypeText || typ == TypeHtml || typ == TypeXhtml || strings.HasPrefix(string(typ), "text/") {
+	if typ == "" || typ == ContentTypeText || typ == ContentTypeHtml || typ == ContentTypeXhtml ||
+		strings.HasPrefix(string(typ), "text/") {
 		return false
 	}
-	return !isXMLMediaType(typ) // i.e. it's the Base64 branch
+	return !contentIsXMLMediaType(typ) // i.e. it's the Base64 branch
+}
+
+func (c *Content) Validate() error {
+	if err := validation.ValidateStruct(c); err != nil {
+		return fmt.Errorf("validate content: %w", err)
+	}
+	if c.Type != nil {
+		if *c.Type == ContentTypeHtml || *c.Type == ContentTypeText || strings.HasPrefix(string(*c.Type), "text/") {
+			if err := validation.ValidateField(*c.Text, "not_url_encoded"); err != nil {
+				return fmt.Errorf("validate content: %w", err)
+			}
+		}
+	}
+	if c.Base64 != nil {
+		if err := validation.ValidateField(c.Base64, "base64"); err != nil {
+			return fmt.Errorf("validate content: %w", err)
+		}
+	}
+	if !c.RequiresSummary() {
+		return errors.New("validate content: requires summary")
+	}
+	return nil
 }

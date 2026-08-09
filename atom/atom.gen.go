@@ -13,6 +13,27 @@ import (
 	externalRef3 "github.com/immanent-tech/go-syndication/extensions/source"
 )
 
+// Defines values for ContentType.
+const (
+	ContentTypeHtml  ContentType = "html"
+	ContentTypeText  ContentType = "text"
+	ContentTypeXhtml ContentType = "xhtml"
+)
+
+// Valid indicates whether the value is a known member of the ContentType enum.
+func (e ContentType) Valid() bool {
+	switch e {
+	case ContentTypeHtml:
+		return true
+	case ContentTypeText:
+		return true
+	case ContentTypeXhtml:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for LinkRel.
 const (
 	LinkRelAlternate                     LinkRel = "alternate"
@@ -55,21 +76,21 @@ func (e LinkRel) Valid() bool {
 	}
 }
 
-// Defines values for Type.
+// Defines values for TextConstructType.
 const (
-	TypeHtml  Type = "html"
-	TypeText  Type = "text"
-	TypeXhtml Type = "xhtml"
+	TextConstructTypeHtml  TextConstructType = "html"
+	TextConstructTypeText  TextConstructType = "text"
+	TextConstructTypeXhtml TextConstructType = "xhtml"
 )
 
-// Valid indicates whether the value is a known member of the Type enum.
-func (e Type) Valid() bool {
+// Valid indicates whether the value is a known member of the TextConstructType enum.
+func (e TextConstructType) Valid() bool {
 	switch e {
-	case TypeHtml:
+	case TextConstructTypeHtml:
 		return true
-	case TypeText:
+	case TextConstructTypeText:
 		return true
-	case TypeXhtml:
+	case TextConstructTypeXhtml:
 		return true
 	default:
 		return false
@@ -145,8 +166,11 @@ type Content struct {
 	Text *string `json:"text,omitempty"`
 
 	// Type represents what the content of the element is.
-	Type *Type `json:"type,omitempty" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
+	Type *ContentType `json:"type,omitempty" validate:"omitnil,oneof=text html xhtml|mimetype" xml:"type,attr,omitempty"`
 }
+
+// ContentType represents what the content of the element is.
+type ContentType string
 
 // Contributors a list of persons who contributed to the feed.
 type Contributors = []PersonConstruct
@@ -278,7 +302,7 @@ type Entry struct {
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Content either contains or links to the content of the entry.
-	Content *Content `json:"content,omitempty" xml:"content,omitempty"`
+	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"content,omitempty"`
 
 	// Contributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
@@ -853,7 +877,7 @@ type StandaloneEntry struct {
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Content either contains or links to the content of the entry.
-	Content *Content `json:"content,omitempty" xml:"content,omitempty"`
+	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"content,omitempty"`
 
 	// Contributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
@@ -948,7 +972,7 @@ type TextConstruct struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Type represents what the content of the element is.
-	Type *Type `json:"type,omitempty" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
+	Type *TextConstructType `json:"type,omitempty" validate:"omitempty,oneof=text html xhtml" xml:"type,attr,omitempty"`
 
 	// Value is the value of the element for type=text/html.
 	Value string `json:"value" validate:"required_if=Type html|required_if=Type text"`
@@ -957,11 +981,11 @@ type TextConstruct struct {
 	XHTML *string `json:"xhtml,omitempty" validate:"required_if=Type xhtml"`
 }
 
+// TextConstructType represents what the content of the element is.
+type TextConstructType string
+
 // Title is an element of type Text construct that conveys a human-readable title for an entry or feed.
 type Title = TextConstruct
-
-// Type represents what the content of the element is.
-type Type string
 
 // UndefinedContent represents additional undefined, unstructed text content for the element.
 type UndefinedContent = string

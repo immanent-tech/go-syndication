@@ -14,18 +14,6 @@ info:
     identifier: MIT
 components:
   schemas:
-    Type:
-      description: >
-        represents what the content of the element is.
-      type: string
-      enum: ['text', 'html', 'xhtml']
-      default: 'text'
-      xml:
-        attribute: true
-      x-oapi-codegen-extra-tags:
-        xml: 'type,attr,omitempty'
-        json: 'type,omitempty'
-        validate: 'omitempty,mimetype'
     CommonAttributes:
       description: >
         are common attributes across Atom elements.
@@ -92,7 +80,17 @@ components:
               x-oapi-codegen-extra-tags:
                 validate: 'required_if=Type xhtml'
             type:
-              $ref: '#/components/schemas/Type'
+              description: >
+                represents what the content of the element is.
+              type: string
+              enum: ['text', 'html', 'xhtml']
+              default: 'text'
+              xml:
+                attribute: true
+              x-oapi-codegen-extra-tags:
+                xml: 'type,attr,omitempty'
+                json: 'type,omitempty'
+                validate: 'omitempty,oneof=text html xhtml'
     PersonConstruct:
       description: describes a person, corporation, or similar entity
       allOf:
@@ -447,7 +445,17 @@ components:
         - type: object
           properties:
             type:
-              $ref: '#/components/schemas/Type'
+              description: >
+                represents what the content of the element is.
+              type: string
+              enum: ['text', 'html', 'xhtml']
+              default: 'text'
+              xml:
+                attribute: true
+              x-oapi-codegen-extra-tags:
+                xml: 'type,attr,omitempty'
+                json: 'type,omitempty'
+                validate: 'omitnil,oneof=text html xhtml|mimetype'
             src:
               description: >
                 is an attribute that links to the source content.
@@ -481,6 +489,7 @@ components:
       x-oapi-codegen-extra-tags:
         xml: 'content,omitempty'
         json: 'content,omitempty'
+        validate: 'omitempty,validateFn'
     Contributors:
       description: >
         a list of persons who contributed to the feed.
