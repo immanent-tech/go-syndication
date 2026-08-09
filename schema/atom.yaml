@@ -164,7 +164,7 @@ components:
               type: string
               x-oapi-codegen-extra-tags:
                 xml: ',chardata'
-                validate: 'required'
+                validate: 'required,absolute_uri|urn_rfc2141|uuid'
       x-go-name: ID
       x-oapi-codegen-extra-tags:
         xml: 'id'

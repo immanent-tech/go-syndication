@@ -637,7 +637,7 @@ type ID struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Value is the value of the ID
-	Value string `json:"value" validate:"required" xml:",chardata"`
+	Value string `json:"value" validate:"required,absolute_uri|urn_rfc2141|uuid" xml:",chardata"`
 }
 
 // Icon is an element that contains a URI to an icon suitable for representing a feed.

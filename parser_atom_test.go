@@ -130,14 +130,24 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "Valid name", entries[0].GetAuthors()[0])
 		},
 	},
-	// // TODO: how to test name is NOT html encoded?
-	// "entry_author_name_contains_html.xml": {
-	// 	wantInvalid: true,
-	// },
-	// // TODO: how to test name is NOT html encoded?
-	// "entry_author_name_contains_html_cdata.xml": {
-	// 	wantInvalid: true,
-	// },
+	"entry_author_name_contains_html.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["Feed.Authors"], "gt")
+		},
+	},
+	"entry_author_name_contains_html_cdata.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["Feed.Authors"], "gt")
+		},
+	},
 	"entry_author_name_missing.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
@@ -149,7 +159,6 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Contains(t, failedValidations["PersonConstruct.Name"], "required")
 		},
 	},
-	// TODO: might require custom unmarshal logic?
 	"entry_author_name_multiple.xml": {
 		wantInvalid: true,
 	},
@@ -190,7 +199,6 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "http://example.com/", *feed.Entries[0].Authors[0].URI)
 		},
 	},
-	// TODO: might require custom unmarshal logic?
 	"entry_author_url_multiple.xml": {
 		wantInvalid: true,
 	},
@@ -312,11 +320,9 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "Valid name", entries[0].GetContributors()[0])
 		},
 	},
-	// TODO: how to test name is NOT html encoded?
 	"entry_contributor_name_contains_html.xml": {
 		wantInvalid: true,
 	},
-	// TODO: how to test name is NOT html encoded?
 	"entry_contributor_name_contains_html_cdata.xml": {
 		wantInvalid: true,
 	},
@@ -331,7 +337,6 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Contains(t, failedValidations["PersonConstruct.Name"], "required")
 		},
 	},
-	// TODO: might require custom unmarshal logic?
 	"entry_contributor_name_multiple.xml": {
 		wantInvalid: true,
 	},
@@ -369,7 +374,6 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "http://example.com/", *feed.Entries[0].Contributors[0].URI)
 		},
 	},
-	// TODO: might require custom unmarshal logic?
 	"entry_contributor_url_multiple.xml": {
 		wantInvalid: true,
 	},
@@ -393,7 +397,6 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", feed.Entries[0].GetID())
 		},
 	},
-	// TODO: might require custom unmarshal logic?
 	"entry_id_duplicate_value.xml": {
 		wantInvalid: true,
 	},
@@ -417,7 +420,6 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Contains(t, failedValidations["ID.Value"], "required")
 		},
 	},
-	// TODO: might require custom unmarshal logic?
 	"entry_id_multiple.xml": {
 		wantInvalid: true,
 	},
@@ -429,7 +431,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"entry_id_not_tag.xml": {
@@ -440,7 +442,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"entry_id_not_tag2.xml": {
@@ -451,7 +453,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"entry_id_not_urn.xml": {
@@ -462,7 +464,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"entry_id_not_urn2.xml": {
@@ -473,7 +475,7 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Len(t, entries, 1)
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141|uuid")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"entry_id_urn.xml": {
@@ -535,14 +537,12 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "2002-12-31 19:20:30.45 +0100 +0100", feed.Entries[0].GetPublishedDate().String())
 		},
 	},
-	// TODO: this should fail but it doesn't (probably because types.Datetime excepts more formats than the Atom spec).
 	"entry_issued_hours_minutes.xml": {
 		wantDecodeErr: true,
 	},
-	// TODO: might require custom unmarshal logic?
-	// "entry_issued_multiple.xml": {
-	// 	wantDecodeErr: true,
-	// },
+	"entry_issued_multiple.xml": {
+		wantInvalid: true,
+	},
 	"entry_issued_no_colons.xml": {
 		wantDecodeErr: true,
 	},
@@ -574,7 +574,6 @@ var atomMustTests = map[string]atomTestSuite{
 			assert.Equal(t, "2002-12-31 19:20:30 +0000 UTC", feed.Entries[0].GetPublishedDate().String())
 		},
 	},
-	// TODO: this should fail but it doesn't (probably because types.Datetime excepts more formats than the Atom spec).
 	"entry_issued_wrong_format.xml": {
 		wantDecodeErr: true,
 	},
@@ -1430,7 +1429,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"feed_id_not_urn.xml": {
@@ -1439,7 +1438,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"feed_id_not_urn2.xml": {
@@ -1448,7 +1447,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.ID))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["ID.Value"], "uri|urn_rfc2141")
+			assert.Contains(t, failedValidations["ID.Value"], "absolute_uri|urn_rfc2141|uuid")
 		},
 	},
 	"feed_id_urn.xml": {
@@ -1460,8 +1459,8 @@ var atomMustTests = map[string]atomTestSuite{
 }
 
 var atomTests = map[string]map[string]atomTestSuite{
-	"test/assets/atom/other": atomOtherTests,
-	"test/assets/atom/must":  atomMustTests,
+	"test/assets/atom/other":                 atomOtherTests,
+	"test/feedvalidator/testcases/atom/must": atomMustTests,
 }
 
 func TestNewFeedFromBytesAtom(t *testing.T) {
