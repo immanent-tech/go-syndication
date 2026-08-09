@@ -6,6 +6,7 @@ package validation
 import (
 	"errors"
 	"fmt"
+	"mime"
 	"net/url"
 	"regexp"
 	"strings"
@@ -20,10 +21,16 @@ var validate *validator.Validate
 
 func init() {
 	validate = validator.New()
+	if err := validate.RegisterValidation("mimetype", validateMimetype); err != nil {
+		panic(err)
+	}
 	if err := validate.RegisterValidation("rfc3066lang", validateRFC3066Lang); err != nil {
 		panic(err)
 	}
 	if err := validate.RegisterValidation("absolute_uri", validateAbsoluteURI); err != nil {
+		panic(err)
+	}
+	if err := validate.RegisterValidation("not_url_encoded", validateNotURLEncoded); err != nil {
 		panic(err)
 	}
 }
@@ -104,6 +111,13 @@ func ValidateStruct(s any) *StructError {
 	return nil
 }
 
+func ValidateField(value any, rule string) error {
+	if err := validate.Var(value, rule); err != nil {
+		return fmt.Errorf("field is invalid: %w", err)
+	}
+	return nil
+}
+
 // RegisterValidation will register a new validation tag, using the given function, on the global validator.
 func RegisterValidation(tag string, f validator.Func) error {
 	if err := validate.RegisterValidation(tag, f); err != nil {
@@ -112,11 +126,17 @@ func RegisterValidation(tag string, f validator.Func) error {
 	return nil
 }
 
+// validateMimetype checks that the value is a valid mimetype.
+func validateMimetype(fl validator.FieldLevel) bool {
+	_, _, err := mime.ParseMediaType(fl.Field().String())
+	return err == nil
+}
+
 // langTagRE is a pragmatic check for an [RFC3066] language tag:
 // primary subtag, optionally followed by "-" subtags.
 var langTagRE = regexp.MustCompile(`^[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8})*$`)
 
-// ValidateRFC3066Lang checks that the value is a valid RFC3066 language tag.
+// validateRFC3066Lang checks that the value is a valid RFC3066 language tag.
 func validateRFC3066Lang(fl validator.FieldLevel) bool {
 	if lang := fl.Field().String(); lang != "" && !langTagRE.MatchString(lang) {
 		return false
@@ -124,6 +144,7 @@ func validateRFC3066Lang(fl validator.FieldLevel) bool {
 	return true
 }
 
+// validateAbsoluteURI checks that the URI value is an absolute value (i.e., has scheme/host).
 func validateAbsoluteURI(fl validator.FieldLevel) bool {
 	switch value, err := url.Parse(fl.Field().String()); {
 	case err != nil:
@@ -133,4 +154,11 @@ func validateAbsoluteURI(fl validator.FieldLevel) bool {
 	default:
 		return true
 	}
+}
+
+var percentEncodedPattern = regexp.MustCompile(`%[0-9A-Fa-f]{2}`)
+
+// validateNotURLEncoded checks that the value is not URL encoded.
+func validateNotURLEncoded(fl validator.FieldLevel) bool {
+	return !percentEncodedPattern.MatchString(fl.Field().String())
 }
