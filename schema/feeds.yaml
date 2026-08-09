@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/spec.openapis.org/refs/heads/main/oas/3.1/schema/2025-11-23
 ---
 openapi: '3.1.0'
 info:
@@ -9,6 +10,7 @@ info:
     name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
 components:
   schemas:
@@ -34,7 +36,7 @@ components:
         description:
           description: is a description of the image (for example, the alt tag associated with the image).
           type: string
-    Address:
+    Link:
       description: >
         is an 'address', usually of a person. For example, an email, website or social media handle. An address has a
         type and a value and/or URI associated with it.
@@ -49,20 +51,16 @@ components:
             type can be any value, including one of the canonical types. However, a canonical type should be used
             whenever appropriate.
           type: string
-          enum: ['email', 'website']
+          enum: ['email', 'website', 'id']
           x-oapi-codegen-extra-tags:
             validate: 'required'
         value:
-          description: is a value of the address. This must be set if the URI is missing.
+          description: >
+            is the link value. It can be a URI, email or any string that acts as a unique identifier (i.e.,
+            social media handle).
           type: string
           x-oapi-codegen-extra-tags:
-            validate: 'required_without=URI'
-        URI:
-          description: is the URI of the address. This must be set if the value is missing.
-          type: string
-          x-go-name: URI
-          x-oapi-codegen-extra-tags:
-            validate: 'required_without=Value,uri'
+            validate: 'required|uri|email'
     Person:
       description: represents a person.
       type: object
@@ -74,9 +72,14 @@ components:
           type: string
           x-oapi-codegen-extra-tags:
             validate: 'required'
+        bio:
+          description: is an optional short biography of the person.
+          type: string
         links:
           description: are links associated with the person that provide more details about them.
           type: array
           items:
-            $ref: '#/components/schemas/Address'
+            $ref: '#/components/schemas/Link'
           x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            validate: 'omitempty,dive,unique'

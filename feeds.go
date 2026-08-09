@@ -3,7 +3,7 @@
 
 package feeds
 
-func (a Address) String() string {
+func (a Link) String() string {
 	return a.Value
 }
 
