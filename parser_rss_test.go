@@ -31,7 +31,7 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, atom.LinkRelSelf, feed.Channel.AtomLink.Rel)
+			assert.Equal(t, atom.LinkRelSelf, *feed.Channel.AtomLink.Rel)
 			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLink.UndefinedContent)
 			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
 		},
@@ -40,7 +40,7 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, atom.LinkRelSelf, feed.Channel.AtomLink.Rel)
+			assert.Equal(t, atom.LinkRelSelf, *feed.Channel.AtomLink.Rel)
 			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLink.UndefinedContent)
 			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
 		},
@@ -134,16 +134,16 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Language)
-			assert.Equal(t, "en-us", *feed.Channel.Language)
+			assert.Len(t, feed.Channel.DcLanguage, 1)
+			assert.Equal(t, "en-us", feed.Channel.DcLanguage[0])
 		},
 	},
 	"dclanguage.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Language)
-			assert.Equal(t, "en", *feed.Channel.Language)
+			assert.Len(t, feed.Channel.DcLanguage, 1)
+			assert.Equal(t, "en", feed.Channel.DcLanguage[0])
 		},
 	},
 	// "doctype_not_entity.xml": {
