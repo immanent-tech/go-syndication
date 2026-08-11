@@ -35,10 +35,10 @@ func (e *Entry) GetTitle() string {
 // retrieved directly from the Links field as needed.
 func (e *Entry) GetLink() string {
 	for link := range slices.Values(e.Links) {
-		if link.Rel == "" {
+		if link.Rel == nil {
 			return link.Href
 		}
-		if link.Rel != "" && link.Rel == LinkRelAlternate {
+		if link.Rel != nil && *link.Rel == LinkRelAlternate {
 			return link.Href
 		}
 	}
@@ -48,10 +48,10 @@ func (e *Entry) GetLink() string {
 // GetDescription retrieves the <summary> (if any) of the Entry.
 func (e *Entry) GetDescription() string {
 	switch {
-	case e.Description != nil:
-		return strings.Join(*e.Description, " ")
 	case e.Summary != nil && e.Summary.String() != "":
 		return e.Summary.String()
+	case len(e.DcDescription) > 0:
+		return strings.Join(e.DcDescription, " ")
 	case e.MediaGroup != nil:
 		return e.MediaGroup.GetDescription()
 	default:
@@ -68,8 +68,8 @@ func (e *Entry) GetAuthors() []string {
 			authors = append(authors, author.String())
 		}
 	}
-	if e.Creator != nil {
-		authors = append(authors, *e.Creator...)
+	if len(e.DcCreator) > 0 {
+		authors = append(authors, e.DcCreator...)
 	}
 	return authors
 }
@@ -83,8 +83,8 @@ func (e *Entry) GetContributors() []string {
 			contributors = append(contributors, contributor.String())
 		}
 	}
-	if e.Contributor != nil {
-		contributors = append(contributors, *e.Contributor...)
+	if len(e.DcContributor) > 0 {
+		contributors = append(contributors, e.DcContributor...)
 	}
 	return contributors
 }
@@ -102,10 +102,10 @@ func (e *Entry) GetRights() *string {
 // or <lang> elements.
 func (e *Entry) GetLanguage() *string {
 	switch {
-	case e.Language != nil:
-		return new(strings.Join(*e.Language, " "))
 	case e.Lang != nil:
 		return e.Lang
+	case len(e.DcLanguage) > 0:
+		return new(strings.Join(e.DcLanguage, " "))
 	default:
 		return nil
 	}
@@ -206,9 +206,9 @@ func (e *Entry) GetContent() *string {
 }
 
 // Validate applies custom validation to an item.
-func (e *Entry) Validate() error {
+func (e Entry) Validate() error {
 	if err := validation.ValidateStruct(e); err != nil {
-		return fmt.Errorf("entry validation failed: %w", err)
+		return fmt.Errorf("atom:entry: validation failed: %w", err)
 	}
 	return nil
 }

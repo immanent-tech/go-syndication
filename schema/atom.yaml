@@ -90,7 +90,9 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: 'type,attr,omitempty'
                 json: 'type,omitempty'
-                validate: 'omitempty,oneof=text html xhtml'
+                validate: 'omitnil,oneof=text html xhtml'
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'
     PersonConstruct:
       description: describes a person, corporation, or similar entity
       allOf:
@@ -133,6 +135,8 @@ components:
                 json: 'extensions,omitempty'
                 xml: ',any'
               x-go-type-skip-optional-pointer: true
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'
     DateConstruct:
       description: >
         is an element whose content MUST conform to the "date-time" production in [RFC3339].
@@ -165,7 +169,7 @@ components:
                 validate: 'required,absolute_uri|urn_rfc2141|uuid'
       x-go-name: ID
       x-oapi-codegen-extra-tags:
-        xml: 'id'
+        xml: 'http://www.w3.org/2005/Atom id'
         json: 'id'
         validate: 'required'
     Title:
@@ -173,7 +177,7 @@ components:
         is an element of type Text construct that conveys a human-readable title for an entry or feed.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'title'
+        xml: 'http://www.w3.org/2005/Atom title'
         json: 'title'
         validate: 'required'
     Updated:
@@ -182,7 +186,7 @@ components:
         way the publisher considers significant.
       x-go-type: DateConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'updated'
+        xml: 'http://www.w3.org/2005/Atom updated'
         json: 'updated'
         validate: 'required'
     Category:
@@ -233,7 +237,7 @@ components:
                 xml: 'label,attr,omitempty'
                 json: 'label,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'category,omitempty'
+        xml: 'http://www.w3.org/2005/Atom category,omitempty'
         json: 'category,omitempty'
     Categories:
       description: >
@@ -243,7 +247,7 @@ components:
         $ref: '#/components/schemas/Category'
       x-oapi-codegen-extra-tags:
         xml: 'category,omitempty'
-        validate: 'dive'
+        validate: 'dive,validateFn'
       x-go-type-skip-optional-pointer: true
     Generator:
       description: >
@@ -277,7 +281,7 @@ components:
                 xml: 'version,attr,omitempty'
                 json: 'version,omitempty'
       x-oapi-codegen-extra-tags:
-        xml: 'generator,omitempty'
+        xml: 'http://www.w3.org/2005/Atom generator,omitempty'
         json: 'generator,omitempty'
     Icon:
       description: >
@@ -294,7 +298,7 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: ',chardata'
       x-oapi-codegen-extra-tags:
-        xml: 'icon,omitempty'
+        xml: 'http://www.w3.org/2005/Atom icon,omitempty'
         json: 'icon,omitempty'
     Link:
       description: >
@@ -341,6 +345,7 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'title,attr,omitempty'
+                validate: 'omitnil,required'
             type:
               description: >
                 identifies the resource's MIME media type.
@@ -349,7 +354,7 @@ components:
                 attribute: true
               x-oapi-codegen-extra-tags:
                 xml: 'type,attr,omitempty'
-                validate: 'omitempty,mimetype'
+                validate: 'omitnil,mimetype_string'
             rel:
               description: >
                 contains a keyword that identifies the nature of the relationship between the linked resouce and the
@@ -370,7 +375,6 @@ components:
                 ]
               xml:
                 attribute: true
-              x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
                 xml: 'rel,attr,omitempty'
                 validate: 'omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed'
@@ -388,7 +392,7 @@ components:
         $ref: '#/components/schemas/Link'
       x-oapi-codegen-extra-tags:
         xml: 'link,omitempty'
-        validate: 'dive'
+        validate: 'dive,validateFn'
       x-go-type-skip-optional-pointer: true
     Logo:
       description: >
@@ -405,7 +409,7 @@ components:
                 json: 'value'
                 xml: ',chardata'
       x-oapi-codegen-extra-tags:
-        xml: 'logo,omitempty'
+        xml: 'http://www.w3.org/2005/Atom logo,omitempty'
         json: 'logo,omitempty'
         validate: 'omitempty'
     Rights:
@@ -413,7 +417,7 @@ components:
         is an element of type Text construct that conveys information about rights held in and over an entry or feed.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'rights,omitempty'
+        xml: 'http://www.w3.org/2005/Atom rights,omitempty'
         json: 'rights,omitempty'
     Published:
       description: >
@@ -421,21 +425,21 @@ components:
         cycle of the entry.
       x-go-type: DateConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'published,omitempty'
+        xml: 'http://www.w3.org/2005/Atom published,omitempty'
         json: 'published,omitempty'
     Subtitle:
       description: >
         is an element of type Text construct that conveys a human-readable subtitle for an entry or feed.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'subtitle,omitempty'
+        xml: 'http://www.w3.org/2005/Atom subtitle,omitempty'
         json: 'subtitle,omitempty'
     Summary:
       description: >
         is an element of type Text construct that conveys a short summary, abstract, or excerpt of an entry.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'summary,omitempty'
+        xml: 'http://www.w3.org/2005/Atom summary,omitempty'
         json: 'summary,omitempty'
     Content:
       description: >
@@ -455,7 +459,7 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: 'type,attr,omitempty'
                 json: 'type,omitempty'
-                validate: 'omitnil,oneof=text html xhtml|mimetype'
+                validate: 'omitnil,oneof=text html xhtml|mimetype_string'
             src:
               description: >
                 is an attribute that links to the source content.
@@ -487,7 +491,7 @@ components:
               x-go-type: '[]byte'
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'content,omitempty'
+        xml: 'http://www.w3.org/2005/Atom content,omitempty'
         json: 'content,omitempty'
         validate: 'omitempty,validateFn'
     Contributors:
@@ -497,8 +501,8 @@ components:
       items:
         $ref: '#/components/schemas/PersonConstruct'
       x-oapi-codegen-extra-tags:
-        xml: 'contributor,omitempty'
-        validate: 'omitempty,gt=0,dive'
+        xml: 'http://www.w3.org/2005/Atom contributor,omitempty'
+        validate: 'omitempty,gt=0,dive,validateFn'
       x-go-type-skip-optional-pointer: true
     Authors:
       description: >
@@ -507,8 +511,8 @@ components:
       items:
         $ref: '#/components/schemas/PersonConstruct'
       x-oapi-codegen-extra-tags:
-        xml: 'author,omitempty'
-        validate: 'gt=0,dive'
+        xml: 'http://www.w3.org/2005/Atom author,omitempty'
+        validate: 'gt=0,dive,validateFn'
       x-go-type-skip-optional-pointer: true
     FeedMetadata:
       description: >
@@ -517,7 +521,6 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - type: object
           required:
-            - XMLName
             - ID
             - title
             - updated
@@ -581,7 +584,7 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: 'entry,omitempty'
                 json: 'entry,omitempty'
-                validate: 'dive'
+                validate: 'dive,validateFn'
               x-go-type-skip-optional-pointer: true
             Extensions:
               description: >
@@ -656,7 +659,7 @@ components:
                 xml: ',any'
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'entry'
+        xml: 'http://www.w3.org/2005/Atom entry'
         json: 'entry'
         validate: 'validateFn'
     StandaloneEntry:

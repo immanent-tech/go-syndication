@@ -5,6 +5,7 @@ package atom
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"slices"
 	"sort"
@@ -33,10 +34,10 @@ func (f *Feed) GetTitle() string {
 // GetDescription retrieves the <description> (if any) of the Feed.
 func (f *Feed) GetDescription() string {
 	switch {
-	case f.Description != nil:
-		return strings.Join(*f.Description, " ")
 	case f.Subtitle != nil && f.Subtitle.String() != "":
 		return f.Subtitle.String()
+	case len(f.DcDescription) > 0:
+		return strings.Join(f.DcDescription, " ")
 	default:
 		return ""
 	}
@@ -46,7 +47,7 @@ func (f *Feed) GetDescription() string {
 // present with a "rel" attribute of "self" and ideally with a mime-type indicating Atom content.
 func (f *Feed) GetSourceURL() string {
 	for link := range slices.Values(f.Links) {
-		if link.Rel != "" && link.Rel == LinkRelSelf {
+		if link.Rel != nil && *link.Rel == LinkRelSelf {
 			if link.Type != nil && slices.Contains(MimeTypes, *link.Type) {
 				return link.Href
 			}
@@ -58,7 +59,7 @@ func (f *Feed) GetSourceURL() string {
 // SetSourceURL will set a source URL, indicating the URL of the Atom document, in the Feed.
 func (f *Feed) SetSourceURL(url string) {
 	rel := LinkRelSelf
-	f.Links = append(f.Links, Link{Href: url, Rel: rel, Type: &MimeTypes[0]})
+	f.Links = append(f.Links, Link{Href: url, Rel: &rel, Type: &MimeTypes[0]})
 }
 
 // GetLink retrieves the <link> of the Feed. This is the link to the website associated with the Atom feed. Even the
@@ -67,15 +68,21 @@ func (f *Feed) SetSourceURL(url string) {
 func (f *Feed) GetLink() string {
 	for link := range slices.Values(f.Links) {
 		// If there is a rel=self link that does not point to an atom document, use that.
-		if link.Rel == LinkRelSelf && link.Type != nil {
-			if !slices.Contains(MimeTypes, *link.Type) {
+		if link.Rel != nil {
+			if *link.Rel == LinkRelSelf && link.Type != nil {
+				if !slices.Contains(MimeTypes, *link.Type) {
+					return link.Href
+				}
+			}
+			// If there is a rel=alt, use that.
+			if *link.Rel == LinkRelAlternate {
 				return link.Href
 			}
 		}
-		// If there is a rel=alt, use that.
-		if link.Rel == LinkRelAlternate {
-			return link.Href
-		}
+	}
+	// Use the first link found.
+	if len(f.Links) > 0 {
+		return f.Links[0].String()
 	}
 	return ""
 }
@@ -89,8 +96,8 @@ func (f *Feed) GetAuthors() []string {
 			authors = append(authors, author.String())
 		}
 	}
-	if f.Creator != nil {
-		authors = append(authors, *f.Creator...)
+	if len(f.DcCreator) > 0 {
+		authors = append(authors, f.DcCreator...)
 	}
 	return authors
 }
@@ -104,8 +111,8 @@ func (f *Feed) GetContributors() []string {
 			contributors = append(contributors, contributor.String())
 		}
 	}
-	if f.Contributor != nil {
-		contributors = append(contributors, *f.Contributor...)
+	if len(f.DcContributor) > 0 {
+		contributors = append(contributors, f.DcContributor...)
 	}
 	return contributors
 }
@@ -123,10 +130,10 @@ func (f *Feed) GetRights() *string {
 // or <lang> elements.
 func (f *Feed) GetLanguage() *string {
 	switch {
-	case f.Language != nil:
-		return new(strings.Join(*f.Language, " "))
 	case f.Lang != nil:
 		return f.Lang
+	case len(f.DcLanguage) > 0:
+		return new(strings.Join(f.DcLanguage, " "))
 	default:
 		return nil
 	}
@@ -230,6 +237,17 @@ func (f *Feed) Validate() error {
 			missingEntryAuthors = true
 			break
 		}
+	}
+	// All entries must have unique IDs.
+	if !hasUniqueIDs(f.Entries) {
+		return errors.New("validate feed: contains duplicate entry IDs")
+	}
+	// All links must be unique.
+	if !hasUniqueLinkRels(f.Links) {
+		return errors.New("atom:feed: contains duplicate link rel types")
+	}
+	if !hasUniqueLinkTypes(f.Links) {
+		return errors.New("atom:feed: contains duplicate link types")
 	}
 	// atom:feed elements MUST contain one or more atom:author elements, unless all of the atom:feed element's child
 	// atom:entry elements  contain at least one atom:author element.
@@ -361,4 +379,41 @@ func hasPrefix(namespaces []extensions.Namespace, prefix string) bool {
 		}
 	}
 	return false
+}
+
+func hasUniqueIDs(entries []Entry) bool {
+	seen := make(map[string]struct{}, len(entries))
+	for entry := range slices.Values(entries) {
+		if _, exists := seen[entry.GetID()]; exists {
+			return false
+		}
+		seen[entry.GetID()] = struct{}{}
+	}
+	return true
+}
+
+func hasUniqueLinkRels(links []Link) bool {
+	seen := make(map[LinkRel]struct{}, len(links))
+	for link := range slices.Values(links) {
+		if link.Rel != nil {
+			if _, exists := seen[*link.Rel]; exists {
+				return false
+			}
+			seen[*link.Rel] = struct{}{}
+		}
+	}
+	return true
+}
+
+func hasUniqueLinkTypes(links []Link) bool {
+	seen := make(map[string]struct{}, len(links))
+	for link := range slices.Values(links) {
+		if link.Type != nil {
+			if _, exists := seen[*link.Type]; exists {
+				return false
+			}
+			seen[*link.Type] = struct{}{}
+		}
+	}
+	return true
 }

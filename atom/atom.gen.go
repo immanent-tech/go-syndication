@@ -166,7 +166,7 @@ type Content struct {
 	Text *string `json:"text,omitempty"`
 
 	// Type represents what the content of the element is.
-	Type *ContentType `json:"type,omitempty" validate:"omitnil,oneof=text html xhtml|mimetype" xml:"type,attr,omitempty"`
+	Type *ContentType `json:"type,omitempty" validate:"omitnil,oneof=text html xhtml|mimetype_string" xml:"type,attr,omitempty"`
 }
 
 // ContentType represents what the content of the element is.
@@ -199,7 +199,7 @@ type Entry struct {
 	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
-	ID ID `json:"id" validate:"required" xml:"id"`
+	ID ID `json:"id" validate:"required" xml:"http://www.w3.org/2005/Atom id"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
@@ -296,84 +296,95 @@ type Entry struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
 
 	// Content either contains or links to the content of the entry.
-	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"content,omitempty"`
-
-	// Contributor is an entity responsible for making contributions to the resource.
-	// The guidelines for using names of persons or organizations as creators apply to contributors.
-	Contributor *externalRef1.Contributor `json:"contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"http://www.w3.org/2005/Atom content,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
-	// Coverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
+	// DcContributor is an entity responsible for making contributions to the resource.
+	// The guidelines for using names of persons or organizations as creators apply to contributors.
+	DcContributor externalRef1.Contributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+
+	// DcCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
 	// Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods may be used in preference to numeric identifiers such as sets of coordinates or date ranges. Because coverage is so broadly defined, it is preferable to use the more specific subproperties Temporal Coverage and Spatial Coverage.
-	Coverage *externalRef1.Coverage `json:"coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
+	DcCoverage externalRef1.Coverage `json:"dc_coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
 
-	// Creator is an entity responsible for making the resource.
+	// DcCreator is an entity responsible for making the resource.
 	// Recommended practice is to identify the creator with a URI. If this is not possible or feasible, a literal value that identifies the creator may be provided.
-	Creator *externalRef1.Creator `json:"creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
+	DcCreator externalRef1.Creator `json:"dc_creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
 
-	// Date is a point or period of time associated with an event in the lifecycle of the resource.
+	// DcDate is a point or period of time associated with an event in the lifecycle of the resource.
 	// Date may be used to express temporal information at any level of granularity. Recommended practice is to express the date, date/time, or period of time according to ISO 8601-1 [ISO 8601-1] or a published profile of the ISO standard, such as the W3C Note on Date and Time Formats [W3CDTF] or the Extended Date/Time Format Specification [EDTF]. If the full date is unknown, month and year (YYYY-MM) or just year (YYYY) may be used. Date ranges may be specified using ISO 8601 period of time specification in which start and end dates are separated by a '/' (slash) character. Either the start or end date may be missing.
-	Date *externalRef1.Date `json:"date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
+	DcDate externalRef1.Date `json:"dc_date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
 
-	// Description is an account of the resource.
+	// DcDescription is an account of the resource.
 	// Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
-	Description *externalRef1.Description `json:"description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+	DcDescription externalRef1.Description `json:"dc_description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
 
-	// Format is the file format, physical medium, or dimensions of the resource.
+	// DcFormat is the file format, physical medium, or dimensions of the resource.
 	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
-	Format *externalRef1.Format `json:"format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
+	DcFormat externalRef1.Format `json:"dc_format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
 
-	// Identifier is an unambiguous reference to the resource within a given context.
+	// DcIdentifier is an unambiguous reference to the resource within a given context.
 	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
-	Identifier *externalRef1.Identifier `json:"identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
+	DcIdentifier externalRef1.Identifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
-	// Language is a language of the resource.
+	// DcLanguage is a language of the resource.
 	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
-	Language *externalRef1.Language `json:"language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DcLanguage externalRef1.Language `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+
+	// DcPublisher is an entity responsible for making the resource available.
+	DcPublisher externalRef1.Publisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
+
+	// DcRelation is a related resource.
+	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
+	DcRelation externalRef1.Relation `json:"dc_relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+
+	// DcRights is information about rights held in and over the resource.
+	// Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If this is not possible or feasible, a literal value (name, label, or short text) may be provided.
+	DcRights externalRef1.Rights `json:"dc_rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
+
+	// DcSource is a related resource from which the described resource is derived.
+	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
+	DcSource externalRef1.Source `json:"dc_source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
+
+	// DcSubject is a topic of the resource.
+	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
+	DcSubject externalRef1.Subject `json:"dc_subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+
+	// DcTitle is a name given to the resource.
+	DcTitle externalRef1.Title `json:"dc_title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
+
+	// DcType is the nature or genre of the resource.
+	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
+	DcType externalRef1.Type `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
 
 	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
-	Published *Published `json:"published,omitempty" xml:"published,omitempty"`
-
-	// Publisher is an entity responsible for making the resource available.
-	Publisher *externalRef1.Publisher `json:"publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
-
-	// Relation is a related resource.
-	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
-	Relation *externalRef1.Relation `json:"relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+	Published *Published `json:"published,omitempty" xml:"http://www.w3.org/2005/Atom published,omitempty"`
 
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
-	Rights *Rights `json:"rights,omitempty" xml:"rights,omitempty"`
+	Rights *Rights `json:"rights,omitempty" xml:"http://www.w3.org/2005/Atom rights,omitempty"`
 
 	// Source contains the metadata from the source feed for the entry.
 	Source *Source `json:"source,omitempty" validate:"omitempty"`
 
-	// Subject is a topic of the resource.
-	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
-	Subject *externalRef1.Subject `json:"subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
-
 	// Summary is an element of type Text construct that conveys a short summary, abstract, or excerpt of an entry.
-	Summary *Summary `json:"summary,omitempty" xml:"summary,omitempty"`
+	Summary *Summary `json:"summary,omitempty" xml:"http://www.w3.org/2005/Atom summary,omitempty"`
 
 	// Title is an element of type Text construct that conveys a human-readable title for an entry or feed.
-	Title Title `json:"title" validate:"required" xml:"title"`
-
-	// Type is the nature or genre of the resource.
-	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
-	Type *externalRef1.Type `json:"type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
+	Title Title `json:"title" validate:"required" xml:"http://www.w3.org/2005/Atom title"`
 
 	// Updated is an element of type Date construct indicating the most recent instant in time when an entry or feed was modified in a way the publisher considers significant.
-	Updated Updated `json:"updated" validate:"required" xml:"updated"`
+	Updated Updated `json:"updated" validate:"required" xml:"http://www.w3.org/2005/Atom updated"`
 }
 
 // Feed is the document (i.e., top-level) element of an Atom Feed Document, acting as a container for metadata and data associated with the feed.
@@ -386,7 +397,7 @@ type Feed struct {
 	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
-	ID ID `json:"id" validate:"required" xml:"id"`
+	ID ID `json:"id" validate:"required" xml:"http://www.w3.org/2005/Atom id"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
@@ -488,97 +499,104 @@ type Feed struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
-
-	// Contributor is an entity responsible for making contributions to the resource.
-	// The guidelines for using names of persons or organizations as creators apply to contributors.
-	Contributor *externalRef1.Contributor `json:"contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
-	// Coverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
+	// DcContributor is an entity responsible for making contributions to the resource.
+	// The guidelines for using names of persons or organizations as creators apply to contributors.
+	DcContributor externalRef1.Contributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+
+	// DcCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
 	// Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods may be used in preference to numeric identifiers such as sets of coordinates or date ranges. Because coverage is so broadly defined, it is preferable to use the more specific subproperties Temporal Coverage and Spatial Coverage.
-	Coverage *externalRef1.Coverage `json:"coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
+	DcCoverage externalRef1.Coverage `json:"dc_coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
 
-	// Creator is an entity responsible for making the resource.
+	// DcCreator is an entity responsible for making the resource.
 	// Recommended practice is to identify the creator with a URI. If this is not possible or feasible, a literal value that identifies the creator may be provided.
-	Creator *externalRef1.Creator `json:"creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
+	DcCreator externalRef1.Creator `json:"dc_creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
 
-	// Date is a point or period of time associated with an event in the lifecycle of the resource.
+	// DcDate is a point or period of time associated with an event in the lifecycle of the resource.
 	// Date may be used to express temporal information at any level of granularity. Recommended practice is to express the date, date/time, or period of time according to ISO 8601-1 [ISO 8601-1] or a published profile of the ISO standard, such as the W3C Note on Date and Time Formats [W3CDTF] or the Extended Date/Time Format Specification [EDTF]. If the full date is unknown, month and year (YYYY-MM) or just year (YYYY) may be used. Date ranges may be specified using ISO 8601 period of time specification in which start and end dates are separated by a '/' (slash) character. Either the start or end date may be missing.
-	Date *externalRef1.Date `json:"date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
+	DcDate externalRef1.Date `json:"dc_date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
 
-	// Description is an account of the resource.
+	// DcDescription is an account of the resource.
 	// Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
-	Description *externalRef1.Description `json:"description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+	DcDescription externalRef1.Description `json:"dc_description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+
+	// DcFormat is the file format, physical medium, or dimensions of the resource.
+	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
+	DcFormat externalRef1.Format `json:"dc_format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
+
+	// DcIdentifier is an unambiguous reference to the resource within a given context.
+	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
+	DcIdentifier externalRef1.Identifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
+
+	// DcLanguage is a language of the resource.
+	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
+	DcLanguage externalRef1.Language `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+
+	// DcPublisher is an entity responsible for making the resource available.
+	DcPublisher externalRef1.Publisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
+
+	// DcRelation is a related resource.
+	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
+	DcRelation externalRef1.Relation `json:"dc_relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+
+	// DcRights is information about rights held in and over the resource.
+	// Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If this is not possible or feasible, a literal value (name, label, or short text) may be provided.
+	DcRights externalRef1.Rights `json:"dc_rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
+
+	// DcSource is a related resource from which the described resource is derived.
+	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
+	DcSource externalRef1.Source `json:"dc_source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
+
+	// DcSubject is a topic of the resource.
+	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
+	DcSubject externalRef1.Subject `json:"dc_subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+
+	// DcTitle is a name given to the resource.
+	DcTitle externalRef1.Title `json:"dc_title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
+
+	// DcType is the nature or genre of the resource.
+	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
+	DcType externalRef1.Type `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// Entries is the list of <entry> elements for the feed.
-	Entries []Entry `json:"entry,omitempty" validate:"dive" xml:"entry,omitempty"`
-
-	// Format is the file format, physical medium, or dimensions of the resource.
-	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
-	Format *externalRef1.Format `json:"format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
+	Entries []Entry `json:"entry,omitempty" validate:"dive,validateFn" xml:"entry,omitempty"`
 
 	// Generator is an element identifies the agent used to generate a feed.
-	Generator *Generator `json:"generator,omitempty" xml:"generator,omitempty"`
+	Generator *Generator `json:"generator,omitempty" xml:"http://www.w3.org/2005/Atom generator,omitempty"`
 
 	// Icon is an element that contains a URI to an icon suitable for representing a feed.
-	Icon *Icon `json:"icon,omitempty" xml:"icon,omitempty"`
-
-	// Identifier is an unambiguous reference to the resource within a given context.
-	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
-	Identifier *externalRef1.Identifier `json:"identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
-
-	// Language is a language of the resource.
-	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
-	Language *externalRef1.Language `json:"language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	Icon *Icon `json:"icon,omitempty" xml:"http://www.w3.org/2005/Atom icon,omitempty"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
 
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
-	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"logo,omitempty"`
+	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom logo,omitempty"`
 
 	// Namespaces contains all namespaces in use by this RSS feed.
 	Namespaces []externalRef0.Namespace `json:"namespaces,omitempty" xml:"-"`
 
 	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
-	Published *Published `json:"published,omitempty" xml:"published,omitempty"`
-
-	// Publisher is an entity responsible for making the resource available.
-	Publisher *externalRef1.Publisher `json:"publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
-
-	// Relation is a related resource.
-	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
-	Relation *externalRef1.Relation `json:"relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+	Published *Published `json:"published,omitempty" xml:"http://www.w3.org/2005/Atom published,omitempty"`
 
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
-	Rights *Rights `json:"rights,omitempty" xml:"rights,omitempty"`
-
-	// Source is a related resource from which the described resource is derived.
-	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
-	Source *externalRef1.Source `json:"source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
-
-	// Subject is a topic of the resource.
-	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
-	Subject *externalRef1.Subject `json:"subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+	Rights *Rights `json:"rights,omitempty" xml:"http://www.w3.org/2005/Atom rights,omitempty"`
 
 	// Subtitle is an element of type Text construct that conveys a human-readable subtitle for an entry or feed.
-	Subtitle *Subtitle `json:"subtitle,omitempty" xml:"subtitle,omitempty"`
+	Subtitle *Subtitle `json:"subtitle,omitempty" xml:"http://www.w3.org/2005/Atom subtitle,omitempty"`
 
 	// Title is an element of type Text construct that conveys a human-readable title for an entry or feed.
-	Title Title `json:"title" validate:"required" xml:"title"`
-
-	// Type is the nature or genre of the resource.
-	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
-	Type *externalRef1.Type `json:"type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
+	Title Title `json:"title" validate:"required" xml:"http://www.w3.org/2005/Atom title"`
 
 	// Updated is an element of type Date construct indicating the most recent instant in time when an entry or feed was modified in a way the publisher considers significant.
-	Updated Updated `json:"updated" validate:"required" xml:"updated"`
+	Updated Updated `json:"updated" validate:"required" xml:"http://www.w3.org/2005/Atom updated"`
 }
 
 // FeedMetadata is the feed metadata.
@@ -587,7 +605,7 @@ type FeedMetadata struct {
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
-	ID ID `json:"id" validate:"required" xml:"id"`
+	ID ID `json:"id" validate:"required" xml:"http://www.w3.org/2005/Atom id"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
@@ -596,40 +614,40 @@ type FeedMetadata struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
 	// Generator is an element identifies the agent used to generate a feed.
-	Generator *Generator `json:"generator,omitempty" xml:"generator,omitempty"`
+	Generator *Generator `json:"generator,omitempty" xml:"http://www.w3.org/2005/Atom generator,omitempty"`
 
 	// Icon is an element that contains a URI to an icon suitable for representing a feed.
-	Icon *Icon `json:"icon,omitempty" xml:"icon,omitempty"`
+	Icon *Icon `json:"icon,omitempty" xml:"http://www.w3.org/2005/Atom icon,omitempty"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
 
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
-	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"logo,omitempty"`
+	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom logo,omitempty"`
 
 	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
-	Published *Published `json:"published,omitempty" xml:"published,omitempty"`
+	Published *Published `json:"published,omitempty" xml:"http://www.w3.org/2005/Atom published,omitempty"`
 
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
-	Rights *Rights `json:"rights,omitempty" xml:"rights,omitempty"`
+	Rights *Rights `json:"rights,omitempty" xml:"http://www.w3.org/2005/Atom rights,omitempty"`
 
 	// Subtitle is an element of type Text construct that conveys a human-readable subtitle for an entry or feed.
-	Subtitle *Subtitle `json:"subtitle,omitempty" xml:"subtitle,omitempty"`
+	Subtitle *Subtitle `json:"subtitle,omitempty" xml:"http://www.w3.org/2005/Atom subtitle,omitempty"`
 
 	// Title is an element of type Text construct that conveys a human-readable title for an entry or feed.
-	Title Title `json:"title" validate:"required" xml:"title"`
+	Title Title `json:"title" validate:"required" xml:"http://www.w3.org/2005/Atom title"`
 
 	// Updated is an element of type Date construct indicating the most recent instant in time when an entry or feed was modified in a way the publisher considers significant.
-	Updated Updated `json:"updated" validate:"required" xml:"updated"`
+	Updated Updated `json:"updated" validate:"required" xml:"http://www.w3.org/2005/Atom updated"`
 }
 
 // Generator is an element identifies the agent used to generate a feed.
@@ -703,13 +721,13 @@ type Link struct {
 	Length *int `json:"length,omitempty" validate:"omitempty,number" xml:"length,attr,omitempty"`
 
 	// Rel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
-	Rel LinkRel `json:"rel,omitempty" validate:"omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed" xml:"rel,attr,omitempty"`
+	Rel *LinkRel `json:"rel,omitempty" validate:"omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed" xml:"rel,attr,omitempty"`
 
 	// Title provides a human-readable description of the resource.
-	Title *string `json:"title,omitempty" xml:"title,attr,omitempty"`
+	Title *string `json:"title,omitempty" validate:"omitnil,required" xml:"title,attr,omitempty"`
 
 	// Type identifies the resource's MIME media type.
-	Type *string `json:"type,omitempty" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
+	Type *string `json:"type,omitempty" validate:"omitnil,mimetype_string" xml:"type,attr,omitempty"`
 }
 
 // LinkRel contains a keyword that identifies the nature of the relationship between the linked resouce and the element.
@@ -774,7 +792,7 @@ type StandaloneEntry struct {
 	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
 
 	// ID is an element that conveys a permanent, universally unique identifier for an entry or feed.
-	ID ID `json:"id" validate:"required" xml:"id"`
+	ID ID `json:"id" validate:"required" xml:"http://www.w3.org/2005/Atom id"`
 
 	// Lang indicates the natural language for the element and its descendents.
 	Lang *string `json:"lang,omitempty" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"xml:lang,attr,omitempty"`
@@ -871,87 +889,98 @@ type StandaloneEntry struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
 
 	// Content either contains or links to the content of the entry.
-	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"content,omitempty"`
-
-	// Contributor is an entity responsible for making contributions to the resource.
-	// The guidelines for using names of persons or organizations as creators apply to contributors.
-	Contributor *externalRef1.Contributor `json:"contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"http://www.w3.org/2005/Atom content,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
-	// Coverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
+	// DcContributor is an entity responsible for making contributions to the resource.
+	// The guidelines for using names of persons or organizations as creators apply to contributors.
+	DcContributor externalRef1.Contributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+
+	// DcCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
 	// Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods may be used in preference to numeric identifiers such as sets of coordinates or date ranges. Because coverage is so broadly defined, it is preferable to use the more specific subproperties Temporal Coverage and Spatial Coverage.
-	Coverage *externalRef1.Coverage `json:"coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
+	DcCoverage externalRef1.Coverage `json:"dc_coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
 
-	// Creator is an entity responsible for making the resource.
+	// DcCreator is an entity responsible for making the resource.
 	// Recommended practice is to identify the creator with a URI. If this is not possible or feasible, a literal value that identifies the creator may be provided.
-	Creator *externalRef1.Creator `json:"creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
+	DcCreator externalRef1.Creator `json:"dc_creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
 
-	// Date is a point or period of time associated with an event in the lifecycle of the resource.
+	// DcDate is a point or period of time associated with an event in the lifecycle of the resource.
 	// Date may be used to express temporal information at any level of granularity. Recommended practice is to express the date, date/time, or period of time according to ISO 8601-1 [ISO 8601-1] or a published profile of the ISO standard, such as the W3C Note on Date and Time Formats [W3CDTF] or the Extended Date/Time Format Specification [EDTF]. If the full date is unknown, month and year (YYYY-MM) or just year (YYYY) may be used. Date ranges may be specified using ISO 8601 period of time specification in which start and end dates are separated by a '/' (slash) character. Either the start or end date may be missing.
-	Date *externalRef1.Date `json:"date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
+	DcDate externalRef1.Date `json:"dc_date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
 
-	// Description is an account of the resource.
+	// DcDescription is an account of the resource.
 	// Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
-	Description *externalRef1.Description `json:"description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+	DcDescription externalRef1.Description `json:"dc_description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
 
-	// Format is the file format, physical medium, or dimensions of the resource.
+	// DcFormat is the file format, physical medium, or dimensions of the resource.
 	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
-	Format *externalRef1.Format `json:"format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
+	DcFormat externalRef1.Format `json:"dc_format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
 
-	// Identifier is an unambiguous reference to the resource within a given context.
+	// DcIdentifier is an unambiguous reference to the resource within a given context.
 	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
-	Identifier *externalRef1.Identifier `json:"identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
+	DcIdentifier externalRef1.Identifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
-	// Language is a language of the resource.
+	// DcLanguage is a language of the resource.
 	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
-	Language *externalRef1.Language `json:"language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DcLanguage externalRef1.Language `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+
+	// DcPublisher is an entity responsible for making the resource available.
+	DcPublisher externalRef1.Publisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
+
+	// DcRelation is a related resource.
+	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
+	DcRelation externalRef1.Relation `json:"dc_relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+
+	// DcRights is information about rights held in and over the resource.
+	// Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If this is not possible or feasible, a literal value (name, label, or short text) may be provided.
+	DcRights externalRef1.Rights `json:"dc_rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
+
+	// DcSource is a related resource from which the described resource is derived.
+	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
+	DcSource externalRef1.Source `json:"dc_source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
+
+	// DcSubject is a topic of the resource.
+	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
+	DcSubject externalRef1.Subject `json:"dc_subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+
+	// DcTitle is a name given to the resource.
+	DcTitle externalRef1.Title `json:"dc_title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
+
+	// DcType is the nature or genre of the resource.
+	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
+	DcType externalRef1.Type `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
 
 	// Namespaces contains all namespaces in use by this RSS feed.
 	Namespaces []externalRef0.Namespace `json:"namespaces,omitempty" xml:"-"`
 
 	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
-	Published *Published `json:"published,omitempty" xml:"published,omitempty"`
-
-	// Publisher is an entity responsible for making the resource available.
-	Publisher *externalRef1.Publisher `json:"publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
-
-	// Relation is a related resource.
-	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
-	Relation *externalRef1.Relation `json:"relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+	Published *Published `json:"published,omitempty" xml:"http://www.w3.org/2005/Atom published,omitempty"`
 
 	// Rights is an element of type Text construct that conveys information about rights held in and over an entry or feed.
-	Rights *Rights `json:"rights,omitempty" xml:"rights,omitempty"`
+	Rights *Rights `json:"rights,omitempty" xml:"http://www.w3.org/2005/Atom rights,omitempty"`
 
 	// Source contains the metadata from the source feed for the entry.
 	Source *Source `json:"source,omitempty" validate:"omitempty"`
 
-	// Subject is a topic of the resource.
-	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
-	Subject *externalRef1.Subject `json:"subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
-
 	// Summary is an element of type Text construct that conveys a short summary, abstract, or excerpt of an entry.
-	Summary *Summary `json:"summary,omitempty" xml:"summary,omitempty"`
+	Summary *Summary `json:"summary,omitempty" xml:"http://www.w3.org/2005/Atom summary,omitempty"`
 
 	// Title is an element of type Text construct that conveys a human-readable title for an entry or feed.
-	Title Title `json:"title" validate:"required" xml:"title"`
-
-	// Type is the nature or genre of the resource.
-	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
-	Type *externalRef1.Type `json:"type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
+	Title Title `json:"title" validate:"required" xml:"http://www.w3.org/2005/Atom title"`
 
 	// Updated is an element of type Date construct indicating the most recent instant in time when an entry or feed was modified in a way the publisher considers significant.
-	Updated Updated `json:"updated" validate:"required" xml:"updated"`
+	Updated Updated `json:"updated" validate:"required" xml:"http://www.w3.org/2005/Atom updated"`
 }
 
 // Subtitle is an element of type Text construct that conveys a human-readable subtitle for an entry or feed.
@@ -972,7 +1001,7 @@ type TextConstruct struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Type represents what the content of the element is.
-	Type *TextConstructType `json:"type,omitempty" validate:"omitempty,oneof=text html xhtml" xml:"type,attr,omitempty"`
+	Type *TextConstructType `json:"type,omitempty" validate:"omitnil,oneof=text html xhtml" xml:"type,attr,omitempty"`
 
 	// Value is the value of the element for type=text/html.
 	Value string `json:"value" validate:"required_if=Type html|required_if=Type text"`

@@ -861,7 +861,7 @@ components:
               type: string
               x-oapi-codegen-extra-tags:
                 xml: 'type,attr,omitempty'
-                validate: 'omitempty,mimetype'
+                validate: 'omitempty,mimetype_string'
             bitrate:
               description: is the kilobits per second rate of media.
               type: integer

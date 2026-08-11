@@ -19,7 +19,7 @@ func getFailedValidations(err error) (map[string][]string, error) {
 	if invalidValidationError, ok := errors.AsType[*validator.InvalidValidationError](err); ok {
 		return nil, invalidValidationError
 	}
-	if validateErrs, ok := errors.AsType[*validation.StructError](err); ok && validateErrs != nil {
+	if validateErrs, ok := errors.AsType[*validation.Errors](err); ok && validateErrs != nil {
 		for e := range slices.Values(validateErrs.Fields) {
 			failedValidations[e.StructNamespace] = append(failedValidations[e.StructNamespace], e.Tag)
 		}

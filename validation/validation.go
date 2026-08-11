@@ -20,8 +20,8 @@ var ErrInvalidStruct = errors.New("invalid struct")
 var validate *validator.Validate
 
 func init() {
-	validate = validator.New()
-	if err := validate.RegisterValidation("mimetype", validateMimetype); err != nil {
+	validate = validator.New(validator.WithRequiredStructEnabled())
+	if err := validate.RegisterValidation("mimetype_string", validateMimetype); err != nil {
 		panic(err)
 	}
 	if err := validate.RegisterValidation("rfc3066lang", validateRFC3066Lang); err != nil {
@@ -62,13 +62,13 @@ func (e *FieldError) Error() string {
 	)
 }
 
-// StructError contains validation errors on individual fields in a struct.
-type StructError struct {
+// Errors contains validation errors on individual fields in a struct.
+type Errors struct {
 	Fields []FieldError
 }
 
 // Error satisfies the Error interface.
-func (e *StructError) Error() string {
+func (e *Errors) Error() string {
 	var errStr strings.Builder
 	errStr.WriteString("contains field errors")
 	if len(e.Fields) > 0 {
@@ -85,9 +85,9 @@ func (e *StructError) Error() string {
 
 // ValidateStruct performs validation on the given struct. If validation fails, a non-nil error is returned that
 // contains the details of individual field validation issues.
-func ValidateStruct(s any) *StructError {
+func ValidateStruct(s any) *Errors {
 	if err := validate.Struct(s); err != nil {
-		errs := &StructError{}
+		errs := &Errors{}
 		if validateErrs, ok := errors.AsType[validator.ValidationErrors](err); ok {
 			errs.Fields = make([]FieldError, 0, len(validateErrs))
 			for _, err := range validateErrs {
@@ -113,7 +113,26 @@ func ValidateStruct(s any) *StructError {
 
 func ValidateField(value any, rule string) error {
 	if err := validate.Var(value, rule); err != nil {
-		return fmt.Errorf("field is invalid: %w", err)
+		errs := &Errors{}
+		if validateErrs, ok := errors.AsType[validator.ValidationErrors](err); ok {
+			errs.Fields = make([]FieldError, 0, len(validateErrs))
+			for _, err := range validateErrs {
+				errs.Fields = append(errs.Fields, FieldError{
+					Namespace:       err.Namespace(),
+					Field:           err.Field(),
+					StructNamespace: err.StructNamespace(),
+					StructField:     err.StructField(),
+					Tag:             err.Tag(),
+					ActualTag:       err.ActualTag(),
+					Kind:            fmt.Sprintf("%v", err.Kind()),
+					Type:            fmt.Sprintf("%v", err.Type()),
+					Value:           fmt.Sprintf("%v", err.Value()),
+					Param:           err.Param(),
+					Message:         err.Error(),
+				})
+			}
+			return errs
+		}
 	}
 	return nil
 }
@@ -126,14 +145,14 @@ func RegisterValidation(tag string, f validator.Func) error {
 	return nil
 }
 
-// validateMimetype checks that the value is a valid mimetype.
+// validateMimetype checks that the value is a valid mimetype. Note that this does not check whether the mimetype is a
+// registered IANA mimetype, only that it is *structurally* a mimetype.
 func validateMimetype(fl validator.FieldLevel) bool {
 	_, _, err := mime.ParseMediaType(fl.Field().String())
 	return err == nil
 }
 
-// langTagRE is a pragmatic check for an [RFC3066] language tag:
-// primary subtag, optionally followed by "-" subtags.
+// langTagRE is a pragmatic check for an [RFC3066] language tag: primary subtag, optionally followed by "-" subtags.
 var langTagRE = regexp.MustCompile(`^[A-Za-z]{1,8}(-[A-Za-z0-9]{1,8})*$`)
 
 // validateRFC3066Lang checks that the value is a valid RFC3066 language tag.
@@ -156,6 +175,7 @@ func validateAbsoluteURI(fl validator.FieldLevel) bool {
 	}
 }
 
+// percentEncodedPattern checks for a percent-encoded (i.e., URL encoded) parameter.
 var percentEncodedPattern = regexp.MustCompile(`%[0-9A-Fa-f]{2}`)
 
 // validateNotURLEncoded checks that the value is not URL encoded.
