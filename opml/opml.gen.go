@@ -121,7 +121,7 @@ type Outline struct {
 	Attrs []xml.Attr `json:"attrs,omitempty" validate:"omitempty,unique" xml:",any,attr"`
 
 	// Outlines contains any nested outlines of this outline.
-	Outlines []Outline `json:"outlines,omitempty" validate:"omitempty,dive" xml:"outline,omitempty"`
+	Outlines []Outline `json:"outlines,omitempty" validate:"omitempty,dive,validateFn" xml:"outline,omitempty"`
 
 	// Extensions is a catch-all for any additional extensions.
 	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`

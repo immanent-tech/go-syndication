@@ -281,7 +281,7 @@ components:
                 $ref: '#/components/schemas/Outline'
               x-oapi-codegen-extra-tags:
                 xml: 'outline,omitempty'
-                validate: 'omitempty,dive'
+                validate: 'omitempty,dive,validateFn'
               x-go-type-skip-optional-pointer: true
               x-order: 8
             extensions:
