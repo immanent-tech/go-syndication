@@ -5,7 +5,7 @@ on:
       - main
   schedule:
     # Mondays at 0000
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
 
 permissions:
   contents: read
@@ -34,8 +34,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          submodules: 'true'
-          persist-credentials: 'false'
+          fetch-depth: 0
+          submodules: true
+          persist-credentials: false
 
       - uses: golang/govulncheck-action@032d45514ae346b1db93c04b0c90b841c370344f # v1.1.0
         with:
