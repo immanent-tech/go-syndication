@@ -23,6 +23,8 @@
 [![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/immanent-tech/go-syndication/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 [![code with love by joshuar](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-joshuar-ff1414.svg?style=flat-square)](https://github.com/joshuar)
 
+[![tests](https://img.shields.io/github/actions/workflow/status/immanent-tech/go-syndication/test.yml?label=tests&style=flat-square)](https://github.com/immanent-tech/go-syndication/actions/workflows/test.yml)
+
 </div>
 
 <details open="open">
@@ -172,6 +174,14 @@ across the package.
 go-syndication attempts to build validation into all types using
 [go-playground/validator](https://github.com/go-playground/validator). Wherever possible, types will be annotated with
 struct tags that then allow the validation to work.
+
+The library aims to pass all the *must* test cases for Atom/RSS from
+[feedvalidator](https://github.com/w3c/feedvalidator/tree/main/testcases), as well as select tests for supported
+extensions. You can view test results with the standard `go test`:
+
+```shell
+go test -v ./...
+```
 
 ### Dynamic Namespace Support
 
