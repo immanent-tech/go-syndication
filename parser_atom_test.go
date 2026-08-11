@@ -11,7 +11,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/goforj/godump"
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/dc"
@@ -2616,7 +2615,6 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			godump.Dump(feed)
 			assert.Error(t, feed.Title.Validate())
 		},
 	},

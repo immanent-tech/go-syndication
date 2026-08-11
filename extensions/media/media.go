@@ -127,8 +127,7 @@ func (r MediaRestriction) Validate() error {
 	if r.Relationship != "allow" && r.Relationship != "deny" {
 		return fmt.Errorf("media:restriction: relationship must be \"allow\" or \"deny\", got %q", r.Relationship)
 	}
-	v := strings.TrimSpace(r.Value)
-	if v == "all" || v == "none" {
+	if v := strings.TrimSpace(r.Value); v == "all" || v == "none" {
 		return nil // type may legitimately be omitted for these reserved literals
 	}
 	switch *r.Type {
@@ -137,7 +136,7 @@ func (r MediaRestriction) Validate() error {
 	default:
 		return fmt.Errorf(
 			"media:restriction: type must be \"country\", \"uri\", or \"sharing\" unless value is \"all\"/\"none\", got %q",
-			r.Type,
+			*r.Type,
 		)
 	}
 }
