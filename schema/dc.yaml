@@ -718,81 +718,81 @@ components:
         (xmlns:dc=".../elements/1.1/"). All properties are repeatable in general RDF usage, hence []string.
       type: object
       properties:
-        contributor:
+        dc_contributor:
           $ref: '#/components/schemas/Contributor'
           x-oapi-codegen-extra-tags:
-            json: 'contributor,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ contributor,omitempty'
-        coverage:
+          x-go-type-skip-optional-pointer: true
+        dc_coverage:
           $ref: '#/components/schemas/Coverage'
           x-oapi-codegen-extra-tags:
-            json: 'coverage,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ coverage,omitempty'
-        creator:
+          x-go-type-skip-optional-pointer: true
+        dc_creator:
           $ref: '#/components/schemas/Creator'
           x-oapi-codegen-extra-tags:
-            json: 'creator,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ creator,omitempty'
-        date:
+          x-go-type-skip-optional-pointer: true
+        dc_date:
           $ref: '#/components/schemas/Date'
           x-oapi-codegen-extra-tags:
-            json: 'date,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ date,omitempty'
-        description:
+          x-go-type-skip-optional-pointer: true
+        dc_description:
           $ref: '#/components/schemas/Description'
           x-oapi-codegen-extra-tags:
-            json: 'description,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ description,omitempty'
-        format:
+          x-go-type-skip-optional-pointer: true
+        dc_format:
           $ref: '#/components/schemas/Format'
           x-oapi-codegen-extra-tags:
-            json: 'format,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ format,omitempty'
-        identifier:
+          x-go-type-skip-optional-pointer: true
+        dc_identifier:
           $ref: '#/components/schemas/Identifier'
           x-oapi-codegen-extra-tags:
-            json: 'identifier,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ identifier,omitempty'
-        language:
+          x-go-type-skip-optional-pointer: true
+        dc_language:
           $ref: '#/components/schemas/Language'
           x-oapi-codegen-extra-tags:
-            json: 'language,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ language,omitempty'
-        publisher:
+          x-go-type-skip-optional-pointer: true
+        dc_publisher:
           $ref: '#/components/schemas/Publisher'
           x-oapi-codegen-extra-tags:
-            json: 'publisher,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ publisher,omitempty'
-        relation:
+          x-go-type-skip-optional-pointer: true
+        dc_relation:
           $ref: '#/components/schemas/Relation'
           x-oapi-codegen-extra-tags:
-            json: 'relation,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ relation,omitempty'
-        rights:
+          x-go-type-skip-optional-pointer: true
+        dc_rights:
           $ref: '#/components/schemas/Rights'
           x-oapi-codegen-extra-tags:
-            json: 'rights,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ rights,omitempty'
-        source:
+          x-go-type-skip-optional-pointer: true
+        dc_source:
           $ref: '#/components/schemas/Source'
           x-oapi-codegen-extra-tags:
-            json: 'source,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ source,omitempty'
-        subject:
+          x-go-type-skip-optional-pointer: true
+        dc_subject:
           $ref: '#/components/schemas/Subject'
           x-oapi-codegen-extra-tags:
-            json: 'subject,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ subject,omitempty'
-        title:
+          x-go-type-skip-optional-pointer: true
+        dc_title:
           $ref: '#/components/schemas/Title'
           x-oapi-codegen-extra-tags:
-            json: 'title,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ title,omitempty'
-        type:
+          x-go-type-skip-optional-pointer: true
+        dc_type:
           $ref: '#/components/schemas/Type'
           x-oapi-codegen-extra-tags:
-            json: 'type,omitempty'
             xml: 'http://purl.org/dc/elements/1.1/ type,omitempty'
+          x-go-type-skip-optional-pointer: true
     DCTerms:
       description: >
         /terms/ namespace: the full, "qualified" DCMI Terms set. DCMI itself now gently encourages this namespace over
@@ -801,113 +801,168 @@ components:
         appear in feed content.
       type: object
       properties:
-        abstract:
+        dc_abstract:
           $ref: '#/components/schemas/Abstract'
-        accessRights:
+          x-go-type-skip-optional-pointer: true
+        dc_accessRights:
           $ref: '#/components/schemas/AccessRights'
-        accrualMethod:
+          x-go-type-skip-optional-pointer: true
+        dc_accrualMethod:
           $ref: '#/components/schemas/AccrualMethod'
-        accrualPeriodicity:
+          x-go-type-skip-optional-pointer: true
+        dc_accrualPeriodicity:
           $ref: '#/components/schemas/AccrualPeriodicity'
-        accrualPolicy:
+          x-go-type-skip-optional-pointer: true
+        dc_accrualPolicy:
           $ref: '#/components/schemas/AccrualPolicy'
-        alternative:
+          x-go-type-skip-optional-pointer: true
+        dc_alternative:
           $ref: '#/components/schemas/Alternative'
-        audience:
+          x-go-type-skip-optional-pointer: true
+        dc_audience:
           $ref: '#/components/schemas/Audience'
-        available:
+          x-go-type-skip-optional-pointer: true
+        dc_available:
           $ref: '#/components/schemas/Available'
-        bibliographicCitation:
+          x-go-type-skip-optional-pointer: true
+        dc_bibliographicCitation:
           $ref: '#/components/schemas/BibliographicCitation'
-        conformsTo:
+          x-go-type-skip-optional-pointer: true
+        dc_conformsTo:
           $ref: '#/components/schemas/ConformsTo'
-        contributor:
+          x-go-type-skip-optional-pointer: true
+        dc_contributor:
           $ref: '#/components/schemas/Contributor'
-        coverage:
+          x-go-type-skip-optional-pointer: true
+        dc_coverage:
           $ref: '#/components/schemas/Coverage'
-        creator:
+          x-go-type-skip-optional-pointer: true
+        dc_creator:
           $ref: '#/components/schemas/Creator'
-        created:
+          x-go-type-skip-optional-pointer: true
+        dc_created:
           $ref: '#/components/schemas/Created'
-        date:
+          x-go-type-skip-optional-pointer: true
+        dc_date:
           $ref: '#/components/schemas/Date'
-        dateAccepted:
+          x-go-type-skip-optional-pointer: true
+        dc_dateAccepted:
           $ref: '#/components/schemas/DateAccepted'
-        dateCopyrighted:
+          x-go-type-skip-optional-pointer: true
+        dc_dateCopyrighted:
           $ref: '#/components/schemas/DateCopyrighted'
-        dateSubmitted:
+          x-go-type-skip-optional-pointer: true
+        dc_dateSubmitted:
           $ref: '#/components/schemas/DateSubmitted'
-        description:
+          x-go-type-skip-optional-pointer: true
+        dc_description:
           $ref: '#/components/schemas/Description'
-        educationLevel:
+          x-go-type-skip-optional-pointer: true
+        dc_educationLevel:
           $ref: '#/components/schemas/EducationLevel'
-        extent:
+          x-go-type-skip-optional-pointer: true
+        dc_extent:
           $ref: '#/components/schemas/Extent'
-        format:
+          x-go-type-skip-optional-pointer: true
+        dc_format:
           $ref: '#/components/schemas/Format'
-        hasFormat:
+          x-go-type-skip-optional-pointer: true
+        dc_hasFormat:
           $ref: '#/components/schemas/HasFormat'
-        hasPart:
+          x-go-type-skip-optional-pointer: true
+        dc_hasPart:
           $ref: '#/components/schemas/HasPart'
-        hasVersion:
+          x-go-type-skip-optional-pointer: true
+        dc_hasVersion:
           $ref: '#/components/schemas/HasVersion'
-        identifier:
+          x-go-type-skip-optional-pointer: true
+        dc_identifier:
           $ref: '#/components/schemas/Identifier'
-        instructionalMethod:
+          x-go-type-skip-optional-pointer: true
+        dc_instructionalMethod:
           $ref: '#/components/schemas/InstructionalMethod'
-        isFormatOf:
+          x-go-type-skip-optional-pointer: true
+        dc_isFormatOf:
           $ref: '#/components/schemas/IsFormatOf'
-        isPartOf:
+          x-go-type-skip-optional-pointer: true
+        dc_isPartOf:
           $ref: '#/components/schemas/IsPartOf'
-        isReferencedBy:
+          x-go-type-skip-optional-pointer: true
+        dc_isReferencedBy:
           $ref: '#/components/schemas/IsReferencedBy'
-        isReplacedBy:
+          x-go-type-skip-optional-pointer: true
+        dc_isReplacedBy:
           $ref: '#/components/schemas/IsReplacedBy'
-        isRequiredBy:
+          x-go-type-skip-optional-pointer: true
+        dc_isRequiredBy:
           $ref: '#/components/schemas/IsRequiredBy'
-        issued:
+          x-go-type-skip-optional-pointer: true
+        dc_issued:
           $ref: '#/components/schemas/Issued'
-        isVersionOf:
+          x-go-type-skip-optional-pointer: true
+        dc_isVersionOf:
           $ref: '#/components/schemas/IsVersionOf'
-        language:
+          x-go-type-skip-optional-pointer: true
+        dc_language:
           $ref: '#/components/schemas/Language'
-        license:
+          x-go-type-skip-optional-pointer: true
+        dc_license:
           $ref: '#/components/schemas/License'
-        mediator:
+          x-go-type-skip-optional-pointer: true
+        dc_mediator:
           $ref: '#/components/schemas/Mediator'
-        medium:
+          x-go-type-skip-optional-pointer: true
+        dc_medium:
           $ref: '#/components/schemas/Medium'
-        modified:
+          x-go-type-skip-optional-pointer: true
+        dc_modified:
           $ref: '#/components/schemas/Modified'
-        provenance:
+          x-go-type-skip-optional-pointer: true
+        dc_provenance:
           $ref: '#/components/schemas/Provenance'
-        publisher:
+          x-go-type-skip-optional-pointer: true
+        dc_publisher:
           $ref: '#/components/schemas/Publisher'
-        references:
+          x-go-type-skip-optional-pointer: true
+        dc_references:
           $ref: '#/components/schemas/References'
-        relation:
+          x-go-type-skip-optional-pointer: true
+        dc_relation:
           $ref: '#/components/schemas/Relation'
-        replaces:
+          x-go-type-skip-optional-pointer: true
+        dc_replaces:
           $ref: '#/components/schemas/Replaces'
-        requires:
+          x-go-type-skip-optional-pointer: true
+        dc_requires:
           $ref: '#/components/schemas/Requires'
-        rights:
+          x-go-type-skip-optional-pointer: true
+        dc_rights:
           $ref: '#/components/schemas/Rights'
-        rightsHolder:
+          x-go-type-skip-optional-pointer: true
+        dc_rightsHolder:
           $ref: '#/components/schemas/RightsHolder'
-        source:
+          x-go-type-skip-optional-pointer: true
+        dc_source:
           $ref: '#/components/schemas/Source'
-        spatial:
+          x-go-type-skip-optional-pointer: true
+        dc_spatial:
           $ref: '#/components/schemas/Spatial'
-        subject:
+          x-go-type-skip-optional-pointer: true
+        dc_subject:
           $ref: '#/components/schemas/Subject'
-        tableOfContents:
+          x-go-type-skip-optional-pointer: true
+        dc_tableOfContents:
           $ref: '#/components/schemas/TableOfContents'
-        temporal:
+          x-go-type-skip-optional-pointer: true
+        dc_temporal:
           $ref: '#/components/schemas/Temporal'
-        title:
+          x-go-type-skip-optional-pointer: true
+        dc_title:
           $ref: '#/components/schemas/Title'
-        type:
+          x-go-type-skip-optional-pointer: true
+        dc_type:
           $ref: '#/components/schemas/Type'
-        valid:
+          x-go-type-skip-optional-pointer: true
+        dc_valid:
           $ref: '#/components/schemas/Valid'
+          x-go-type-skip-optional-pointer: true

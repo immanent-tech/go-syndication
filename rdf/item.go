@@ -13,22 +13,22 @@ import (
 var _ types.ItemSource = (*Item)(nil)
 
 func (i *Item) GetAuthors() []string {
-	if i.Creator != nil {
-		return *i.Creator
+	if len(i.DcCreator) > 0 {
+		return i.DcCreator
 	}
 	return nil
 }
 
 func (i *Item) GetContributors() []string {
-	if i.Contributor != nil {
-		return *i.Contributor
+	if len(i.DcContributor) > 0 {
+		return i.DcContributor
 	}
 	return nil
 }
 
 func (i *Item) GetCategories() []string {
-	if i.Subject != nil {
-		return *i.Subject
+	if len(i.DcSubject) > 0 {
+		return i.DcSubject
 	}
 	return nil
 }
@@ -45,8 +45,8 @@ func (i *Item) GetTitle() string {
 }
 
 func (i *Item) GetLanguage() *string {
-	if i.Language != nil {
-		return new(strings.Join(*i.Language, " "))
+	if len(i.DcLanguage) > 0 {
+		return new(strings.Join(i.DcLanguage, " "))
 	}
 	return nil
 }
@@ -68,8 +68,8 @@ func (i *Item) GetImage() *types.ImageInfo {
 }
 
 func (i *Item) GetPublishedDate() *time.Time {
-	if i.Date != nil {
-		v := (*i.Date)[0].Value
+	if len(i.DcDate) > 0 {
+		v := (i.DcDate)[0].Value
 		return &v
 	}
 	return nil
@@ -80,8 +80,8 @@ func (i *Item) GetUpdatedDate() *time.Time {
 }
 
 func (i *Item) GetRights() *string {
-	if i.Rights != nil {
-		return new(strings.Join(*i.Rights, " "))
+	if len(i.DcRights) > 0 {
+		return new(strings.Join(i.DcRights, " "))
 	}
 	return nil
 }

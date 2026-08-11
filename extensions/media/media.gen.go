@@ -357,25 +357,63 @@ type MediaContent struct {
 	// Channels is number of audio channels in the media object.
 	Channels *int `json:"channels,omitempty" validate:"omitempty,gte=0" xml:"channels,attr,omitempty"`
 
-	// Contributor is an entity responsible for making contributions to the resource.
+	// DcContributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
-	Contributor *externalRef0.Contributor `json:"contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+	DcContributor externalRef0.Contributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
 
-	// Coverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
+	// DcCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
 	// Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods may be used in preference to numeric identifiers such as sets of coordinates or date ranges. Because coverage is so broadly defined, it is preferable to use the more specific subproperties Temporal Coverage and Spatial Coverage.
-	Coverage *externalRef0.Coverage `json:"coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
+	DcCoverage externalRef0.Coverage `json:"dc_coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
 
-	// Creator is an entity responsible for making the resource.
+	// DcCreator is an entity responsible for making the resource.
 	// Recommended practice is to identify the creator with a URI. If this is not possible or feasible, a literal value that identifies the creator may be provided.
-	Creator *externalRef0.Creator `json:"creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
+	DcCreator externalRef0.Creator `json:"dc_creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
 
-	// Date is a point or period of time associated with an event in the lifecycle of the resource.
+	// DcDate is a point or period of time associated with an event in the lifecycle of the resource.
 	// Date may be used to express temporal information at any level of granularity. Recommended practice is to express the date, date/time, or period of time according to ISO 8601-1 [ISO 8601-1] or a published profile of the ISO standard, such as the W3C Note on Date and Time Formats [W3CDTF] or the Extended Date/Time Format Specification [EDTF]. If the full date is unknown, month and year (YYYY-MM) or just year (YYYY) may be used. Date ranges may be specified using ISO 8601 period of time specification in which start and end dates are separated by a '/' (slash) character. Either the start or end date may be missing.
-	Date *externalRef0.Date `json:"date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
+	DcDate externalRef0.Date `json:"dc_date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
 
-	// Description is an account of the resource.
+	// DcDescription is an account of the resource.
 	// Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
-	Description *externalRef0.Description `json:"description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+	DcDescription externalRef0.Description `json:"dc_description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+
+	// DcFormat is the file format, physical medium, or dimensions of the resource.
+	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
+	DcFormat externalRef0.Format `json:"dc_format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
+
+	// DcIdentifier is an unambiguous reference to the resource within a given context.
+	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
+	DcIdentifier externalRef0.Identifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
+
+	// DcLanguage is a language of the resource.
+	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
+	DcLanguage externalRef0.Language `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+
+	// DcPublisher is an entity responsible for making the resource available.
+	DcPublisher externalRef0.Publisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
+
+	// DcRelation is a related resource.
+	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
+	DcRelation externalRef0.Relation `json:"dc_relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+
+	// DcRights is information about rights held in and over the resource.
+	// Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If this is not possible or feasible, a literal value (name, label, or short text) may be provided.
+	DcRights externalRef0.Rights `json:"dc_rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
+
+	// DcSource is a related resource from which the described resource is derived.
+	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
+	DcSource externalRef0.Source `json:"dc_source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
+
+	// DcSubject is a topic of the resource.
+	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
+	DcSubject externalRef0.Subject `json:"dc_subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+
+	// DcTitle is a name given to the resource.
+	DcTitle externalRef0.Title `json:"dc_title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
+
+	// DcType is the nature or genre of the resource.
+	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
+	DcType externalRef0.Type `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// Duration is the number of seconds the media object plays.
 	Duration *int `json:"duration,omitempty" validate:"omitempty,gte=0" xml:"duration,attr,omitempty"`
@@ -386,19 +424,11 @@ type MediaContent struct {
 	// FileSize is the number of bytes of the media object.
 	FileSize *int `json:"fileSize,omitempty" validate:"omitempty,gte=0" xml:"fileSize,attr,omitempty"`
 
-	// Format is the file format, physical medium, or dimensions of the resource.
-	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
-	Format *externalRef0.Format `json:"format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
-
 	// Framerate is the number of frames per second for the media object.
 	Framerate *int `json:"framerate,omitempty" validate:"omitempty,gte=0" xml:"framerate,attr,omitempty"`
 
 	// Height is the height of the media object.
 	Height *Height `json:"height,omitempty" validate:"omitempty,number" xml:"height,attr,omitempty"`
-
-	// Identifier is an unambiguous reference to the resource within a given context.
-	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
-	Identifier *externalRef0.Identifier `json:"identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
 	// IsDefault determines if this is the default object that should be used for the <media:group>. There should only be one default object per <media:group>.
 	IsDefault *string `json:"isDefault,omitempty" validate:"omitempty,boolean" xml:"isDefault,attr"`
@@ -406,40 +436,14 @@ type MediaContent struct {
 	// Lang is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
 	Lang *Lang `json:"lang,omitempty" validate:"omitempty,rfc3066lang" xml:"lang,attr"`
 
-	// Language is a language of the resource.
-	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
-	Language *externalRef0.Language `json:"language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
-
 	// Medium is the type of object (image | audio | video | document | executable). While this attribute can at times seem redundant if type is supplied, it is included because it simplifies decision making on the reader side, as well as flushes out any ambiguities between MIME type and object type.
 	Medium *MediaContentMedium `json:"medium,omitempty" validate:"omitempty,oneof=image audio video document executable" xml:"medium,attr"`
-
-	// Publisher is an entity responsible for making the resource available.
-	Publisher *externalRef0.Publisher `json:"publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
-
-	// Relation is a related resource.
-	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
-	Relation *externalRef0.Relation `json:"relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
-
-	// Rights is information about rights held in and over the resource.
-	// Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If this is not possible or feasible, a literal value (name, label, or short text) may be provided.
-	Rights *externalRef0.Rights `json:"rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
 
 	// Samplingrate is the number of samples per second taken to create the media object. It is expressed in thousands of samples per second (kHz).
 	Samplingrate *int `json:"samplingrate,omitempty" validate:"omitempty,gte=0" xml:"samplingrate,attr,omitempty"`
 
-	// Source is a related resource from which the described resource is derived.
-	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
-	Source *externalRef0.Source `json:"source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
-
-	// Subject is a topic of the resource.
-	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
-	Subject *externalRef0.Subject `json:"subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
-
-	// Title is a name given to the resource.
-	Title *externalRef0.Title `json:"title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
-
 	// Type is the standard MIME type of the object.
-	Type *string `json:"type,omitempty" validate:"omitempty,mimetype" xml:"type,attr,omitempty"`
+	Type *string `json:"type,omitempty" validate:"omitempty,mimetype_string" xml:"type,attr,omitempty"`
 
 	// URL should specify the direct URL to the media object. If not included, a <media:player> element must be specified
 	URL string `json:"url" validate:"omitempty,url" xml:"url,attr,omitempty"`

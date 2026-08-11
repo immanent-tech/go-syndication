@@ -145,277 +145,277 @@ type DCDate struct {
 
 // DCElements /elements/1.1/ namespace: the legacy fifteen-element "Simple Dublin Core", most commonly what feeds actually use (xmlns:dc=".../elements/1.1/"). All properties are repeatable in general RDF usage, hence []string.
 type DCElements struct {
-	// Contributor is an entity responsible for making contributions to the resource.
+	// DcContributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
-	Contributor *Contributor `json:"contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
+	DcContributor Contributor `json:"dc_contributor,omitempty" xml:"http://purl.org/dc/elements/1.1/ contributor,omitempty"`
 
-	// Coverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
+	// DcCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
 	// Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods may be used in preference to numeric identifiers such as sets of coordinates or date ranges. Because coverage is so broadly defined, it is preferable to use the more specific subproperties Temporal Coverage and Spatial Coverage.
-	Coverage *Coverage `json:"coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
+	DcCoverage Coverage `json:"dc_coverage,omitempty" xml:"http://purl.org/dc/elements/1.1/ coverage,omitempty"`
 
-	// Creator is an entity responsible for making the resource.
+	// DcCreator is an entity responsible for making the resource.
 	// Recommended practice is to identify the creator with a URI. If this is not possible or feasible, a literal value that identifies the creator may be provided.
-	Creator *Creator `json:"creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
+	DcCreator Creator `json:"dc_creator,omitempty" xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
 
-	// Date is a point or period of time associated with an event in the lifecycle of the resource.
+	// DcDate is a point or period of time associated with an event in the lifecycle of the resource.
 	// Date may be used to express temporal information at any level of granularity. Recommended practice is to express the date, date/time, or period of time according to ISO 8601-1 [ISO 8601-1] or a published profile of the ISO standard, such as the W3C Note on Date and Time Formats [W3CDTF] or the Extended Date/Time Format Specification [EDTF]. If the full date is unknown, month and year (YYYY-MM) or just year (YYYY) may be used. Date ranges may be specified using ISO 8601 period of time specification in which start and end dates are separated by a '/' (slash) character. Either the start or end date may be missing.
-	Date *Date `json:"date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
+	DcDate Date `json:"dc_date,omitempty" xml:"http://purl.org/dc/elements/1.1/ date,omitempty"`
 
-	// Description is an account of the resource.
+	// DcDescription is an account of the resource.
 	// Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
-	Description *Description `json:"description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+	DcDescription Description `json:"dc_description,omitempty" xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
 
-	// Format is the file format, physical medium, or dimensions of the resource.
+	// DcFormat is the file format, physical medium, or dimensions of the resource.
 	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
-	Format *Format `json:"format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
+	DcFormat Format `json:"dc_format,omitempty" xml:"http://purl.org/dc/elements/1.1/ format,omitempty"`
 
-	// Identifier is an unambiguous reference to the resource within a given context.
+	// DcIdentifier is an unambiguous reference to the resource within a given context.
 	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
-	Identifier *Identifier `json:"identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
+	DcIdentifier Identifier `json:"dc_identifier,omitempty" xml:"http://purl.org/dc/elements/1.1/ identifier,omitempty"`
 
-	// Language is a language of the resource.
+	// DcLanguage is a language of the resource.
 	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
-	Language *Language `json:"language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	DcLanguage Language `json:"dc_language,omitempty" xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
 
-	// Publisher is an entity responsible for making the resource available.
-	Publisher *Publisher `json:"publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
+	// DcPublisher is an entity responsible for making the resource available.
+	DcPublisher Publisher `json:"dc_publisher,omitempty" xml:"http://purl.org/dc/elements/1.1/ publisher,omitempty"`
 
-	// Relation is a related resource.
+	// DcRelation is a related resource.
 	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
-	Relation *Relation `json:"relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
+	DcRelation Relation `json:"dc_relation,omitempty" xml:"http://purl.org/dc/elements/1.1/ relation,omitempty"`
 
-	// Rights is information about rights held in and over the resource.
+	// DcRights is information about rights held in and over the resource.
 	// Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If this is not possible or feasible, a literal value (name, label, or short text) may be provided.
-	Rights *Rights `json:"rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
+	DcRights Rights `json:"dc_rights,omitempty" xml:"http://purl.org/dc/elements/1.1/ rights,omitempty"`
 
-	// Source is a related resource from which the described resource is derived.
+	// DcSource is a related resource from which the described resource is derived.
 	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
-	Source *Source `json:"source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
+	DcSource Source `json:"dc_source,omitempty" xml:"http://purl.org/dc/elements/1.1/ source,omitempty"`
 
-	// Subject is a topic of the resource.
+	// DcSubject is a topic of the resource.
 	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
-	Subject *Subject `json:"subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+	DcSubject Subject `json:"dc_subject,omitempty" xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
 
-	// Title is a name given to the resource.
-	Title *Title `json:"title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
+	// DcTitle is a name given to the resource.
+	DcTitle Title `json:"dc_title,omitempty" xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
 
-	// Type is the nature or genre of the resource.
+	// DcType is the nature or genre of the resource.
 	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
-	Type *Type `json:"type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
+	DcType Type `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 }
 
 // DCTerms /terms/ namespace: the full, "qualified" DCMI Terms set. DCMI itself now gently encourages this namespace over /elements/1.1/ for new usage. Only the Terms for vocabulary description (domainIncludes, memberOf, rangeIncludes) are omitted. Those describe the vocabulary itself rather than a resource, and essentially never appear in feed content.
 type DCTerms struct {
-	// Abstract is a summary of the resource.
-	Abstract *Abstract `json:"abstract,omitempty" xml:"http://purl.org/dc/terms/ abstract,omitempty"`
+	// DcAbstract is a summary of the resource.
+	DcAbstract Abstract `json:"abstract,omitempty" xml:"http://purl.org/dc/terms/ abstract,omitempty"`
 
-	// AccessRights is information about who access the resource or an indication of its security status.
+	// DcAccessRights is information about who access the resource or an indication of its security status.
 	// Access Rights may include information regarding access or restrictions based on privacy, security, or other policies.
-	AccessRights *AccessRights `json:"accessRights,omitempty" xml:"http://purl.org/dc/terms/ accessRights,omitempty"`
+	DcAccessRights AccessRights `json:"accessRights,omitempty" xml:"http://purl.org/dc/terms/ accessRights,omitempty"`
 
-	// AccrualMethod is information about who access the resource or an indication of its security status.
+	// DcAccrualMethod is information about who access the resource or an indication of its security status.
 	// Recommended practice is to use a value from the Collection Description Accrual Method Vocabulary [DCMI-ACCRUALMETHOD].
-	AccrualMethod *AccrualMethod `json:"accrualMethod,omitempty" xml:"http://purl.org/dc/terms/ accrualMethod,omitempty"`
+	DcAccrualMethod AccrualMethod `json:"accrualMethod,omitempty" xml:"http://purl.org/dc/terms/ accrualMethod,omitempty"`
 
-	// AccrualPeriodicity is the frequency with which items are added to a collection.
+	// DcAccrualPeriodicity is the frequency with which items are added to a collection.
 	// Recommended practice is to use a value from the Collection Description Frequency Vocabulary [DCMI-COLLFREQ].
-	AccrualPeriodicity *AccrualPeriodicity `json:"accrualPeriodicity,omitempty" xml:"http://purl.org/dc/terms/ accrualPeriodicity,omitempty"`
+	DcAccrualPeriodicity AccrualPeriodicity `json:"accrualPeriodicity,omitempty" xml:"http://purl.org/dc/terms/ accrualPeriodicity,omitempty"`
 
-	// AccrualPolicy is the policy governing the addition of items to a collection.
+	// DcAccrualPolicy is the policy governing the addition of items to a collection.
 	// Recommended practice is to use a value from the Collection Description Accrual Policy Vocabulary [DCMI-ACCRUALPOLICY].
-	AccrualPolicy *AccrualPolicy `json:"accrualPolicy,omitempty" xml:"http://purl.org/dc/terms/ accrualPolicy,omitempty"`
+	DcAccrualPolicy AccrualPolicy `json:"accrualPolicy,omitempty" xml:"http://purl.org/dc/terms/ accrualPolicy,omitempty"`
 
-	// Alternative is an alternative name for the resource.
+	// DcAlternative is an alternative name for the resource.
 	// The distinction between titles and alternative titles is application-specific.
-	Alternative *Alternative `json:"alternative,omitempty" xml:"http://purl.org/dc/terms/ alternative,omitempty"`
+	DcAlternative Alternative `json:"alternative,omitempty" xml:"http://purl.org/dc/terms/ alternative,omitempty"`
 
-	// Audience is a class of agents for whom the resource is intended or useful.
+	// DcAudience is a class of agents for whom the resource is intended or useful.
 	// Recommended practice is to use this property with non-literal values from a vocabulary of audience types.
-	Audience *Audience `json:"audience,omitempty" xml:"http://purl.org/dc/terms/ audience,omitempty"`
+	DcAudience Audience `json:"audience,omitempty" xml:"http://purl.org/dc/terms/ audience,omitempty"`
 
-	// Available is the frequency with which items are added to a collection.
+	// DcAvailable is the frequency with which items are added to a collection.
 	// Recommended practice is to use a value from the Collection Description Frequency Vocabulary [DCMI-COLLFREQ].
-	Available *Available `json:"available,omitempty" xml:"http://purl.org/dc/terms/ available,omitempty"`
+	DcAvailable Available `json:"available,omitempty" xml:"http://purl.org/dc/terms/ available,omitempty"`
 
-	// BibliographicCitation is a bibliographic reference for the resource.
+	// DcBibliographicCitation is a bibliographic reference for the resource.
 	// Recommended practice is to include sufficient bibliographic detail to identify the resource as unambiguously as possible.
-	BibliographicCitation *BibliographicCitation `json:"bibliographicCitation,omitempty" xml:"http://purl.org/dc/terms/ bibliographicCitation,omitempty"`
+	DcBibliographicCitation BibliographicCitation `json:"bibliographicCitation,omitempty" xml:"http://purl.org/dc/terms/ bibliographicCitation,omitempty"`
 
-	// ConformsTo is an established standard to which the described resource conforms.
-	ConformsTo *ConformsTo `json:"conformsTo,omitempty" xml:"http://purl.org/dc/terms/ conformsTo,omitempty"`
+	// DcConformsTo is an established standard to which the described resource conforms.
+	DcConformsTo ConformsTo `json:"conformsTo,omitempty" xml:"http://purl.org/dc/terms/ conformsTo,omitempty"`
 
-	// Contributor is an entity responsible for making contributions to the resource.
+	// DcContributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
-	Contributor *Contributor `json:"contributor,omitempty" xml:"http://purl.org/dc/terms/ contributor,omitempty"`
+	DcContributor Contributor `json:"contributor,omitempty" xml:"http://purl.org/dc/terms/ contributor,omitempty"`
 
-	// Coverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
+	// DcCoverage is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
 	// Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods may be used in preference to numeric identifiers such as sets of coordinates or date ranges. Because coverage is so broadly defined, it is preferable to use the more specific subproperties Temporal Coverage and Spatial Coverage.
-	Coverage *Coverage `json:"coverage,omitempty" xml:"http://purl.org/dc/terms/ coverage,omitempty"`
+	DcCoverage Coverage `json:"coverage,omitempty" xml:"http://purl.org/dc/terms/ coverage,omitempty"`
 
-	// Created is the date of creation of the resource.
+	// DcCreated is the date of creation of the resource.
 	// Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
-	Created *Created `json:"created,omitempty" xml:"http://purl.org/dc/terms/ created,omitempty"`
+	DcCreated Created `json:"created,omitempty" xml:"http://purl.org/dc/terms/ created,omitempty"`
 
-	// Creator is an entity responsible for making the resource.
+	// DcCreator is an entity responsible for making the resource.
 	// Recommended practice is to identify the creator with a URI. If this is not possible or feasible, a literal value that identifies the creator may be provided.
-	Creator *Creator `json:"creator,omitempty" xml:"http://purl.org/dc/terms/ creator,omitempty"`
+	DcCreator Creator `json:"creator,omitempty" xml:"http://purl.org/dc/terms/ creator,omitempty"`
 
-	// Date is a point or period of time associated with an event in the lifecycle of the resource.
+	// DcDate is a point or period of time associated with an event in the lifecycle of the resource.
 	// Date may be used to express temporal information at any level of granularity. Recommended practice is to express the date, date/time, or period of time according to ISO 8601-1 [ISO 8601-1] or a published profile of the ISO standard, such as the W3C Note on Date and Time Formats [W3CDTF] or the Extended Date/Time Format Specification [EDTF]. If the full date is unknown, month and year (YYYY-MM) or just year (YYYY) may be used. Date ranges may be specified using ISO 8601 period of time specification in which start and end dates are separated by a '/' (slash) character. Either the start or end date may be missing.
-	Date *Date `json:"date,omitempty" xml:"http://purl.org/dc/terms/ date,omitempty"`
+	DcDate Date `json:"date,omitempty" xml:"http://purl.org/dc/terms/ date,omitempty"`
 
-	// DateAccepted is the date of acceptance of the resource.
+	// DcDateAccepted is the date of acceptance of the resource.
 	// Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty. Examples of resources to which a date of acceptance may be relevant are a thesis (accepted by a university department) or an article (accepted by a journal).
-	DateAccepted *DateAccepted `json:"dateAccepted,omitempty" xml:"http://purl.org/dc/terms/ dateAccepted,omitempty"`
+	DcDateAccepted DateAccepted `json:"dateAccepted,omitempty" xml:"http://purl.org/dc/terms/ dateAccepted,omitempty"`
 
-	// DateCopyrighted is the date of copyright of the resource.
+	// DcDateCopyrighted is the date of copyright of the resource.
 	// Typically a year. Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
-	DateCopyrighted *DateCopyrighted `json:"dateCopyrighted,omitempty" xml:"http://purl.org/dc/terms/ dateCopyrighted,omitempty"`
+	DcDateCopyrighted DateCopyrighted `json:"dateCopyrighted,omitempty" xml:"http://purl.org/dc/terms/ dateCopyrighted,omitempty"`
 
-	// DateSubmitted is the date of submission of the resource.
+	// DcDateSubmitted is the date of submission of the resource.
 	// Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty. Examples of resources to which a 'Date Submitted' may be relevant include a thesis (submitted to a university department) or an article (submitted to a journal).
-	DateSubmitted *DateSubmitted `json:"dateSubmitted,omitempty" xml:"http://purl.org/dc/terms/ dateSubmitted,omitempty"`
+	DcDateSubmitted DateSubmitted `json:"dateSubmitted,omitempty" xml:"http://purl.org/dc/terms/ dateSubmitted,omitempty"`
 
-	// Description is an account of the resource.
+	// DcDescription is an account of the resource.
 	// Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
-	Description *Description `json:"description,omitempty" xml:"http://purl.org/dc/terms/ description,omitempty"`
+	DcDescription Description `json:"description,omitempty" xml:"http://purl.org/dc/terms/ description,omitempty"`
 
-	// EducationLevel is the audience Education Level
+	// DcEducationLevel is the audience Education Level
 	// A class of agents, defined in terms of progression through an educational or training context, for which the described resource is intended.
-	EducationLevel *EducationLevel `json:"educationLevel,omitempty" xml:"http://purl.org/dc/terms/ educationLevel,omitempty"`
+	DcEducationLevel EducationLevel `json:"educationLevel,omitempty" xml:"http://purl.org/dc/terms/ educationLevel,omitempty"`
 
-	// Extent is the size or duration of the resource.
+	// DcExtent is the size or duration of the resource.
 	// Recommended practice is to specify the file size in megabytes and duration in ISO 8601 format.
-	Extent *Extent `json:"extent,omitempty" xml:"http://purl.org/dc/terms/ extent,omitempty"`
+	DcExtent Extent `json:"extent,omitempty" xml:"http://purl.org/dc/terms/ extent,omitempty"`
 
-	// Format is the file format, physical medium, or dimensions of the resource.
+	// DcFormat is the file format, physical medium, or dimensions of the resource.
 	// Recommended practice is to use a controlled vocabulary where available. For example, for file formats one could use the list of Internet Media Types [MIME]. Examples of dimensions include size and duration.
-	Format *Format `json:"format,omitempty" xml:"http://purl.org/dc/terms/ format,omitempty"`
+	DcFormat Format `json:"format,omitempty" xml:"http://purl.org/dc/terms/ format,omitempty"`
 
-	// HasFormat is a related resource that is substantially the same as the pre-existing described resource, but in another format.
+	// DcHasFormat is a related resource that is substantially the same as the pre-existing described resource, but in another format.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Is Format Of.
-	HasFormat *HasFormat `json:"hasFormat,omitempty" xml:"http://purl.org/dc/terms/ hasFormat,omitempty"`
+	DcHasFormat HasFormat `json:"hasFormat,omitempty" xml:"http://purl.org/dc/terms/ hasFormat,omitempty"`
 
-	// HasPart is a related resource that is included either physically or logically in the described resource.
+	// DcHasPart is a related resource that is included either physically or logically in the described resource.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Is Part Of.
-	HasPart *HasPart `json:"hasPart,omitempty" xml:"http://purl.org/dc/terms/ hasPart,omitempty"`
+	DcHasPart HasPart `json:"hasPart,omitempty" xml:"http://purl.org/dc/terms/ hasPart,omitempty"`
 
-	// HasVersion is a related resource that is a version, edition, or adaptation of the described resource.
-	HasVersion *HasVersion `json:"hasVersion,omitempty" xml:"http://purl.org/dc/terms/ hasVersion,omitempty"`
+	// DcHasVersion is a related resource that is a version, edition, or adaptation of the described resource.
+	DcHasVersion HasVersion `json:"hasVersion,omitempty" xml:"http://purl.org/dc/terms/ hasVersion,omitempty"`
 
-	// Identifier is an unambiguous reference to the resource within a given context.
+	// DcIdentifier is an unambiguous reference to the resource within a given context.
 	// Recommended practice is to identify the resource by means of a string conforming to an identification system. Examples include International Standard Book Number (ISBN), Digital Object Identifier (DOI), and Uniform Resource Name (URN). Persistent identifiers should be provided as HTTP URIs.
-	Identifier *Identifier `json:"identifier,omitempty" xml:"http://purl.org/dc/terms/ identifier,omitempty"`
+	DcIdentifier Identifier `json:"identifier,omitempty" xml:"http://purl.org/dc/terms/ identifier,omitempty"`
 
-	// InstructionalMethod is a process, used to engender knowledge, attitudes and skills, that the described resource is designed to support.
+	// DcInstructionalMethod is a process, used to engender knowledge, attitudes and skills, that the described resource is designed to support.
 	// Instructional Method typically includes ways of presenting instructional materials or conducting instructional activities, patterns of learner-to-learner and learner-to-instructor interactions, and mechanisms by which group and individual levels of learning are measured. Instructional methods include all aspects of the instruction and learning processes from planning and implementation through evaluation and feedback.
-	InstructionalMethod *InstructionalMethod `json:"instructionalMethod,omitempty" xml:"http://purl.org/dc/terms/ instructionalMethod,omitempty"`
+	DcInstructionalMethod InstructionalMethod `json:"instructionalMethod,omitempty" xml:"http://purl.org/dc/terms/ instructionalMethod,omitempty"`
 
-	// IsFormatOf is a pre-existing related resource that is substantially the same as the described resource, but in another format.
+	// DcIsFormatOf is a pre-existing related resource that is substantially the same as the described resource, but in another format.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Has Format.
-	IsFormatOf *IsFormatOf `json:"isFormatOf,omitempty" xml:"http://purl.org/dc/terms/ isFormatOf,omitempty"`
+	DcIsFormatOf IsFormatOf `json:"isFormatOf,omitempty" xml:"http://purl.org/dc/terms/ isFormatOf,omitempty"`
 
-	// IsPartOf is a related resource in which the described resource is physically or logically included.
+	// DcIsPartOf is a related resource in which the described resource is physically or logically included.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Has Part.
-	IsPartOf *IsPartOf `json:"isPartOf,omitempty" xml:"http://purl.org/dc/terms/ isPartOf,omitempty"`
+	DcIsPartOf IsPartOf `json:"isPartOf,omitempty" xml:"http://purl.org/dc/terms/ isPartOf,omitempty"`
 
-	// IsReferencedBy is a related resource that references, cites, or otherwise points to the described resource.
+	// DcIsReferencedBy is a related resource that references, cites, or otherwise points to the described resource.
 	// This property is intended to be used with non-literal values. This property is an inverse property of References.
-	IsReferencedBy *IsReferencedBy `json:"isReferencedBy,omitempty" xml:"http://purl.org/dc/terms/ isReferencedBy,omitempty"`
+	DcIsReferencedBy IsReferencedBy `json:"isReferencedBy,omitempty" xml:"http://purl.org/dc/terms/ isReferencedBy,omitempty"`
 
-	// IsReplacedBy is a related resource that supplants, displaces, or supersedes the described resource.
+	// DcIsReplacedBy is a related resource that supplants, displaces, or supersedes the described resource.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Replaces.
-	IsReplacedBy *IsReplacedBy `json:"isReplacedBy,omitempty" xml:"http://purl.org/dc/terms/ isReplacedBy,omitempty"`
+	DcIsReplacedBy IsReplacedBy `json:"isReplacedBy,omitempty" xml:"http://purl.org/dc/terms/ isReplacedBy,omitempty"`
 
-	// IsRequiredBy is a related resource that requires the described resource to support its function, delivery, or coherence.
+	// DcIsRequiredBy is a related resource that requires the described resource to support its function, delivery, or coherence.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Requires.
-	IsRequiredBy *IsRequiredBy `json:"isRequiredBy,omitempty" xml:"http://purl.org/dc/terms/ isRequiredBy,omitempty"`
+	DcIsRequiredBy IsRequiredBy `json:"isRequiredBy,omitempty" xml:"http://purl.org/dc/terms/ isRequiredBy,omitempty"`
 
-	// IsVersionOf is a related resource of which the described resource is a version, edition, or adaptation.
+	// DcIsVersionOf is a related resource of which the described resource is a version, edition, or adaptation.
 	// Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Has Version.
-	IsVersionOf *IsVersionOf `json:"isVersionOf,omitempty" xml:"http://purl.org/dc/terms/ isVersionOf,omitempty"`
+	DcIsVersionOf IsVersionOf `json:"isVersionOf,omitempty" xml:"http://purl.org/dc/terms/ isVersionOf,omitempty"`
 
-	// Issued is the date of formal issuance of the resource.
+	// DcIssued is the date of formal issuance of the resource.
 	// Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
-	Issued *Issued `json:"issued,omitempty" xml:"http://purl.org/dc/terms/ issued,omitempty"`
+	DcIssued Issued `json:"issued,omitempty" xml:"http://purl.org/dc/terms/ issued,omitempty"`
 
-	// Language is a language of the resource.
+	// DcLanguage is a language of the resource.
 	// Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [IETF-BCP47] language tag.
-	Language *Language `json:"language,omitempty" xml:"http://purl.org/dc/terms/ language,omitempty"`
+	DcLanguage Language `json:"language,omitempty" xml:"http://purl.org/dc/terms/ language,omitempty"`
 
-	// License is a legal document giving official permission to do something with the resource.
+	// DcLicense is a legal document giving official permission to do something with the resource.
 	// Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided.
-	License *License `json:"license,omitempty" xml:"http://purl.org/dc/terms/ license,omitempty"`
+	DcLicense License `json:"license,omitempty" xml:"http://purl.org/dc/terms/ license,omitempty"`
 
-	// Mediator is an entity that mediates access to the resource.
+	// DcMediator is an entity that mediates access to the resource.
 	// In an educational context, a mediator might be a parent, teacher, teaching assistant, or care-giver.
-	Mediator *Mediator `json:"mediator,omitempty" xml:"http://purl.org/dc/terms/ mediator,omitempty"`
+	DcMediator Mediator `json:"mediator,omitempty" xml:"http://purl.org/dc/terms/ mediator,omitempty"`
 
-	// Medium is the material or physical carrier of the resource.
-	Medium *Medium `json:"medium,omitempty" xml:"http://purl.org/dc/terms/ medium,omitempty"`
+	// DcMedium is the material or physical carrier of the resource.
+	DcMedium Medium `json:"medium,omitempty" xml:"http://purl.org/dc/terms/ medium,omitempty"`
 
-	// Modified is the date on which the resource was changed.
+	// DcModified is the date on which the resource was changed.
 	// Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
-	Modified *Modified `json:"modified,omitempty" xml:"http://purl.org/dc/terms/ modified,omitempty"`
+	DcModified Modified `json:"modified,omitempty" xml:"http://purl.org/dc/terms/ modified,omitempty"`
 
-	// Provenance is a statement of any changes in ownership and custody of the resource since its creation that are significant for its authenticity, integrity, and interpretation.
+	// DcProvenance is a statement of any changes in ownership and custody of the resource since its creation that are significant for its authenticity, integrity, and interpretation.
 	// The statement may include a description of any changes successive custodians made to the resource.
-	Provenance *Provenance `json:"provenance,omitempty" xml:"http://purl.org/dc/terms/ provenance,omitempty"`
+	DcProvenance Provenance `json:"provenance,omitempty" xml:"http://purl.org/dc/terms/ provenance,omitempty"`
 
-	// Publisher is an entity responsible for making the resource available.
-	Publisher *Publisher `json:"publisher,omitempty" xml:"http://purl.org/dc/terms/ publisher,omitempty"`
+	// DcPublisher is an entity responsible for making the resource available.
+	DcPublisher Publisher `json:"publisher,omitempty" xml:"http://purl.org/dc/terms/ publisher,omitempty"`
 
-	// References is a related resource that is referenced, cited, or otherwise pointed to by the described resource.
+	// DcReferences is a related resource that is referenced, cited, or otherwise pointed to by the described resource.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Is Referenced By.
-	References *References `json:"references,omitempty" xml:"http://purl.org/dc/terms/ references,omitempty"`
+	DcReferences References `json:"references,omitempty" xml:"http://purl.org/dc/terms/ references,omitempty"`
 
-	// Relation is a related resource.
+	// DcRelation is a related resource.
 	// Recommended practice is to identify the related resource by means of a URI. If this is not possible or feasible, a string conforming to a formal identification system may be provided.
-	Relation *Relation `json:"relation,omitempty" xml:"http://purl.org/dc/terms/ relation,omitempty"`
+	DcRelation Relation `json:"relation,omitempty" xml:"http://purl.org/dc/terms/ relation,omitempty"`
 
-	// Replaces is a related resource that is supplanted, displaced, or superseded by the described resource.
+	// DcReplaces is a related resource that is supplanted, displaced, or superseded by the described resource.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Is Replaced By.
-	Replaces *Replaces `json:"replaces,omitempty" xml:"http://purl.org/dc/terms/ replaces,omitempty"`
+	DcReplaces Replaces `json:"replaces,omitempty" xml:"http://purl.org/dc/terms/ replaces,omitempty"`
 
-	// Requires is a related resource that is required by the described resource to support its function, delivery, or coherence.
+	// DcRequires is a related resource that is required by the described resource to support its function, delivery, or coherence.
 	// This property is intended to be used with non-literal values. This property is an inverse property of Is Required By.
-	Requires *Requires `json:"requires,omitempty" xml:"http://purl.org/dc/terms/ requires,omitempty"`
+	DcRequires Requires `json:"requires,omitempty" xml:"http://purl.org/dc/terms/ requires,omitempty"`
 
-	// Rights is information about rights held in and over the resource.
+	// DcRights is information about rights held in and over the resource.
 	// Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights. Recommended practice is to refer to a rights statement with a URI. If this is not possible or feasible, a literal value (name, label, or short text) may be provided.
-	Rights *Rights `json:"rights,omitempty" xml:"http://purl.org/dc/terms/ rights,omitempty"`
+	DcRights Rights `json:"rights,omitempty" xml:"http://purl.org/dc/terms/ rights,omitempty"`
 
-	// RightsHolder is a person or organization owning or managing rights over the resource.
+	// DcRightsHolder is a person or organization owning or managing rights over the resource.
 	// Recommended practice is to refer to the rights holder with a URI. If this is not possible or feasible, a literal value that identifies the rights holder may be provided.
-	RightsHolder *RightsHolder `json:"rightsHolder,omitempty" xml:"http://purl.org/dc/terms/ rightsHolder,omitempty"`
+	DcRightsHolder RightsHolder `json:"rightsHolder,omitempty" xml:"http://purl.org/dc/terms/ rightsHolder,omitempty"`
 
-	// Source is a related resource from which the described resource is derived.
+	// DcSource is a related resource from which the described resource is derived.
 	// This property is intended to be used with non-literal values. The described resource may be derived from the related resource in whole or in part. Best practice is to identify the related resource by means of a URI or a string conforming to a formal identification system.
-	Source *Source `json:"source,omitempty" xml:"http://purl.org/dc/terms/ source,omitempty"`
+	DcSource Source `json:"source,omitempty" xml:"http://purl.org/dc/terms/ source,omitempty"`
 
-	// Spatial is spatial characteristics of the resource.
-	Spatial *Spatial `json:"spatial,omitempty" xml:"http://purl.org/dc/terms/ spatial,omitempty"`
+	// DcSpatial is spatial characteristics of the resource.
+	DcSpatial Spatial `json:"spatial,omitempty" xml:"http://purl.org/dc/terms/ spatial,omitempty"`
 
-	// Subject is a topic of the resource.
+	// DcSubject is a topic of the resource.
 	// Recommended practice is to refer to the subject with a URI. If this is not possible or feasible, a literal value that identifies the subject may be provided. Both should preferably refer to a subject in a controlled vocabulary.
-	Subject *Subject `json:"subject,omitempty" xml:"http://purl.org/dc/terms/ subject,omitempty"`
+	DcSubject Subject `json:"subject,omitempty" xml:"http://purl.org/dc/terms/ subject,omitempty"`
 
-	// TableOfContents is a list of subunits of the resource.
-	TableOfContents *TableOfContents `json:"tableOfContents,omitempty" xml:"http://purl.org/dc/terms/ tableOfContents,omitempty"`
+	// DcTableOfContents is a list of subunits of the resource.
+	DcTableOfContents TableOfContents `json:"tableOfContents,omitempty" xml:"http://purl.org/dc/terms/ tableOfContents,omitempty"`
 
-	// Temporal is temporal characteristics of the resource.
-	Temporal *Temporal `json:"temporal,omitempty" xml:"http://purl.org/dc/terms/ temporal,omitempty"`
+	// DcTemporal is temporal characteristics of the resource.
+	DcTemporal Temporal `json:"temporal,omitempty" xml:"http://purl.org/dc/terms/ temporal,omitempty"`
 
-	// Title is a name given to the resource.
-	Title *Title `json:"title,omitempty" xml:"http://purl.org/dc/terms/ title,omitempty"`
+	// DcTitle is a name given to the resource.
+	DcTitle Title `json:"title,omitempty" xml:"http://purl.org/dc/terms/ title,omitempty"`
 
-	// Type is the nature or genre of the resource.
+	// DcType is the nature or genre of the resource.
 	// Recommended practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMI-TYPE]. To describe the file format, physical medium, or dimensions of the resource, use the property Format.
-	Type *Type `json:"type,omitempty" xml:"http://purl.org/dc/terms/ type,omitempty"`
+	DcType Type `json:"type,omitempty" xml:"http://purl.org/dc/terms/ type,omitempty"`
 
-	// Valid is a date (often a range) of validity of a resource.
+	// DcValid is a date (often a range) of validity of a resource.
 	// Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
-	Valid *Valid `json:"valid,omitempty" xml:"http://purl.org/dc/terms/ valid,omitempty"`
+	DcValid Valid `json:"valid,omitempty" xml:"http://purl.org/dc/terms/ valid,omitempty"`
 }
 
 // Date is a point or period of time associated with an event in the lifecycle of the resource.

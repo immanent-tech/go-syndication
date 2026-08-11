@@ -9,22 +9,22 @@ import (
 )
 
 func (c *Channel) GetAuthors() []string {
-	if c.Creator != nil {
-		return *c.Creator
+	if len(c.DcCreator) > 0 {
+		return c.DcCreator
 	}
 	return nil
 }
 
 func (c *Channel) GetContributors() []string {
-	if c.Contributor != nil {
-		return *c.Contributor
+	if len(c.DcContributor) > 0 {
+		return c.DcContributor
 	}
 	return nil
 }
 
 func (c *Channel) GetCategories() []string {
-	if c.Subject != nil {
-		return *c.Subject
+	if len(c.DcSubject) > 0 {
+		return c.DcSubject
 	}
 	return nil
 }
@@ -38,8 +38,8 @@ func (c *Channel) GetTitle() string {
 }
 
 func (c *Channel) GetLanguage() *string {
-	if c.Language != nil {
-		return new(strings.Join(*c.Language, " "))
+	if len(c.DcLanguage) > 0 {
+		return new(strings.Join(c.DcLanguage, " "))
 	}
 	return nil
 }
@@ -57,16 +57,16 @@ func (c *Channel) SetSourceURL(value string) {
 }
 
 func (c *Channel) GetPublishedDate() *time.Time {
-	if c.Date != nil {
-		v := (*c.Date)[0].Value
+	if len(c.DcDate) > 0 {
+		v := (c.DcDate)[0].Value
 		return &v
 	}
 	return nil
 }
 
 func (c *Channel) GetRights() *string {
-	if c.Rights != nil {
-		return new(strings.Join(*c.Rights, " "))
+	if c.DcRights != nil {
+		return new(strings.Join(c.DcRights, " "))
 	}
 	return nil
 }

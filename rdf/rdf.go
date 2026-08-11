@@ -243,8 +243,8 @@ func (r *RDF) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 func (r *RDF) AutoDeclareNamespaces() {
 	need := map[string]bool{}
 
-	if r.Channel.Creator != nil || r.Channel.Date != nil ||
-		r.Channel.Publisher != nil || r.Channel.Rights != nil {
+	if r.Channel.DcCreator != nil || r.Channel.DcDate != nil ||
+		r.Channel.DcPublisher != nil || r.Channel.DcRights != nil {
 		need["dc"] = true
 	}
 	if r.Channel.SYUdatePeriod != nil ||
@@ -253,7 +253,7 @@ func (r *RDF) AutoDeclareNamespaces() {
 		need["sy"] = true
 	}
 	for _, it := range r.Items {
-		if it.Creator != nil || it.Date != nil || it.Subject != nil {
+		if it.DcCreator != nil || it.DcDate != nil || it.DcSubject != nil {
 			need["dc"] = true
 		}
 	}

@@ -55,21 +55,21 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
-			assert.Equal(t, "2002-12-31", date[0].Value.Format(time.DateOnly))
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
+			assert.Equal(t, "2002-12-31", date.Value.Format(time.DateOnly))
 		},
 	},
 	"dcdate_fractional_second.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
 			assert.Equal(
 				t,
 				"2002-12-31T19:20:30.45+01:00",
-				date[0].Value.Format("2006-01-02T15:04:05.00Z07:00"),
+				date.Value.Format("2006-01-02T15:04:05.00Z07:00"),
 			)
 		},
 	},
@@ -77,9 +77,9 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
-			assert.Equal(t, "2002-12-31T19:20+01:00", date[0].Value.Format(time.DateOnly+"T"+"15:04-07:00"))
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
+			assert.Equal(t, "2002-12-31T19:20+01:00", date.Value.Format(time.DateOnly+"T"+"15:04-07:00"))
 		},
 	},
 	// "dc_date_must_include_timezone.xml": {
@@ -89,45 +89,45 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
-			assert.Equal(t, "2002-12-31T19:20:30+01:00", date[0].Value.Format(time.RFC3339))
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
+			assert.Equal(t, "2002-12-31T19:20:30+01:00", date.Value.Format(time.RFC3339))
 		},
 	},
 	"dc_date_with_just_day.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
-			assert.Equal(t, "2003-09-24", date[0].Value.Format(time.DateOnly))
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
+			assert.Equal(t, "2003-09-24", date.Value.Format(time.DateOnly))
 		},
 	},
 	"dcdate.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
-			assert.Equal(t, "2002-12-31T01:15:07-05:00", date[0].Value.Format(time.RFC3339))
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
+			assert.Equal(t, "2002-12-31T01:15:07-05:00", date.Value.Format(time.RFC3339))
 		},
 	},
 	"dcdate_year_and_month.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
-			assert.Equal(t, "2002-12", date[0].Value.Format("2006-01"))
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
+			assert.Equal(t, "2002-12", date.Value.Format("2006-01"))
 		},
 	},
 	"dcdate_year_only.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.NotNil(t, feed.Channel.Date)
-			date := *feed.Channel.Date
-			assert.Equal(t, "2002", date[0].Value.Format("2006"))
+			assert.NotNil(t, feed.Channel.DcDate)
+			date := feed.Channel.DcDate[0]
+			assert.Equal(t, "2002", date.Value.Format("2006"))
 		},
 	},
 	"dclanguage_country_code.xml": {
@@ -499,8 +499,7 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 	for set, testSuites := range rssTests {
 		for name, suite := range testSuites {
 			testFile := filepath.Join(set, name)
-			data, err := os.ReadFile(testFile) // #nosec G304
-			if err != nil {
+			if data, err := os.ReadFile(testFile); err != nil {
 				t.Error("could not read file: " + name)
 			} else {
 				tests = append(tests, struct {
@@ -531,8 +530,7 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 			}
 			// If wantErr, make sure that occurs.
 			if tt.suite.wantInvalid {
-				err := feed.Validate()
-				if (err != nil) != tt.suite.wantInvalid {
+				if err := feed.Validate(); (err != nil) != tt.suite.wantInvalid {
 					t.Fatalf("Validate() error = %v, wantErr %v", err, tt.suite.wantInvalid)
 					return
 				}

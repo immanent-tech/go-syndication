@@ -137,8 +137,8 @@ func (i *Item) GetAuthors() []string {
 	if i.Author != nil && *i.Author != "" {
 		authors = append(authors, *i.Author)
 	}
-	if i.Creator != nil {
-		authors = append(authors, *i.Creator...)
+	if len(i.DcCreator) > 0 {
+		authors = append(authors, i.DcCreator...)
 	}
 	return authors
 }
@@ -147,16 +147,16 @@ func (i *Item) GetAuthors() []string {
 // <dc:contributor> element.
 func (i *Item) GetContributors() []string {
 	var contributors []string
-	if i.Contributor != nil {
-		contributors = append(contributors, *i.Contributor...)
+	if len(i.DcContributor) > 0 {
+		contributors = append(contributors, i.DcContributor...)
 	}
 	return contributors
 }
 
 // GetRights retrieves the rights (copyright) of the Channel. This will be the value of <dc:rights>, if found.
 func (i *Item) GetRights() *string {
-	if i.Rights != nil {
-		return new(strings.Join(*i.Rights, " "))
+	if len(i.DcRights) > 0 {
+		return new(strings.Join(i.DcRights, " "))
 	}
 	return nil
 }
@@ -165,8 +165,8 @@ func (i *Item) GetRights() *string {
 // present.
 func (i *Item) GetLanguage() *string {
 	switch {
-	case i.Language != nil:
-		return new(strings.Join(*i.Language, " "))
+	case len(i.DcLanguage) > 0:
+		return new(strings.Join(i.DcLanguage, " "))
 	default:
 		return nil
 	}
