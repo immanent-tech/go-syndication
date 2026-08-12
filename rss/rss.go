@@ -36,7 +36,7 @@ var _ types.FeedSource = (*RSS)(nil)
 const outputLayout = "Mon, 02 Jan 2006 15:04:05 -0700"
 
 // namedZoneOffsets maps RFC 822 zone abbreviations to their UTC offset in seconds. Go's time.Parse does NOT reliably
-// resolve these itself -- an unrecognized "MST"-style abbreviation is silently assigned a zero offset by the standard
+// resolve these itself. An unrecognized "MST"-style abbreviation is silently assigned a zero offset by the standard
 // library, which would misparse e.g. "EST" as UTC. We look these up ourselves instead of trusting the stdlib's
 // zone-name parsing.
 var namedZoneOffsets = map[string]int{
@@ -47,13 +47,15 @@ var namedZoneOffsets = map[string]int{
 	"PST": -8 * 3600, "PDT": -7 * 3600,
 }
 
-// dateOnlyLayouts are candidate layouts, all ending in a literal "-0700" placeholder for a *numeric* offset. We
-// normalize any named zone abbreviation in the input to a numeric offset before trying these, so a single set of
-// layouts covers both cases. Note that not all these formats conform strictly to the spec; they are gathered from
-// real-world usage.
+// dateOnlyLayouts are candidate layouts for parsing timestamps. Note that not all of these do conform to the spec, they
+// are gathered from real-world usage in feeds. Where a timezone is included, it is ended in a literal "-0700"
+// placeholder for a *numeric* offset. We normalize any named zone abbreviation in the input to a numeric offset before
+// trying these, so a single set of layouts covers both cases.
 var dateOnlyLayouts = []string{
 	"Mon, 02 Jan 2006 15:04:05 -0700",
 	"Mon, 02 Jan 06 15:04:05 -0700",
+	"Mon, 02 Jan 2006", // No time seen in the wild.
+	"Mon, 2 Jan 2006",
 	"Mon, 2 Jan 2006 15:04:05 -0700", // No leading zero sometimes found in the wild.
 	"Mon, 2 Jan 06 15:04:05 -0700",
 	"02 Jan 2006 15:04:05 -0700",
@@ -382,9 +384,8 @@ func ParseRFC822(ts string) (time.Time, error) {
 	}
 	// Otherwise, if it's already a numeric offset (+0100 / -0600) or a literal "Z", leave it as-is; the loop below will
 	// try it against each layout and Go's -0700 verb correctly parses "+HHMM"/"-HHMM".
-
 	var lastErr error
-	for _, layout := range dateOnlyLayouts {
+	for layout := range slices.Values(dateOnlyLayouts) {
 		if t, err := time.Parse(layout, ts); err == nil {
 			return t, nil
 		} else {
