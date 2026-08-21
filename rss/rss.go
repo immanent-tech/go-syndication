@@ -69,6 +69,7 @@ var dateOnlyLayouts = []string{
 	"2006 Jan 02 15:04:05 -0700", // YYYY-MMM-DD seen in the wild.
 	"2006 Jan 02 15:04:05 MST",
 	"Jan 02, 2006", // Seen in some items in the wild.
+	"2006-01-02T15:04:05+00:00",
 }
 
 // String returns the value of the Category.
