@@ -1,6 +1,6 @@
 module github.com/immanent-tech/go-syndication
 
-go 1.26.5
+go 1.26.6
 
 require (
 	github.com/go-playground/validator/v10 v10.30.3
