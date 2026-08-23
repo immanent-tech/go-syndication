@@ -7,6 +7,7 @@ package schema
 //go:generate go tool oapi-codegen -config types-cfg.yaml types.yaml
 //go:generate go tool oapi-codegen -config atom-cfg.yaml atom.yaml
 //go:generate go tool oapi-codegen -config dc-cfg.yaml dc.yaml
+//go:generate go tool oapi-codegen -config basicgeo-cfg.yaml basicgeo.yaml
 //go:generate go tool oapi-codegen -config media-rss-cfg.yaml media-rss.yaml
 //go:generate go tool oapi-codegen -config itunes-cfg.yaml itunes.yaml
 //go:generate go tool oapi-codegen -config googleplay-cfg.yaml googleplay.yaml

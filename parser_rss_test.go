@@ -16,6 +16,7 @@ import (
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type rssTestSuite struct {
@@ -537,4 +538,58 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestBasicGeo(t *testing.T) {
+	exampleFeed := rss.RSS{
+		Version: "2.0",
+		Channel: rss.Channel{
+			Title: "Geotagged items",
+			Link:  "http://example.org",
+			Items: []rss.Item{
+				{
+					Title: "A photo taken in Copenhagen",
+					Link:  "http://example.org/photo/1",
+					Lat:   55.701,
+					Long:  12.552,
+				},
+			},
+		},
+	}
+	exampleDoc := `
+ <?xml version="1.0"?>
+ <?xml-stylesheet href="/eqcenter/catalogs/rssxsl.php?feed=eqs7day-M5.xml" type="text/xsl"
+                  media="screen"?>
+ <rss version="2.0"
+      xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+      xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+     <title>USGS M5+ Earthquakes</title>
+     <description>Real-time, worldwide earthquake list for the past 7 days</description>
+     <link>https://earthquake.usgs.gov/eqcenter/</link>
+     <dc:publisher>U.S. Geological Survey</dc:publisher>
+     <pubDate>Thu, 27 Dec 2007 23:56:15 PST</pubDate>
+     <item>
+       <pubDate>Fri, 28 Dec 2007 05:24:17 GMT</pubDate>
+       <title>M 5.3, northern Sumatra, Indonesia</title>
+       <description>December 28, 2007 05:24:17 GMT</description>
+       <link>https://earthquake.usgs.gov/eqcenter/recenteqsww/Quakes/us2007llai.php</link>
+       <geo:lat>5.5319</geo:lat>
+       <geo:long>95.8972</geo:long>
+     </item>
+   </channel>
+ </rss>
+	`
+
+	t.Run("example feed", func(t *testing.T) {
+		_, err := Encode(exampleFeed)
+		require.NoError(t, err)
+	})
+
+	t.Run("example doc", func(t *testing.T) {
+		doc, err := Decode[*rss.RSS]("", strings.NewReader(exampleDoc))
+		require.NoError(t, err)
+		require.InEpsilon(t, 5.5319, doc.Channel.Items[0].Lat, 0.0001)
+		require.InEpsilon(t, 95.8972, doc.Channel.Items[0].Long, 0.0001)
+	})
 }

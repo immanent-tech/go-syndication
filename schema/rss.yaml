@@ -11,7 +11,9 @@ info:
     name: 'Joshua Rich'
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
+servers: []
 components:
   schemas:
     Timestamp:
@@ -574,6 +576,7 @@ components:
         - $ref: 'dc.yaml#/components/schemas/DCElements'
         - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
         - $ref: 'source.yaml#/components/schemas/ItemSource'
+        - $ref: 'basicgeo.yaml#/components/schemas/Position'
         - type: object
           required:
             - title
