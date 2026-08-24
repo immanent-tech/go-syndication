@@ -70,6 +70,107 @@ var dateOnlyLayouts = []string{
 	"2006 Jan 02 15:04:05 MST",
 	"Jan 02, 2006", // Seen in some items in the wild.
 	"2006-01-02T15:04:05+00:00",
+	"2006-01-02T15:04:05+0000",
+	time.RFC3339,
+}
+
+// ParseRFC822 parses an RSS date-time value leniently: it accepts both numeric zone offsets (+0100, -0600) and the
+// named zone abbreviations registered in namedZoneOffsets, with or without a weekday, with a 2- or 4-digit year, and
+// with or without seconds.
+func ParseRFC822(ts string) (time.Time, error) {
+	ts = strings.TrimSpace(ts)
+
+	fields := strings.Fields(ts)
+	if len(fields) == 0 {
+		return time.Time{}, errors.New("rss date-time: empty value")
+	}
+	lastIdx := len(fields) - 1
+	zone := fields[lastIdx]
+
+	// If the trailing token is a known named zone, rewrite it as a
+	// numeric offset so a single family of layouts handles everything.
+	if off, ok := namedZoneOffsets[strings.ToUpper(zone)]; ok {
+		sign := "+"
+		if off < 0 {
+			sign = "-"
+			off = -off
+		}
+		fields[lastIdx] = fmt.Sprintf("%s%02d%02d", sign, off/3600, (off%3600)/60)
+		ts = strings.Join(fields, " ")
+	}
+	// Otherwise, if it's already a numeric offset (+0100 / -0600) or a literal "Z", leave it as-is; the loop below will
+	// try it against each layout and Go's -0700 verb correctly parses "+HHMM"/"-HHMM".
+	var lastErr error
+	for layout := range slices.Values(dateOnlyLayouts) {
+		if t, err := time.Parse(layout, ts); err == nil {
+			return t, nil
+		} else {
+			lastErr = err
+		}
+	}
+	return time.Time{}, fmt.Errorf("rss date-time: could not parse %q: %w", ts, lastErr)
+}
+
+// IsCanonical reports whether s is already in one of the profile's three recommended universal forms -- "... +0000",
+// "... -0000", or "... GMT" -- with a well-formed date-time prefix. Useful for producers who want to flag non-canonical
+// input before emitting it verbatim.
+func IsCanonical(ts string) bool {
+	switch {
+	case strings.HasSuffix(ts, " GMT"):
+		_, err := time.Parse("Mon, 02 Jan 2006 15:04:05 GMT", ts)
+		return err == nil
+	case strings.HasSuffix(ts, " +0000"), strings.HasSuffix(ts, " -0000"):
+		_, err := time.Parse(outputLayout, ts)
+		return err == nil
+	default:
+		return false
+	}
+}
+
+func NewTimestamp(value time.Time) *Timestamp {
+	return &Timestamp{Value: value}
+}
+
+func (t Timestamp) String() string {
+	return t.Value.Format(outputLayout)
+}
+
+// MarshalXML implements xml.Marshaler. Always normalizes to UTC and emits the "+0000" form, one of the profile's three
+// recommended universal representations.
+func (t Timestamp) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
+	if t.Value.IsZero() {
+		return fmt.Errorf("rss timestamp: zero time.Time value for <%s>", start.Name.Local)
+	}
+	if err := enc.EncodeToken(start); err != nil {
+		return fmt.Errorf("rss timestamp: encode start element: %w", err)
+	}
+	formatted := t.Value.UTC().Format(outputLayout)
+	if err := enc.EncodeToken(xml.CharData(formatted)); err != nil {
+		return fmt.Errorf("rss timestamp: encode: %w", err)
+	}
+
+	if err := enc.EncodeToken(start.End()); err != nil {
+		return fmt.Errorf("rss timestamp: encode end element: %w", err)
+	}
+
+	return nil
+}
+
+// UnmarshalXML implements xml.Unmarshaler, accepting any RFC 822-conformant value (per the profile's requirements)
+// rather than only the canonical output forms.
+func (t *Timestamp) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	var valueStruct struct {
+		Value string `xml:",chardata"`
+	}
+	if err := dec.DecodeElement(&valueStruct, &start); err != nil {
+		return fmt.Errorf("rss timestamp: decode start element: %w", err)
+	}
+	parsed, err := ParseRFC822(valueStruct.Value)
+	if err != nil {
+		return fmt.Errorf("<%s>: %w", start.Name.Local, err)
+	}
+	t.Value = parsed
+	return nil
 }
 
 // String returns the value of the Category.
@@ -357,103 +458,4 @@ func (r *RSS) AutoDeclareNamespaces() {
 			r.Namespaces = append(r.Namespaces, extensions.NewNamespace(prefix))
 		}
 	}
-}
-
-// ParseRFC822 parses an RSS date-time value leniently: it accepts both numeric zone offsets (+0100, -0600) and the
-// named zone abbreviations registered in namedZoneOffsets, with or without a weekday, with a 2- or 4-digit year, and
-// with or without seconds.
-func ParseRFC822(ts string) (time.Time, error) {
-	ts = strings.TrimSpace(ts)
-
-	fields := strings.Fields(ts)
-	if len(fields) == 0 {
-		return time.Time{}, errors.New("rss date-time: empty value")
-	}
-	lastIdx := len(fields) - 1
-	zone := fields[lastIdx]
-
-	// If the trailing token is a known named zone, rewrite it as a
-	// numeric offset so a single family of layouts handles everything.
-	if off, ok := namedZoneOffsets[strings.ToUpper(zone)]; ok {
-		sign := "+"
-		if off < 0 {
-			sign = "-"
-			off = -off
-		}
-		fields[lastIdx] = fmt.Sprintf("%s%02d%02d", sign, off/3600, (off%3600)/60)
-		ts = strings.Join(fields, " ")
-	}
-	// Otherwise, if it's already a numeric offset (+0100 / -0600) or a literal "Z", leave it as-is; the loop below will
-	// try it against each layout and Go's -0700 verb correctly parses "+HHMM"/"-HHMM".
-	var lastErr error
-	for layout := range slices.Values(dateOnlyLayouts) {
-		if t, err := time.Parse(layout, ts); err == nil {
-			return t, nil
-		} else {
-			lastErr = err
-		}
-	}
-	return time.Time{}, fmt.Errorf("rss date-time: could not parse %q: %w", ts, lastErr)
-}
-
-// IsCanonical reports whether s is already in one of the profile's three recommended universal forms -- "... +0000",
-// "... -0000", or "... GMT" -- with a well-formed date-time prefix. Useful for producers who want to flag non-canonical
-// input before emitting it verbatim.
-func IsCanonical(ts string) bool {
-	switch {
-	case strings.HasSuffix(ts, " GMT"):
-		_, err := time.Parse("Mon, 02 Jan 2006 15:04:05 GMT", ts)
-		return err == nil
-	case strings.HasSuffix(ts, " +0000"), strings.HasSuffix(ts, " -0000"):
-		_, err := time.Parse(outputLayout, ts)
-		return err == nil
-	default:
-		return false
-	}
-}
-
-func NewTimestamp(value time.Time) *Timestamp {
-	return &Timestamp{Value: value}
-}
-
-func (t Timestamp) String() string {
-	return t.Value.Format(outputLayout)
-}
-
-// MarshalXML implements xml.Marshaler. Always normalizes to UTC and emits the "+0000" form, one of the profile's three
-// recommended universal representations.
-func (t Timestamp) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
-	if t.Value.IsZero() {
-		return fmt.Errorf("rss timestamp: zero time.Time value for <%s>", start.Name.Local)
-	}
-	if err := enc.EncodeToken(start); err != nil {
-		return fmt.Errorf("rss timestamp: encode start element: %w", err)
-	}
-	formatted := t.Value.UTC().Format(outputLayout)
-	if err := enc.EncodeToken(xml.CharData(formatted)); err != nil {
-		return fmt.Errorf("rss timestamp: encode: %w", err)
-	}
-
-	if err := enc.EncodeToken(start.End()); err != nil {
-		return fmt.Errorf("rss timestamp: encode end element: %w", err)
-	}
-
-	return nil
-}
-
-// UnmarshalXML implements xml.Unmarshaler, accepting any RFC 822-conformant value (per the profile's requirements)
-// rather than only the canonical output forms.
-func (t *Timestamp) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
-	var valueStruct struct {
-		Value string `xml:",chardata"`
-	}
-	if err := dec.DecodeElement(&valueStruct, &start); err != nil {
-		return fmt.Errorf("rss timestamp: decode start element: %w", err)
-	}
-	parsed, err := ParseRFC822(valueStruct.Value)
-	if err != nil {
-		return fmt.Errorf("<%s>: %w", start.Name.Local, err)
-	}
-	t.Value = parsed
-	return nil
 }
