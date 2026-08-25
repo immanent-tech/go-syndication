@@ -46,7 +46,7 @@ func TestStandalone(t *testing.T) {
 			err := xml.Unmarshal([]byte(tt.data), &doc)
 			require.NoError(t, err)
 			assert.InEpsilon(t, 55.701, doc.Point.Lat, 0.001)
-			assert.InEpsilon(t, 12.552, doc.Point.Long, 0.001)
+			assert.InEpsilon(t, 12.552, doc.Point.Lon, 0.001)
 		})
 	}
 }

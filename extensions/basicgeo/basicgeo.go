@@ -16,7 +16,7 @@ func (ll LatLong) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	if err := enc.EncodeToken(start); err != nil {
 		return fmt.Errorf("marshal geo:lat_long: %w", err)
 	}
-	value := strconv.FormatFloat(ll.Lat, 'f', -1, 64) + "," + strconv.FormatFloat(ll.Long, 'f', -1, 64)
+	value := strconv.FormatFloat(ll.Lat, 'f', -1, 64) + "," + strconv.FormatFloat(ll.Lon, 'f', -1, 64)
 	if err := enc.EncodeToken(xml.CharData(value)); err != nil {
 		return fmt.Errorf("marshal geo:lat_long: %w", err)
 	}
@@ -45,16 +45,16 @@ func (ll *LatLong) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error 
 	if err != nil {
 		return fmt.Errorf("geo:lat_long: invalid longitude %q: %w", parts[1], err)
 	}
-	ll.Lat, ll.Long = lat, long
+	ll.Lat, ll.Lon = lat, long
 	return nil
 }
 
 // ToPosition / FromLatLong convert between the two equivalent encodings, since a document might legitimately use
 // either.
 func (ll LatLong) ToPosition() Position {
-	return Position{Lat: ll.Lat, Long: ll.Long}
+	return Position{Lat: ll.Lat, Lon: ll.Lon}
 }
 
 func FromPosition(p Position) (LatLong, bool) {
-	return LatLong{Lat: p.Lat, Long: p.Long}, true
+	return LatLong{Lat: p.Lat, Lon: p.Lon}, true
 }

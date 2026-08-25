@@ -551,7 +551,7 @@ func TestBasicGeo(t *testing.T) {
 					Title: "A photo taken in Copenhagen",
 					Link:  "http://example.org/photo/1",
 					Lat:   55.701,
-					Long:  12.552,
+					Lon:   12.552,
 				},
 			},
 		},
@@ -590,6 +590,6 @@ func TestBasicGeo(t *testing.T) {
 		doc, err := Decode[*rss.RSS]("", strings.NewReader(exampleDoc))
 		require.NoError(t, err)
 		require.InEpsilon(t, 5.5319, doc.Channel.Items[0].Lat, 0.0001)
-		require.InEpsilon(t, 95.8972, doc.Channel.Items[0].Long, 0.0001)
+		require.InEpsilon(t, 95.8972, doc.Channel.Items[0].Lon, 0.0001)
 	})
 }

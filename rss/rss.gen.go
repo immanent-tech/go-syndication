@@ -628,8 +628,8 @@ type Item struct {
 	// Link is the URL of the item.
 	Link string `json:"link,omitzero" validate:"required_without=Description,url" xml:"link,omitempty"`
 
-	// Long is the longitude in decimal degress
-	Long externalRef2.Longitude `json:"long" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	// Lon is the longitude in decimal degress
+	Lon externalRef2.Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 
 	// Point a single coordinate pair (georss:point).
 	Point *externalRef4.Point `json:"point,omitempty" xml:"http://www.georss.org/georss point"`

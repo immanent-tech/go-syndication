@@ -41,11 +41,11 @@ components:
       type: object
       required:
         - lat
-        - long
+        - lon
       properties:
         lat:
           $ref: '#/components/schemas/Latitude'
-        long:
+        lon:
           $ref: '#/components/schemas/Longitude'
         alt:
           $ref: '#/components/schemas/Altitude'
@@ -55,11 +55,11 @@ components:
       type: object
       required:
         - lat
-        - long
+        - lon
       properties:
         lat:
           $ref: '#/components/schemas/Latitude'
-        long:
+        lon:
           $ref: '#/components/schemas/Longitude'
     Point:
       description: >
@@ -67,11 +67,11 @@ components:
       type: object
       required:
         - lat
-        - long
+        - lon
       properties:
         lat:
           $ref: '#/components/schemas/Latitude'
-        long:
+        lon:
           $ref: '#/components/schemas/Longitude'
         alt:
           $ref: '#/components/schemas/Altitude'

@@ -11,8 +11,8 @@ type LatLong struct {
 	// Lat is the latitude in decimal degress
 	Lat Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
-	// Long is the longitude in decimal degress
-	Long Longitude `json:"long" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	// Lon is the longitude in decimal degress
+	Lon Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 }
 
 // Latitude is the latitude in decimal degress
@@ -38,8 +38,8 @@ type Point struct {
 	// Lat is the latitude in decimal degress
 	Lat Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
-	// Long is the longitude in decimal degress
-	Long Longitude `json:"long" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	// Lon is the longitude in decimal degress
+	Lon Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 }
 
 // Position is a position, typically described using a coordinate system relative to Earth. Uniquely identified by lat/long/alt.
@@ -50,6 +50,6 @@ type Position struct {
 	// Lat is the latitude in decimal degress
 	Lat Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
-	// Long is the longitude in decimal degress
-	Long Longitude `json:"long" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	// Lon is the longitude in decimal degress
+	Lon Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 }
