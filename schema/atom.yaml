@@ -616,6 +616,7 @@ components:
         - $ref: 'dc.yaml#/components/schemas/DCElements'
         - $ref: '#/components/schemas/CommonAttributes'
         - $ref: 'source.yaml#/components/schemas/ItemSource'
+        - $ref: 'basicgeo.yaml#/components/schemas/Position'
         - type: object
           required:
             - ID
