@@ -15,6 +15,7 @@ var WellKnownNamespaces = map[string]string{
 	"syn":     "http://purl.org/rss/1.0/modules/syndication/",
 	"itunes":  "http://www.itunes.com/dtds/podcast-1.0.dtd",
 	"georss":  "http://www.georss.org/georss",
+	"geo":     "http://www.w3.org/2003/01/geo/wgs84_pos#",
 	"wfw":     "http://wellformedweb.org/CommentAPI/",
 }
 

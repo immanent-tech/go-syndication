@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+const geoNS = "http://www.w3.org/2003/01/geo/wgs84_pos#"
+
 func (ll LatLong) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	if err := enc.EncodeToken(start); err != nil {
 		return fmt.Errorf("marshal geo:lat_long: %w", err)
