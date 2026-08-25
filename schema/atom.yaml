@@ -617,6 +617,7 @@ components:
         - $ref: '#/components/schemas/CommonAttributes'
         - $ref: 'source.yaml#/components/schemas/ItemSource'
         - $ref: 'basicgeo.yaml#/components/schemas/Position'
+        - $ref: 'georss.yaml#/components/schemas/GeoRSSSimple'
         - type: object
           required:
             - ID

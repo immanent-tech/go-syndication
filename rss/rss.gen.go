@@ -11,11 +11,12 @@ import (
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions"
 	externalRef2 "github.com/immanent-tech/go-syndication/extensions/basicgeo"
 	externalRef3 "github.com/immanent-tech/go-syndication/extensions/dc"
-	externalRef4 "github.com/immanent-tech/go-syndication/extensions/googleplay"
-	externalRef5 "github.com/immanent-tech/go-syndication/extensions/itunes"
-	externalRef6 "github.com/immanent-tech/go-syndication/extensions/media"
-	externalRef7 "github.com/immanent-tech/go-syndication/extensions/rss"
-	externalRef8 "github.com/immanent-tech/go-syndication/extensions/source"
+	externalRef4 "github.com/immanent-tech/go-syndication/extensions/georss"
+	externalRef5 "github.com/immanent-tech/go-syndication/extensions/googleplay"
+	externalRef6 "github.com/immanent-tech/go-syndication/extensions/itunes"
+	externalRef7 "github.com/immanent-tech/go-syndication/extensions/media"
+	externalRef8 "github.com/immanent-tech/go-syndication/extensions/rss"
+	externalRef9 "github.com/immanent-tech/go-syndication/extensions/source"
 )
 
 // Defines values for CloudProtocol.
@@ -112,137 +113,137 @@ type Category struct {
 // Channel is the element containing metadata (Channel elements) and items.
 type Channel struct {
 	// GooglePlayCategory a taxonomy for the object.
-	GooglePlayCategory *externalRef4.Category `json:"googleplay_category" xml:"http://www.google.com/schemas/play-podcasts/1.0 category,omitempty"`
+	GooglePlayCategory *externalRef5.Category `json:"googleplay_category" xml:"http://www.google.com/schemas/play-podcasts/1.0 category,omitempty"`
 
 	// ItunesAuthor is the author of the show content.
-	ItunesAuthor *externalRef5.Author `json:"itunes_author" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd author,omitempty"`
+	ItunesAuthor *externalRef6.Author `json:"itunes_author" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd author,omitempty"`
 
 	// ItunesCategory is the set of all taxonomies that represent the show.
-	ItunesCategory *externalRef5.Categories `json:"itunes_category" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty"`
+	ItunesCategory *externalRef6.Categories `json:"itunes_category" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty"`
 
 	// ItunesExplicit indicates whether the content is explicit in nature.
-	ItunesExplicit *externalRef5.Explicit `json:"itunes_explicit" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd explicit,omitempty"`
+	ItunesExplicit *externalRef6.Explicit `json:"itunes_explicit" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd explicit,omitempty"`
 
 	// ItunesImage is the artwork for the show.
-	ItunesImage *externalRef5.Image `json:"itunes_image" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty"`
-	ItunesOwner *externalRef5.Owner `json:"itunes_owner" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd owner,omitempty"`
+	ItunesImage *externalRef6.Image `json:"itunes_image" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty"`
+	ItunesOwner *externalRef6.Owner `json:"itunes_owner" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd owner,omitempty"`
 
 	// ItunesSubtitle is a subtitle for the show content.
-	ItunesSubtitle *externalRef5.Subtitle `json:"itunes_subtitle" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd subtitle,omitempty"`
+	ItunesSubtitle *externalRef6.Subtitle `json:"itunes_subtitle" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd subtitle,omitempty"`
 
 	// ItunesSummary is a summary of the show content.
-	ItunesSummary *externalRef5.Summary `json:"itunes_summary" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd summary,omitempty"`
+	ItunesSummary *externalRef6.Summary `json:"itunes_summary" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd summary,omitempty"`
 
 	// ItunesType is the type of show
-	ItunesType *externalRef5.Type `json:"itunes_type" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty"`
+	ItunesType *externalRef6.Type `json:"itunes_type" xml:"http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
-	MediaBackLinks externalRef6.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
+	MediaBackLinks externalRef7.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
 
 	// MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
-	MediaCategory *externalRef6.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
+	MediaCategory *externalRef7.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef6.MediaComments `json:"media_comments"`
+	MediaComments externalRef7.MediaComments `json:"media_comments"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
-	MediaCommunity *externalRef6.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
+	MediaCommunity *externalRef7.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef6.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef7.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
-	MediaCopyright *externalRef6.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
+	MediaCopyright *externalRef7.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
 
 	// MediaCredits a list of credits for the object.
-	MediaCredits externalRef6.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
+	MediaCredits externalRef7.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
 
 	// MediaDescription is a short description describing the media object typically a sentence in length.
-	MediaDescription *externalRef6.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
+	MediaDescription *externalRef7.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
 
 	// MediaEmbed allows inclusion of player-specific information in the form of key-value (Param) pairs.
-	MediaEmbed *externalRef6.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
+	MediaEmbed *externalRef7.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
 
 	// MediaGroup allows grouping of <media:content> elements that are effectively the same content, yet different representations. For instance: the same song recorded in both the WAV and MP3 format.
-	MediaGroup *externalRef6.MediaGroup `json:"media_group,omitempty" xml:"http://search.yahoo.com/mrss/ group,omitempty"`
+	MediaGroup *externalRef7.MediaGroup `json:"media_group,omitempty" xml:"http://search.yahoo.com/mrss/ group,omitempty"`
 
 	// MediaHashes a list of hashes for the object.
-	MediaHashes externalRef6.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
+	MediaHashes externalRef7.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
 
 	// MediaKeywords are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and phrases should be comma-delimited.
-	MediaKeywords *externalRef6.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
+	MediaKeywords *externalRef7.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
 
 	// MediaLicense link to specify the machine-readable license associated with the content.
-	MediaLicense *externalRef6.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
+	MediaLicense *externalRef7.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
 
 	// MediaPeerLink contains P2P link.
-	MediaPeerLink *externalRef6.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
+	MediaPeerLink *externalRef7.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
 
 	// MediaPlayer allows the media object to be accessed through a web browser media player console.
-	MediaPlayer *externalRef6.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
+	MediaPlayer *externalRef7.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
 
 	// MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
-	MediaPrice *externalRef6.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
+	MediaPrice *externalRef7.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
 
 	// MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
-	MediaRating *externalRef6.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
+	MediaRating *externalRef7.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
 
 	// MediaResponses allows inclusion of a list of all media responses a media object has received.
-	MediaResponses externalRef6.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
+	MediaResponses externalRef7.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef6.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef7.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
-	MediaRights *externalRef6.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
+	MediaRights *externalRef7.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
 
 	// MediaScenes specifies various scenes within a media object.
-	MediaScenes externalRef6.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
+	MediaScenes externalRef7.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
 
 	// MediaStatus specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
-	MediaStatus *externalRef6.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
+	MediaStatus *externalRef7.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
 
 	// MediaSubTitle contains subtitle/CC link.
-	MediaSubTitle *externalRef6.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
+	MediaSubTitle *externalRef7.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
 
 	// MediaTexts a list of texts for the object.
-	MediaTexts externalRef6.MediaTexts `json:"media_texts" xml:"text,omitempty"`
+	MediaTexts externalRef7.MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails externalRef6.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails externalRef7.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle *externalRef6.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+	MediaTitle *externalRef7.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// SYUdatePeriod is the period over which the channel format is updated.
-	SYUdatePeriod *externalRef7.SYUpdatePeriod `json:"update_period,omitempty" validate:"omitempty,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
+	SYUdatePeriod *externalRef8.SYUpdatePeriod `json:"update_period,omitempty" validate:"omitempty,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
 
 	// SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
-	SYUpdateBase *externalRef7.SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
+	SYUpdateBase *externalRef8.SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
-	SYUpdateFrequency *externalRef7.SYUpdateFrequency `json:"update_frequency,omitempty" validate:"omitempty,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
-	SourceAccount     []externalRef8.Account          `json:"SourceAccount,omitempty" xml:"https://source.scripting.com/ account,omitempty"`
+	SYUpdateFrequency *externalRef8.SYUpdateFrequency `json:"update_frequency,omitempty" validate:"omitempty,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	SourceAccount     []externalRef9.Account          `json:"SourceAccount,omitempty" xml:"https://source.scripting.com/ account,omitempty"`
 
 	// SourceArchive is links to the calendar-structured archive for the feed.  The folder pointed to by this address contains one folder for each year, 2009, 2010, 2011, etc. Each of those folders contains one folder for each month, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12. The month folders must be zero-padded to two places. Folders may be missing, indicating that there is no archived content for the month. Each of the month folders contains folders for the days of the month. Day folder names are also zero-padded to two places and may be missing if there were no updates on the given day. Each day folder contains a file named rss.xml, unless the optional <source:filename> sub-element is supplied, which overrides the default. This makes it possible for a single calendar structure to store the archive of more than one feed.
-	SourceArchive *externalRef8.Archive `json:"archive,omitempty" xml:"https://source.scripting.com/ archive,omitempty"`
+	SourceArchive *externalRef9.Archive `json:"archive,omitempty" xml:"https://source.scripting.com/ archive,omitempty"`
 
 	// SourceBlogroll points to the blogroll for the site associated with the feed, an OPML subscription list.
-	SourceBlogroll *externalRef8.Blogroll `json:"blogroll,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ blogroll,omitempty"`
+	SourceBlogroll *externalRef9.Blogroll `json:"blogroll,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ blogroll,omitempty"`
 
 	// SourceCloud provides a lot of information about the cloud server in a verbose way, specifying the domain, port, path and protocol.
-	SourceCloud *externalRef8.Cloud `json:"cloud,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ cloud,omitempty"`
+	SourceCloud *externalRef9.Cloud `json:"cloud,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ cloud,omitempty"`
 
 	// SourceLikes is an instance of the the scripting.com likes software (a Node application) or a server that emulates its API.
 	// Feed readers can use the server URL to form a like icon for each item that integrates with other feed readers. Perhaps the beginning of a way to build a connection between people who read a blog via various feed reader software. A demo app provides example code in JavaScript.
-	SourceLikes *externalRef8.Likes `json:"likes,omitempty" xml:"https://source.scripting.com/ likes,omitempty"`
+	SourceLikes *externalRef9.Likes `json:"likes,omitempty" xml:"https://source.scripting.com/ likes,omitempty"`
 
 	// SourceLocalTime is a simple entirely human-readable way for the editor of the site to see what time, in his or her time zone, the feed was last updated. Must-have for debugging and sanity-preservation if you have trouble converting GMT to local time in your head (as I do). The format here is entirely up to the editor of the site.
-	SourceLocalTime *externalRef8.LocalTime `json:"localTime,omitempty" xml:"https://source.scripting.com/ localTime,omitempty"`
+	SourceLocalTime *externalRef9.LocalTime `json:"localTime,omitempty" xml:"https://source.scripting.com/ localTime,omitempty"`
 
 	// SourceSelf is the canonical URL for the feed.
-	SourceSelf             *externalRef8.Self              `json:"self,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ self,omitempty"`
-	SourceSubscriptionList []externalRef8.SubscriptionList `json:"SourceSubscriptionList,omitempty" xml:"https://source.scripting.com/ subscriptionList,omitempty"`
+	SourceSelf             *externalRef9.Self              `json:"self,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ self,omitempty"`
+	SourceSubscriptionList []externalRef9.SubscriptionList `json:"SourceSubscriptionList,omitempty" xml:"https://source.scripting.com/ subscriptionList,omitempty"`
 	XMLName                xml.Name                        `json:"XMLName" validate:"required" xml:"channel"`
 	AtomLink               *AtomLink                       `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
@@ -425,101 +426,101 @@ type Image struct {
 // Item An item may represent a "story" -- much like a story in a newspaper or magazine; if so its description is a synopsis of the story, and the link points to the full story. An item may also be complete in itself, if so, the description contains the text (entity-encoded HTML is allowed; see examples), and the link and title may be omitted. All elements of an item are optional, however at least one of title or description must be present.
 type Item struct {
 	// ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
-	ContentEncoded *externalRef7.ContentEncoded `json:"content_encoded,omitempty" xml:"http://purl.org/rss/1.0/modules/content/ encoded,omitempty"`
+	ContentEncoded *externalRef8.ContentEncoded `json:"content_encoded,omitempty" xml:"http://purl.org/rss/1.0/modules/content/ encoded,omitempty"`
 
 	// MediaBackLinks allows inclusion of all the URLs pointing to a media object.
-	MediaBackLinks externalRef6.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
+	MediaBackLinks externalRef7.MediaBacklinks `json:"media_backlinks,omitempty" xml:"http://search.yahoo.com/mrss/ backLink,omitempty"`
 
 	// MediaCategory allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
-	MediaCategory *externalRef6.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
+	MediaCategory *externalRef7.MediaCategory `json:"media_category" xml:"http://search.yahoo.com/mrss/ category,omitempty"`
 
 	// MediaComments is a list of comments the media object has received.
-	MediaComments externalRef6.MediaComments `json:"media_comments"`
+	MediaComments externalRef7.MediaComments `json:"media_comments"`
 
 	// MediaCommunity stands for the community related content. This allows inclusion of the user perception about a media object in the form of view count, ratings and tags.
-	MediaCommunity *externalRef6.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
+	MediaCommunity *externalRef7.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef6.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef7.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
-	MediaCopyright *externalRef6.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
+	MediaCopyright *externalRef7.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
 
 	// MediaCredits a list of credits for the object.
-	MediaCredits externalRef6.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
+	MediaCredits externalRef7.MediaCredits `json:"media_credits" xml:"credit,omitempty"`
 
 	// MediaDescription is a short description describing the media object typically a sentence in length.
-	MediaDescription *externalRef6.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
+	MediaDescription *externalRef7.MediaDescription `json:"media_description" xml:"http://search.yahoo.com/mrss/ description,omitempty"`
 
 	// MediaEmbed allows inclusion of player-specific information in the form of key-value (Param) pairs.
-	MediaEmbed *externalRef6.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
+	MediaEmbed *externalRef7.MediaEmbed `json:"media_embed" xml:"http://search.yahoo.com/mrss/ embed,omitempty"`
 
 	// MediaGroup allows grouping of <media:content> elements that are effectively the same content, yet different representations. For instance: the same song recorded in both the WAV and MP3 format.
-	MediaGroup *externalRef6.MediaGroup `json:"media_group,omitempty" xml:"http://search.yahoo.com/mrss/ group,omitempty"`
+	MediaGroup *externalRef7.MediaGroup `json:"media_group,omitempty" xml:"http://search.yahoo.com/mrss/ group,omitempty"`
 
 	// MediaHashes a list of hashes for the object.
-	MediaHashes externalRef6.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
+	MediaHashes externalRef7.MediaHashes `json:"media_hashes" xml:"hash,omitempty"`
 
 	// MediaKeywords are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and phrases should be comma-delimited.
-	MediaKeywords *externalRef6.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
+	MediaKeywords *externalRef7.MediaKeywords `json:"media_keywords" xml:"http://search.yahoo.com/mrss/ keywords,omitempty"`
 
 	// MediaLicense link to specify the machine-readable license associated with the content.
-	MediaLicense *externalRef6.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
+	MediaLicense *externalRef7.MediaLicense `json:"media_license" xml:"http://search.yahoo.com/mrss/ license,omitempty"`
 
 	// MediaPeerLink contains P2P link.
-	MediaPeerLink *externalRef6.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
+	MediaPeerLink *externalRef7.MediaPeerLink `json:"media_peerlink" xml:"http://search.yahoo.com/mrss/ peerLink,omitempty"`
 
 	// MediaPlayer allows the media object to be accessed through a web browser media player console.
-	MediaPlayer *externalRef6.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
+	MediaPlayer *externalRef7.MediaPlayer `json:"media_player" xml:"http://search.yahoo.com/mrss/ player,omitempty"`
 
 	// MediaPrice includes pricing information about a media object. If this tag is not present, the media object is supposed to be free.
-	MediaPrice *externalRef6.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
+	MediaPrice *externalRef7.MediaPrice `json:"media_price" xml:"http://search.yahoo.com/mrss/ price,omitempty"`
 
 	// MediaRating allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions are necessary.
-	MediaRating *externalRef6.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
+	MediaRating *externalRef7.MediaRating `json:"media_rating" xml:"http://search.yahoo.com/mrss/ rating,omitempty"`
 
 	// MediaResponses allows inclusion of a list of all media responses a media object has received.
-	MediaResponses externalRef6.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
+	MediaResponses externalRef7.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef6.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef7.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
-	MediaRights *externalRef6.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
+	MediaRights *externalRef7.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
 
 	// MediaScenes specifies various scenes within a media object.
-	MediaScenes externalRef6.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
+	MediaScenes externalRef7.MediaScenes `json:"media_scenes" xml:"http://search.yahoo.com/mrss/ scene,omitempty"`
 
 	// MediaStatus specifies the status of a media object -- whether it's still active or it has been blocked/deleted.
-	MediaStatus *externalRef6.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
+	MediaStatus *externalRef7.MediaStatus `json:"media_status" xml:"http://search.yahoo.com/mrss/ status,omitempty"`
 
 	// MediaSubTitle contains subtitle/CC link.
-	MediaSubTitle *externalRef6.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
+	MediaSubTitle *externalRef7.MediaSubTitle `json:"media_subtitle,omitempty" xml:"http://search.yahoo.com/mrss/ subTitle,omitempty"`
 
 	// MediaTexts a list of texts for the object.
-	MediaTexts externalRef6.MediaTexts `json:"media_texts" xml:"text,omitempty"`
+	MediaTexts externalRef7.MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails externalRef6.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails externalRef7.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle *externalRef6.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+	MediaTitle *externalRef7.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
 
 	// PermaLink is defined as a URL for a resource that is always available (similar to a PURL). Some weblogs cycle through articles and a URL may become invalid after a period of time. Permalinks provide a link that is always available to and should be provided within RSS so that clients can use this instead of a temporary link.
-	PermaLink *externalRef7.PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
+	PermaLink *externalRef8.PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
 
 	// SourceComments are links to comments for this item.
-	SourceComments *externalRef8.Comments `json:"comments,omitempty" xml:"https://source.scripting.com/ comments,omitempty"`
+	SourceComments *externalRef9.Comments `json:"comments,omitempty" xml:"https://source.scripting.com/ comments,omitempty"`
 
 	// SourceInReplyTo identifies the item that this item is in reply to.
-	SourceInReplyTo *externalRef8.InReplyTo `json:"inReplyTo,omitempty" xml:"https://source.scripting.com/ inReplyTo,omitempty"`
+	SourceInReplyTo *externalRef9.InReplyTo `json:"inReplyTo,omitempty" xml:"https://source.scripting.com/ inReplyTo,omitempty"`
 
 	// SourceLinkFill is the unshortened version of <link>.
-	SourceLinkFill *externalRef8.LinkFull `json:"linkFull,omitempty" xml:"https://source.scripting.com/ linkFull,omitempty"`
+	SourceLinkFill *externalRef9.LinkFull `json:"linkFull,omitempty" xml:"https://source.scripting.com/ linkFull,omitempty"`
 
 	// SourceMarkdown is the source of the item-level description sub-element using Markdown to encode styling and links. If your feed presenter can understand Markdown, you should use this as the source for the display of the item.
-	SourceMarkdown *externalRef8.Markdown `json:"markdown,omitempty" xml:"https://source.scripting.com/ markdown,omitempty"`
-	SourceOutline  *externalRef8.Outline  `json:"outline,omitempty" xml:"https://source.scripting.com/ outline,omitempty"`
+	SourceMarkdown *externalRef9.Markdown `json:"markdown,omitempty" xml:"https://source.scripting.com/ markdown,omitempty"`
+	SourceOutline  *externalRef9.Outline  `json:"outline,omitempty" xml:"https://source.scripting.com/ outline,omitempty"`
 
 	// Alt is the meters above the local reference ellipsoid.
 	Alt      *externalRef2.Altitude `json:"alt,omitempty" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# alt,omitempty"`
@@ -528,8 +529,14 @@ type Item struct {
 	// Author is the email address of the author of the item. For newspapers and magazines syndicating via RSS, the author is the person who wrote the article that the <item> describes. For collaborative weblogs, the author of the item might be different from the managing editor or webmaster. For a weblog authored by a single individual it would make sense to omit the <author> element.
 	Author *Author `json:"author,omitempty" xml:"author,omitempty"`
 
+	// Box is a bounding box as two coordinate pairs: the lower (southwest) corner, then the upper (northeast) corner (georss:box).
+	Box *externalRef4.Box `json:"box,omitempty" xml:"http://www.georss.org/georss box"`
+
 	// Categories is a list of categories associated with the channel.
 	Categories []Category `json:"categories,omitempty" xml:"category,omitempty"`
+
+	// Circle a center point plus a radius in meters (georss:circle).
+	Circle *externalRef4.Circle `json:"circle,omitempty" xml:"http://www.georss.org/georss circle"`
 
 	// Comments is the URL of the comments page for the item.
 	Comments *Comments `json:"comments,omitempty" validate:"omitempty,url" xml:"comments,omitempty"`
@@ -595,8 +602,16 @@ type Item struct {
 	// Description is a short description of the item.
 	Description ItemDescription `json:"description,omitzero" validate:"required_without=Title" xml:"description"`
 
+	// Elev contains “common” GPS elevation readings, i.e. height in meters referenced to the WGS84 ellipsoid. This is a reading that should be easy to get from any GPS device.
+	Elev *float64 `json:"elev,omitempty" xml:"http://www.georss.org/georss elev"`
+
 	// Enclosure describes a media object.
-	Enclosure *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
+	Enclosure      *Enclosure `json:"enclosure,omitempty" xml:"enclosure,omitempty"`
+	FeatureName    *string    `json:"featureName,omitempty" xml:"http://www.georss.org/georss featurename,omitempty"`
+	FeatureTypeTag *string    `json:"featureTypeTag,omitempty" xml:"http://www.georss.org/georss featuretypetag,omitempty"`
+
+	// Floor contains the floor number of a building. In some countries the numbering is different than in other countries, but since we’ll know the location of the building, it should be fairly unambiguous. The definition of “floor” as used in GeoRSS is consistent with the IETF[3] and NENA definitions as required for the Next Generation 911 system in the US.
+	Floor *int `json:"floor,omitempty" xml:"http://www.georss.org/georss floor"`
 
 	// GUID is a string that uniquely identifies an item.
 	GUID *GUID `json:"guid,omitempty" xml:"guid,omitempty"`
@@ -607,20 +622,36 @@ type Item struct {
 	// Lat is the latitude in decimal degress
 	Lat externalRef2.Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
+	// Line is an ordered sequence of two or more coordinate pairs (a LineString, georss:line).
+	Line externalRef4.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
+
 	// Link is the URL of the item.
 	Link string `json:"link,omitzero" validate:"required_without=Description,url" xml:"link,omitempty"`
 
 	// Long is the longitude in decimal degress
 	Long externalRef2.Longitude `json:"long" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 
+	// Point a single coordinate pair (georss:point).
+	Point *externalRef4.Point `json:"point,omitempty" xml:"http://www.georss.org/georss point"`
+
+	// Polygon a closed linear ring -- four or more coordinate pairs, with the first and last identical.
+	Polygon externalRef4.Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
+
 	// PubDate is the publication date of the content.
 	PubDate *PubDate `json:"pub_date" validate:"omitempty" xml:"pubDate,omitempty"`
+
+	// Radius indicates the size in meters of a radius or buffer around the geometry object, for example, radius of circular area around a point geometry.
+	Radius          *float64 `json:"radius,omitempty" xml:"http://www.georss.org/georss radius"`
+	RelationshipTag *string  `json:"relationshipTag,omitempty" xml:"http://www.georss.org/georss relationshiptag,omitempty"`
 
 	// Source The RSS channel that the item came from.
 	Source *Source `json:"source,omitempty" xml:"source,omitempty"`
 
 	// Title is the title of the item.
 	Title string `json:"title,omitzero" validate:"required_without=Description" xml:"title,omitempty"`
+
+	// Where wraps exactly one of the four GML geometries (georss:where).
+	Where *externalRef4.Where `json:"where,omitempty" xml:"http://www.georss.org/georss where"`
 }
 
 // ItemDescription is a short description of the item.

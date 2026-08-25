@@ -18,3 +18,4 @@ import-mapping:
   media-rss.yaml: 'github.com/immanent-tech/go-syndication/extensions/media'
   dc.yaml: 'github.com/immanent-tech/go-syndication/extensions/dc'
   basicgeo.yaml: 'github.com/immanent-tech/go-syndication/extensions/basicgeo'
+  georss.yaml: 'github.com/immanent-tech/go-syndication/extensions/georss'

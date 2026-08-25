@@ -577,6 +577,7 @@ components:
         - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
         - $ref: 'source.yaml#/components/schemas/ItemSource'
         - $ref: 'basicgeo.yaml#/components/schemas/Position'
+        - $ref: 'georss.yaml#/components/schemas/GeoRSSSimple'
         - type: object
           required:
             - title

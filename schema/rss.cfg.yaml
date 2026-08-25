@@ -19,5 +19,6 @@ import-mapping:
   googleplay.yaml: 'github.com/immanent-tech/go-syndication/extensions/googleplay'
   source.yaml: 'github.com/immanent-tech/go-syndication/extensions/source'
   basicgeo.yaml: 'github.com/immanent-tech/go-syndication/extensions/basicgeo'
+  georss.yaml: 'github.com/immanent-tech/go-syndication/extensions/georss'
   rdf.yaml: 'github.com/immanent-tech/go-syndication/rdf'
   atom.yaml: 'github.com/immanent-tech/go-syndication/atom'

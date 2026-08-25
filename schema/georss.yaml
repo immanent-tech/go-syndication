@@ -1,0 +1,273 @@
+---
+openapi: '3.1.0'
+info:
+  version: 1.0.0
+  title: GeoRSS Namespace
+  description: >
+    Provides types and methods for extending RSS and Atom feeds with geographical information.
+  contact:
+    name: 'Joshua Rich'
+    email: joshua.rich@gmail.com
+  license:
+    name: MIT
+    identifier: MIT
+components:
+  schemas:
+    Latitude:
+      description: is the latitude in decimal degress
+      type: number
+      format: double
+      x-oapi-codegen-extra-tags:
+        validate: 'required,gte=-90,lte=90'
+    Longitude:
+      description: is the longitude in decimal degress
+      type: number
+      format: double
+      x-oapi-codegen-extra-tags:
+        validate: 'required,gte=-180,lte=180'
+    Altitude:
+      description: is the meters above the local reference ellipsoid.
+      type: number
+      format: double
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.w3.org/2003/01/geo/wgs84_pos# alt,omitempty'
+    Coord:
+      description: >
+        is a single WGS84 latitude/longitude pair, decimal degrees.
+      type: object
+      required:
+        - lat
+        - lon
+      properties:
+        lat:
+          $ref: '#/components/schemas/Latitude'
+        lon:
+          $ref: '#/components/schemas/Longitude'
+    Point:
+      description: a single coordinate pair (georss:point).
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Coord'
+    Line:
+      description: >
+        is an ordered sequence of two or more coordinate pairs (a LineString, georss:line).
+      type: array
+      items:
+        $ref: '#/components/schemas/Coord'
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'
+    Polygon:
+      description: >
+        a closed linear ring -- four or more coordinate pairs, with the first and last identical.
+      type: array
+      items:
+        $ref: '#/components/schemas/Coord'
+      x-oapi-codegen-extra-tags:
+        validate: 'validateFn'
+    Box:
+      description: >
+        is a bounding box as two coordinate pairs: the lower (southwest) corner, then the upper (northeast) corner
+        (georss:box).
+      type: object
+      required:
+        - lower
+        - upper
+      properties:
+        lower:
+          $ref: '#/components/schemas/Coord'
+        upper:
+          $ref: '#/components/schemas/Coord'
+    Circle:
+      description: >
+        a center point plus a radius in meters (georss:circle).
+      type: object
+      required:
+        - center
+        - radius
+      properties:
+        center:
+          $ref: '#/components/schemas/Coord'
+        radius:
+          description: is the radius in meters.
+          type: number
+          format: double
+    GMLPos:
+      description: is gml:pos's content such as a Point, a single coordinate pair.
+      $ref: '#/components/schemas/Coord'
+    GMLPosList:
+      description: >
+        is gml:posList's content -- a flat, space-separated run of coordinate pairs, used for both LineString and
+        LinearRing.
+      $ref: '#/components/schemas/Line'
+    GMLPoint:
+      description: >
+        consists of a GML <Point> element with a child <pos> element. Within<pos> the latitude and longitude coordinate
+        values are separated by a space.
+      type: object
+      required:
+        - pos
+      properties:
+        pos:
+          $ref: '#/components/schemas/GMLPos'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml pos'
+    GMLLineString:
+      description: >
+        consists of a GML <LineString> element with a child <posList> element. Within <posList> the coordinates of the
+        points on the line are entered as pairs of latitude and longitude coordinate values, separated by spaces. There
+        must be at least two pairs. No two pairs may be separated by more than 179 degrees in either latitude or
+        longitude.
+      type: object
+      required:
+        - posList
+      properties:
+        posList:
+          $ref: '#/components/schemas/GMLPosList'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml posList'
+    GMLLinearRing:
+      description: >
+        consists of a GML <LineString> element with a child <posList> element. Within <posList> the coordinates of the
+        points on the line are entered as pairs of latitude and longitude coordinate values, separated by spaces. There
+        must be at least two pairs. No two pairs may be separated by more than 179 degrees in either latitude or
+        longitude.
+      type: object
+      required:
+        - posList
+      properties:
+        posList:
+          $ref: '#/components/schemas/GMLPosList'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml posList'
+    GMLExterior:
+      type: object
+      required:
+        - linearRing
+      properties:
+        linearRing:
+          $ref: '#/components/schemas/GMLLinearRing'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml LinearRing'
+    GMLPolygon:
+      description: >
+        consists of a <Polygon> element with a child <exterior>, <LinearRing> and <posList> elements. There must be at
+        least four coordinate pairs with the last being identical to the first. (A boundary has a minimum of three
+        actual points.) No two pairs may be separated by more than 179 degrees in either latitude or longitude.
+      type: object
+      required:
+        - exterior
+      properties:
+        exterior:
+          $ref: '#/components/schemas/GMLExterior'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml exterior'
+    GMLEnvelope:
+      description: >
+        is a bounding box that defines a rectangular region. This object is often used to define the extents of a map or define
+        a rough area of interest. A GML box is called an Envelope. It consists of an <Envelope> element with a child
+        <lowerCorner> element and a child <upperCorner> element.
+      type: object
+      required:
+        - lowerCorner
+        - upperCorner
+      properties:
+        lowerCorner:
+          $ref: '#/components/schemas/Coord'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml lowerCorner'
+        upperCorner:
+          $ref: '#/components/schemas/Coord'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml upperCorner'
+    Where:
+      description: >
+        wraps exactly one of the four GML geometries (georss:where).
+      type: object
+      properties:
+        point:
+          $ref: '#/components/schemas/GMLPoint'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml Point'
+        lineString:
+          $ref: '#/components/schemas/GMLLineString'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml LineString'
+        polygon:
+          $ref: '#/components/schemas/GMLPolygon'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml Polygon'
+        envelope:
+          $ref: '#/components/schemas/GMLEnvelope'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.opengis.net/gml Envelope'
+      x-oapi-codegen-extra-tags:
+        xml: 'http://www.opengis.net/gml validateFn'
+    GeoRSSSimple:
+      description: >
+        is the full set of GeoRSS Simple elements (including the GML-profile georss:where as an alternative to the
+        Simple geometries), bundled once for embedding.
+      type: object
+      properties:
+        point:
+          $ref: '#/components/schemas/Point'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss point'
+        line:
+          $ref: '#/components/schemas/Line'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss line'
+          x-go-type-skip-optional-pointer: true
+        polygon:
+          $ref: '#/components/schemas/Polygon'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss polygon'
+          x-go-type-skip-optional-pointer: true
+        box:
+          $ref: '#/components/schemas/Box'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss box'
+        circle:
+          $ref: '#/components/schemas/Circle'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss circle'
+        elev:
+          description: >
+            contains “common” GPS elevation readings, i.e. height in meters referenced to the WGS84 ellipsoid. This is a reading that should be easy to get from any
+            GPS device.
+          type: number
+          format: double
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss elev'
+        floor:
+          description: >
+            contains the floor number of a building. In some countries the numbering is different than in other
+            countries, but since we’ll know the location of the building, it should be fairly unambiguous. The
+            definition of “floor” as used in GeoRSS is consistent with the IETF[3] and NENA definitions as required for
+            the Next Generation 911 system in the US.
+          type: integer
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss floor'
+        radius:
+          description: >
+            indicates the size in meters of a radius or buffer around the geometry object, for example, radius of
+            circular area around a point geometry.
+          type: number
+          format: double
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss radius'
+        featureTypeTag:
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss featuretypetag,omitempty'
+        relationshipTag:
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss relationshiptag,omitempty'
+        featureName:
+          type: string
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss featurename,omitempty'
+        where:
+          $ref: '#/components/schemas/Where'
+          x-oapi-codegen-extra-tags:
+            xml: 'http://www.georss.org/georss where'

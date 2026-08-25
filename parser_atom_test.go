@@ -2818,10 +2818,137 @@ var atomMustTests = map[string]atomTestSuite{
 	},
 }
 
+var atomGeoRSS = map[string]atomTestSuite{
+	"point.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			assert.InEpsilon(t, 45.256, item.Point.Lat, 0.001)
+			assert.InEpsilon(t, -71.92, item.Point.Lon, 0.001)
+		},
+	},
+	"line.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			require.NoError(t, item.Line.Validate())
+			assert.InEpsilon(t, 45.256, item.Line[0].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, item.Line[0].Lon, 0.001)
+			assert.InEpsilon(t, 46.46, item.Line[1].Lat, 0.001)
+			assert.InEpsilon(t, -109.48, item.Line[1].Lon, 0.001)
+			assert.InEpsilon(t, 43.84, item.Line[2].Lat, 0.001)
+			assert.InEpsilon(t, -109.86, item.Line[2].Lon, 0.001)
+		},
+	},
+	"box.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			assert.InEpsilon(t, 42.943, item.Box.Lower.Lat, 0.001)
+			assert.InEpsilon(t, -71.032, item.Box.Lower.Lon, 0.001)
+			assert.InEpsilon(t, 43.039, item.Box.Upper.Lat, 0.001)
+			assert.InEpsilon(t, -69.856, item.Box.Upper.Lon, 0.001)
+		},
+	},
+	"polygon.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			require.NoError(t, item.Polygon.Validate())
+			assert.InEpsilon(t, 45.256, item.Polygon[0].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, item.Polygon[0].Lon, 0.01)
+			assert.InEpsilon(t, 46.46, item.Polygon[1].Lat, 0.01)
+			assert.InEpsilon(t, -109.48, item.Polygon[1].Lon, 0.01)
+			assert.InEpsilon(t, 43.84, item.Polygon[2].Lat, 0.01)
+			assert.InEpsilon(t, -109.86, item.Polygon[2].Lon, 0.01)
+			assert.InEpsilon(t, 45.256, item.Polygon[3].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, item.Polygon[3].Lon, 0.01)
+		},
+	},
+	"props.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			assert.Equal(t, "city", *item.FeatureTypeTag)
+			assert.Equal(t, "Podunk", *item.FeatureName)
+			assert.Equal(t, "is-centered-at", *item.RelationshipTag)
+			assert.InEpsilon(t, 313, *item.Elev, 0.01)
+			assert.Equal(t, 2, *item.Floor)
+			assert.InEpsilon(t, 500, *item.Radius, 0.01)
+		},
+	},
+	"gmlPoint.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			assert.NotNil(t, item.Where)
+			require.NoError(t, item.Where.Validate())
+			point := item.Where.Point
+			assert.InEpsilon(t, 45.256, point.Pos.Lat, 0.001)
+			assert.InEpsilon(t, -71.92, point.Pos.Lon, 0.001)
+		},
+	},
+	"gmlLine.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			assert.NotNil(t, item.Where)
+			require.NoError(t, item.Where.Validate())
+			line := item.Where.LineString
+			assert.InEpsilon(t, 45.256, line.PosList[0].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, line.PosList[0].Lon, 0.001)
+			assert.InEpsilon(t, 46.46, line.PosList[1].Lat, 0.001)
+			assert.InEpsilon(t, -109.48, line.PosList[1].Lon, 0.001)
+			assert.InEpsilon(t, 43.84, line.PosList[2].Lat, 0.001)
+			assert.InEpsilon(t, -109.86, line.PosList[2].Lon, 0.001)
+		},
+	},
+	"gmlPolygon.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			assert.NotNil(t, item.Where)
+			require.NoError(t, item.Where.Validate())
+			polygon := item.Where.Polygon
+			assert.InEpsilon(t, 45.256, polygon.Exterior.LinearRing.PosList[0].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, polygon.Exterior.LinearRing.PosList[0].Lon, 0.01)
+			assert.InEpsilon(t, 46.46, polygon.Exterior.LinearRing.PosList[1].Lat, 0.01)
+			assert.InEpsilon(t, -109.48, polygon.Exterior.LinearRing.PosList[1].Lon, 0.01)
+			assert.InEpsilon(t, 43.84, polygon.Exterior.LinearRing.PosList[2].Lat, 0.01)
+			assert.InEpsilon(t, -109.86, polygon.Exterior.LinearRing.PosList[2].Lon, 0.01)
+			assert.InEpsilon(t, 45.256, polygon.Exterior.LinearRing.PosList[3].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, polygon.Exterior.LinearRing.PosList[3].Lon, 0.01)
+		},
+	},
+	"gmlEnvelope.xml": {
+		wantInvalid: false,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			item := feed.Entries[0]
+			assert.NotNil(t, item.Where)
+			require.NoError(t, item.Where.Validate())
+			box := item.Where.Envelope
+			assert.InEpsilon(t, 42.943, box.LowerCorner.Lat, 0.001)
+			assert.InEpsilon(t, -71.032, box.LowerCorner.Lon, 0.001)
+			assert.InEpsilon(t, 43.039, box.UpperCorner.Lat, 0.001)
+			assert.InEpsilon(t, -69.856, box.UpperCorner.Lon, 0.001)
+		},
+	},
+}
+
 // atomTests are the groups of test cases to run.
 var atomTests = map[string]map[string]atomTestSuite{
 	"test/feedvalidator/testcases/atom/1.1":  atomOtherTests,
 	"test/feedvalidator/testcases/atom/must": atomMustTests,
+	"test/extensions/georss":                 atomGeoRSS,
 }
 
 func TestNewFeedFromBytesAtom(t *testing.T) {

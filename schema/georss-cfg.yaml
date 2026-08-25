@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
+
+# Copyright 2024 Joshua Rich <joshua.rich@gmail.com>.
+# SPDX-License-Identifier: 	MIT
+
+package: georss
+output: ../extensions/georss/georss.gen.go
+generate:
+  models: true
+output-options:
+  skip-prune: true
+  disable-type-aliases-for-type:
+    - array
