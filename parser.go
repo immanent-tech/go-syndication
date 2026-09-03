@@ -115,12 +115,16 @@ func NewFeedFromSource[T types.FeedSource](source T) *Feed {
 }
 
 // parseSource will attempt to determine the appropriate SourceType value from the given interface object.
-func parseSource[T any](source T) SourceType {
+func parseSource[T any](source T) types.Source {
 	switch any(source).(type) {
 	case *atom.Feed:
-		return SourceTypeAtom
+		return types.SourceAtom
 	case *rss.RSS:
-		return SourceTypeRSS
+		return types.SourceRSS
+	case *rdf.Channel:
+		return types.SourceRDF
+	case *jsonfeed.Feed:
+		return types.SourceJSONFeed
 	default:
 		return ""
 	}
@@ -128,17 +132,17 @@ func parseSource[T any](source T) SourceType {
 
 // DetectSourceType determines the feed source by extracting key signatures from the data. It can detect supported feed
 // formats as well as HTML.
-func DetectSourceType(r io.Reader) (SourceType, error) {
+func DetectSourceType(r io.Reader) (types.Source, error) {
 	data := bufio.NewReader(r)
 
 	// Peek enough bytes for content sniffing without consuming the reader.
 	peek, err := data.Peek(512)
 	if err != nil {
-		return SourceTypeUnknown, fmt.Errorf("peek at source file: %w", err)
+		return types.SourceUnknown, fmt.Errorf("peek at source file: %w", err)
 	}
 
 	if looksLikeHTML(peek) {
-		return SourceTypeHTML, nil
+		return types.SourceHTML, nil
 	}
 
 	// Fall back to XML-based root element detection for feeds (and XHTML).
@@ -160,7 +164,7 @@ func looksLikeHTML(peek []byte) bool {
 		bytes.HasPrefix(lower, []byte("<html"))
 }
 
-func detectFeedSourceType(r io.Reader) (SourceType, error) {
+func detectFeedSourceType(r io.Reader) (types.Source, error) {
 	decoder := xml.NewDecoder(r)
 	decoder.CharsetReader = charset.NewReaderLabel
 	decoder.Strict = false // be lenient with malformed feeds in the wild
@@ -168,24 +172,24 @@ func detectFeedSourceType(r io.Reader) (SourceType, error) {
 	for {
 		tok, err := decoder.Token()
 		if errors.Is(err, io.EOF) {
-			return SourceTypeUnknown, fmt.Errorf("%w: no root element found", ErrParseBytes)
+			return types.SourceUnknown, fmt.Errorf("%w: no root element found", ErrParseBytes)
 		}
 		if err != nil {
-			return SourceTypeUnknown, fmt.Errorf("decode source: %w", err)
+			return types.SourceUnknown, fmt.Errorf("decode source: %w", err)
 		}
 
 		if startElement, ok := tok.(xml.StartElement); ok {
 			switch {
 			case startElement.Name.Local == "rss":
-				return SourceTypeRSS, nil
+				return types.SourceRSS, nil
 			case startElement.Name.Local == "feed" && startElement.Name.Space == "http://www.w3.org/2005/Atom":
-				return SourceTypeAtom, nil
+				return types.SourceAtom, nil
 			case startElement.Name.Local == "feed": // some feeds omit/misdeclare namespace
-				return SourceTypeAtom, nil
+				return types.SourceAtom, nil
 			case startElement.Name.Local == "RDF":
-				return SourceTypeRDF, nil
+				return types.SourceRDF, nil
 			default:
-				return SourceTypeUnknown, fmt.Errorf("unrecognized root element: %s", startElement.Name.Local)
+				return types.SourceUnknown, fmt.Errorf("unrecognized root element: %s", startElement.Name.Local)
 			}
 		}
 	}

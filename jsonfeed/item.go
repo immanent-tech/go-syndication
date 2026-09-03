@@ -83,9 +83,9 @@ func (i *Item) GetCategories() []string {
 }
 
 // GetImage retrieves the image (if any) for the Item.
-func (i *Item) GetImage() *types.ImageInfo {
+func (i *Item) GetImage() *types.Image {
 	if i.Image != nil {
-		return &types.ImageInfo{
+		return &types.Image{
 			URL: *i.Image,
 		}
 	}

@@ -3,7 +3,9 @@
 
 package types
 
-import "time"
+import (
+	"time"
+)
 
 // ObjectMetadata contains methods for retrieving the metadata information about the Object.
 type ObjectMetadata interface {
@@ -21,12 +23,12 @@ type HasID interface {
 
 // HasMedia contains methods for retrieving an Object's media, such as audio and video.
 type HasMedia interface {
-	GetImage() *ImageInfo
+	GetImage() *Image
 }
 
 // MediaEditable indicates that the media of the object can be changed.
 type MediaEditable interface {
-	SetImage(image *ImageInfo)
+	SetImage(image *Image)
 }
 
 // HasAttribution contains methods for retrieving values that relate to the copyright, rights, authors and
@@ -52,13 +54,13 @@ type HasLocalization interface {
 	GetLanguage() *string
 }
 
-// Source contains methods for retrieving or setting the source of the Object.
-type Source interface {
+// SourceURL contains methods for retrieving or setting the source of the Object.
+type SourceURL interface {
 	GetSourceURL() string
 }
 
-// SourceEditable indicates the source URL for the object can be changed.
-type SourceEditable interface {
+// SourceURLEditable indicates the source URL for the object can be changed.
+type SourceURLEditable interface {
 	SetSourceURL(url string)
 }
 
@@ -81,8 +83,8 @@ type ItemSource interface {
 // FeedSource is an abstraction representing any type of Feed.
 type FeedSource interface {
 	ObjectCommon
-	Source
-	SourceEditable
+	SourceURL
+	SourceURLEditable
 	MediaEditable
 	GetUpdateInterval() time.Duration
 	GetItems() []ItemSource

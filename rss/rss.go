@@ -327,11 +327,11 @@ func (r *RSS) GetLanguage() *string {
 	return r.Channel.GetLanguage()
 }
 
-func (r *RSS) GetImage() *types.ImageInfo {
+func (r *RSS) GetImage() *types.Image {
 	return r.Channel.GetImage()
 }
 
-func (r *RSS) SetImage(image *types.ImageInfo) {
+func (r *RSS) SetImage(image *types.Image) {
 	r.Channel.SetImage(image)
 }
 

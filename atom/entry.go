@@ -122,21 +122,33 @@ func (e *Entry) GetCategories() []string {
 }
 
 // GetImage retrieves the image (if any) for the Entry. The image is returned as a types.ImageInfo object.
-func (e *Entry) GetImage() *types.ImageInfo {
+func (e *Entry) GetImage() *types.Image {
 	// Use the first <media:thumbnail>
 	if len(e.MediaThumbnails) > 0 {
 		thumbnail := e.MediaThumbnails[0]
-		return &types.ImageInfo{
-			URL:   thumbnail.URL,
-			Title: e.GetTitle(),
+		title := e.GetTitle()
+		if title != "" {
+			return &types.Image{
+				URL:   thumbnail.URL,
+				Title: &title,
+			}
+		}
+		return &types.Image{
+			URL: thumbnail.URL,
 		}
 	}
 	// If <media:group> exists, use the first <media:thumbnail> in the group.
 	if e.MediaGroup != nil && len(e.MediaGroup.MediaThumbnails) > 0 {
 		thumbnail := e.MediaGroup.MediaThumbnails[0]
-		return &types.ImageInfo{
-			URL:   thumbnail.URL,
-			Title: e.GetTitle(),
+		title := e.GetTitle()
+		if title != "" {
+			return &types.Image{
+				URL:   thumbnail.URL,
+				Title: &title,
+			}
+		}
+		return &types.Image{
+			URL: thumbnail.URL,
 		}
 	}
 	return nil

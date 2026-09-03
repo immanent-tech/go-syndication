@@ -148,25 +148,44 @@ func (f *Feed) GetCategories() []string {
 	return categories
 }
 
-// GetImage retrieves the image (if any) for the Feed. The image is returned as a types.ImageInfo object. The value will be
+// GetImage retrieves the image (if any) for the Feed. The image is returned as a types.Image object. The value will be
 // the first found of <media:thumbnail> element.
-func (f *Feed) GetImage() *types.ImageInfo {
+func (f *Feed) GetImage() *types.Image {
 	switch {
 	case f.Logo != nil:
-		return &types.ImageInfo{
-			URL:   f.Logo.String(),
-			Title: f.GetTitle(),
+		title := f.GetTitle()
+		if title != "" {
+			return &types.Image{
+				URL:   f.Logo.String(),
+				Title: &title,
+			}
 		}
+		return &types.Image{
+			URL: f.Logo.String(),
+		}
+
 	case f.Icon != nil:
-		return &types.ImageInfo{
-			URL:   f.Icon.Value,
-			Title: f.GetTitle(),
+		title := f.GetTitle()
+		if title != "" {
+			return &types.Image{
+				URL:   f.Icon.Value,
+				Title: &title,
+			}
+		}
+		return &types.Image{
+			URL: f.Icon.Value,
 		}
 	case len(f.MediaThumbnails) > 0:
 		thumbnail := f.MediaThumbnails[0]
-		return &types.ImageInfo{
-			URL:   thumbnail.URL,
-			Title: f.GetTitle(),
+		title := f.GetTitle()
+		if title != "" {
+			return &types.Image{
+				URL:   thumbnail.URL,
+				Title: &title,
+			}
+		}
+		return &types.Image{
+			URL: thumbnail.URL,
 		}
 	default:
 		return nil
@@ -174,7 +193,7 @@ func (f *Feed) GetImage() *types.ImageInfo {
 }
 
 // SetImage sets an image for the Channel.
-func (f *Feed) SetImage(image *types.ImageInfo) {
+func (f *Feed) SetImage(image *types.Image) {
 	f.MediaThumbnails = media.MediaThumbnails{
 		media.MediaThumbnail{URL: image.GetURL()},
 	}

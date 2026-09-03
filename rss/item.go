@@ -68,7 +68,7 @@ func WithItemGUID(guid *GUID) ItemOption {
 }
 
 // WithItemImage option sets the item image.
-func WithItemImage(img *types.ImageInfo) ItemOption {
+func WithItemImage(img *types.Image) ItemOption {
 	return func(i *Item) {
 		i.MediaThumbnails = media.MediaThumbnails{
 			media.MediaThumbnail{
@@ -194,18 +194,18 @@ func (i *Item) GetCategories() []string {
 // - a single <media:thumbnail> element.
 //
 // This method tries to retrieve one of these, first one wins, in the order above.
-func (i *Item) GetImage() *types.ImageInfo {
-	var img *types.ImageInfo
+func (i *Item) GetImage() *types.Image {
+	var img *types.Image
 	switch {
 	case i.Image != nil:
 		// Item has an <image> element, use it.
-		img = &types.ImageInfo{
+		img = &types.Image{
 			URL:   i.Image.URL,
-			Title: i.Image.Title,
+			Title: &i.Image.Title,
 		}
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
 		// Item has an <enclosure> element, check if it contains an image and use it.
-		img = &types.ImageInfo{
+		img = &types.Image{
 			URL: i.Enclosure.URL,
 		}
 	case i.MediaContent != nil && i.MediaContent.AsImage() != nil:
@@ -219,8 +219,8 @@ func (i *Item) GetImage() *types.ImageInfo {
 	}
 	// If the image does not have a title, set it to the item title.
 	if img != nil {
-		if img.Title == "" {
-			img.Title = i.GetTitle()
+		if img.Title == nil {
+			img.Title = new(i.GetTitle())
 		}
 	}
 	return img

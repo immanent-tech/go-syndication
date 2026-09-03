@@ -72,17 +72,17 @@ func (r *RDF) GetRights() *string {
 	return r.Channel.GetRights()
 }
 
-func (r *RDF) GetImage() *types.ImageInfo {
+func (r *RDF) GetImage() *types.Image {
 	if r.Image != nil {
-		return &types.ImageInfo{
-			Title: r.Image.Title,
+		return &types.Image{
+			Title: &r.Image.Title,
 			URL:   r.Image.URL,
 		}
 	}
 	return nil
 }
 
-func (r *RDF) SetImage(img *types.ImageInfo) {
+func (r *RDF) SetImage(img *types.Image) {
 	r.Image.Title = img.GetTitle()
 	r.Image.URL = img.GetURL()
 }

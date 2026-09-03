@@ -13,12 +13,15 @@ var (
 )
 
 // GetTitle returns the title (if any) of the image.
-func (i *ImageInfo) GetTitle() string {
-	return i.Title
+func (i *Image) GetTitle() string {
+	if i.Title != nil {
+		return *i.Title
+	}
+	return ""
 }
 
 // GetURL returns the URL of the image.
-func (i *ImageInfo) GetURL() string {
+func (i *Image) GetURL() string {
 	return i.URL
 }
 

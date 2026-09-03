@@ -11,6 +11,7 @@ import (
 
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/jsonfeed"
+	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
 )
@@ -22,8 +23,8 @@ var ErrUnmarshal = errors.New("unmarshaling object failed")
 type Item struct {
 	types.ItemSource `json:"source"`
 
-	SourceType SourceType `json:"type"`
-	FeedTitle  string     `json:"feed_title"`
+	SourceType types.Source `json:"type"`
+	FeedTitle  string       `json:"feed_title"`
 }
 
 // UnmarshalJSON handles unmarshaling of an Item from JSON.
@@ -34,21 +35,28 @@ func (i *Item) UnmarshalJSON(v []byte) error {
 		return err
 	}
 	switch sourceType {
-	case SourceTypeAtom:
+	case types.SourceAtom:
 		i.SourceType = sourceType
 		i.ItemSource, err = unmarshalSource[*atom.Entry](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into Atom: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case SourceTypeRSS:
+	case types.SourceRSS:
 		i.SourceType = sourceType
 		i.ItemSource, err = unmarshalSource[*rss.Item](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into RSS: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case SourceTypeJSONFeed:
+	case types.SourceRDF:
+		i.SourceType = sourceType
+		i.ItemSource, err = unmarshalSource[*rdf.Item](source)
+		if err != nil {
+			return fmt.Errorf("%w: unable to unmarshal into RDF: %w", ErrUnmarshal, err)
+		}
+		return nil
+	case types.SourceJSONFeed:
 		i.SourceType = sourceType
 		i.ItemSource, err = unmarshalSource[*jsonfeed.Item](source)
 		if err != nil {
@@ -63,7 +71,7 @@ func (i *Item) UnmarshalJSON(v []byte) error {
 type Feed struct {
 	types.FeedSource `json:"source"`
 
-	SourceType SourceType `json:"type"`
+	SourceType types.Source `json:"type"`
 }
 
 // GetItems retrieves a slice of Item for the Feed.
@@ -88,21 +96,28 @@ func (f *Feed) UnmarshalJSON(v []byte) error {
 		return err
 	}
 	switch sourceType {
-	case SourceTypeAtom:
+	case types.SourceAtom:
 		f.SourceType = sourceType
 		f.FeedSource, err = unmarshalSource[*atom.Feed](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into Atom: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case SourceTypeRSS:
+	case types.SourceRSS:
 		f.SourceType = sourceType
 		f.FeedSource, err = unmarshalSource[*rss.RSS](source)
 		if err != nil {
 			return fmt.Errorf("%w: unable to unmarshal into RSS: %w", ErrUnmarshal, err)
 		}
 		return nil
-	case SourceTypeJSONFeed:
+	case types.SourceRDF:
+		f.SourceType = sourceType
+		f.FeedSource, err = unmarshalSource[*rdf.RDF](source)
+		if err != nil {
+			return fmt.Errorf("%w: unable to unmarshal into RSS: %w", ErrUnmarshal, err)
+		}
+		return nil
+	case types.SourceJSONFeed:
 		f.SourceType = sourceType
 		f.FeedSource, err = unmarshalSource[*jsonfeed.Feed](source)
 		if err != nil {
@@ -113,7 +128,7 @@ func (f *Feed) UnmarshalJSON(v []byte) error {
 	return fmt.Errorf("%w: unknown data type", ErrUnmarshal)
 }
 
-func sourceFromBytes(v []byte) (SourceType, json.RawMessage, error) {
+func sourceFromBytes(v []byte) (types.Source, json.RawMessage, error) {
 	topLevel := make(map[string]json.RawMessage)
 	err := json.Unmarshal(v, &topLevel)
 	if err != nil {
@@ -124,7 +139,7 @@ func sourceFromBytes(v []byte) (SourceType, json.RawMessage, error) {
 	if !found {
 		return "", nil, fmt.Errorf("%w: unknown data type", ErrUnmarshal)
 	}
-	var sourceType SourceType
+	var sourceType types.Source
 	err = json.Unmarshal(rawType, &sourceType)
 	if err != nil {
 		return "", nil, fmt.Errorf("%w: %w", ErrUnmarshal, err)

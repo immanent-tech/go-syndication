@@ -23,8 +23,8 @@ var (
 )
 
 // AsImage returns the <media:thumbnail> object as a types.ImageInfo object.
-func (t *MediaThumbnail) AsImage() *types.ImageInfo {
-	return &types.ImageInfo{
+func (t *MediaThumbnail) AsImage() *types.Image {
+	return &types.Image{
 		URL: t.URL,
 	}
 }
@@ -46,16 +46,16 @@ func (t *MediaText) GetText() string {
 }
 
 // AsImage will return a types.ImageInfo if the <media:content> element represents an image. If not, it will return nil.
-func (c *MediaContent) AsImage() *types.ImageInfo {
+func (c *MediaContent) AsImage() *types.Image {
 	// Check if medium attr indicates an image.
 	if c.Medium != nil && *c.Medium == MediaContentMediumImage {
-		return &types.ImageInfo{
+		return &types.Image{
 			URL: c.URL,
 		}
 	}
 	// Check if mimetype attr indicates an image.
 	if c.Type != nil && types.IsImage(*c.Type) {
-		return &types.ImageInfo{
+		return &types.Image{
 			URL: c.URL,
 		}
 	}
@@ -63,7 +63,7 @@ func (c *MediaContent) AsImage() *types.ImageInfo {
 	if url, err := url.Parse(c.URL); err == nil {
 		for imgext := range slices.Values(ImageExt) {
 			if strings.HasSuffix(url.Path, imgext) {
-				return &types.ImageInfo{
+				return &types.Image{
 					URL: c.URL,
 				}
 			}

@@ -63,7 +63,7 @@ func (i *Item) GetID() string {
 	return ""
 }
 
-func (i *Item) GetImage() *types.ImageInfo {
+func (i *Item) GetImage() *types.Image {
 	return nil
 }
 

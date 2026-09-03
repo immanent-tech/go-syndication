@@ -107,13 +107,13 @@ func (c *Channel) GetCategories() []string {
 // GetImage retrieves the image (if any) for the Item. The image is returned as a types.ImageInfo object. The value will be
 // the first found of either any <image> or <media:thumbnail> element. Any errors is retrieving the image will result in
 // a nil result being returned.
-func (c *Channel) GetImage() *types.ImageInfo {
-	var img *types.ImageInfo
+func (c *Channel) GetImage() *types.Image {
+	var img *types.Image
 	switch {
 	case c.Image != nil:
-		img = &types.ImageInfo{
+		img = &types.Image{
 			URL:   c.Image.URL,
-			Title: c.Image.Title,
+			Title: &c.Image.Title,
 		}
 	case c.MediaContent != nil && c.MediaContent.AsImage() != nil:
 		// Item has a <media:content> element, extract the image.
@@ -122,21 +122,21 @@ func (c *Channel) GetImage() *types.ImageInfo {
 		// Check for a <media:thumbnails> element and assume the first element is an appropriate image.
 		img = c.MediaThumbnails[0].AsImage()
 	case c.ItunesImage != nil && c.ItunesImage.Href != "":
-		img = &types.ImageInfo{
+		img = &types.Image{
 			URL: c.ItunesImage.Href,
 		}
 	default:
 		return nil
 	}
 	// If the image does not have a title, set it to the channel title.
-	if img.Title == "" {
-		img.Title = c.GetTitle()
+	if img.Title == nil {
+		img.Title = new(c.GetTitle())
 	}
 	return img
 }
 
 // SetImage sets an image for the Channel.
-func (c *Channel) SetImage(image *types.ImageInfo) {
+func (c *Channel) SetImage(image *types.Image) {
 	c.Image = &Image{URL: image.GetURL(), Title: image.GetTitle()}
 }
 
