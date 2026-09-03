@@ -131,3 +131,7 @@ func (i *Item) GetContent() *string {
 	}
 	return nil
 }
+
+func (i *Item) GetGeoInfo() *types.GeoInfo {
+	return nil
+}

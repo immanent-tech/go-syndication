@@ -5,6 +5,7 @@
 package atom
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"slices"
@@ -215,6 +216,19 @@ func (e *Entry) GetContent() *string {
 		}
 	}
 	return nil
+}
+
+func (e *Entry) GetGeoInfo() *types.GeoInfo {
+	info := types.GeoInfo{}
+	data, err := json.Marshal(e)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal(data, &info)
+	if err != nil {
+		return nil
+	}
+	return &info
 }
 
 // Validate applies custom validation to an item.

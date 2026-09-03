@@ -54,6 +54,11 @@ type HasLocalization interface {
 	GetLanguage() *string
 }
 
+// HasGeo represents an object that has geographical information.
+type HasGeo interface {
+	GetGeoInfo() *GeoInfo
+}
+
 // SourceURL contains methods for retrieving or setting the source of the Object.
 type SourceURL interface {
 	GetSourceURL() string
@@ -78,6 +83,7 @@ type ItemSource interface {
 	ObjectCommon
 	HasID
 	HasContent
+	HasGeo
 }
 
 // FeedSource is an abstraction representing any type of Feed.

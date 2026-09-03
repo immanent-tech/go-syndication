@@ -85,3 +85,7 @@ func (i *Item) GetRights() *string {
 	}
 	return nil
 }
+
+func (i *Item) GetGeoInfo() *types.GeoInfo {
+	return nil
+}

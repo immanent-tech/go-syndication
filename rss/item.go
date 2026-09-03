@@ -271,6 +271,19 @@ func (i *Item) GetContent() *string {
 	return new(out.String())
 }
 
+func (i *Item) GetGeoInfo() *types.GeoInfo {
+	info := types.GeoInfo{}
+	data, err := json.Marshal(i)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal(data, &info)
+	if err != nil {
+		return nil
+	}
+	return &info
+}
+
 // Validate applies custom validation to an item.
 func (i *Item) Validate() error {
 	// Either description or title must be set. Both cannot be empty.
