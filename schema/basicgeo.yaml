@@ -1,5 +1,5 @@
 ---
-openapi: '3.1.0'
+openapi: "3.1.0"
 info:
   version: 1.0.0
   title: W3C Basic Geo Namespace
@@ -7,7 +7,7 @@ info:
     The W3C Basic Geo (WGS84 lat/long) Vocabulary provides a simple way to represent geographic coordinates in RSS and
     Atom feeds using the WGS84 geodetic reference datum.
   contact:
-    name: 'Joshua Rich'
+    name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
     name: MIT
@@ -19,36 +19,33 @@ components:
       type: number
       format: double
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2003/01/geo/wgs84_pos# lat'
-        validate: 'required,gte=-90,lte=90'
+        xml: "http://www.w3.org/2003/01/geo/wgs84_pos# lat"
+        validate: "omitempty,gte=-90,lte=90"
     Longitude:
       description: is the longitude in decimal degress
       type: number
       format: double
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2003/01/geo/wgs84_pos# long'
-        validate: 'required,gte=-180,lte=180'
+        xml: "http://www.w3.org/2003/01/geo/wgs84_pos# long"
+        validate: "omitempty,gte=-180,lte=180"
     Altitude:
       description: is the meters above the local reference ellipsoid.
       type: number
       format: double
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2003/01/geo/wgs84_pos# alt,omitempty'
+        xml: "http://www.w3.org/2003/01/geo/wgs84_pos# alt,omitempty"
     Position:
       description: >
         is a position, typically described using a coordinate system relative to Earth. Uniquely
         identified by lat/long/alt.
       type: object
-      required:
-        - lat
-        - lon
       properties:
         lat:
-          $ref: '#/components/schemas/Latitude'
+          $ref: "#/components/schemas/Latitude"
         lon:
-          $ref: '#/components/schemas/Longitude'
+          $ref: "#/components/schemas/Longitude"
         alt:
-          $ref: '#/components/schemas/Altitude'
+          $ref: "#/components/schemas/Altitude"
     LatLong:
       description: >
         a flat, comma-separated alternative encoding of the latitude and longitude.
@@ -58,9 +55,9 @@ components:
         - lon
       properties:
         lat:
-          $ref: '#/components/schemas/Latitude'
+          $ref: "#/components/schemas/Latitude"
         lon:
-          $ref: '#/components/schemas/Longitude'
+          $ref: "#/components/schemas/Longitude"
     Point:
       description: >
         is an instance of the geo:point class.
@@ -70,18 +67,18 @@ components:
         - lon
       properties:
         lat:
-          $ref: '#/components/schemas/Latitude'
+          $ref: "#/components/schemas/Latitude"
         lon:
-          $ref: '#/components/schemas/Longitude'
+          $ref: "#/components/schemas/Longitude"
         alt:
-          $ref: '#/components/schemas/Altitude'
+          $ref: "#/components/schemas/Altitude"
         about:
           description: >
             an rdf:about identifying this Point as its own addressable resource, e.g. for reuse via rdf:resource
             elsewhere in an RDF document.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'http://www.w3.org/1999/02/22-rdf-syntax-ns# about,attr,omitempty'
+            xml: "http://www.w3.org/1999/02/22-rdf-syntax-ns# about,attr,omitempty"
     Location:
       description: >
         is the relation between something and the point... where it is.
@@ -90,4 +87,4 @@ components:
         - Point
       properties:
         Point:
-          $ref: '#/components/schemas/Point'
+          $ref: "#/components/schemas/Point"

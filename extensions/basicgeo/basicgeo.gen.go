@@ -9,10 +9,10 @@ type Altitude = float64
 // LatLong a flat, comma-separated alternative encoding of the latitude and longitude.
 type LatLong struct {
 	// Lat is the latitude in decimal degress
-	Lat Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
+	Lat Latitude `json:"lat" validate:"omitempty,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
 	// Lon is the longitude in decimal degress
-	Lon Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	Lon Longitude `json:"lon" validate:"omitempty,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 }
 
 // Latitude is the latitude in decimal degress
@@ -36,10 +36,10 @@ type Point struct {
 	Alt *Altitude `json:"alt,omitempty" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# alt,omitempty"`
 
 	// Lat is the latitude in decimal degress
-	Lat Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
+	Lat Latitude `json:"lat" validate:"omitempty,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
 	// Lon is the longitude in decimal degress
-	Lon Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	Lon Longitude `json:"lon" validate:"omitempty,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 }
 
 // Position is a position, typically described using a coordinate system relative to Earth. Uniquely identified by lat/long/alt.
@@ -48,8 +48,8 @@ type Position struct {
 	Alt *Altitude `json:"alt,omitempty" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# alt,omitempty"`
 
 	// Lat is the latitude in decimal degress
-	Lat Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
+	Lat *Latitude `json:"lat,omitempty" validate:"omitempty,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
 	// Lon is the longitude in decimal degress
-	Lon Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	Lon *Longitude `json:"lon,omitempty" validate:"omitempty,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 }

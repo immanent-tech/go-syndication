@@ -52,9 +52,9 @@ func (ll *LatLong) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error 
 // ToPosition / FromLatLong convert between the two equivalent encodings, since a document might legitimately use
 // either.
 func (ll LatLong) ToPosition() Position {
-	return Position{Lat: ll.Lat, Lon: ll.Lon}
+	return Position{Lat: &ll.Lat, Lon: &ll.Lon}
 }
 
 func FromPosition(p Position) (LatLong, bool) {
-	return LatLong{Lat: p.Lat, Lon: p.Lon}, true
+	return LatLong{Lat: *p.Lat, Lon: *p.Lon}, true
 }

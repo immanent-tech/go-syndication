@@ -620,7 +620,7 @@ type Item struct {
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Lat is the latitude in decimal degress
-	Lat externalRef2.Latitude `json:"lat" validate:"required,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
+	Lat *externalRef2.Latitude `json:"lat,omitempty" validate:"omitempty,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
 	// Line is an ordered sequence of two or more coordinate pairs (a LineString, georss:line).
 	Line externalRef4.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
@@ -629,7 +629,7 @@ type Item struct {
 	Link string `json:"link,omitzero" validate:"required_without=Description,url" xml:"link,omitempty"`
 
 	// Lon is the longitude in decimal degress
-	Lon externalRef2.Longitude `json:"lon" validate:"required,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
+	Lon *externalRef2.Longitude `json:"lon,omitempty" validate:"omitempty,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
 
 	// Point a single coordinate pair (georss:point).
 	Point *externalRef4.Point `json:"point,omitempty" xml:"http://www.georss.org/georss point"`
