@@ -1,5 +1,5 @@
 ---
-openapi: '3.1.0'
+openapi: "3.1.0"
 info:
   version: 2.0.0
   title: The 'source' namespace
@@ -9,7 +9,7 @@ info:
 
     https://source.scripting.com/
   contact:
-    name: 'Joshua Rich'
+    name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
@@ -29,18 +29,18 @@ components:
             same as blueSky.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'service,attr'
-            validate: 'required'
+            xml: "service,attr"
+            validate: "required"
         value:
           description: >
             is the account name or id.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: ',chardata'
-            validate: 'required'
+            xml: ",chardata"
+            validate: "required"
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ account,omitempty'
-        json: account,omitempty
+        xml: "https://source.scripting.com/ account,omitempty"
+        json: source_account,omitempty
     Markdown:
       description: >
         is the source of the item-level description sub-element using Markdown to encode styling and links. If your feed
@@ -54,31 +54,31 @@ components:
           description: is the markdown content.
           type: string
           x-oapi-codegen-extra-tags:
-            validate: 'required'
+            validate: "required"
         as_cdata:
           description: indicates the content is CDATA encoded.
           type: boolean
           x-go-name: AsCDATA
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ markdown,omitempty'
-        json: markdown,omitempty
+        xml: "https://source.scripting.com/ markdown,omitempty"
+        json: source_markdown,omitempty
     Outline:
       type: object
       properties:
         text:
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'text,attr,omitempty'
+            xml: "text,attr,omitempty"
         created:
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'created,attr,omitempty'
+            xml: "created,attr,omitempty"
         attrs:
           type: array
           items:
             x-go-type: xml.Attr
           x-oapi-codegen-extra-tags:
-            xml: ',any,attr'
+            xml: ",any,attr"
           x-go-type-skip-optional-pointer: true
         outlines:
           type: array
@@ -86,10 +86,10 @@ components:
             x-go-type: Outline
           x-go-type-skip-optional-pointer: true
           x-oapi-codegen-extra-tags:
-            xml: 'https://source.scripting.com/ outline,omitempty'
+            xml: "https://source.scripting.com/ outline,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ outline,omitempty'
-        json: outline,omitempty
+        xml: "https://source.scripting.com/ outline,omitempty"
+        json: source_outline,omitempty
     LocalTime:
       description: >
         is a simple entirely human-readable way for the editor of the site to see what time, in his or her time zone,
@@ -97,15 +97,15 @@ components:
         local time in your head (as I do). The format here is entirely up to the editor of the site.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ localTime,omitempty'
-        json: localTime,omitempty
+        xml: "https://source.scripting.com/ localTime,omitempty"
+        json: source_localTime,omitempty
     LinkFull:
       description: >
         is the unshortened version of <link>.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ linkFull,omitempty'
-        json: linkFull,omitempty
+        xml: "https://source.scripting.com/ linkFull,omitempty"
+        json: source_linkFull,omitempty
     Likes:
       description: >
         is an instance of the the scripting.com likes software (a Node application) or a server that emulates its API.
@@ -121,11 +121,11 @@ components:
           description: is the server URL.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'server,attr'
-            validate: 'required,url'
+            xml: "server,attr"
+            validate: "required,url"
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ likes,omitempty'
-        json: likes,omitempty
+        xml: "https://source.scripting.com/ likes,omitempty"
+        json: source_likes,omitempty
     ArchiveDay:
       description: >
         is source:archive's startDay/endDay: a bare yyyy-mm-dd date (no time-of-day or zone).
@@ -155,30 +155,30 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            validate: 'required,url'
-            xml: 'https://source.scripting.com/ url'
+            validate: "required,url"
+            xml: "https://source.scripting.com/ url"
         startDay:
           description: >
             is a hyphen-delimited date, formatted as yyyy-mm-dd, for the first element of the archive.
-          $ref: '#/components/schemas/ArchiveDay'
+          $ref: "#/components/schemas/ArchiveDay"
           x-oapi-codegen-extra-tags:
-            validate: 'required'
-            xml: 'https://source.scripting.com/ startDay'
+            validate: "required"
+            xml: "https://source.scripting.com/ startDay"
         endDay:
           description: >
             is a hyphen-delimited date (yyyy-mm-dd) for the last element in the archive.
-          $ref: '#/components/schemas/ArchiveDay'
+          $ref: "#/components/schemas/ArchiveDay"
           x-oapi-codegen-extra-tags:
-            xml: 'https://source.scripting.com/ endDay'
+            xml: "https://source.scripting.com/ endDay"
         filename:
           description: >
             is the filename in the directory.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'https://source.scripting.com/ filename,omitempty'
+            xml: "https://source.scripting.com/ filename,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ archive,omitempty'
-        json: archive,omitempty
+        xml: "https://source.scripting.com/ archive,omitempty"
+        json: source_archive,omitempty
     SubscriptionList:
       description: >
         is the list of feeds the author of the feed follows.
@@ -191,42 +191,42 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            validate: 'required,url'
-            xml: 'url,attr'
+            validate: "required,url"
+            xml: "url,attr"
         value:
           description: >
             is the account name or id.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: ',chardata'
+            xml: ",chardata"
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ subscriptionList,omitempty'
-        json: subscriptionList,omitempty
+        xml: "https://source.scripting.com/ subscriptionList,omitempty"
+        json: source_subscriptionList,omitempty
     Cloud:
       description: >
         provides a lot of information about the cloud server in a verbose way, specifying the domain, port, path and
         protocol.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ cloud,omitempty'
-        json: cloud,omitempty
-        validate: 'omitempty,url'
+        xml: "https://source.scripting.com/ cloud,omitempty"
+        json: source_cloud,omitempty
+        validate: "omitempty,url"
     Blogroll:
       description: >
         points to the blogroll for the site associated with the feed, an OPML subscription list.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ blogroll,omitempty'
-        validate: 'omitempty,url'
-        json: blogroll,omitempty
+        xml: "https://source.scripting.com/ blogroll,omitempty"
+        validate: "omitempty,url"
+        json: source_blogroll,omitempty
     Self:
       description: >
         is the canonical URL for the feed.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ self,omitempty'
-        validate: 'omitempty,url'
-        json: self,omitempty
+        xml: "https://source.scripting.com/ self,omitempty"
+        validate: "omitempty,url"
+        json: source_self,omitempty
     InReplyTo:
       description: >
         identifies the item that this item is in reply to.
@@ -239,17 +239,17 @@ components:
             is a URL to the the original item.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: ',chardata'
-            validate: 'required,url'
+            xml: ",chardata"
+            validate: "required,url"
         isPermalink:
           description: >
             indicates whether the value is a permalink.
           type: boolean
           x-oapi-codegen-extra-tags:
-            xml: 'isPermalink,attr'
+            xml: "isPermalink,attr"
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ inReplyTo,omitempty'
-        json: inReplyTo,omitempty
+        xml: "https://source.scripting.com/ inReplyTo,omitempty"
+        json: source_inReplyTo,omitempty
     Comments:
       description: >
         are links to comments for this item.
@@ -262,18 +262,18 @@ components:
           description: is a number which says how many comments there are on this item.
           type: integer
           x-oapi-codegen-extra-tags:
-            validate: 'required,gte=0'
-            xml: 'count,attr'
+            validate: "required,gte=0"
+            xml: "count,attr"
         feedURL:
           description: is the address of the feed containing the comments.
           type: string
           x-go-name: FeedURL
           x-oapi-codegen-extra-tags:
-            validate: 'required,url'
-            xml: 'feedUrl,attr'
+            validate: "required,url"
+            xml: "feedUrl,attr"
       x-oapi-codegen-extra-tags:
-        xml: 'https://source.scripting.com/ comments,omitempty'
-        json: comments,omitempty
+        xml: "https://source.scripting.com/ comments,omitempty"
+        json: source_comments,omitempty
     ChannelSource:
       description: contains all channel-level items in the source namespace.
       type: object
@@ -281,40 +281,40 @@ components:
         SourceAccount:
           type: array
           items:
-            $ref: '#/components/schemas/Account'
+            $ref: "#/components/schemas/Account"
           x-oapi-codegen-extra-tags:
-            xml: 'https://source.scripting.com/ account,omitempty'
+            xml: "https://source.scripting.com/ account,omitempty"
           x-go-type-skip-optional-pointer: true
         SourceLocalTime:
-          $ref: '#/components/schemas/LocalTime'
+          $ref: "#/components/schemas/LocalTime"
         SourceLikes:
-          $ref: '#/components/schemas/Likes'
+          $ref: "#/components/schemas/Likes"
         SourceArchive:
-          $ref: '#/components/schemas/Archive'
+          $ref: "#/components/schemas/Archive"
         SourceCloud:
-          $ref: '#/components/schemas/Cloud'
+          $ref: "#/components/schemas/Cloud"
         SourceBlogroll:
-          $ref: '#/components/schemas/Blogroll'
+          $ref: "#/components/schemas/Blogroll"
         SourceSelf:
-          $ref: '#/components/schemas/Self'
+          $ref: "#/components/schemas/Self"
         SourceSubscriptionList:
           type: array
           items:
-            $ref: '#/components/schemas/SubscriptionList'
+            $ref: "#/components/schemas/SubscriptionList"
           x-go-type-skip-optional-pointer: true
           x-oapi-codegen-extra-tags:
-            xml: 'https://source.scripting.com/ subscriptionList,omitempty'
+            xml: "https://source.scripting.com/ subscriptionList,omitempty"
     ItemSource:
       description: contains all item-level items in the source namespace.
       type: object
       properties:
         SourceMarkdown:
-          $ref: '#/components/schemas/Markdown'
+          $ref: "#/components/schemas/Markdown"
         SourceOutline:
-          $ref: '#/components/schemas/Outline'
+          $ref: "#/components/schemas/Outline"
         SourceLinkFill:
-          $ref: '#/components/schemas/LinkFull'
+          $ref: "#/components/schemas/LinkFull"
         SourceInReplyTo:
-          $ref: '#/components/schemas/InReplyTo'
+          $ref: "#/components/schemas/InReplyTo"
         SourceComments:
-          $ref: '#/components/schemas/Comments'
+          $ref: "#/components/schemas/Comments"
