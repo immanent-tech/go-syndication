@@ -116,7 +116,9 @@ func (e *Entry) GetLanguage() *string {
 func (e *Entry) GetCategories() []string {
 	categories := make([]string, 0, len(e.Categories))
 	for category := range slices.Values(e.Categories) {
-		categories = append(categories, category.String())
+		if str := strings.TrimSpace(category.String()); str != "" {
+			categories = append(categories, str)
+		}
 	}
 	slices.Sort(categories)
 	return slices.Compact(categories)

@@ -6,6 +6,7 @@ package rss
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/atom"
@@ -90,13 +91,19 @@ func (c *Channel) GetLanguage() *string {
 func (c *Channel) GetCategories() []string {
 	categories := make([]string, 0, len(c.Categories))
 	for category := range slices.Values(c.Categories) {
-		categories = append(categories, category.String())
+		if str := strings.TrimSpace(category.String()); str != "" {
+			categories = append(categories, str)
+		}
 	}
 	if c.MediaCategory != nil {
-		categories = append(categories, c.MediaCategory.Value)
+		if str := strings.TrimSpace(c.MediaCategory.Value); str != "" {
+			categories = append(categories, str)
+		}
 	}
 	if c.GooglePlayCategory != nil {
-		categories = append(categories, c.GooglePlayCategory.String())
+		if str := strings.TrimSpace(c.GooglePlayCategory.String()); str != "" {
+			categories = append(categories, str)
+		}
 	}
 	if c.ItunesCategory != nil {
 		categories = append(categories, c.ItunesCategory.GetCategories()...)

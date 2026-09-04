@@ -4,6 +4,7 @@
 package rdf
 
 import (
+	"slices"
 	"strings"
 	"time"
 )
@@ -24,7 +25,9 @@ func (c *Channel) GetContributors() []string {
 
 func (c *Channel) GetCategories() []string {
 	if len(c.DcSubject) > 0 {
-		return c.DcSubject
+		return slices.DeleteFunc(c.DcSubject, func(str string) bool {
+			return strings.TrimSpace(str) == ""
+		})
 	}
 	return nil
 }

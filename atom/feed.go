@@ -143,7 +143,9 @@ func (f *Feed) GetLanguage() *string {
 func (f *Feed) GetCategories() []string {
 	categories := make([]string, 0, len(f.Categories))
 	for category := range slices.Values(f.Categories) {
-		categories = append(categories, category.String())
+		if str := strings.TrimSpace(category.String()); str != "" {
+			categories = append(categories, str)
+		}
 	}
 	return categories
 }

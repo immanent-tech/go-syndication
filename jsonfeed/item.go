@@ -5,6 +5,7 @@ package jsonfeed
 
 import (
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/immanent-tech/go-syndication/sanitization"
@@ -79,6 +80,9 @@ func (i *Item) GetLanguage() *string {
 // GetCategories retrieves the categories (if any) of the Item.
 func (i *Item) GetCategories() []string {
 	slices.Sort(i.Tags)
+	i.Tags = slices.DeleteFunc(i.Tags, func(str string) bool {
+		return strings.TrimSpace(str) == ""
+	})
 	return slices.Compact(i.Tags)
 }
 
