@@ -7,8 +7,10 @@ package rss
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"log/slog"
+	"net/url"
 	"slices"
 	"strings"
 	"time"
@@ -316,9 +318,8 @@ func (c ItemDescription) String() string {
 
 // MarshalXML implements xml.Marshaler.
 func (c ItemDescription) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
-	// Force the literal element name "content:encoded". Go's xml package
-	// doesn't manage namespace prefixes well on marshal, so the common
-	// workaround is to declare xmlns:content on the root element.
+	// Force the literal element name "content:encoded". Go's xml package doesn't manage namespace prefixes well on
+	// marshal, so the common workaround is to declare xmlns:content on the root element.
 	start.Name = xml.Name{Local: "description"}
 
 	if c.CDATA {
@@ -339,14 +340,11 @@ func (c ItemDescription) MarshalXML(enc *xml.Encoder, start xml.StartElement) er
 
 // UnmarshalXML implements xml.Unmarshaler.
 //
-// Note: Go's decoder does not distinguish a CDATA section from ordinary
-// character data at the token level -- both come back as CharData and get
-// concatenated into a plain ",chardata" field. That means this single
-// implementation correctly reads content:encoded whether the source feed
-// used CDATA-escaping or entity-encoding, per the spec's "entity-encoded or
-// CDATA-escaped" wording. We can't reliably recover which form was
-// originally used, so CDATA is left at its zero value (false) after
-// decoding; set it yourself before re-marshaling if it matters.
+// Note: Go's decoder does not distinguish a CDATA section from ordinary character data at the token level -- both come
+// back as CharData and get concatenated into a plain ",chardata" field. That means this single implementation correctly
+// reads content:encoded whether the source feed used CDATA-escaping or entity-encoding, per the spec's "entity-encoded
+// or CDATA-escaped" wording. We can't reliably recover which form was originally used, so CDATA is left at its zero
+// value (false) after decoding; set it yourself before re-marshaling if it matters.
 func (c *ItemDescription) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var valueStruct struct {
 		Value string `xml:",chardata"`
@@ -372,5 +370,18 @@ func (c *ItemDescription) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("unmarshal item description: %w", err)
 	}
 	c.Value = s
+	return nil
+}
+
+func (i GUID) Validate() error {
+	if i.IsPermaLink {
+		u, err := url.Parse(i.Value)
+		if err != nil {
+			return fmt.Errorf("validate GUID: parse URL: %w", err)
+		}
+		if !u.IsAbs() {
+			return errors.New("validate GUID: value is not absolute URL")
+		}
+	}
 	return nil
 }

@@ -614,7 +614,7 @@ type Item struct {
 	Floor *int `json:"floor,omitempty" xml:"http://www.georss.org/georss floor"`
 
 	// GUID is a string that uniquely identifies an item.
-	GUID *GUID `json:"guid,omitempty" xml:"guid,omitempty"`
+	GUID *GUID `json:"guid,omitempty" validate:"omitempty,validateFn" xml:"guid,omitempty"`
 
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
