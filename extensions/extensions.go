@@ -5,8 +5,6 @@ package extensions
 
 import (
 	"encoding/xml"
-
-	"github.com/goforj/godump"
 )
 
 // WellKnownNamespaces is a convenience registry of namespace URIs commonly seen in RSS feeds. It's just a lookup table
@@ -49,7 +47,6 @@ func (r *NamespaceRewriter) Token() (xml.Token, error) {
 	switch t := tok.(type) {
 	case xml.StartElement:
 		if t.Name.Space == WellKnownNamespaces["slash"] && t.Name.Local == "comments" {
-			godump.Dump(t)
 			t.Name = xml.Name{Local: "slashComments"}
 			return t, nil
 		}

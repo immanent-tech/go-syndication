@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -24,6 +25,7 @@ import (
 	feeds "github.com/immanent-tech/go-syndication"
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/jsonfeed"
+	"github.com/immanent-tech/go-syndication/linter"
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/types"
@@ -38,16 +40,16 @@ type CLI struct {
 
 	Fetch FetchCMD `cmd:"" help:"Fetch a feed from a URL"`
 	Parse ParseCMD `cmd:"" help:"Parse a feed file"`
+	Lint  LintCMD  `cmd:"" help:"Lint a feed"`
 }
 
 func init() {
 	// Following is copied from https://git.kernel.org/pub/scm/libs/libcap/libcap.git/tree/goapps/web/web.go
 	// ensureNotEUID aborts the program if it is running setuid something, or being invoked by root.
-
 	if euid, uid, egid, gid := syscall.Geteuid(), syscall.Getuid(), syscall.Getegid(), syscall.Getgid(); uid != euid ||
 		gid != egid ||
 		uid == 0 {
-		panic(errors.New("foragd should not be run with additional privileges or as root"))
+		panic(errors.New("go-syndication should not be run with additional privileges or as root"))
 	}
 }
 
@@ -85,51 +87,12 @@ type FetchCMD struct {
 }
 
 func (c *FetchCMD) Run() error {
-	// Set up context.
-	ctx, cancelFunc := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer cancelFunc()
-
-	// Parse the URL to ensure its valid.
-	sourceURL, err := url.Parse(c.URL)
+	feedBuf, err := fetchFeedData(c.URL)
 	if err != nil {
-		return fmt.Errorf("could not parse URL: %w", err)
+		return fmt.Errorf("fetch feed data: %w", err)
 	}
 
-	// Fetch feed.
-	resp, err := LoadHTTPClient().R().
-		SetContext(ctx).
-		SetDoNotParseResponse(true).
-		Get(sourceURL.String())
-	switch {
-	case err != nil:
-		return fmt.Errorf("fetch feed: %w", err)
-	case resp.IsError():
-		return fmt.Errorf("fetch feed response: %s", resp.Status())
-	}
-	defer resp.RawBody().Close()
-
-	// Read response data into buffer.
-	var feedBuf bytes.Buffer
-	if resp.Header().Get("Content-Encoding") == "gzip" {
-		// For gzipped response, uncompress first.
-		reader, err := gzip.NewReader(resp.RawBody())
-		if err != nil {
-			return fmt.Errorf("read gzip response: %w", err)
-		}
-		defer reader.Close()
-		const maxBodySize = 10 * 1024 * 1024 // 10 MB limit
-		limitReader := io.LimitReader(reader, maxBodySize)
-		if _, err := io.Copy(&feedBuf, limitReader); err != nil {
-			return fmt.Errorf("read response: %w", err)
-		}
-	} else {
-		// Read response directly.
-		if _, err := io.Copy(&feedBuf, resp.RawBody()); err != nil {
-			return fmt.Errorf("read response: %w", err)
-		}
-	}
-
-	feed, err := parseFeedData(&feedBuf)
+	feed, err := parseFeedData(feedBuf)
 	if err != nil {
 		return fmt.Errorf("parse feed data: %w", err)
 	}
@@ -170,6 +133,104 @@ func (c *ParseCMD) Run() error {
 	}
 
 	return nil
+}
+
+type LintCMD struct {
+	JSON bool    `help:"Output as JSON"`
+	File *string `help:"File to feed data" validate:"omitempty,required_without=URL,omitempty,file"`
+	URL  *string `help:"URL of feed"       validate:"omitempty,required_without=File,omitempty,url"`
+}
+
+func (c *LintCMD) Run() error {
+	if c.File == nil && c.URL == nil {
+		return errors.New("file or URL is required")
+	}
+	if err := validation.ValidateStruct(c); err != nil {
+		return fmt.Errorf("validate options: %w", err)
+	}
+
+	var (
+		buf io.Reader
+		err error
+	)
+
+	switch {
+	case c.File != nil:
+		buf, err = os.Open(*c.File)
+		if err != nil {
+			return fmt.Errorf("open feed file: %w", err)
+		}
+	case c.URL != nil:
+		buf, err = fetchFeedData(*c.URL)
+		if err != nil {
+			return fmt.Errorf("fetch feed data: %w", err)
+		}
+	}
+
+	results, err := linter.Lint(buf)
+	if err != nil {
+		return fmt.Errorf("lint feed: %w", err)
+	}
+
+	if c.JSON {
+		data, err := json.MarshalIndent(results, "", "  ")
+		if err != nil {
+			return fmt.Errorf("marshal JSON output: %w", err)
+		}
+		fmt.Fprintf(os.Stdout, "%s", string(data))
+	} else {
+		showLinterResults(results)
+	}
+
+	return nil
+}
+
+func fetchFeedData(feedURL string) (*bytes.Buffer, error) {
+	// Set up context.
+	ctx, cancelFunc := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer cancelFunc()
+
+	// Parse the URL to ensure its valid.
+	sourceURL, err := url.Parse(feedURL)
+	if err != nil {
+		return nil, fmt.Errorf("could not parse URL: %w", err)
+	}
+
+	// Fetch feed.
+	resp, err := LoadHTTPClient().R().
+		SetContext(ctx).
+		SetDoNotParseResponse(true).
+		Get(sourceURL.String())
+	switch {
+	case err != nil:
+		return nil, fmt.Errorf("fetch feed: %w", err)
+	case resp.IsError():
+		return nil, fmt.Errorf("fetch feed response: %s", resp.Status())
+	}
+	defer resp.RawBody().Close()
+
+	// Read response data into buffer.
+	var feedBuf bytes.Buffer
+	if resp.Header().Get("Content-Encoding") == "gzip" {
+		// For gzipped response, uncompress first.
+		reader, err := gzip.NewReader(resp.RawBody())
+		if err != nil {
+			return nil, fmt.Errorf("read gzip response: %w", err)
+		}
+		defer reader.Close()
+		const maxBodySize = 10 * 1024 * 1024 // 10 MB limit
+		limitReader := io.LimitReader(reader, maxBodySize)
+		if _, err := io.Copy(&feedBuf, limitReader); err != nil {
+			return nil, fmt.Errorf("read response: %w", err)
+		}
+	} else {
+		// Read response directly.
+		if _, err := io.Copy(&feedBuf, resp.RawBody()); err != nil {
+			return nil, fmt.Errorf("read response: %w", err)
+		}
+	}
+
+	return &feedBuf, nil
 }
 
 func parseFeedData(r io.Reader) (*feeds.Feed, error) {
@@ -308,6 +369,37 @@ func showFeedDetails(feed *feeds.Feed) {
 			str.WriteString(*item.GetContent())
 		}
 		str.WriteRune('\n')
+	}
+
+	fmt.Fprintf(os.Stdout, "%s", str.String())
+}
+
+func showLinterResults(results map[string][]linter.Result) {
+	var str strings.Builder
+
+	for ruleset, results := range results {
+		str.WriteString("Ruleset: ")
+		str.WriteString(ruleset)
+		str.WriteString("\n\n")
+		for result := range slices.Values(results) {
+			str.WriteString("Rule: ")
+			str.WriteString(result.ID)
+			str.WriteString("\n")
+			str.WriteString("Description: ")
+			str.WriteString(result.Description)
+			str.WriteString("\n")
+			str.WriteString("Result: ")
+			str.WriteString(string(result.Status))
+			str.WriteString("\n")
+			if result.Message != nil {
+				str.WriteString("Message: ")
+				str.WriteString(*result.Message)
+				str.WriteString("\n")
+			}
+			str.WriteString("\n")
+		}
+		str.WriteString("\n")
+		str.WriteString("\n")
 	}
 
 	fmt.Fprintf(os.Stdout, "%s", str.String())

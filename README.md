@@ -159,7 +159,18 @@ To read a file containing feed data:
 go run github.com/immanent-tech/go-syndication/cmd@latest parse /path/to/my/feed.xml
 ```
 
-The commands will auto-detect a supported feed format.
+To lint a feed:
+
+```shell
+go run github.com/immanent-tech/go-syndication/cmd@latest lint --file=/path/to/my/feed.xml
+# or --url=https://some.site/feed
+# optional, add --json to get the output in JSON format
+```
+
+Linting by default will show validation results as well as whether the feed implements various recommended features to
+maximum compatibility and user experience.
+
+All commands will auto-detect a supported feed format.
 
 ## Design
 
