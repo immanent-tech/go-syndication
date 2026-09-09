@@ -4,6 +4,7 @@
 package rss
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -22,10 +23,9 @@ func (c ContentEncoded) String() string {
 
 // MarshalXML implements xml.Marshaler.
 func (c ContentEncoded) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
-	// Force the literal element name "content:encoded". Go's xml package
-	// doesn't manage namespace prefixes well on marshal, so the common
-	// workaround is to declare xmlns:content on the root element (see
-	// RSSRoot below) and just use the literal prefixed name here.
+	// Force the literal element name "content:encoded". Go's xml package doesn't manage namespace prefixes well on
+	// marshal, so the common workaround is to declare xmlns:content on the root element (see RSSRoot below) and just
+	// use the literal prefixed name here.
 	start.Name = xml.Name{Local: "content:encoded"}
 
 	if c.CDATA {
@@ -40,14 +40,11 @@ func (c ContentEncoded) MarshalXML(enc *xml.Encoder, start xml.StartElement) err
 
 // UnmarshalXML implements xml.Unmarshaler.
 //
-// Note: Go's decoder does not distinguish a CDATA section from ordinary
-// character data at the token level -- both come back as CharData and get
-// concatenated into a plain ",chardata" field. That means this single
-// implementation correctly reads content:encoded whether the source feed
-// used CDATA-escaping or entity-encoding, per the spec's "entity-encoded or
-// CDATA-escaped" wording. We can't reliably recover which form was
-// originally used, so CDATA is left at its zero value (false) after
-// decoding; set it yourself before re-marshaling if it matters.
+// Note: Go's decoder does not distinguish a CDATA section from ordinary character data at the token level -- both come
+// back as CharData and get concatenated into a plain ",chardata" field. That means this single implementation correctly
+// reads content:encoded whether the source feed used CDATA-escaping or entity-encoding, per the spec's "entity-encoded
+// or CDATA-escaped" wording. We can't reliably recover which form was originally used, so CDATA is left at its zero
+// value (false) after decoding; set it yourself before re-marshaling if it matters.
 func (c *ContentEncoded) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	var v struct {
 		Value string `xml:",chardata"`
@@ -73,5 +70,16 @@ func (c *ContentEncoded) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("unmarshal content:encoded: %w", err)
 	}
 	c.Value = s
+	return nil
+}
+
+func (p SYUpdatePeriod) MarshalText() ([]byte, error) {
+	return []byte(p), nil
+}
+
+func (p *SYUpdatePeriod) UnmarshalText(data []byte) error {
+	cleaned := bytes.TrimSpace(data)
+	value := SYUpdatePeriod(string(cleaned))
+	*p = value
 	return nil
 }
