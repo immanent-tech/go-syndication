@@ -3,6 +3,12 @@
 
 package extensions
 
+import (
+	"encoding/xml"
+
+	"github.com/goforj/godump"
+)
+
 // WellKnownNamespaces is a convenience registry of namespace URIs commonly seen in RSS feeds. It's just a lookup table
 // that can be used to lookup commonly used namespaces. It does not reflect all known namespaces and can be overridden.
 var WellKnownNamespaces = map[string]string{
@@ -26,4 +32,32 @@ func NewNamespace(prefix string, uri ...string) Namespace {
 		return Namespace{Prefix: prefix, URI: uri[0]}
 	}
 	return Namespace{Prefix: prefix, URI: WellKnownNamespaces[prefix]}
+}
+
+// NamespaceRewriter implements an XML token filter that renames the ambiguous namespaced elements to something
+// unique before reflection-based unmarshaling ever sees it.
+type NamespaceRewriter struct {
+	Dec *xml.Decoder
+}
+
+// Token defines the rewrite rules for the NamespaceRewriter.
+func (r *NamespaceRewriter) Token() (xml.Token, error) {
+	tok, err := r.Dec.Token()
+	if err != nil {
+		return tok, err
+	}
+	switch t := tok.(type) {
+	case xml.StartElement:
+		if t.Name.Space == WellKnownNamespaces["slash"] && t.Name.Local == "comments" {
+			godump.Dump(t)
+			t.Name = xml.Name{Local: "slashComments"}
+			return t, nil
+		}
+	case xml.EndElement:
+		if t.Name.Space == WellKnownNamespaces["slash"] && t.Name.Local == "comments" {
+			t.Name = xml.Name{Local: "slashComments"}
+			return t, nil
+		}
+	}
+	return tok, nil
 }

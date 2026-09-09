@@ -588,6 +588,7 @@ components:
         - $ref: "source.yaml#/components/schemas/ItemSource"
         - $ref: "basicgeo.yaml#/components/schemas/Position"
         - $ref: "georss.yaml#/components/schemas/GeoRSSSimple"
+        - $ref: "slash.yaml#/components/schemas/Elements"
         - type: object
           required:
             - title

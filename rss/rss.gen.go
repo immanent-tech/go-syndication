@@ -16,7 +16,8 @@ import (
 	externalRef6 "github.com/immanent-tech/go-syndication/extensions/itunes"
 	externalRef7 "github.com/immanent-tech/go-syndication/extensions/media"
 	externalRef8 "github.com/immanent-tech/go-syndication/extensions/rss"
-	externalRef9 "github.com/immanent-tech/go-syndication/extensions/source"
+	externalRef9 "github.com/immanent-tech/go-syndication/extensions/slash"
+	externalRef10 "github.com/immanent-tech/go-syndication/extensions/source"
 )
 
 // Defines values for CloudProtocol.
@@ -223,29 +224,29 @@ type Channel struct {
 
 	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
 	SYUpdateFrequency *externalRef8.SYUpdateFrequency `json:"update_frequency,omitempty" validate:"omitempty,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
-	SourceAccount     []externalRef9.Account          `json:"SourceAccount,omitempty" xml:"https://source.scripting.com/ account,omitempty"`
+	SourceAccount     []externalRef10.Account         `json:"SourceAccount,omitempty" xml:"https://source.scripting.com/ account,omitempty"`
 
 	// SourceArchive is links to the calendar-structured archive for the feed.  The folder pointed to by this address contains one folder for each year, 2009, 2010, 2011, etc. Each of those folders contains one folder for each month, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12. The month folders must be zero-padded to two places. Folders may be missing, indicating that there is no archived content for the month. Each of the month folders contains folders for the days of the month. Day folder names are also zero-padded to two places and may be missing if there were no updates on the given day. Each day folder contains a file named rss.xml, unless the optional <source:filename> sub-element is supplied, which overrides the default. This makes it possible for a single calendar structure to store the archive of more than one feed.
-	SourceArchive *externalRef9.Archive `json:"source_archive,omitempty" xml:"https://source.scripting.com/ archive,omitempty"`
+	SourceArchive *externalRef10.Archive `json:"source_archive,omitempty" xml:"https://source.scripting.com/ archive,omitempty"`
 
 	// SourceBlogroll points to the blogroll for the site associated with the feed, an OPML subscription list.
-	SourceBlogroll *externalRef9.Blogroll `json:"source_blogroll,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ blogroll,omitempty"`
+	SourceBlogroll *externalRef10.Blogroll `json:"source_blogroll,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ blogroll,omitempty"`
 
 	// SourceCloud provides a lot of information about the cloud server in a verbose way, specifying the domain, port, path and protocol.
-	SourceCloud *externalRef9.Cloud `json:"source_cloud,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ cloud,omitempty"`
+	SourceCloud *externalRef10.Cloud `json:"source_cloud,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ cloud,omitempty"`
 
 	// SourceLikes is an instance of the the scripting.com likes software (a Node application) or a server that emulates its API.
 	// Feed readers can use the server URL to form a like icon for each item that integrates with other feed readers. Perhaps the beginning of a way to build a connection between people who read a blog via various feed reader software. A demo app provides example code in JavaScript.
-	SourceLikes *externalRef9.Likes `json:"source_likes,omitempty" xml:"https://source.scripting.com/ likes,omitempty"`
+	SourceLikes *externalRef10.Likes `json:"source_likes,omitempty" xml:"https://source.scripting.com/ likes,omitempty"`
 
 	// SourceLocalTime is a simple entirely human-readable way for the editor of the site to see what time, in his or her time zone, the feed was last updated. Must-have for debugging and sanity-preservation if you have trouble converting GMT to local time in your head (as I do). The format here is entirely up to the editor of the site.
-	SourceLocalTime *externalRef9.LocalTime `json:"source_localTime,omitempty" xml:"https://source.scripting.com/ localTime,omitempty"`
+	SourceLocalTime *externalRef10.LocalTime `json:"source_localTime,omitempty" xml:"https://source.scripting.com/ localTime,omitempty"`
 
 	// SourceSelf is the canonical URL for the feed.
-	SourceSelf             *externalRef9.Self              `json:"source_self,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ self,omitempty"`
-	SourceSubscriptionList []externalRef9.SubscriptionList `json:"SourceSubscriptionList,omitempty" xml:"https://source.scripting.com/ subscriptionList,omitempty"`
-	XMLName                xml.Name                        `json:"XMLName" validate:"required" xml:"channel"`
-	AtomLink               *AtomLink                       `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+	SourceSelf             *externalRef10.Self              `json:"source_self,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ self,omitempty"`
+	SourceSubscriptionList []externalRef10.SubscriptionList `json:"SourceSubscriptionList,omitempty" xml:"https://source.scripting.com/ subscriptionList,omitempty"`
+	XMLName                xml.Name                         `json:"XMLName" validate:"required" xml:"channel"`
+	AtomLink               *AtomLink                        `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
 	Categories []Category `json:"category,omitempty" xml:"category,omitempty"`
@@ -510,17 +511,17 @@ type Item struct {
 	PermaLink *externalRef8.PermaLink `json:"link_permalink,omitempty" xml:"http://purl.org/rss/1.0/modules/link/ permalink,omitempty"`
 
 	// SourceComments are links to comments for this item.
-	SourceComments *externalRef9.Comments `json:"source_comments,omitempty" xml:"https://source.scripting.com/ comments,omitempty"`
+	SourceComments *externalRef10.Comments `json:"source_comments,omitempty" xml:"https://source.scripting.com/ comments,omitempty"`
 
 	// SourceInReplyTo identifies the item that this item is in reply to.
-	SourceInReplyTo *externalRef9.InReplyTo `json:"source_inReplyTo,omitempty" xml:"https://source.scripting.com/ inReplyTo,omitempty"`
+	SourceInReplyTo *externalRef10.InReplyTo `json:"source_inReplyTo,omitempty" xml:"https://source.scripting.com/ inReplyTo,omitempty"`
 
 	// SourceLinkFill is the unshortened version of <link>.
-	SourceLinkFill *externalRef9.LinkFull `json:"source_linkFull,omitempty" xml:"https://source.scripting.com/ linkFull,omitempty"`
+	SourceLinkFill *externalRef10.LinkFull `json:"source_linkFull,omitempty" xml:"https://source.scripting.com/ linkFull,omitempty"`
 
 	// SourceMarkdown is the source of the item-level description sub-element using Markdown to encode styling and links. If your feed presenter can understand Markdown, you should use this as the source for the display of the item.
-	SourceMarkdown *externalRef9.Markdown `json:"source_markdown,omitempty" xml:"https://source.scripting.com/ markdown,omitempty"`
-	SourceOutline  *externalRef9.Outline  `json:"source_outline,omitempty" xml:"https://source.scripting.com/ outline,omitempty"`
+	SourceMarkdown *externalRef10.Markdown `json:"source_markdown,omitempty" xml:"https://source.scripting.com/ markdown,omitempty"`
+	SourceOutline  *externalRef10.Outline  `json:"source_outline,omitempty" xml:"https://source.scripting.com/ outline,omitempty"`
 
 	// Alt is the meters above the local reference ellipsoid.
 	Alt      *externalRef2.Altitude `json:"alt,omitempty" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# alt,omitempty"`
@@ -643,6 +644,9 @@ type Item struct {
 	// Radius indicates the size in meters of a radius or buffer around the geometry object, for example, radius of circular area around a point geometry.
 	Radius          *float64 `json:"radius,omitempty" xml:"http://www.georss.org/georss radius"`
 	RelationshipTag *string  `json:"relationshipTag,omitempty" xml:"http://www.georss.org/georss relationshiptag,omitempty"`
+
+	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
+	SlashComments *externalRef9.Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
 
 	// Source The RSS channel that the item came from.
 	Source *Source `json:"source,omitempty" xml:"source,omitempty"`

@@ -19,3 +19,4 @@ package schema
 //go:generate go tool oapi-codegen -config extensions-cfg.yaml extensions.yaml
 //go:generate go tool oapi-codegen -config rdf-cfg.yaml rdf.yaml
 //go:generate go tool oapi-codegen -config source-cfg.yaml source.yaml
+//go:generate go tool oapi-codegen -config slash-cfg.yaml slash.yaml

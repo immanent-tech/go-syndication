@@ -1,0 +1,29 @@
+---
+openapi: "3.1.0"
+info:
+  version: 1.0.0
+  title: Slash Namespace
+  description: >
+    The Slash namespace provides metadata about user engagement, particularly comment counts. Originally created by
+    Slashdot, it's now widely used to indicate discussion activity on feed items.
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
+  license:
+    identifier: MIT
+components:
+  schemas:
+    Comments:
+      description: contains a non-negative integer that counts the number of comments that an item has received.
+      type: integer
+      x-oapi-codegen-extra-tags:
+        json: "slash_comments,omitempty"
+        xml: "slashComments,omitempty"
+        validate: "omitempty,number,gte=0"
+      x-go-type-skip-optional-pointer: false
+    Elements:
+      description: contains all the slash namespace elements as an embeddable object.
+      type: object
+      properties:
+        slash_comments:
+          $ref: "#/components/schemas/Comments"

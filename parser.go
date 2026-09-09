@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/jsonfeed"
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/rss"
@@ -34,12 +35,13 @@ func Decode[T any](namespace string, rd io.Reader) (T, error) {
 
 	decoder := xml.NewDecoder(rd)
 	decoder.Strict = false // be lenient with malformed feeds in the wild
-
 	if namespace != "" {
 		decoder.DefaultSpace = namespace
 	}
 	decoder.CharsetReader = charset.NewReaderLabel
-	if err := decoder.Decode(&feed); err != nil {
+	tokDec := xml.NewTokenDecoder(&extensions.NamespaceRewriter{Dec: decoder})
+
+	if err := tokDec.Decode(&feed); err != nil {
 		return feed, fmt.Errorf("could not decode byte array: %w", err)
 	}
 

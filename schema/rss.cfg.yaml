@@ -11,14 +11,15 @@ output-options:
   # to make sure that all types are generated
   skip-prune: true
 import-mapping:
-  extensions.yaml: 'github.com/immanent-tech/go-syndication/extensions'
-  rss-ext.yaml: 'github.com/immanent-tech/go-syndication/extensions/rss'
-  dc.yaml: 'github.com/immanent-tech/go-syndication/extensions/dc'
-  media-rss.yaml: 'github.com/immanent-tech/go-syndication/extensions/media'
-  itunes.yaml: 'github.com/immanent-tech/go-syndication/extensions/itunes'
-  googleplay.yaml: 'github.com/immanent-tech/go-syndication/extensions/googleplay'
-  source.yaml: 'github.com/immanent-tech/go-syndication/extensions/source'
-  basicgeo.yaml: 'github.com/immanent-tech/go-syndication/extensions/basicgeo'
-  georss.yaml: 'github.com/immanent-tech/go-syndication/extensions/georss'
-  rdf.yaml: 'github.com/immanent-tech/go-syndication/rdf'
-  atom.yaml: 'github.com/immanent-tech/go-syndication/atom'
+  extensions.yaml: "github.com/immanent-tech/go-syndication/extensions"
+  rss-ext.yaml: "github.com/immanent-tech/go-syndication/extensions/rss"
+  dc.yaml: "github.com/immanent-tech/go-syndication/extensions/dc"
+  media-rss.yaml: "github.com/immanent-tech/go-syndication/extensions/media"
+  itunes.yaml: "github.com/immanent-tech/go-syndication/extensions/itunes"
+  googleplay.yaml: "github.com/immanent-tech/go-syndication/extensions/googleplay"
+  slash.yaml: "github.com/immanent-tech/go-syndication/extensions/slash"
+  source.yaml: "github.com/immanent-tech/go-syndication/extensions/source"
+  basicgeo.yaml: "github.com/immanent-tech/go-syndication/extensions/basicgeo"
+  georss.yaml: "github.com/immanent-tech/go-syndication/extensions/georss"
+  rdf.yaml: "github.com/immanent-tech/go-syndication/rdf"
+  atom.yaml: "github.com/immanent-tech/go-syndication/atom"
