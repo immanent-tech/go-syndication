@@ -106,13 +106,14 @@ func Lint(r io.Reader) (map[string][]Result, error) {
 		return nil, errors.New("cannot determine feed type")
 	case feedType == types.SourceAtom:
 		// Atom feed.
-		// feedData, err = feeds.NewDecoder[*atom.Feed](bytes.NewReader(data))
-		// if err != nil {
-		// 	return nil, fmt.Errorf("parse atom: %w", err)
-		// }
+		feed, err := feeds.Decode[*atom.Feed]("", bytes.NewReader(data))
+		if err != nil {
+			return nil, fmt.Errorf("parse atom: %w", err)
+		}
+		return LintAllAtom(feed), nil
 	case feedType == types.SourceRSS:
 		// RSS 2.0 feed.
-		feed, err := feeds.Decode[*rss.RSS]("https://www.rssboard.org/rss-specification", bytes.NewReader(data))
+		feed, err := feeds.Decode[*rss.RSS]("", bytes.NewReader(data))
 		if err != nil {
 			return nil, fmt.Errorf("parse rss: %w", err)
 		}
