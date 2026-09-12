@@ -54,23 +54,25 @@ var namedZoneOffsets = map[string]int{
 var dateOnlyLayouts = []string{
 	"Mon, 02 Jan 2006 15:04:05 -0700",
 	"Mon, 02 Jan 06 15:04:05 -0700",
-	"Mon, 02 Jan 2006", // No time seen in the wild.
+	"Mon, 02 Jan 2006 15:04:05",
+	"Mon, 02 Jan 2006",
 	"Mon, 2 Jan 2006",
-	"Mon, 2 Jan 2006 15:04:05 -0700", // No leading zero sometimes found in the wild.
+	"Mon, 2 Jan 2006 15:04:05 -0700",
 	"Mon, 2 Jan 06 15:04:05 -0700",
 	"02 Jan 2006 15:04:05 -0700",
 	"02 Jan 06 15:04:05 -0700",
-	"Mon, 02 Jan 2006 15:04 -0700", // Seconds sometimes omitted in the wild.
+	"Mon, 02 Jan 2006 15:04 -0700",
 	"Mon, 02 Jan 06 15:04 -0700",
 	"Mon, 2 Jan 2006 15:04 -0700",
 	"Mon, 2 Jan 06 15:04 -0700",
 	"02 Jan 2006 15:04 -0700",
 	"02 Jan 06 15:04 -0700",
-	"2006 Jan 02 15:04:05 -0700", // YYYY-MMM-DD seen in the wild.
+	"2006 Jan 02 15:04:05 -0700",
 	"2006 Jan 02 15:04:05 MST",
-	"Jan 02, 2006", // Seen in some items in the wild.
+	"Jan 02, 2006",
 	"2006-01-02T15:04:05+00:00",
 	"2006-01-02T15:04:05+0000",
+	"2006-01-02 15:04 MST",
 	time.RFC3339,
 }
 
