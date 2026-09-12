@@ -9,6 +9,7 @@ import (
 	"mime"
 	"net/url"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -52,14 +53,18 @@ type FieldError struct {
 
 // Error satisfies the Error interface.
 func (e *FieldError) Error() string {
-	return fmt.Sprintf(
-		"%s %s (value(%q)) failed validation for %s: %s",
+	var errStr strings.Builder
+	fmt.Fprintf(&errStr, "%s %s failed validation for %s",
 		ErrInvalidField.Error(),
 		e.Field,
-		e.Value,
 		e.Tag,
-		e.Message,
 	)
+	if e.Param != "" {
+		errStr.WriteString("(")
+		errStr.WriteString(e.Param)
+		errStr.WriteString(")")
+	}
+	return errStr.String()
 }
 
 // Errors contains validation errors on individual fields in a struct.
@@ -90,7 +95,7 @@ func ValidateStruct(s any) *Errors {
 		errs := &Errors{}
 		if validateErrs, ok := errors.AsType[validator.ValidationErrors](err); ok {
 			errs.Fields = make([]FieldError, 0, len(validateErrs))
-			for _, err := range validateErrs {
+			for err := range slices.Values(validateErrs) {
 				errs.Fields = append(errs.Fields, FieldError{
 					Namespace:       err.Namespace(),
 					Field:           err.Field(),
@@ -143,6 +148,10 @@ func RegisterValidation(tag string, f validator.Func) error {
 		return fmt.Errorf("unable to register custom validator: %w", err)
 	}
 	return nil
+}
+
+func RegisterStructValidation(validateFn func(validator.StructLevel), obj any) {
+	validate.RegisterStructValidation(validateFn, obj)
 }
 
 // validateMimetype checks that the value is a valid mimetype. Note that this does not check whether the mimetype is a
