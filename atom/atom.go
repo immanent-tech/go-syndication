@@ -601,13 +601,9 @@ func (c Content) Validate() error {
 		}
 		switch {
 		case *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "html"):
-			// If it indicates it contains encoded content, validate that.
-			if err := validation.ValidateField(*c.Text, "url_encoded"); err != nil {
-				return fmt.Errorf("validate content: %w", err)
-			}
 			// Validate it is valid HTML.
 			if err := validation.ValidateField(*c.Text, "html"); err != nil {
-				return fmt.Errorf("validate content: %w", err)
+				return errors.New("validate content: not valid html")
 			}
 		case *c.Type == ContentTypeText || strings.Contains(string(*c.Type), "plain"):
 			// Validate text does not contain escaped content.
@@ -617,14 +613,14 @@ func (c Content) Validate() error {
 		default:
 			// Validate type is valid mimetype.
 			if err := validation.ValidateField(*c.Type, "mimetype_string"); err != nil {
-				return fmt.Errorf("validate content: %w", err)
+				return errors.New("validate content: not a valid mimetype")
 			}
 		}
 	}
 	if len(c.Base64) > 0 {
 		// Validate the content is actually base64 encoded.
 		if err := validation.ValidateField(c.Base64, "base64"); err != nil {
-			return fmt.Errorf("validate content: %w", err)
+			return errors.New("validate content: is not valid base64 encoded")
 		}
 	}
 	if !c.RequiresSummary() {
