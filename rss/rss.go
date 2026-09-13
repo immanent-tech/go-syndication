@@ -24,6 +24,11 @@ import (
 	"github.com/immanent-tech/go-syndication/validation"
 )
 
+func init() {
+	validation.RegisterStructValidation(guidCustomValidation, GUID{})
+	validation.RegisterStructValidation(itemCustomValidation, Item{})
+}
+
 var (
 	// MimeTypes contains canonical/standard mimetypes for RSS feeds.
 	MimeTypes = slices.Concat([]string{"application/rss+xml"}, rdf.MimeTypes)

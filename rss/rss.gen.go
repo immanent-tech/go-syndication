@@ -329,7 +329,7 @@ type Channel struct {
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`
 
 	// Items is a list of the current items published to the channel.
-	Items []Item `json:"items,omitempty" validate:"omitempty,dive,validateFn" xml:"item,omitempty"`
+	Items []Item `json:"items,omitempty" validate:"omitempty,dive" xml:"item,omitempty"`
 
 	// Language is the language the channel is written in. This allows aggregators to group all Italian language sites, for example, on a single page.
 	Language *string `json:"language,omitempty,omitzero" validate:"omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag" xml:"language,omitempty"`
@@ -615,7 +615,7 @@ type Item struct {
 	Floor *int `json:"floor,omitempty" xml:"http://www.georss.org/georss floor"`
 
 	// GUID is a string that uniquely identifies an item.
-	GUID *GUID `json:"guid,omitempty" validate:"omitempty,validateFn" xml:"guid,omitempty"`
+	GUID *GUID `json:"guid,omitempty" validate:"omitempty" xml:"guid,omitempty"`
 
 	// Image contains details of a GIF, JPEG or PNG image that can be displayed with the channel.
 	Image *Image `json:"image,omitempty" xml:"image,omitempty"`

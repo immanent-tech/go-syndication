@@ -312,7 +312,7 @@ components:
       x-go-name: GUID
       x-oapi-codegen-extra-tags:
         xml: "guid,omitempty"
-        validate: "omitempty,validateFn"
+        validate: "omitempty"
     ItemDescription:
       description: >
         is a short description of the item.
@@ -571,7 +571,7 @@ components:
                 $ref: "#/components/schemas/Item"
               x-oapi-codegen-extra-tags:
                 xml: "item,omitempty"
-                validate: "omitempty,dive,validateFn"
+                validate: "omitempty,dive"
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         xml: "channel"
@@ -648,4 +648,3 @@ components:
               $ref: "rss-ext.yaml#/components/schemas/PermaLink"
       x-oapi-codegen-extra-tags:
         xml: "item,omitempty"
-        validate: validateFn

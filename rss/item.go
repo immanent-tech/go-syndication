@@ -7,7 +7,6 @@ package rss
 import (
 	"encoding/json"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/url"
@@ -15,10 +14,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
-	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
 )
 
@@ -288,20 +287,10 @@ func (i *Item) GetGeoInfo() *types.GeoInfo {
 	return &info
 }
 
-// Validate applies custom validation to an item.
-func (i *Item) Validate() error {
-	// Either description or title must be set. Both cannot be empty.
+func itemCustomValidation(sl validator.StructLevel) {
+	i := sl.Current().Interface().(Item)
 	if i.Description.String() == "" && i.Title == "" {
-		return fmt.Errorf("%w: description or title is required", validation.ErrInvalidStruct)
-	}
-	return nil
-}
-
-// NewGUID creates a GUID from the given value, with the given permalink status.
-func NewGUID(value string, permalink bool) *GUID {
-	return &GUID{
-		IsPermaLink: permalink,
-		Value:       value,
+		sl.ReportError(i, "Item", "Item", "required", "descrition or title is required")
 	}
 }
 
@@ -373,15 +362,24 @@ func (c *ItemDescription) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (i GUID) Validate() error {
+// NewGUID creates a GUID from the given value, with the given permalink status.
+func NewGUID(value string, permalink bool) *GUID {
+	return &GUID{
+		IsPermaLink: permalink,
+		Value:       value,
+	}
+}
+
+func guidCustomValidation(sl validator.StructLevel) {
+	i := sl.Current().Interface().(GUID)
 	if i.IsPermaLink {
 		u, err := url.Parse(i.Value)
 		if err != nil {
-			return fmt.Errorf("validate GUID: parse URL: %w", err)
+			sl.ReportError(i.Value, "Value", "Value", "url", fmt.Sprintf("parse url: %s", err.Error()))
+			return
 		}
 		if !u.IsAbs() {
-			return errors.New("validate GUID: value is not absolute URL")
+			sl.ReportError(i.Value, "Value", "Value", "url", "url is not absolute")
 		}
 	}
-	return nil
 }

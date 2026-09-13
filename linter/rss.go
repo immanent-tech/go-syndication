@@ -10,6 +10,7 @@ import (
 
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/rss"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 // RSSRuleSets contains all of the rulesets for linting RSS feeds.
@@ -19,7 +20,7 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 		{
 			Check: func(source rss.Channel) Result {
 				metadata := metadata{ID: "valid-feed", Description: "RSS Feed passes validation"}
-				if err := source.Validate(); err != nil {
+				if err := validation.ValidateStruct(source); err != nil {
 					return fail(metadata, "feed is invalid: %s", err.Error())
 				}
 				return pass(metadata)
