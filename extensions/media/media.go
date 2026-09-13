@@ -6,16 +6,23 @@ package media
 
 import (
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"net/url"
 	"slices"
 	"strconv"
 	"strings"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
+
+func init() {
+	validation.RegisterStructValidation(mediaContentCustomValidation, MediaContent{})
+	validation.RegisterStructValidation(mediaRestrictionCustomValidation, MediaRestriction{})
+	validation.RegisterStructValidation(mediaGroupCustomValidation, MediaGroup{})
+}
 
 var (
 	// ImageExt contains canonical/standard/common file extensions for images.
@@ -73,12 +80,11 @@ func (c *MediaContent) AsImage() *types.Image {
 	return nil
 }
 
-// Validate enforces "URL should specify the direct URL... If not included, a media:player element must be specified.".
-func (c MediaContent) Validate() error {
+func mediaContentCustomValidation(sl validator.StructLevel) {
+	c := sl.Current().Interface().(MediaContent)
 	if c.URL == "" && c.MediaPlayer == nil {
-		return errors.New("media:content: either url or a media:player child is required")
+		sl.ReportError(c, "URL", "URL", "required", "either url or a media:player child is required")
 	}
-	return nil
 }
 
 func (g *MediaGroup) GetDescription() string {
@@ -86,6 +92,13 @@ func (g *MediaGroup) GetDescription() string {
 		return sanitization.SanitizeString(g.MediaDescription.Value)
 	}
 	return ""
+}
+
+func mediaGroupCustomValidation(sl validator.StructLevel) {
+	g := sl.Current().Interface().(MediaGroup)
+	if len(g.Content) <= 1 {
+		sl.ReportError(g.Content, "Content", "Content", "gt=1", "must have multiple media:content children")
+	}
 }
 
 func (k MediaKeywords) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
@@ -120,23 +133,30 @@ func (k *MediaKeywords) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 	return nil
 }
 
-// Validate enforces the rules the struct shape alone can't:
-// relationship is required and must be allow/deny; type is required
-// unless the value is exactly the reserved literal "all" or "none".
-func (r MediaRestriction) Validate() error {
+func mediaRestrictionCustomValidation(sl validator.StructLevel) {
+	r := sl.Current().Interface().(MediaRestriction)
 	if r.Relationship != "allow" && r.Relationship != "deny" {
-		return fmt.Errorf("media:restriction: relationship must be \"allow\" or \"deny\", got %q", r.Relationship)
+		sl.ReportError(
+			r.Relationship,
+			"Relationship",
+			"Relationship",
+			"oneof",
+			fmt.Sprintf("relationship must be \"allow\" or \"deny\", got %q", r.Relationship),
+		)
 	}
 	if v := strings.TrimSpace(r.Value); v == "all" || v == "none" {
-		return nil // type may legitimately be omitted for these reserved literals
+		return // type may legitimately be omitted for these reserved literals
 	}
 	switch *r.Type {
 	case "country", "uri", "sharing":
-		return nil
+		return
 	default:
-		return fmt.Errorf(
-			"media:restriction: type must be \"country\", \"uri\", or \"sharing\" unless value is \"all\"/\"none\", got %q",
-			*r.Type,
+		sl.ReportError(
+			r.Type,
+			"Type",
+			"Type",
+			"oneof",
+			fmt.Sprintf("type must be \"country\", \"uri\", or \"sharing\" unless value is \"all\"/\"none\", got %q"),
 		)
 	}
 }

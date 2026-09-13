@@ -1,5 +1,5 @@
 ---
-openapi: '3.1.0'
+openapi: "3.1.0"
 info:
   version: 1.0.0
   title: Media RSS Specification
@@ -9,7 +9,7 @@ info:
 
     https://www.rssboard.org/media-rss
   contact:
-    name: 'Joshua Rich'
+    name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
@@ -20,32 +20,32 @@ components:
         is the height of the media object.
       type: integer
       x-oapi-codegen-extra-tags:
-        xml: 'height,attr,omitempty'
-        validate: 'omitempty,number'
+        xml: "height,attr,omitempty"
+        validate: "omitempty,number"
     Width:
       description: >
         is the width of the media object.
       type: integer
       x-oapi-codegen-extra-tags:
-        xml: 'width,attr,omitempty'
-        validate: 'omitempty,number'
+        xml: "width,attr,omitempty"
+        validate: "omitempty,number"
     Value:
       description: >
         represents an elements value.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: ',chardata'
-        validate: 'required'
+        xml: ",chardata"
+        validate: "required"
     Medium:
       description: >
         is the type of object.
       type: string
-      enum: ['image', 'audio', 'video', 'document', 'executable']
+      enum: ["image", "audio", "video", "document", "executable"]
       xml:
         attribute: true
       x-oapi-codegen-extra-tags:
-        xml: 'medium,attr,omitempty'
-        validate: 'omitempty,oneof=image audio video document executable'
+        xml: "medium,attr,omitempty"
+        validate: "omitempty,oneof=image audio video document executable"
     Scheme:
       description: >
         is the URI that identifies the scheme used by the element.
@@ -53,19 +53,19 @@ components:
       xml:
         attribute: true
       x-oapi-codegen-extra-tags:
-        xml: 'scheme,attr,omitempty'
-        validate: 'omitempty,urn_rfc2141|uri'
+        xml: "scheme,attr,omitempty"
+        validate: "omitempty,urn_rfc2141|uri"
     TextType:
       description: >
         specifies the type of text embedded in the element.
       type: string
-      enum: ['plain', 'html']
-      default: 'plain'
+      enum: ["plain", "html"]
+      default: "plain"
       xml:
         attribute: true
       x-oapi-codegen-extra-tags:
-        xml: 'type,attr,omitempty'
-        validate: 'omitempty,oneof=plain html'
+        xml: "type,attr,omitempty"
+        validate: "omitempty,oneof=plain html"
     Label:
       description: >
         is the human readable label that can be displayed in end user applications.
@@ -73,22 +73,22 @@ components:
       xml:
         attribute: true
       x-oapi-codegen-extra-tags:
-        xml: 'label,attr,omitempty'
+        xml: "label,attr,omitempty"
     Lang:
       description: >
         is the primary language encapsulated in the element. Language codes possible are detailed in RFC 3066. This
         attribute is used similar to the xml:lang attribute detailed in the XML 1.0 Specification (Third Edition).
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'lang,attr'
-        validate: 'omitempty,rfc3066lang'
+        xml: "lang,attr"
+        validate: "omitempty,rfc3066lang"
     Href:
       description: >
         is a URL that represents the element content.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'href,attr,omitempty'
-        validate: 'omitempty,url'
+        xml: "href,attr,omitempty"
+        validate: "omitempty,url"
     MediaRating:
       description: >
         allows the permissible audience to be declared. If this element is not included, it assumes that no restrictions
@@ -98,12 +98,12 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         scheme:
-          $ref: '#/components/schemas/Scheme'
+          $ref: "#/components/schemas/Scheme"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ rating,omitempty'
-        json: 'media_rating'
+        xml: "http://search.yahoo.com/mrss/ rating,omitempty"
+        json: "media_rating"
     MediaTitle:
       description: >
         is the title of the particular media object.
@@ -112,12 +112,12 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         type:
-          $ref: '#/components/schemas/TextType'
+          $ref: "#/components/schemas/TextType"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ title,omitempty'
-        json: 'media_title'
+        xml: "http://search.yahoo.com/mrss/ title,omitempty"
+        json: "media_title"
     MediaDescription:
       description: >
         is a short description describing the media object typically a sentence in length.
@@ -126,12 +126,12 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         type:
-          $ref: '#/components/schemas/TextType'
+          $ref: "#/components/schemas/TextType"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ description,omitempty'
-        json: 'media_description'
+        xml: "http://search.yahoo.com/mrss/ description,omitempty"
+        json: "media_description"
     MediaKeywords:
       description: >
         are highly relevant keywords describing the media object with typically a maximum of 10 words. The keywords and
@@ -140,8 +140,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ keywords,omitempty'
-        json: 'media_keywords'
+        xml: "http://search.yahoo.com/mrss/ keywords,omitempty"
+        json: "media_keywords"
     MediaThumbnail:
       description: >
         allows a particular images to be used as a representative image for the media object.
@@ -154,12 +154,12 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            xml: 'url,attr'
-            validate: 'required,url'
+            xml: "url,attr"
+            validate: "required,url"
         height:
-          $ref: '#/components/schemas/Height'
+          $ref: "#/components/schemas/Height"
         width:
-          $ref: '#/components/schemas/Width'
+          $ref: "#/components/schemas/Width"
         time:
           description: >
             specifies the time offset in relation to the media object. Typically this is used when creating multiple
@@ -167,20 +167,20 @@ components:
             (NTP) as used in RTSP
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'time,attr,omitempty'
+            xml: "time,attr,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ thumbnail,omitempty'
-        json: 'media_thumbnail'
+        xml: "http://search.yahoo.com/mrss/ thumbnail,omitempty"
+        json: "media_thumbnail"
     MediaThumbnails:
       description: >
         a list of thumbnails for the object.
       type: array
       items:
-        $ref: '#/components/schemas/MediaThumbnail'
+        $ref: "#/components/schemas/MediaThumbnail"
       x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'thumbnail,omitempty'
-        json: 'media_thumbnails'
+        xml: "thumbnail,omitempty"
+        json: "media_thumbnails"
     MediaCategory:
       description: >
         allows a taxonomy to be set that gives an indication of the type of media content, and its particular contents.
@@ -189,14 +189,14 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         scheme:
-          $ref: '#/components/schemas/Scheme'
+          $ref: "#/components/schemas/Scheme"
         label:
-          $ref: '#/components/schemas/Label'
+          $ref: "#/components/schemas/Label"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ category,omitempty'
-        json: 'media_category'
+        xml: "http://search.yahoo.com/mrss/ category,omitempty"
+        json: "media_category"
     MediaHash:
       type: object
       description: >
@@ -205,27 +205,27 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         algo:
           description: >
             indicates the algorithm used to create the hash.
           type: string
-          enum: ['md5', 'sha-1']
-          default: 'md5'
+          enum: ["md5", "sha-1"]
+          default: "md5"
           x-oapi-codegen-extra-tags:
-            xml: 'algo,attr,omitempty'
+            xml: "algo,attr,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ hash,omitempty'
-        json: 'media_hash'
+        xml: "http://search.yahoo.com/mrss/ hash,omitempty"
+        json: "media_hash"
     MediaHashes:
       description: >
         a list of hashes for the object.
       type: array
       items:
-        $ref: '#/components/schemas/MediaHash'
+        $ref: "#/components/schemas/MediaHash"
       x-oapi-codegen-extra-tags:
-        xml: 'hash,omitempty'
-        json: 'media_hashes'
+        xml: "hash,omitempty"
+        json: "media_hashes"
       x-go-type-skip-optional-pointer: true
     MediaPlayer:
       description: >
@@ -239,15 +239,15 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            xml: 'url,attr'
-            validate: 'required,url'
+            xml: "url,attr"
+            validate: "required,url"
         height:
-          $ref: '#/components/schemas/Height'
+          $ref: "#/components/schemas/Height"
         width:
-          $ref: '#/components/schemas/Width'
+          $ref: "#/components/schemas/Width"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ player,omitempty'
-        json: 'media_player'
+        xml: "http://search.yahoo.com/mrss/ player,omitempty"
+        json: "media_player"
     MediaCredit:
       description: >
         Notable entity and the contribution to the creation of the media object. Current entities can include people,
@@ -258,7 +258,7 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         role:
           description: >
             specifies the role the entity played.
@@ -266,24 +266,24 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'role,attr,omitempty'
-            validate: 'omitempty,lowercase'
+            xml: "role,attr,omitempty"
+            validate: "omitempty,lowercase"
         scheme:
-          $ref: '#/components/schemas/Scheme'
+          $ref: "#/components/schemas/Scheme"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ credit,omitempty'
-        json: 'media_credit'
+        xml: "http://search.yahoo.com/mrss/ credit,omitempty"
+        json: "media_credit"
     MediaCredits:
       description: >
         a list of credits for the object.
       type: array
       items:
-        $ref: '#/components/schemas/MediaCredit'
+        $ref: "#/components/schemas/MediaCredit"
       xml:
         name: credit
       x-oapi-codegen-extra-tags:
-        xml: 'credit,omitempty'
-        json: 'media_credits'
+        xml: "credit,omitempty"
+        json: "media_credits"
       x-go-type-skip-optional-pointer: true
     MediaCopyright:
       description: >
@@ -293,7 +293,7 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         url:
           description: >
             s the URL for a terms of use page or additional copyright information. If the media is operating under a
@@ -301,11 +301,11 @@ components:
           type: string
           x-go-name: URL
           x-oapi-codegen-extra-tags:
-            xml: 'url,attr,omitempty'
-            validate: 'omitempty,url'
+            xml: "url,attr,omitempty"
+            validate: "omitempty,url"
       x-oapi-codegen-extra-tags:
-        xml: 'media copyright,omitempty'
-        json: 'media_copyright'
+        xml: "media copyright,omitempty"
+        json: "media_copyright"
     MediaText:
       description: >
         allows the inclusion of a text transcript, closed captioning or lyrics of the media content.
@@ -314,39 +314,39 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         type:
-          $ref: '#/components/schemas/TextType'
+          $ref: "#/components/schemas/TextType"
         lang:
-          $ref: '#/components/schemas/Lang'
+          $ref: "#/components/schemas/Lang"
         start:
           description: >
             specifies the start time offset that the text starts being relevant to the media object. An example of this
             would be for closed captioning. It uses the NTP time code format.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'start,attr,omitempty'
+            xml: "start,attr,omitempty"
         end:
           description: >
             specifies the end time offset that the text ends being relevant to the media object. An example of this
             would be for closed captioning. It uses the NTP time code format.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'end,attr,omitempty'
+            xml: "end,attr,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ text,omitempty'
-        json: 'media_text'
+        xml: "http://search.yahoo.com/mrss/ text,omitempty"
+        json: "media_text"
     MediaTexts:
       description: >
         a list of texts for the object.
       type: array
       items:
-        $ref: '#/components/schemas/MediaText'
+        $ref: "#/components/schemas/MediaText"
       xml:
         name: text
       x-oapi-codegen-extra-tags:
-        xml: 'text,omitempty'
-        json: 'media_texts'
+        xml: "text,omitempty"
+        json: "media_texts"
       x-go-type-skip-optional-pointer: true
     MediaRestriction:
       description: allows restrictions to be placed on the aggregator rendering the media in the feed.
@@ -356,25 +356,25 @@ components:
         - relationship
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         relationship:
           description: >
             indicates the type of relationship that the restriction represents.
           type: string
-          enum: ['allow', 'deny']
+          enum: ["allow", "deny"]
           x-oapi-codegen-extra-tags:
-            xml: 'relationship,attr'
+            xml: "relationship,attr"
         type:
           description: >
             specifies the type of restriction.
           type: string
-          enum: ['country', 'uri', 'sharing']
+          enum: ["country", "uri", "sharing"]
           x-oapi-codegen-extra-tags:
-            xml: 'sharing,attr,omitempty'
+            xml: "sharing,attr,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ restriction,omitempty'
-        json: 'media_restriction'
-        validate: 'omitempty,validateFn'
+        xml: "http://search.yahoo.com/mrss/ restriction,omitempty"
+        json: "media_restriction"
+        validate: "omitempty,validateFn"
     MediaStarRating:
       description: >
         specifies the rating-related information about a media object.
@@ -388,22 +388,22 @@ components:
         average:
           type: number
           x-oapi-codegen-extra-tags:
-            xml: 'average,attr'
+            xml: "average,attr"
         count:
           type: integer
           x-oapi-codegen-extra-tags:
-            xml: 'count,attr'
+            xml: "count,attr"
         min:
           type: number
           x-oapi-codegen-extra-tags:
-            xml: 'min,attr'
+            xml: "min,attr"
         max:
           type: number
           x-oapi-codegen-extra-tags:
-            xml: 'max,attr'
+            xml: "max,attr"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ starRating,omitempty'
-        json: 'media_star_rating,omitempty'
+        xml: "http://search.yahoo.com/mrss/ starRating,omitempty"
+        json: "media_star_rating,omitempty"
     MediaStatistics:
       description: >
         specifies various statistics about a media object like the view count and the favorite count.
@@ -415,14 +415,14 @@ components:
         views:
           type: integer
           x-oapi-codegen-extra-tags:
-            xml: 'views,attr'
+            xml: "views,attr"
         favorites:
           type: integer
           x-oapi-codegen-extra-tags:
-            xml: 'favorites,attr'
+            xml: "favorites,attr"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ statistics,omitempty'
-        json: 'media_statistics,omitempty'
+        xml: "http://search.yahoo.com/mrss/ statistics,omitempty"
+        json: "media_statistics,omitempty"
     MediaTag:
       description: is a tag (and weight) assigned to the media.
       type: object
@@ -437,7 +437,7 @@ components:
           description: is the weight assigned to the tag.
           type: integer
           x-oapi-codegen-extra-tags:
-            validate: 'gte=1'
+            validate: "gte=1"
     MediaTags:
       description: >
         contains user-generated tags separated by commas in the decreasing order of each tag's weight. Each tag can be
@@ -445,10 +445,10 @@ components:
         determined for a tag; for example, number of occurences can be one way to decide weight of a particular tag.
       type: array
       items:
-        $ref: '#/components/schemas/MediaTag'
+        $ref: "#/components/schemas/MediaTag"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ tags,omitempty'
-        json: 'media_tags,omitempty'
+        xml: "http://search.yahoo.com/mrss/ tags,omitempty"
+        json: "media_tags,omitempty"
       x-go-type-skip-optional-pointer: true
     MediaCommunity:
       description: >
@@ -457,14 +457,14 @@ components:
       type: object
       properties:
         starRating:
-          $ref: '#/components/schemas/MediaStarRating'
+          $ref: "#/components/schemas/MediaStarRating"
         statistics:
-          $ref: '#/components/schemas/MediaStatistics'
+          $ref: "#/components/schemas/MediaStatistics"
         tags:
-          $ref: '#/components/schemas/MediaTags'
+          $ref: "#/components/schemas/MediaTags"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ community,omitempty'
-        json: 'media_community'
+        xml: "http://search.yahoo.com/mrss/ community,omitempty"
+        json: "media_community"
     MediaComment:
       description: >
         is a comments a media object has received.
@@ -473,20 +473,20 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ comment,omitempty'
-        json: 'media_comment'
+        xml: "http://search.yahoo.com/mrss/ comment,omitempty"
+        json: "media_comment"
     MediaComments:
       description: >
         is a list of comments the media object has received.
       type: array
       items:
-        $ref: '#/components/schemas/MediaComment'
-        json: 'media_comments'
+        $ref: "#/components/schemas/MediaComment"
+        json: "media_comments"
       x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        json: 'media_comments'
+        json: "media_comments"
     MediaParam:
       description: >
         is a key-value pair that defines player-specific values for an Embed element.
@@ -496,7 +496,7 @@ components:
         - name
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         name:
           description: >
             is the name of the param.
@@ -504,19 +504,19 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'name,attr'
+            xml: "name,attr"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ param,omitempty'
-        json: 'media_param'
+        xml: "http://search.yahoo.com/mrss/ param,omitempty"
+        json: "media_param"
     MediaEmbed:
       description: >
         allows inclusion of player-specific information in the form of key-value (Param) pairs.
       type: array
       items:
-        $ref: '#/components/schemas/MediaParam'
+        $ref: "#/components/schemas/MediaParam"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ embed,omitempty'
-        json: 'media_embed'
+        xml: "http://search.yahoo.com/mrss/ embed,omitempty"
+        json: "media_embed"
     MediaResponse:
       description: >
         is a response a media object has received.
@@ -525,19 +525,19 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ response,omitempty'
-        json: 'media_response'
+        xml: "http://search.yahoo.com/mrss/ response,omitempty"
+        json: "media_response"
     MediaResponses:
       description: >
         allows inclusion of a list of all media responses a media object has received.
       type: array
       items:
-        $ref: '#/components/schemas/MediaResponse'
+        $ref: "#/components/schemas/MediaResponse"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ response,omitempty'
-        json: 'media_responses'
+        xml: "http://search.yahoo.com/mrss/ response,omitempty"
+        json: "media_responses"
       x-go-type-skip-optional-pointer: true
     MediaBacklink:
       description: >
@@ -547,19 +547,19 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
-        json: 'media_backlink,omitempty'
+        xml: "http://search.yahoo.com/mrss/ backLink,omitempty"
+        json: "media_backlink,omitempty"
     MediaBacklinks:
       description: >
         allows inclusion of all the URLs pointing to a media object.
       type: array
       items:
-        $ref: '#/components/schemas/MediaBacklink'
+        $ref: "#/components/schemas/MediaBacklink"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ backLink,omitempty'
-        json: 'media_backlinks,omitempty'
+        xml: "http://search.yahoo.com/mrss/ backLink,omitempty"
+        json: "media_backlinks,omitempty"
       x-go-type-skip-optional-pointer: true
     MediaStatus:
       description: >
@@ -573,12 +573,12 @@ components:
           description: >
             indicates the status.
           type: string
-          enum: ['active', 'blocked', 'deleted']
+          enum: ["active", "blocked", "deleted"]
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'state,attr'
-            validate: 'omitempty,oneof=active blocked deleted'
+            xml: "state,attr"
+            validate: "omitempty,oneof=active blocked deleted"
         reason:
           description: >
             is a reason explaining why a media object has been blocked/deleted.
@@ -586,10 +586,10 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'reason,attr'
+            xml: "reason,attr"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ status,omitempty'
-        json: 'media_status'
+        xml: "http://search.yahoo.com/mrss/ status,omitempty"
+        json: "media_status"
     MediaPrice:
       description: >
         includes pricing information about a media object. If this tag is not present, the media object is supposed to
@@ -600,12 +600,12 @@ components:
           description: >
             is the type of pricing for the media object.
           type: string
-          enum: ['rent', 'purchase', 'package', 'subscription']
+          enum: ["rent", "purchase", "package", "subscription"]
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'type,attr,omitempty'
-            validate: 'omitempty,oneof=rent purchase package subscription'
+            xml: "type,attr,omitempty"
+            validate: "omitempty,oneof=rent purchase package subscription"
         info:
           description: >
             is a URL pointing to package or subscription information.
@@ -613,8 +613,8 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'info,attr,omitempty'
-            validate: 'omitempty,url'
+            xml: "info,attr,omitempty"
+            validate: "omitempty,url"
         price:
           description: >
             is the price of the media object.
@@ -622,8 +622,8 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'price,attr,omitempty'
-            validate: 'omitempty,numeric'
+            xml: "price,attr,omitempty"
+            validate: "omitempty,numeric"
         currency:
           description: >
             is the currency code of the price.
@@ -631,11 +631,11 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'currency,attr,omitempty'
-            validate: 'omitempty,iso4217'
+            xml: "currency,attr,omitempty"
+            validate: "omitempty,iso4217"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ price,omitempty'
-        json: 'media_price'
+        xml: "http://search.yahoo.com/mrss/ price,omitempty"
+        json: "media_price"
     MediaLicense:
       description: >
         link to specify the machine-readable license associated with the content.
@@ -644,14 +644,14 @@ components:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         type:
-          $ref: '#/components/schemas/TextType'
+          $ref: "#/components/schemas/TextType"
         href:
-          $ref: '#/components/schemas/Href'
+          $ref: "#/components/schemas/Href"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ license,omitempty'
-        json: 'media_license'
+        xml: "http://search.yahoo.com/mrss/ license,omitempty"
+        json: "media_license"
     MediaSubTitle:
       description: >
         contains subtitle/CC link.
@@ -661,14 +661,14 @@ components:
         - lang
       properties:
         type:
-          $ref: '#/components/schemas/TextType'
+          $ref: "#/components/schemas/TextType"
         lang:
-          $ref: '#/components/schemas/Lang'
+          $ref: "#/components/schemas/Lang"
         href:
-          $ref: '#/components/schemas/Href'
+          $ref: "#/components/schemas/Href"
       x-oapi-codegen-extra-tags:
-        json: 'media_subtitle,omitempty'
-        xml: 'http://search.yahoo.com/mrss/ subTitle,omitempty'
+        json: "media_subtitle,omitempty"
+        xml: "http://search.yahoo.com/mrss/ subTitle,omitempty"
     MediaPeerLink:
       description: >
         contains P2P link.
@@ -678,12 +678,12 @@ components:
         - href
       properties:
         type:
-          $ref: '#/components/schemas/TextType'
+          $ref: "#/components/schemas/TextType"
         href:
-          $ref: '#/components/schemas/Href'
+          $ref: "#/components/schemas/Href"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ peerLink,omitempty'
-        json: 'media_peerlink'
+        xml: "http://search.yahoo.com/mrss/ peerLink,omitempty"
+        json: "media_peerlink"
     MediaRights:
       description: >
         specifies the rights information of a media object.
@@ -696,80 +696,80 @@ components:
             is the status of the media object saying whether a media object has been created by the publisher or they
             have rights to circulate it.
           type: string
-          enum: ['userCreated', 'official']
+          enum: ["userCreated", "official"]
           x-oapi-codegen-extra-tags:
-            xml: 'status,attr'
-            validate: 'omitempty,oneof=userCreated official'
+            xml: "status,attr"
+            validate: "omitempty,oneof=userCreated official"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ rights,omitempty'
-        json: 'media_rights'
+        xml: "http://search.yahoo.com/mrss/ rights,omitempty"
+        json: "media_rights"
     SceneTitle:
       type: object
       required:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
       x-oapi-codegen-extra-tags:
-        xml: 'sceneTitle,omitempty'
-        json: 'sceneTitle,omitempty'
+        xml: "sceneTitle,omitempty"
+        json: "sceneTitle,omitempty"
     SceneDescription:
       type: object
       required:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
       x-oapi-codegen-extra-tags:
-        xml: 'sceneDescription,omitempty'
-        json: 'sceneDescription,omitempty'
+        xml: "sceneDescription,omitempty"
+        json: "sceneDescription,omitempty"
     SceneStartTime:
       type: object
       required:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
       x-oapi-codegen-extra-tags:
-        xml: 'sceneStartTime,omitempty'
-        json: 'sceneStartTime,omitempty'
+        xml: "sceneStartTime,omitempty"
+        json: "sceneStartTime,omitempty"
     SceneEndTime:
       type: object
       required:
         - value
       properties:
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
       x-oapi-codegen-extra-tags:
-        xml: 'sceneEndTime,omitempty'
-        json: 'sceneEndTime,omitempty'
+        xml: "sceneEndTime,omitempty"
+        json: "sceneEndTime,omitempty"
     MediaScene:
       description: >
         contains information about a particular scene.
       type: object
       properties:
         sceneTitle:
-          $ref: '#/components/schemas/SceneTitle'
+          $ref: "#/components/schemas/SceneTitle"
         sceneDescription:
-          $ref: '#/components/schemas/SceneDescription'
+          $ref: "#/components/schemas/SceneDescription"
         sceneStartTime:
-          $ref: '#/components/schemas/SceneStartTime'
+          $ref: "#/components/schemas/SceneStartTime"
         sceneEndTime:
-          $ref: '#/components/schemas/SceneEndTime'
+          $ref: "#/components/schemas/SceneEndTime"
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ scene,omitempty'
-        json: 'media_scene'
+        xml: "http://search.yahoo.com/mrss/ scene,omitempty"
+        json: "media_scene"
     MediaScenes:
       description: >
         specifies various scenes within a media object.
       type: array
       items:
-        $ref: '#/components/schemas/MediaScene'
+        $ref: "#/components/schemas/MediaScene"
       xml:
         name: scenes
       x-oapi-codegen-extra-tags:
-        xml: 'http://search.yahoo.com/mrss/ scene,omitempty'
-        json: 'media_scenes'
+        xml: "http://search.yahoo.com/mrss/ scene,omitempty"
+        json: "media_scenes"
       x-go-type-skip-optional-pointer: true
     MediaMetadata:
       description: >
@@ -777,60 +777,60 @@ components:
         <media:group>, and/or <media:content>, with deeper levels taking priority over shallower ones.
       properties:
         MediaRating:
-          $ref: '#/components/schemas/MediaRating'
+          $ref: "#/components/schemas/MediaRating"
         MediaTitle:
-          $ref: '#/components/schemas/MediaTitle'
+          $ref: "#/components/schemas/MediaTitle"
         MediaDescription:
-          $ref: '#/components/schemas/MediaDescription'
+          $ref: "#/components/schemas/MediaDescription"
         MediaKeywords:
-          $ref: '#/components/schemas/MediaKeywords'
+          $ref: "#/components/schemas/MediaKeywords"
         MediaThumbnails:
-          $ref: '#/components/schemas/MediaThumbnails'
+          $ref: "#/components/schemas/MediaThumbnails"
         MediaCategory:
-          $ref: '#/components/schemas/MediaCategory'
+          $ref: "#/components/schemas/MediaCategory"
         MediaHashes:
-          $ref: '#/components/schemas/MediaHashes'
+          $ref: "#/components/schemas/MediaHashes"
         MediaPlayer:
-          $ref: '#/components/schemas/MediaPlayer'
+          $ref: "#/components/schemas/MediaPlayer"
         MediaCredits:
-          $ref: '#/components/schemas/MediaCredits'
+          $ref: "#/components/schemas/MediaCredits"
         MediaCopyright:
-          $ref: '#/components/schemas/MediaCopyright'
+          $ref: "#/components/schemas/MediaCopyright"
         MediaTexts:
-          $ref: '#/components/schemas/MediaTexts'
+          $ref: "#/components/schemas/MediaTexts"
         MediaRestriction:
-          $ref: '#/components/schemas/MediaRestriction'
+          $ref: "#/components/schemas/MediaRestriction"
         MediaCommunity:
-          $ref: '#/components/schemas/MediaCommunity'
+          $ref: "#/components/schemas/MediaCommunity"
         MediaComments:
-          $ref: '#/components/schemas/MediaComments'
+          $ref: "#/components/schemas/MediaComments"
         MediaEmbed:
-          $ref: '#/components/schemas/MediaEmbed'
+          $ref: "#/components/schemas/MediaEmbed"
         MediaResponses:
-          $ref: '#/components/schemas/MediaResponses'
+          $ref: "#/components/schemas/MediaResponses"
         MediaBackLinks:
-          $ref: '#/components/schemas/MediaBacklinks'
+          $ref: "#/components/schemas/MediaBacklinks"
         MediaStatus:
-          $ref: '#/components/schemas/MediaStatus'
+          $ref: "#/components/schemas/MediaStatus"
         MediaPrice:
-          $ref: '#/components/schemas/MediaPrice'
+          $ref: "#/components/schemas/MediaPrice"
         MediaLicense:
-          $ref: '#/components/schemas/MediaLicense'
+          $ref: "#/components/schemas/MediaLicense"
         MediaSubTitle:
-          $ref: '#/components/schemas/MediaSubTitle'
+          $ref: "#/components/schemas/MediaSubTitle"
         MediaPeerLink:
-          $ref: '#/components/schemas/MediaPeerLink'
+          $ref: "#/components/schemas/MediaPeerLink"
         MediaRights:
-          $ref: '#/components/schemas/MediaRights'
+          $ref: "#/components/schemas/MediaRights"
         MediaScenes:
-          $ref: '#/components/schemas/MediaScenes'
+          $ref: "#/components/schemas/MediaScenes"
     MediaContent:
       description: >
         can be used to publish any type of media.
       type: object
       allOf:
-        - $ref: 'dc.yaml#/components/schemas/DCElements'
-        - $ref: '#/components/schemas/MediaMetadata'
+        - $ref: "dc.yaml#/components/schemas/DCElements"
+        - $ref: "#/components/schemas/MediaMetadata"
         - type: object
           required:
             - url
@@ -840,7 +840,7 @@ components:
               type: string
               x-oapi-codegen-extra-tags:
                 json: namespace
-                xml: 'xmlns:media,attr'
+                xml: "xmlns:media,attr"
             url:
               description: >
                 should specify the direct URL to the media object. If not included, a <media:player> element must be
@@ -848,70 +848,70 @@ components:
               type: string
               x-go-name: URL
               x-oapi-codegen-extra-tags:
-                xml: 'url,attr,omitempty'
-                validate: 'omitempty,url'
+                xml: "url,attr,omitempty"
+                validate: "omitempty,url"
             fileSize:
               description: is the number of bytes of the media object.
               type: integer
               x-oapi-codegen-extra-tags:
-                xml: 'fileSize,attr,omitempty'
-                validate: 'omitempty,gte=0'
+                xml: "fileSize,attr,omitempty"
+                validate: "omitempty,gte=0"
             type:
               description: is the standard MIME type of the object.
               type: string
               x-oapi-codegen-extra-tags:
-                xml: 'type,attr,omitempty'
-                validate: 'omitempty,mimetype_string'
+                xml: "type,attr,omitempty"
+                validate: "omitempty,mimetype_string"
             bitrate:
               description: is the kilobits per second rate of media.
               type: integer
               x-oapi-codegen-extra-tags:
-                xml: 'bitrate,attr,omitempty'
-                validate: 'omitempty,gte=0'
+                xml: "bitrate,attr,omitempty"
+                validate: "omitempty,gte=0"
             framerate:
               description: is the number of frames per second for the media object.
               type: integer
               x-oapi-codegen-extra-tags:
-                xml: 'framerate,attr,omitempty'
-                validate: 'omitempty,gte=0'
+                xml: "framerate,attr,omitempty"
+                validate: "omitempty,gte=0"
             samplingrate:
               description: >
                 is the number of samples per second taken to create the media object. It is expressed in thousands of
                 samples per second (kHz).
               type: integer
               x-oapi-codegen-extra-tags:
-                xml: 'samplingrate,attr,omitempty'
-                validate: 'omitempty,gte=0'
+                xml: "samplingrate,attr,omitempty"
+                validate: "omitempty,gte=0"
             channels:
               description: is number of audio channels in the media object.
               type: integer
               x-oapi-codegen-extra-tags:
-                xml: 'channels,attr,omitempty'
-                validate: 'omitempty,gte=0'
+                xml: "channels,attr,omitempty"
+                validate: "omitempty,gte=0"
             duration:
               description: is the number of seconds the media object plays.
               type: integer
               x-oapi-codegen-extra-tags:
-                xml: 'duration,attr,omitempty'
-                validate: 'omitempty,gte=0'
+                xml: "duration,attr,omitempty"
+                validate: "omitempty,gte=0"
             height:
-              $ref: '#/components/schemas/Height'
+              $ref: "#/components/schemas/Height"
             width:
-              $ref: '#/components/schemas/Width'
+              $ref: "#/components/schemas/Width"
             lang:
-              $ref: '#/components/schemas/Lang'
+              $ref: "#/components/schemas/Lang"
             medium:
               description: >
                 is the type of object (image | audio | video | document | executable). While this attribute can at times
                 seem redundant if type is supplied, it is included because it simplifies decision making on the reader
                 side, as well as flushes out any ambiguities between MIME type and object type.
               type: string
-              enum: ['image', 'audio', 'video', 'document', 'executable']
+              enum: ["image", "audio", "video", "document", "executable"]
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'medium,attr'
-                validate: 'omitempty,oneof=image audio video document executable'
+                xml: "medium,attr"
+                validate: "omitempty,oneof=image audio video document executable"
             isDefault:
               description: >
                 determines if this is the default object that should be used for the <media:group>. There should only be one
@@ -920,29 +920,28 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'isDefault,attr'
-                validate: 'omitempty,boolean'
+                xml: "isDefault,attr"
+                validate: "omitempty,boolean"
             expression:
               description: >
                 determines if the object is a sample or the full version of the object, or even if it is a continuous stream.
               type: string
               xml:
                 attribute: true
-              enum: ['sample', 'full', 'nonstop']
-              default: 'full'
+              enum: ["sample", "full", "nonstop"]
+              default: "full"
               x-oapi-codegen-extra-tags:
-                xml: 'expression,attr'
-                validate: 'omitempty,oneof=sample full nonstop'
+                xml: "expression,attr"
+                validate: "omitempty,oneof=sample full nonstop"
       x-oapi-codegen-extra-tags:
-        json: 'media_content,omitempty'
-        xml: 'http://search.yahoo.com/mrss/ content,omitempty'
-        validate: 'omitempty,validateFn'
+        json: "media_content,omitempty"
+        xml: "http://search.yahoo.com/mrss/ content,omitempty"
     MediaGroup:
       description: >
         allows grouping of <media:content> elements that are effectively the same content, yet different
         representations. For instance: the same song recorded in both the WAV and MP3 format.
       allOf:
-        - $ref: '#/components/schemas/MediaMetadata'
+        - $ref: "#/components/schemas/MediaMetadata"
         - type: object
           properties:
             content:
@@ -950,13 +949,13 @@ components:
                 is the list of <media:content> elements
               type: array
               items:
-                $ref: '#/components/schemas/MediaContent'
+                $ref: "#/components/schemas/MediaContent"
               xml:
                 name: content
               x-oapi-codegen-extra-tags:
-                json: 'content,omitempty'
-                xml: 'http://search.yahoo.com/mrss/ content,omitempty'
+                json: "content,omitempty"
+                xml: "http://search.yahoo.com/mrss/ content,omitempty"
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        json: 'media_group,omitempty'
-        xml: 'http://search.yahoo.com/mrss/ group,omitempty'
+        json: "media_group,omitempty"
+        xml: "http://search.yahoo.com/mrss/ group,omitempty"

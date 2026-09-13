@@ -151,7 +151,7 @@ type Channel struct {
 	MediaCommunity *externalRef7.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef7.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef7.MediaContent `json:"media_content,omitempty" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
 	MediaCopyright *externalRef7.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
@@ -442,7 +442,7 @@ type Item struct {
 	MediaCommunity *externalRef7.MediaCommunity `json:"media_community" xml:"http://search.yahoo.com/mrss/ community,omitempty"`
 
 	// MediaContent can be used to publish any type of media.
-	MediaContent *externalRef7.MediaContent `json:"media_content,omitempty" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
+	MediaContent *externalRef7.MediaContent `json:"media_content,omitempty" xml:"http://search.yahoo.com/mrss/ content,omitempty"`
 
 	// MediaCopyright is copyright information for the media object.
 	MediaCopyright *externalRef7.MediaCopyright `json:"media_copyright" xml:"media copyright,omitempty"`
