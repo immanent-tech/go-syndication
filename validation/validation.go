@@ -36,10 +36,10 @@ func init() {
 	}
 }
 
-// FieldError is a particular validation error on a particular field.
+// FieldError contains validation issues on a particular field.
 type FieldError struct {
-	Namespace       string `json:"namespace"` // can differ when a custom TagNameFunc is registered or
-	Field           string `json:"field"`     // by passing alt name to ReportError like below
+	Namespace       string `json:"namespace"`
+	Field           string `json:"field"`
 	StructNamespace string `json:"structNamespace"`
 	StructField     string `json:"structField"`
 	Tag             string `json:"tag"`
@@ -51,18 +51,16 @@ type FieldError struct {
 	Message         string `json:"message"`
 }
 
-// Error satisfies the Error interface.
+// Error ensures FieldError satisfies the Error interface.
 func (e *FieldError) Error() string {
 	var errStr strings.Builder
-	fmt.Fprintf(&errStr, "%s %s failed validation for %s",
+	fmt.Fprintf(&errStr, "%s: field %s failed validation for tag %s",
 		ErrInvalidField.Error(),
-		e.Field,
+		e.StructNamespace,
 		e.Tag,
 	)
 	if e.Param != "" {
-		errStr.WriteString("(")
-		errStr.WriteString(e.Param)
-		errStr.WriteString(")")
+		fmt.Fprintf(&errStr, " (%s)", e.Param)
 	}
 	return errStr.String()
 }
@@ -72,17 +70,18 @@ type Errors struct {
 	Fields []FieldError
 }
 
-// Error satisfies the Error interface.
+// Error ensures Errors satisfies the Error interface.
 func (e *Errors) Error() string {
 	var errStr strings.Builder
-	errStr.WriteString("contains field errors")
+	errStr.WriteString(ErrInvalidStruct.Error())
 	if len(e.Fields) > 0 {
+		errStr.WriteString(": contains field errors:")
 		errStr.WriteRune('\n')
-	}
-	for idx, t := range e.Fields {
-		errStr.WriteString(t.Error())
-		if idx < (len(e.Fields) - 1) {
-			errStr.WriteRune('\n')
+		for idx, fieldError := range e.Fields {
+			errStr.WriteString(fieldError.Error())
+			if idx < (len(e.Fields) - 1) {
+				errStr.WriteRune('\n')
+			}
 		}
 	}
 	return errStr.String()
@@ -92,9 +91,10 @@ func (e *Errors) Error() string {
 // contains the details of individual field validation issues.
 func ValidateStruct(s any) *Errors {
 	if err := validate.Struct(s); err != nil {
-		errs := &Errors{}
 		if validateErrs, ok := errors.AsType[validator.ValidationErrors](err); ok {
-			errs.Fields = make([]FieldError, 0, len(validateErrs))
+			errs := &Errors{
+				Fields: make([]FieldError, 0, len(validateErrs)),
+			}
 			for err := range slices.Values(validateErrs) {
 				errs.Fields = append(errs.Fields, FieldError{
 					Namespace:       err.Namespace(),
@@ -145,11 +145,12 @@ func ValidateField(value any, rule string) error {
 // RegisterValidation will register a new validation tag, using the given function, on the global validator.
 func RegisterValidation(tag string, f validator.Func) error {
 	if err := validate.RegisterValidation(tag, f); err != nil {
-		return fmt.Errorf("unable to register custom validator: %w", err)
+		return fmt.Errorf("unable to register custom validator for tag %s: %w", tag, err)
 	}
 	return nil
 }
 
+// RegisterStructValidation registers a StructLevelFunc against a number of types.
 func RegisterStructValidation(validateFn func(validator.StructLevel), obj any) {
 	validate.RegisterStructValidation(validateFn, obj)
 }
