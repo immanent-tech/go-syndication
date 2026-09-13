@@ -346,6 +346,12 @@ func (f *Feed) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	*f = Feed(alias)
 	f.DefaultNamespace = &defaultNS
 	f.Namespaces = namespaces
+	for idx, entry := range f.Entries {
+		if len(entry.Authors) == 0 || (entry.Source != nil && len(entry.Source.Authors) == 0) {
+			entry.Authors = f.Authors
+			f.Entries[idx] = entry
+		}
+	}
 	return nil
 }
 

@@ -686,7 +686,7 @@ func contentCustomValidation(sl validator.StructLevel) {
 			sl.ReportError(c.Type, "Type", "Type", "base64", "invalid base64 encoding")
 		}
 	}
-	if !c.RequiresSummary() {
-		sl.ReportError(c.Type, "Type", "Type", "summary", "requires summary")
-	}
+	// if !c.RequiresSummary() {
+	// 	sl.ReportError(c.Type, "Type", "Type", "summary", "requires summary")
+	// }
 }

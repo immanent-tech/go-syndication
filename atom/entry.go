@@ -58,12 +58,17 @@ func (e *Entry) GetDescription() string {
 	}
 }
 
-// GetAuthors retrieves the authors (if any) of the Entry. This will be the list of values from any <author> and
-// <dc:creator> elements.
+// GetAuthors retrieves the authors (if any) of the Entry. This will be the list of values from any <author>,
+// <source>-><author> and <dc:creator> elements.
 func (e *Entry) GetAuthors() []string {
 	var authors []string
 	if len(e.Authors) > 0 {
 		for author := range slices.Values(e.Authors) {
+			authors = append(authors, author.String())
+		}
+	}
+	if e.Source != nil && len(e.Source.Authors) > 0 {
+		for author := range slices.Values(e.Source.Authors) {
 			authors = append(authors, author.String())
 		}
 	}
@@ -74,11 +79,16 @@ func (e *Entry) GetAuthors() []string {
 }
 
 // GetContributors retrieves the contributors (if any) of the Entry. This will be the list of values from any
-// <contributor> and <dc:contributor> elements.
+// <contributor>, <source>-><contributor> and <dc:contributor> elements.
 func (e *Entry) GetContributors() []string {
 	var contributors []string
 	if len(e.Contributors) > 0 {
 		for contributor := range slices.Values(e.Contributors) {
+			contributors = append(contributors, contributor.String())
+		}
+	}
+	if e.Source != nil && len(e.Source.Contributors) > 0 {
+		for contributor := range slices.Values(e.Source.Contributors) {
 			contributors = append(contributors, contributor.String())
 		}
 	}
@@ -93,6 +103,9 @@ func (e *Entry) GetContributors() []string {
 func (e *Entry) GetRights() *string {
 	if e.Rights != nil {
 		return new(e.Rights.String())
+	}
+	if len(e.DcRights) > 0 {
+		return &e.DcRights[0]
 	}
 	return nil
 }
