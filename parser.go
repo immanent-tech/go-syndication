@@ -39,10 +39,24 @@ func Decode[T any](namespace string, rd io.Reader) (T, error) {
 		decoder.DefaultSpace = namespace
 	}
 	decoder.CharsetReader = charset.NewReaderLabel
-	tokDec := xml.NewTokenDecoder(&extensions.NamespaceRewriter{Dec: decoder})
+	var obj T
+	switch any(obj).(type) {
+	case *rss.RSS:
+		// Perform additional parsing to handle conflicts between namespaced and unamespaced elements with the same
+		// name.
+		tokDec := xml.NewTokenDecoder(&extensions.NamespaceRewriter{Dec: decoder})
+		tokDec.Strict = false
+		if namespace != "" {
+			tokDec.DefaultSpace = namespace
+		}
 
-	if err := tokDec.Decode(&feed); err != nil {
-		return feed, fmt.Errorf("could not decode byte array: %w", err)
+		if err := tokDec.Decode(&feed); err != nil {
+			return feed, fmt.Errorf("could not decode byte array: %w", err)
+		}
+	default:
+		if err := decoder.Decode(&feed); err != nil {
+			return feed, fmt.Errorf("could not decode byte array: %w", err)
+		}
 	}
 
 	return feed, nil
