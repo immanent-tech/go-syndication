@@ -16,7 +16,7 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 	"Atom-Spec-Validation": {
 		{
 			Check: func(f atom.Feed) Result {
-				metadata := metadata{ID: "valid-feed", Description: "RSS Feed passes validation"}
+				metadata := metadata{ID: "valid-feed", Description: "Atom Feed passes validation"}
 				if err := validation.ValidateStruct(f); err != nil {
 					return fail(metadata, "feed is invalid: %s", err.Error())
 				}
@@ -32,7 +32,7 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 			Check: func(f atom.Feed) Result {
 				metadata := metadata{
 					ID:          "feed-should-have-image",
-					Description: "Feed should supply an <atom:logo> or <atom:image> that consumers can use to represent it",
+					Description: "Feed should supply an <atom:logo> or <atom:image> element(s) that consumers can use to represent it",
 				}
 				if f.GetImage() == nil {
 					return fail(metadata, "feed has no <atom:logo> or <atom:icon>")
@@ -43,12 +43,12 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 		{
 			Check: func(f atom.Feed) Result {
 				metadata := metadata{
-					ID:          "items-should-have-images",
-					Description: "Items should supply an <media:thumbnail> consumers can use to represent the item",
+					ID:          "entries-should-have-images",
+					Description: "Entries should supply an <media:thumbnail> element that consumers can use to represent the entry",
 				}
 				for i, item := range f.Entries {
 					if item.GetImage() == nil {
-						return fail(metadata, "item %d has no <media:thumbnail>", i)
+						return fail(metadata, "entry %d has no <media:thumbnail> element", i)
 					}
 				}
 				return pass(metadata)
@@ -61,7 +61,7 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 					Description: "Feed should have an <atom:rights> element so consumers understand sharing and distribution rights of the published content",
 				}
 				if f.Rights == nil {
-					return fail(metadata, "feed has no <atom:rights>")
+					return fail(metadata, "feed has no <atom:rights> element")
 				}
 				return pass(metadata)
 			},
