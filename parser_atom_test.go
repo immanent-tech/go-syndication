@@ -197,7 +197,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["Feed.Authors"], "gt")
+			assert.Contains(t, failedValidations["Feed.Entries[0].Authors[0].Name"], "text")
 		},
 	},
 	"entry_author_name_contains_html_cdata.xml": {
@@ -206,7 +206,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["Feed.Authors"], "gt")
+			assert.Contains(t, failedValidations["Feed.Entries[0].Authors[0].Name"], "text")
 		},
 	},
 	"entry_author_name_missing.xml": {
