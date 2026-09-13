@@ -454,6 +454,12 @@ func (r *RSS) AutoDeclareNamespaces() {
 		if item.DcCreator != nil {
 			need["dc"] = true
 		}
+		if item.HasBasicGeo() {
+			need["geo"] = true
+		}
+		if item.HasGeoRSS() {
+			need["georss"] = true
+		}
 	}
 
 	existing := make(map[string]bool, len(r.Namespaces))

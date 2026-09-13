@@ -343,7 +343,7 @@ type MediaContent struct {
 	MediaTexts MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
@@ -563,7 +563,7 @@ type MediaGroup struct {
 	MediaTexts MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
@@ -671,7 +671,7 @@ type MediaMetadata struct {
 	MediaTexts MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`

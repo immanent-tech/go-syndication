@@ -94,13 +94,13 @@ type GeoRSSSimple struct {
 	Floor *int `json:"floor,omitempty" xml:"http://www.georss.org/georss floor"`
 
 	// Line is an ordered sequence of two or more coordinate pairs (a LineString, georss:line).
-	Line Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
+	Line *Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
 
 	// Point a single coordinate pair (georss:point).
 	Point *Point `json:"point,omitempty" xml:"http://www.georss.org/georss point"`
 
 	// Polygon a closed linear ring -- four or more coordinate pairs, with the first and last identical.
-	Polygon Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
+	Polygon *Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
 
 	// Radius indicates the size in meters of a radius or buffer around the geometry object, for example, radius of circular area around a point geometry.
 	Radius          *float64 `json:"radius,omitempty" xml:"http://www.georss.org/georss radius"`

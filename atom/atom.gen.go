@@ -276,7 +276,7 @@ type Entry struct {
 	MediaTexts externalRef4.MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
@@ -388,7 +388,7 @@ type Entry struct {
 	Lat *externalRef1.Latitude `json:"lat,omitempty" validate:"omitempty,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
 	// Line is an ordered sequence of two or more coordinate pairs (a LineString, georss:line).
-	Line externalRef3.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
+	Line *externalRef3.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
 
 	// Links a list of links associated with the feed.
 	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
@@ -400,7 +400,7 @@ type Entry struct {
 	Point *externalRef3.Point `json:"point,omitempty" xml:"http://www.georss.org/georss point"`
 
 	// Polygon a closed linear ring -- four or more coordinate pairs, with the first and last identical.
-	Polygon externalRef3.Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
+	Polygon *externalRef3.Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
 
 	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
 	Published *Published `json:"published,omitempty" xml:"http://www.w3.org/2005/Atom published,omitempty"`
@@ -510,7 +510,7 @@ type Feed struct {
 	MediaTexts externalRef4.MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle    *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
@@ -908,7 +908,7 @@ type StandaloneEntry struct {
 	MediaTexts externalRef4.MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
@@ -1020,7 +1020,7 @@ type StandaloneEntry struct {
 	Lat *externalRef1.Latitude `json:"lat,omitempty" validate:"omitempty,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
 	// Line is an ordered sequence of two or more coordinate pairs (a LineString, georss:line).
-	Line externalRef3.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
+	Line *externalRef3.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
 
 	// Links a list of links associated with the feed.
 	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
@@ -1035,7 +1035,7 @@ type StandaloneEntry struct {
 	Point *externalRef3.Point `json:"point,omitempty" xml:"http://www.georss.org/georss point"`
 
 	// Polygon a closed linear ring -- four or more coordinate pairs, with the first and last identical.
-	Polygon externalRef3.Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
+	Polygon *externalRef3.Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
 
 	// Published is an element of type Date construct indicating an instant in time associated with an event early in the life cycle of the entry.
 	Published *Published `json:"published,omitempty" xml:"http://www.w3.org/2005/Atom published,omitempty"`

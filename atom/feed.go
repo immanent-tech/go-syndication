@@ -384,8 +384,7 @@ func (f *Feed) AutoDeclareNamespaces() {
 	for entry := range slices.Values(f.Entries) {
 		collect(entry.Extensions)
 		if entry.Source != nil {
-			// Source has no Extensions field in this implementation's
-			// scope; skip.
+			// Source has no Extensions field in this implementation's scope; skip.
 		}
 	}
 

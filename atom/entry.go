@@ -231,6 +231,22 @@ func (e *Entry) GetContent() *string {
 	return nil
 }
 
+// HasBasicGeo checks whether an entry has fields from the basic_geo extension.
+func (e *Entry) HasBasicGeo() bool {
+	return e.Alt != nil || e.Lat != nil || e.Lon != nil
+}
+
+// HasGeoRSS checks whether an entry has fields from the georss extension.
+func (e *Entry) HasGeoRSS() bool {
+	return e.Point != nil || e.Line != nil || e.Polygon != nil || e.Box != nil || e.Circle != nil || e.Elev != nil ||
+		e.Floor != nil ||
+		e.Radius != nil ||
+		e.FeatureName != nil ||
+		e.FeatureTypeTag != nil ||
+		e.RelationshipTag != nil ||
+		e.Where != nil
+}
+
 func (e *Entry) GetGeoInfo() *types.GeoInfo {
 	info := types.GeoInfo{}
 	data, err := json.Marshal(e)

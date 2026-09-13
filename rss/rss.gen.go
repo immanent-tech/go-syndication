@@ -211,7 +211,7 @@ type Channel struct {
 	MediaTexts externalRef7.MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails externalRef7.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails externalRef7.MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *externalRef7.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
@@ -502,7 +502,7 @@ type Item struct {
 	MediaTexts externalRef7.MediaTexts `json:"media_texts" xml:"text,omitempty"`
 
 	// MediaThumbnails a list of thumbnails for the object.
-	MediaThumbnails externalRef7.MediaThumbnails `json:"media_thumbnails" xml:"thumbnail,omitempty"`
+	MediaThumbnails externalRef7.MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
 	MediaTitle *externalRef7.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
@@ -624,7 +624,7 @@ type Item struct {
 	Lat *externalRef2.Latitude `json:"lat,omitempty" validate:"omitempty,gte=-90,lte=90" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# lat"`
 
 	// Line is an ordered sequence of two or more coordinate pairs (a LineString, georss:line).
-	Line externalRef4.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
+	Line *externalRef4.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
 
 	// Link is the URL of the item.
 	Link string `json:"link,omitzero" validate:"required_without=Description,url" xml:"link,omitempty"`
@@ -636,7 +636,7 @@ type Item struct {
 	Point *externalRef4.Point `json:"point,omitempty" xml:"http://www.georss.org/georss point"`
 
 	// Polygon a closed linear ring -- four or more coordinate pairs, with the first and last identical.
-	Polygon externalRef4.Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
+	Polygon *externalRef4.Polygon `json:"polygon,omitempty" xml:"http://www.georss.org/georss polygon"`
 
 	// PubDate is the publication date of the content.
 	PubDate *PubDate `json:"pub_date" validate:"omitempty" xml:"pubDate,omitempty"`
