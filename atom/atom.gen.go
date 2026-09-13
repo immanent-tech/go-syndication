@@ -540,7 +540,7 @@ type Feed struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"omitempty,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
@@ -655,7 +655,7 @@ type FeedMetadata struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"omitempty,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`

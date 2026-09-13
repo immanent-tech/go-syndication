@@ -528,6 +528,9 @@ components:
               $ref: "#/components/schemas/Updated"
             authors:
               $ref: "#/components/schemas/Authors"
+              x-oapi-codegen-extra-tags:
+                xml: "http://www.w3.org/2005/Atom author,omitempty"
+                validate: "omitempty,dive"
             categories:
               $ref: "#/components/schemas/Categories"
             contributors:
