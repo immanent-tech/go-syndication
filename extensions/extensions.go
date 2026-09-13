@@ -56,5 +56,5 @@ func (r *NamespaceRewriter) Token() (xml.Token, error) {
 			return t, nil
 		}
 	}
-	return tok, nil
+	return xml.CopyToken(tok), nil
 }
