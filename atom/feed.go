@@ -15,6 +15,7 @@ import (
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var (
@@ -248,7 +249,7 @@ func (f *Feed) GetItems() []types.ItemSource {
 	return items
 }
 
-func feedStructLevelValidation(sl validator.StructLevel) {
+func feedCustomValidation(sl validator.StructLevel) {
 	f := sl.Current().Interface().(Feed)
 	// Check for all entries having authors.
 	var missingEntryAuthors bool
@@ -286,7 +287,7 @@ func feedStructLevelValidation(sl validator.StructLevel) {
 
 // Validate applies custom validation to an feed.
 func (f *Feed) Validate() error {
-	return nil
+	return validation.ValidateStruct(f)
 }
 
 // MarshalXML builds the dynamic xmlns attribute list, then delegates

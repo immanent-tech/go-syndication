@@ -465,7 +465,9 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.Entries[0].GetContributors(), 1)
-			assert.Error(t, feed.Entries[0].Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "text")
 		},
 	},
 	"entry_contributor_name_contains_html_cdata.xml": {
@@ -473,7 +475,9 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.Entries[0].GetContributors(), 1)
-			assert.Error(t, feed.Entries[0].Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Contributors[0]))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "text")
 		},
 	},
 	"entry_contributor_name_missing.xml": {
@@ -1346,7 +1350,9 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Summary.Validate()))
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Summary))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_summary_contains_html.xml": {
@@ -1355,7 +1361,9 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Summary.Validate()))
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Summary))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_summary_is_html.xml": {
@@ -1394,7 +1402,9 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Summary.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Summary))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "not_url_encoded")
 		},
 	},
 	"entry_summary_not_html_cdata.xml": {
@@ -1417,21 +1427,27 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Summary.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Summary))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.XHTML"], "format")
 		},
 	},
 	"entry_summary_not_text_plain.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Summary.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Summary))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_summary_not_text_plain2.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Summary.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Summary))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_summary_not_text_plain3.xml": {
@@ -1484,7 +1500,9 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Summary.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Summary))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Type"], "required")
 		},
 	},
 	"entry_summary.xml": {
@@ -1516,7 +1534,9 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Title.Validate()))
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_title_contains_html.xml": {
@@ -1525,7 +1545,9 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Title.Validate()))
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_title_is_html.xml": {
@@ -1582,7 +1604,9 @@ var atomMustTests = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			assert.Len(t, feed.GetItems(), 1)
-			assert.Error(t, feed.Entries[0].Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "not_url_encoded")
 		},
 	},
 	"entry_title_not_html_cdata.xml": {
@@ -1597,35 +1621,45 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "not_url_encoded")
 		},
 	},
 	"entry_title_not_inline_cdata.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.XHTML"], "format")
 		},
 	},
 	"entry_title_not_text_plain.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_title_not_text_plain2.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"entry_title_type_blank.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Entries[0].Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0].Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Type"], "required")
 		},
 	},
 	"entry_title_type_not_mime.xml": {
@@ -1724,14 +1758,18 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Authors[0]))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "text")
 		},
 	},
 	"feed_author_name_contains_html_cdata.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Authors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Authors[0]))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "text")
 		},
 	},
 	"feed_author_name_multiple.xml": {
@@ -1831,14 +1869,18 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Contributors[0]))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "text")
 		},
 	},
 	"feed_contributor_name_contains_html_cdata.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Contributors[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Contributors[0]))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["PersonConstruct.Name"], "text")
 		},
 	},
 	"feed_contributor_name_missing.xml": {
@@ -2554,14 +2596,18 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"feed_title_contains_html_cdata.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"feed_title_is_html.xml": {
@@ -2610,42 +2656,54 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "not_url_encoded")
 		},
 	},
 	"feed_title_not_html.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "not_url_encoded")
 		},
 	},
 	"feed_title_not_inline.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.XHTML"], "format")
 		},
 	},
 	"feed_title_not_inline_cdata.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.XHTML"], "format")
 		},
 	},
 	"feed_title_not_text_plain.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"feed_title_not_text_plain2.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Value"], "html")
 		},
 	},
 	"feed_title_type.xml": {
@@ -2673,7 +2731,9 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Title.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Title))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["TextConstruct.Type"], "required")
 		},
 	},
 	"feed_title_type_not_mime.xml": {

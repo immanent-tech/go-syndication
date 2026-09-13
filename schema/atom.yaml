@@ -91,8 +91,6 @@ components:
                 xml: "type,attr,omitempty"
                 json: "type,omitempty"
                 validate: "omitnil,oneof=text html xhtml"
-      x-oapi-codegen-extra-tags:
-        validate: "validateFn"
     PersonConstruct:
       description: describes a person, corporation, or similar entity
       allOf:
@@ -135,8 +133,6 @@ components:
                 json: "extensions,omitempty"
                 xml: ",any"
               x-go-type-skip-optional-pointer: true
-      x-oapi-codegen-extra-tags:
-        validate: "validateFn"
     DateConstruct:
       description: >
         is an element whose content MUST conform to the "date-time" production in [RFC3339].
@@ -149,8 +145,6 @@ components:
             value:
               description: is the value of the date construct.
               x-go-type: time.Time
-      x-oapi-codegen-extra-tags:
-        validate: "validateFn"
     ID:
       description: >
         is an element that conveys a permanent, universally unique identifier for an entry or feed.
@@ -501,7 +495,7 @@ components:
         $ref: "#/components/schemas/PersonConstruct"
       x-oapi-codegen-extra-tags:
         xml: "http://www.w3.org/2005/Atom contributor,omitempty"
-        validate: "omitempty,gt=0,dive,validateFn"
+        validate: "omitempty,gt=0,dive"
       x-go-type-skip-optional-pointer: true
     Authors:
       description: >
@@ -511,7 +505,7 @@ components:
         $ref: "#/components/schemas/PersonConstruct"
       x-oapi-codegen-extra-tags:
         xml: "http://www.w3.org/2005/Atom author,omitempty"
-        validate: "gt=0,dive,validateFn"
+        validate: "gt=0,dive"
       x-go-type-skip-optional-pointer: true
     FeedMetadata:
       description: >

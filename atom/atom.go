@@ -7,7 +7,6 @@ package atom
 import (
 	"encoding/base64"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"html"
 	"slices"
@@ -20,9 +19,12 @@ import (
 )
 
 func init() {
-	validation.RegisterStructValidation(linkStructLevelValidation, Link{})
-	validation.RegisterStructValidation(contentStructLevelValidation, Content{})
-	validation.RegisterStructValidation(feedStructLevelValidation, Feed{})
+	validation.RegisterStructValidation(linkCustomValidation, Link{})
+	validation.RegisterStructValidation(contentCustomValidation, Content{})
+	validation.RegisterStructValidation(personConstructCustomValidation, PersonConstruct{})
+	validation.RegisterStructValidation(textConstructCustomValidation, TextConstruct{})
+	validation.RegisterStructValidation(dateConstructCustomValidation, DateConstruct{})
+	validation.RegisterStructValidation(feedCustomValidation, Feed{})
 }
 
 var (
@@ -104,7 +106,7 @@ func (l Link) String() string {
 	}
 }
 
-func linkStructLevelValidation(sl validator.StructLevel) {
+func linkCustomValidation(sl validator.StructLevel) {
 	l := sl.Current().Interface().(Link)
 	if l.Rel != nil {
 		if *l.Rel == "" {
@@ -150,14 +152,11 @@ func (p PersonConstruct) String() string {
 	return value.String()
 }
 
-func (p PersonConstruct) Validate() error {
-	if err := validation.ValidateStruct(p); err != nil {
-		return fmt.Errorf("validate person construct: %w", err)
+func personConstructCustomValidation(sl validator.StructLevel) {
+	l := sl.Current().Interface().(PersonConstruct)
+	if err := validation.ValidateField(l.Name, "html"); err == nil {
+		sl.ReportError(l.Name, "Name", "Name", "text", "name cannot contain HTML")
 	}
-	if err := validation.ValidateField(p.Name, "html"); err == nil {
-		return errors.New("validate person construct: name cannot contain HTML")
-	}
-	return nil
 }
 
 func (t TextConstruct) String() string {
@@ -292,42 +291,85 @@ func (t *TextConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 	return nil
 }
 
-func (t TextConstruct) Validate() error {
-	if t.Type != nil {
-		if *t.Type == "" {
-			return errors.New("text construct: type cannot be empty")
+func textConstructCustomValidation(sl validator.StructLevel) {
+	t := sl.Current().Interface().(TextConstruct)
+	if t.Type == nil {
+		return
+	}
+	if *t.Type == "" {
+		sl.ReportError(t.Type, "Type", "Type", "required", "type cannot be empty")
+	}
+	switch {
+	case *t.Type == TextConstructTypeXhtml:
+		// Must not be inline when type is XHTML.
+		if strings.HasPrefix(*t.XHTML, "<![CDATA[") {
+			sl.ReportError(
+				t.XHTML,
+				"XHTML",
+				"XHTML",
+				"format",
+				fmt.Sprintf("cannot contain inline content for type %s", TextConstructTypeXhtml),
+			)
+			return
 		}
-		switch {
-		case *t.Type == TextConstructTypeXhtml:
-			// Must not be inline when type is XHTML.
-			if strings.HasPrefix(*t.XHTML, "<![CDATA[") {
-				return fmt.Errorf("text construct: cannot contain inline content for type %s", TextConstructTypeXhtml)
-			}
-			if html.UnescapeString(*t.XHTML) != *t.XHTML {
-				return fmt.Errorf("text construct: cannot be escaped for type %s", TextConstructTypeXhtml)
-			}
-		case *t.Type == TextConstructTypeHtml || strings.HasSuffix(string(*t.Type), "html"):
-			// Must be URL encoded when type is HTML.
-			if err := validation.ValidateField(t.Value, "not_url_encoded"); err == nil {
-				return fmt.Errorf("text construct: must be url encoded for type %s", TextConstructTypeHtml)
-			}
-			// Must be valid HTML.
-			if err := validation.ValidateField(t.Value, "html"); err != nil {
-				return fmt.Errorf("text construct: not html for type %s", TextConstructTypeText)
-			}
-		case *t.Type == TextConstructTypeText:
-			fallthrough
-		default:
-			// For text type and by default, the value should not contain html.
-			if err := validation.ValidateField(t.Value, "html"); err == nil {
-				return fmt.Errorf("text construct: must not contain html for type %s", TextConstructTypeText)
-			}
-			if html.UnescapeString(t.Value) != t.Value {
-				return errors.New("text construct: plain text must not contain escaped characters")
-			}
+		if html.UnescapeString(*t.XHTML) != *t.XHTML {
+			sl.ReportError(
+				t.XHTML,
+				"XHTML",
+				"XHTML",
+				"format",
+				fmt.Sprintf("cannot be escaped for type %s", TextConstructTypeXhtml),
+			)
+			return
+		}
+	case *t.Type == TextConstructTypeHtml || strings.HasSuffix(string(*t.Type), "html"):
+		// Must be URL encoded when type is HTML.
+		if err := validation.ValidateField(t.Value, "not_url_encoded"); err == nil {
+			sl.ReportError(
+				t.Value,
+				"Value",
+				"Value",
+				"not_url_encoded",
+				fmt.Sprintf("must be url encoded for type %s", TextConstructTypeHtml),
+			)
+			return
+		}
+		// Must be valid HTML.
+		if err := validation.ValidateField(t.Value, "html"); err != nil {
+			sl.ReportError(
+				t.Value,
+				"Value",
+				"Value",
+				"html",
+				fmt.Sprintf("not html for type %s", TextConstructTypeHtml),
+			)
+			return
+		}
+	case *t.Type == TextConstructTypeText:
+		fallthrough
+	default:
+		// For text type and by default, the value should not contain html.
+		if err := validation.ValidateField(t.Value, "html"); err == nil {
+			sl.ReportError(
+				t.Value,
+				"Value",
+				"Value",
+				"html",
+				fmt.Sprintf("must not contain html for type %s", TextConstructTypeText),
+			)
+			return
+		}
+		if html.UnescapeString(t.Value) != t.Value {
+			sl.ReportError(
+				t.Value,
+				"Value",
+				"Value",
+				"html",
+				fmt.Sprintf("must not contain escaped characters for type %s", TextConstructTypeText),
+			)
+			return
 		}
 	}
-	return nil
 }
 
 func (d DateConstruct) String() string {
@@ -392,20 +434,35 @@ func (d *DateConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 
 // Validate rejects date-time strings that parse fine under RFC 3339 in general but violate RFC 4287's stricter
 // uppercase-T/Z requirement.
-func (d DateConstruct) Validate() error {
+func dateConstructCustomValidation(sl validator.StructLevel) {
+	d := sl.Current().Interface().(DateConstruct)
 	raw := d.String()
 	if _, err := time.Parse(time.RFC3339, raw); err != nil {
-		return fmt.Errorf("date construct: invalid date-time %q: %w", raw, err)
+		sl.ReportError(d, "DateConstruct", "DateConstruct", "rfc3339", fmt.Sprintf("invalid date-time %q: %w", raw))
+		return
 	}
 	// time.Parse accepts lowercase t/z against this layout too; the spec doesn't, so check the literal separator
 	// characters ourselves. "2006-01-02" is always 10 bytes before the separator
 	if tIdx := 10; tIdx >= len(raw) || raw[tIdx] != 'T' {
-		return fmt.Errorf("date construct: %q must use an uppercase %q separator", raw, "T")
+		sl.ReportError(
+			d,
+			"DateConstruct",
+			"DateConstruct",
+			"rfc3339",
+			fmt.Sprintf("%q must use an uppercase %q separator", raw, "T"),
+		)
+		return
 	}
 	if raw[len(raw)-1] == 'z' {
-		return fmt.Errorf("date construct: %q must use an uppercase %q zone indicator", raw, "Z")
+		sl.ReportError(
+			d,
+			"DateConstruct",
+			"DateConstruct",
+			"rfc3339",
+			fmt.Sprintf("%q must use an uppercase %q zone indicator", raw, "Z"),
+		)
+		return
 	}
-	return nil
 }
 
 func contentIsXMLMediaType(t ContentType) bool {
@@ -599,7 +656,7 @@ func (c Content) RequiresSummary() bool {
 	return !contentIsXMLMediaType(typ) // i.e. it's the Base64 branch
 }
 
-func contentStructLevelValidation(sl validator.StructLevel) {
+func contentCustomValidation(sl validator.StructLevel) {
 	c := sl.Current().Interface().(Content)
 	if c.Type != nil {
 		if *c.Type == "" {

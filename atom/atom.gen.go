@@ -301,7 +301,7 @@ type Entry struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Box is a bounding box as two coordinate pairs: the lower (southwest) corner, then the upper (northeast) corner (georss:box).
 	Box *externalRef3.Box `json:"box,omitempty" xml:"http://www.georss.org/georss box"`
@@ -316,7 +316,7 @@ type Entry struct {
 	Content *Content `json:"content,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom content,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
 	// DcContributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
@@ -540,13 +540,13 @@ type Feed struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
 	// DcContributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
@@ -655,13 +655,13 @@ type FeedMetadata struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
 	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
 	// Generator is an element identifies the agent used to generate a feed.
 	Generator *Generator `json:"generator,omitempty" xml:"http://www.w3.org/2005/Atom generator,omitempty"`
@@ -933,7 +933,7 @@ type StandaloneEntry struct {
 	Attributes []xml.Attr `json:"attributes" xml:",any,attr"`
 
 	// Authors a list of persons who maintain authorship of the feed.
-	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
+	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Box is a bounding box as two coordinate pairs: the lower (southwest) corner, then the upper (northeast) corner (georss:box).
 	Box *externalRef3.Box `json:"box,omitempty" xml:"http://www.georss.org/georss box"`
@@ -948,7 +948,7 @@ type StandaloneEntry struct {
 	Content *Content `json:"content,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom content,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
-	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
+	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
 
 	// DcContributor is an entity responsible for making contributions to the resource.
 	// The guidelines for using names of persons or organizations as creators apply to contributors.
