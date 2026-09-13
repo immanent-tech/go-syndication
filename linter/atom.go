@@ -7,6 +7,7 @@ import (
 	"slices"
 
 	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 // AtomRuleSets contains all the rulesets for linting RSS feeds.
@@ -16,7 +17,7 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 		{
 			Check: func(f atom.Feed) Result {
 				metadata := metadata{ID: "valid-feed", Description: "RSS Feed passes validation"}
-				if err := f.Validate(); err != nil {
+				if err := validation.ValidateStruct(f); err != nil {
 					return fail(metadata, "feed is invalid: %s", err.Error())
 				}
 				return pass(metadata)

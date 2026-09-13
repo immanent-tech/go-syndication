@@ -5,17 +5,16 @@ package atom
 
 import (
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"slices"
 	"sort"
 	"strings"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
-	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var (
@@ -249,8 +248,8 @@ func (f *Feed) GetItems() []types.ItemSource {
 	return items
 }
 
-// Validate applies custom validation to an feed.
-func (f *Feed) Validate() error {
+func feedStructLevelValidation(sl validator.StructLevel) {
+	f := sl.Current().Interface().(Feed)
 	// Check for all entries having authors.
 	var missingEntryAuthors bool
 	for entry := range slices.Values(f.GetItems()) {
@@ -261,25 +260,32 @@ func (f *Feed) Validate() error {
 	}
 	// All entries must have unique IDs.
 	if !hasUniqueIDs(f.Entries) {
-		return errors.New("validate feed: contains duplicate entry IDs")
+		sl.ReportError(f.Entries, "Entries", "Entries", "unique", "contains duplicate entry IDs")
 	}
 	// All links must be unique.
 	if !hasUniqueLinkRels(f.Links) {
-		return errors.New("atom:feed: contains duplicate link rel types")
+		sl.ReportError(f.Links, "Links", "Links", "unique", "contains duplicate link rel types")
 	}
 	if !hasUniqueLinkTypes(f.Links) {
-		return errors.New("atom:feed: contains duplicate link types")
+		sl.ReportError(f.Links, "Links", "Links", "unique", "contains duplicate link types")
 	}
 	// atom:feed elements MUST contain one or more atom:author elements, unless all of the atom:feed element's child
 	// atom:entry elements  contain at least one atom:author element.
 	//
 	// https://www.rfc-editor.org/rfc/rfc4287#page-11
 	if len(f.GetAuthors()) == 0 && missingEntryAuthors {
-		return fmt.Errorf("%w: must have at least one author or all entries with authors", validation.ErrInvalidStruct)
+		sl.ReportError(
+			f.Authors,
+			"Authors",
+			"Authors",
+			"unique",
+			"must have at least one author or all entries with authors",
+		)
 	}
-	if err := validation.ValidateStruct(f); err != nil {
-		return fmt.Errorf("feed validation failed: %w", err)
-	}
+}
+
+// Validate applies custom validation to an feed.
+func (f *Feed) Validate() error {
 	return nil
 }
 

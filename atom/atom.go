@@ -14,9 +14,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/validation"
 )
+
+func init() {
+	validation.RegisterStructValidation(linkStructLevelValidation, Link{})
+	validation.RegisterStructValidation(contentStructLevelValidation, Content{})
+	validation.RegisterStructValidation(feedStructLevelValidation, Feed{})
+}
 
 var (
 	// MimeTypes contains canonical/standard mimetypes for Atom.
@@ -54,13 +61,6 @@ func (c Category) String() string {
 		return sanitization.SanitizeString(strings.Join(content, " "))
 	}
 	return ""
-}
-
-func (c Category) Validate() error {
-	if err := validation.ValidateStruct(c); err != nil {
-		return fmt.Errorf("category: %w", err)
-	}
-	return nil
 }
 
 // String formats the generator value as a string in the format VALUE[/VERSION] [(URI)].
@@ -104,30 +104,33 @@ func (l Link) String() string {
 	}
 }
 
-func (l *Link) Validate() error {
+func linkStructLevelValidation(sl validator.StructLevel) {
+	l := sl.Current().Interface().(Link)
 	if l.Rel != nil {
 		if *l.Rel == "" {
-			return errors.New("atom:link: rel must not be empty")
+			sl.ReportError(l.Rel, "Rel", "Rel", "required", "rel must not be empty")
 		}
 		if *l.Rel == LinkRelEnclosure && l.Length != nil {
 			// SHOULD, not MUST -- not a hard error, but worth flagging.
-			return fmt.Errorf("atom:link: rel=%q SHOULD include a length attribute", LinkRelEnclosure)
+			sl.ReportError(
+				l.Length,
+				"Length",
+				"Length",
+				"required",
+				fmt.Sprintf("rel=%q SHOULD include a length attribute", LinkRelEnclosure),
+			)
 		}
 	}
 	if l.Title != nil {
 		if *l.Title == "" {
-			return errors.New("atom:link: title cannot be blank")
+			sl.ReportError(l.Title, "Title", "Title", "required", "title must not be empty")
 		}
 	}
 	if l.Type != nil {
 		if *l.Type == "" {
-			return errors.New("atom:link: type cannot be blank")
+			sl.ReportError(l.Type, "Type", "Type", "required", "type must not be empty")
 		}
 	}
-	if err := validation.ValidateStruct(l); err != nil {
-		return fmt.Errorf("validate atom:link: %w", err)
-	}
-	return nil
 }
 
 // String returns string-ified format of the PersonConstruct. This will be the format "name (email)". The email part is
@@ -239,21 +242,23 @@ func (t *TextConstruct) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) e
 
 	if typ == TextConstructTypeXhtml {
 		var wrapper struct {
-			Div struct {
-				Inner string `xml:",innerxml"`
-			} `xml:"div"` // matches any namespace's local-name "div"
-			Inner string `xml:",innerxml"` // fallback capture of everything, div or not.
+			Inner string `xml:",innerxml"`
 		}
-
 		if err := dec.DecodeElement(&wrapper, &start); err != nil {
-			return fmt.Errorf("text construct: unmarshal: %w", err)
+			return fmt.Errorf("unmarshal content: %w", err)
 		}
-		t.XHTML = new(strings.TrimSpace(wrapper.Div.Inner))
-		if *t.XHTML == "" {
-			// Sloppy producer: type="xhtml" without the spec-required wrapping <div>. Rather than silently ending up
-			// with an empty XHTML field, fall back to whatever markup is directly present.
-			t.XHTML = new(strings.TrimSpace(wrapper.Inner))
+		raw := strings.TrimSpace(wrapper.Inner)
+		inner := xml.NewDecoder(strings.NewReader(raw))
+		var divWrapper struct {
+			XMLName xml.Name
+			Inner   string `xml:",innerxml"`
 		}
+		if err := inner.Decode(&divWrapper); err == nil && divWrapper.XMLName.Local == "div" {
+			raw = strings.TrimSpace(divWrapper.Inner)
+		}
+		// else: sloppy producer, no <div> wrapper -- keep raw as-is.
+		t.XHTML = &raw
+
 		return nil
 	}
 	// Leniency for non-conformant producers that put a MIME type here that really belongs on atom:content (e.g.
@@ -498,20 +503,23 @@ func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	switch {
 	case typ == ContentTypeXhtml:
 		var wrapper struct {
-			Div struct {
-				Inner string `xml:",innerxml"`
-			} `xml:"div"`
-			Inner string `xml:",innerxml"` // fallback capture of everything, div or not.
+			Inner string `xml:",innerxml"`
 		}
 		if err := dec.DecodeElement(&wrapper, &start); err != nil {
 			return fmt.Errorf("unmarshal content: %w", err)
 		}
-		c.XHTML = new(strings.TrimSpace(wrapper.Div.Inner))
-		if *c.XHTML == "" {
-			// Sloppy producer: type="xhtml" without the spec-required wrapping <div>. Rather than silently ending up
-			// with an empty XHTML field, fall back to whatever markup is directly present.
-			c.XHTML = new(strings.TrimSpace(wrapper.Inner))
+		raw := strings.TrimSpace(wrapper.Inner)
+		inner := xml.NewDecoder(strings.NewReader(raw))
+		var divWrapper struct {
+			XMLName xml.Name
+			Inner   string `xml:",innerxml"`
 		}
+		if err := inner.Decode(&divWrapper); err == nil && divWrapper.XMLName.Local == "div" {
+			raw = strings.TrimSpace(divWrapper.Inner)
+		}
+		// else: sloppy producer, no <div> wrapper -- keep raw as-is.
+		c.XHTML = &raw
+
 		return nil
 	case typ == ContentTypeText || typ == ContentTypeHtml || strings.HasPrefix(string(typ), "text/"):
 		// Spec-conformant content here is either entity-escaped text or a CDATA section -- both come through fine via
@@ -566,7 +574,7 @@ func (c Content) String() string {
 		return *c.Text
 	case *c.Type == ContentTypeText || *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "text/"):
 		return *c.Text
-	case *c.Type == ContentTypeXhtml:
+	case *c.Type == ContentTypeXhtml && c.XHTML != nil:
 		return *c.XHTML
 	case contentIsXMLMediaType(*c.Type):
 		return *c.XML
@@ -591,40 +599,37 @@ func (c Content) RequiresSummary() bool {
 	return !contentIsXMLMediaType(typ) // i.e. it's the Base64 branch
 }
 
-func (c Content) Validate() error {
-	if err := validation.ValidateStruct(c); err != nil {
-		return fmt.Errorf("validate content: %w", err)
-	}
+func contentStructLevelValidation(sl validator.StructLevel) {
+	c := sl.Current().Interface().(Content)
 	if c.Type != nil {
 		if *c.Type == "" {
-			return errors.New("validate content: type cannot be empty")
+			sl.ReportError(c.Type, "Type", "Type", "required", "type cannot be empty string")
 		}
 		switch {
 		case *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "html"):
 			// Validate it is valid HTML.
 			if err := validation.ValidateField(*c.Text, "html"); err != nil {
-				return errors.New("validate content: not valid html")
+				sl.ReportError(c.Type, "Type", "Type", "html", "not valid html")
 			}
 		case *c.Type == ContentTypeText || strings.Contains(string(*c.Type), "plain"):
 			// Validate text does not contain escaped content.
 			if html.UnescapeString(*c.Text) != *c.Text {
-				return errors.New("validate content: plain text contains escape characters")
+				sl.ReportError(c.Type, "Type", "Type", "unescaped", "plain text contains escape characters")
 			}
 		default:
 			// Validate type is valid mimetype.
 			if err := validation.ValidateField(*c.Type, "mimetype_string"); err != nil {
-				return errors.New("validate content: not a valid mimetype")
+				sl.ReportError(c.Type, "Type", "Type", "mimetype_string", string(*c.Type)+": not valid mimetype")
 			}
 		}
 	}
 	if len(c.Base64) > 0 {
 		// Validate the content is actually base64 encoded.
 		if err := validation.ValidateField(c.Base64, "base64"); err != nil {
-			return errors.New("validate content: is not valid base64 encoded")
+			sl.ReportError(c.Type, "Type", "Type", "base64", "invalid base64 encoding")
 		}
 	}
 	if !c.RequiresSummary() {
-		return errors.New("validate content: requires summary")
+		sl.ReportError(c.Type, "Type", "Type", "summary", "requires summary")
 	}
-	return nil
 }

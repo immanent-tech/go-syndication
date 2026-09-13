@@ -158,7 +158,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			failedValidations, err := getFailedValidations(feed.Entries[0].Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Entries[0]))
 			require.NoError(t, err)
 			assert.Contains(t, failedValidations["Entry.Authors"], "gt")
 		},
@@ -301,7 +301,7 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Content.Validate())
+			require.Error(t, validation.ValidateStruct(feed.Entries[0].Content))
 		},
 	},
 	"entry_content_type_not_mime.xml": {
@@ -314,42 +314,42 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Content.Validate())
+			require.Error(t, validation.ValidateStruct(feed.Entries[0].Content))
 		},
 	},
 	"entry_content_not_html.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Content.Validate())
+			require.Error(t, validation.ValidateStruct(feed.Entries[0].Content))
 		},
 	},
 	"entry_content_not_inline.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Content.Validate())
+			require.Error(t, validation.ValidateStruct(feed.Entries[0].Content))
 		},
 	},
 	"entry_content_not_inline_cdata.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Content.Validate())
+			require.Error(t, validation.ValidateStruct(feed.Entries[0].Content))
 		},
 	},
 	"entry_content_not_text_plain.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Content.Validate())
+			require.Error(t, validation.ValidateStruct(feed.Entries[0].Content))
 		},
 	},
 	"entry_content_not_text_plain_2.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Content.Validate())
+			require.Error(t, validation.ValidateStruct(feed.Entries[0].Content))
 		},
 	},
 	"entry_content_type.xml": {
@@ -562,7 +562,6 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 2)
-			assert.Error(t, feed.Validate())
 		},
 	},
 	"entry_id_full_uri.xml": {
@@ -1122,7 +1121,7 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			require.Error(t, feed.Entries[0].Links[0].Validate())
+			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Links[0]))
 		},
 	},
 	"entry_link_rel_invalid.xml": {
@@ -1169,7 +1168,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Error(t, feed.Entries[0].Links[0].Validate())
+			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Links[0]))
 		},
 	},
 	"entry_link_title.xml": {
@@ -1186,7 +1185,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Error(t, feed.Entries[0].Links[0].Validate())
+			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Links[0]))
 		},
 	},
 	"entry_link_type_not_mime.xml": {
@@ -1195,7 +1194,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Error(t, feed.Entries[0].Links[0].Validate())
+			assert.Error(t, validation.ValidateStruct(feed.Entries[0].Links[0]))
 		},
 	},
 	"entry_link_type.xml": {
@@ -2263,7 +2262,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
 			require.NoError(t, err)
-			assert.Contains(t, failedValidations["Feed.Links[0]"], "validateFn")
+			assert.Contains(t, failedValidations["Feed.Links[0].Href"], "required")
 		},
 	},
 	"feed_link_http.xml": {
@@ -2311,14 +2310,18 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["Feed.Links"], "unique")
 		},
 	},
 	"feed_link_not_multiple3.xml": {
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["Feed.Links"], "unique")
 		},
 	},
 	"feed_link_rel_alternate.xml": {
@@ -2331,7 +2334,9 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["Feed.Links[0].Rel"], "required")
 		},
 	},
 	"feed_link_rel_invalid.xml": {
@@ -2356,7 +2361,9 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["Feed.Links[0].Title"], "required")
 		},
 	},
 	"feed_link_type.xml": {
@@ -2387,7 +2394,9 @@ var atomMustTests = map[string]atomTestSuite{
 		wantInvalid: true,
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Error(t, feed.Validate())
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed))
+			require.NoError(t, err)
+			assert.Contains(t, failedValidations["Feed.Links[0].Type"], "required")
 		},
 	},
 	"feed_link_type_not_mime.xml": {
@@ -2996,7 +3005,7 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 			}
 			// If wantErr, make sure that occurs.
 			if tt.suite.wantInvalid {
-				if err := feed.Validate(); (err != nil) != tt.suite.wantInvalid {
+				if err := validation.ValidateStruct(feed); (err != nil) != tt.suite.wantInvalid {
 					t.Fatalf("Validate() error = %v, wantErr %v", err, tt.suite.wantInvalid)
 					return
 				}

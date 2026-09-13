@@ -7,7 +7,6 @@ package atom
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"slices"
 	"strings"
 	"time"
@@ -15,7 +14,6 @@ import (
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
-	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var _ types.ItemSource = (*Entry)(nil)
@@ -231,14 +229,6 @@ func (e *Entry) GetGeoInfo() *types.GeoInfo {
 		return nil
 	}
 	return &info
-}
-
-// Validate applies custom validation to an item.
-func (e Entry) Validate() error {
-	if err := validation.ValidateStruct(e); err != nil {
-		return fmt.Errorf("atom:entry: validation failed: %w", err)
-	}
-	return nil
 }
 
 func (s StandaloneEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

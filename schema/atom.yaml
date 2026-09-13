@@ -1,5 +1,5 @@
 ---
-openapi: '3.1.0'
+openapi: "3.1.0"
 info:
   version: 1.0.0
   title: Atom
@@ -8,7 +8,7 @@ info:
 
     https://www.rfc-editor.org/rfc/rfc4287
   contact:
-    name: 'Joshua Rich'
+    name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
     identifier: MIT
@@ -27,9 +27,9 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'xml:base,attr,omitempty'
-            json: 'base,omitempty'
-            validate: 'omitempty'
+            xml: "xml:base,attr,omitempty"
+            json: "base,omitempty"
+            validate: "omitempty"
         Lang:
           description: >
             indicates the natural language for the element and its descendents.
@@ -37,9 +37,9 @@ components:
           xml:
             attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'xml:lang,attr,omitempty'
-            json: 'lang,omitempty'
-            validate: 'omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag'
+            xml: "xml:lang,attr,omitempty"
+            json: "lang,omitempty"
+            validate: "omitempty,iso3166_1_alpha2|iso3166_1_alpha3|bcp47_language_tag"
         attributes:
           description: >
             are any additional attributes of the element.
@@ -47,21 +47,21 @@ components:
           items:
             x-go-type: xml.Attr
           x-oapi-codegen-extra-tags:
-            xml: ',any,attr'
-            json: 'attributes'
+            xml: ",any,attr"
+            json: "attributes"
           x-go-type-skip-optional-pointer: true
     UndefinedContent:
       description: >
         represents additional undefined, unstructed text content for the element.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: ',chardata'
-        json: 'undefined_content,omitempty'
+        xml: ",chardata"
+        json: "undefined_content,omitempty"
     TextConstruct:
       description: contains human-readable text, usually in small quantities.
       type: object
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - value
@@ -71,32 +71,32 @@ components:
                 is the value of the element for type=text/html.
               type: string
               x-oapi-codegen-extra-tags:
-                validate: 'required_if=Type html|required_if=Type text'
+                validate: "required_if=Type html|required_if=Type text"
             xhtml:
               description: >
                 is the value of the element for type=xhtml
               type: string
               x-go-name: XHTML
               x-oapi-codegen-extra-tags:
-                validate: 'required_if=Type xhtml'
+                validate: "required_if=Type xhtml"
             type:
               description: >
                 represents what the content of the element is.
               type: string
-              enum: ['text', 'html', 'xhtml']
-              default: 'text'
+              enum: ["text", "html", "xhtml"]
+              default: "text"
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'type,attr,omitempty'
-                json: 'type,omitempty'
-                validate: 'omitnil,oneof=text html xhtml'
+                xml: "type,attr,omitempty"
+                json: "type,omitempty"
+                validate: "omitnil,oneof=text html xhtml"
       x-oapi-codegen-extra-tags:
-        validate: 'validateFn'
+        validate: "validateFn"
     PersonConstruct:
       description: describes a person, corporation, or similar entity
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - name
@@ -105,43 +105,43 @@ components:
               description: is an element that conveys a human-readable name.
               type: string
               x-oapi-codegen-extra-tags:
-                xml: 'name'
-                json: 'name'
-                validate: 'required'
+                xml: "name"
+                json: "name"
+                validate: "required"
             uri:
               description: >
                 is an element that conveys an IRI (URI).
               type: string
               x-go-name: URI
               x-oapi-codegen-extra-tags:
-                xml: 'uri,omitempty'
-                json: 'uri,omitempty'
-                validate: 'omitempty'
+                xml: "uri,omitempty"
+                json: "uri,omitempty"
+                validate: "omitempty"
             email:
               description: >
                 is an element that conveys an email address.
               type: string
               x-oapi-codegen-extra-tags:
-                xml: 'email,omitempty'
-                json: 'email,omitempty'
-                validate: 'omitempty,email'
+                xml: "email,omitempty"
+                json: "email,omitempty"
+                validate: "omitempty,email"
             Extensions:
               description: >
                 records any elements that are unknown extensions to the schema.
               type: array
               items:
-                $ref: 'extensions.yaml#/components/schemas/Extension'
+                $ref: "extensions.yaml#/components/schemas/Extension"
               x-oapi-codegen-extra-tags:
-                json: 'extensions,omitempty'
-                xml: ',any'
+                json: "extensions,omitempty"
+                xml: ",any"
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        validate: 'validateFn'
+        validate: "validateFn"
     DateConstruct:
       description: >
         is an element whose content MUST conform to the "date-time" production in [RFC3339].
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - value
@@ -150,12 +150,12 @@ components:
               description: is the value of the date construct.
               x-go-type: time.Time
       x-oapi-codegen-extra-tags:
-        validate: 'validateFn'
+        validate: "validateFn"
     ID:
       description: >
         is an element that conveys a permanent, universally unique identifier for an entry or feed.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - value
@@ -165,35 +165,35 @@ components:
                 is the value of the ID
               type: string
               x-oapi-codegen-extra-tags:
-                xml: ',chardata'
-                validate: 'required,absolute_uri|urn_rfc2141|uuid'
+                xml: ",chardata"
+                validate: "required,absolute_uri|urn_rfc2141|uuid"
       x-go-name: ID
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom id'
-        json: 'id'
-        validate: 'required'
+        xml: "http://www.w3.org/2005/Atom id"
+        json: "id"
+        validate: "required"
     Title:
       description: >
         is an element of type Text construct that conveys a human-readable title for an entry or feed.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom title'
-        json: 'title'
-        validate: 'required'
+        xml: "http://www.w3.org/2005/Atom title"
+        json: "title"
+        validate: "required"
     Updated:
       description: >
         is an element of type Date construct indicating the most recent instant in time when an entry or feed was modified in a
         way the publisher considers significant.
       x-go-type: DateConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom updated'
-        json: 'updated'
-        validate: 'required'
+        xml: "http://www.w3.org/2005/Atom updated"
+        json: "updated"
+        validate: "required"
     Category:
       description: >
         is an element that conveys information about a category associated with an entry or feed.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - term
@@ -203,11 +203,11 @@ components:
                 represents any additional, undefined content for this element.
               type: array
               items:
-                $ref: 'extensions.yaml#/components/schemas/Extension'
+                $ref: "extensions.yaml#/components/schemas/Extension"
               x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
-                json: 'extensions,omitempty'
-                xml: ',any'
+                json: "extensions,omitempty"
+                xml: ",any"
             term:
               description: >
                 is a string that identifies the category to which the entry or feed belongs.
@@ -215,9 +215,9 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'term,attr'
-                json: 'term'
-                validate: 'required'
+                xml: "term,attr"
+                json: "term"
+                validate: "required"
             scheme:
               description: >
                 is an IRI that identifies a categorization scheme.
@@ -225,8 +225,8 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'scheme,attr,omitempty'
-                json: 'scheme,omitempty'
+                xml: "scheme,attr,omitempty"
+                json: "scheme,omitempty"
             label:
               description: >
                 provides a human-readable label for display in end-user applications.
@@ -234,26 +234,26 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'label,attr,omitempty'
-                json: 'label,omitempty'
+                xml: "label,attr,omitempty"
+                json: "label,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom category,omitempty'
-        json: 'category,omitempty'
+        xml: "http://www.w3.org/2005/Atom category,omitempty"
+        json: "category,omitempty"
     Categories:
       description: >
         a list of categories associated with the feed.
       type: array
       items:
-        $ref: '#/components/schemas/Category'
+        $ref: "#/components/schemas/Category"
       x-oapi-codegen-extra-tags:
-        xml: 'category,omitempty'
-        validate: 'dive,validateFn'
+        xml: "category,omitempty"
+        validate: "dive"
       x-go-type-skip-optional-pointer: true
     Generator:
       description: >
         is an element identifies the agent used to generate a feed.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - value
@@ -263,31 +263,31 @@ components:
                 is the element value.
               type: string
               x-oapi-codegen-extra-tags:
-                xml: ',chardata'
+                xml: ",chardata"
             uri:
               type: string
               x-go-name: URI
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'uri,attr,omitempty'
-                json: 'uri,omitempty'
-                validate: 'omitempty,url'
+                xml: "uri,attr,omitempty"
+                json: "uri,omitempty"
+                validate: "omitempty,url"
             version:
               type: string
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'version,attr,omitempty'
-                json: 'version,omitempty'
+                xml: "version,attr,omitempty"
+                json: "version,omitempty"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom generator,omitempty'
-        json: 'generator,omitempty'
+        xml: "http://www.w3.org/2005/Atom generator,omitempty"
+        json: "generator,omitempty"
     Icon:
       description: >
         is an element that contains a URI to an icon suitable for representing a feed.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - value
@@ -296,15 +296,15 @@ components:
               description: is the value as a valid IRI.
               type: string
               x-oapi-codegen-extra-tags:
-                xml: ',chardata'
+                xml: ",chardata"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom icon,omitempty'
-        json: 'icon,omitempty'
+        xml: "http://www.w3.org/2005/Atom icon,omitempty"
+        json: "icon,omitempty"
     Link:
       description: >
         defines a relationship between a web resource (such as a page) and an RSS channel or item.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - href
@@ -316,8 +316,8 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'href,attr'
-                validate: 'required,url|hostname'
+                xml: "href,attr"
+                validate: "required,url|hostname"
             hreflang:
               description: >
                 identifies the language used by the related resource using an HTML language code.
@@ -326,8 +326,8 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'hreflang,attr,omitempty'
-                validate: 'omitempty,rfc3066lang'
+                xml: "hreflang,attr,omitempty"
+                validate: "omitempty,rfc3066lang"
             length:
               description: >
                 contains the resource's size, in bytes.
@@ -335,8 +335,8 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'length,attr,omitempty'
-                validate: 'omitempty,number'
+                xml: "length,attr,omitempty"
+                validate: "omitempty,number"
             title:
               description: >
                 provides a human-readable description of the resource.
@@ -344,8 +344,8 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'title,attr,omitempty'
-                validate: 'omitnil,required'
+                xml: "title,attr,omitempty"
+                validate: "omitnil,required"
             type:
               description: >
                 identifies the resource's MIME media type.
@@ -353,8 +353,8 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'type,attr,omitempty'
-                validate: 'omitnil,mimetype_string'
+                xml: "type,attr,omitempty"
+                validate: "omitnil,mimetype_string"
             rel:
               description: >
                 contains a keyword that identifies the nature of the relationship between the linked resouce and the
@@ -362,43 +362,42 @@ components:
               type: string
               enum:
                 [
-                  'alternate',
-                  'enclosure',
-                  'related',
-                  'self',
-                  'via',
-                  'hub',
-                  'edit',
-                  'next',
-                  'standout',
-                  'http://schemas.google.com/g/2005#feed',
+                  "alternate",
+                  "enclosure",
+                  "related",
+                  "self",
+                  "via",
+                  "hub",
+                  "edit",
+                  "next",
+                  "standout",
+                  "http://schemas.google.com/g/2005#feed",
                 ]
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'rel,attr,omitempty'
-                validate: 'omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed'
+                xml: "rel,attr,omitempty"
+                validate: "omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed"
             UndefinedContent:
-              $ref: '#/components/schemas/UndefinedContent'
+              $ref: "#/components/schemas/UndefinedContent"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom link,omitempty'
-        json: 'link,omitempty'
-        validate: 'validateFn'
+        xml: "http://www.w3.org/2005/Atom link,omitempty"
+        json: "link,omitempty"
     Links:
       description: >
         a list of links associated with the feed.
       type: array
       items:
-        $ref: '#/components/schemas/Link'
+        $ref: "#/components/schemas/Link"
       x-oapi-codegen-extra-tags:
-        xml: 'link,omitempty'
-        validate: 'dive,validateFn'
+        xml: "link,omitempty"
+        validate: "dive"
       x-go-type-skip-optional-pointer: true
     Logo:
       description: >
         is an element that contains a URI to an logo suitable for representing a feed.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - value
@@ -406,60 +405,60 @@ components:
             value:
               type: string
               x-oapi-codegen-extra-tags:
-                json: 'value'
-                xml: ',chardata'
+                json: "value"
+                xml: ",chardata"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom logo,omitempty'
-        json: 'logo,omitempty'
-        validate: 'omitempty'
+        xml: "http://www.w3.org/2005/Atom logo,omitempty"
+        json: "logo,omitempty"
+        validate: "omitempty"
     Rights:
       description: >
         is an element of type Text construct that conveys information about rights held in and over an entry or feed.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom rights,omitempty'
-        json: 'rights,omitempty'
+        xml: "http://www.w3.org/2005/Atom rights,omitempty"
+        json: "rights,omitempty"
     Published:
       description: >
         is an element of type Date construct indicating an instant in time associated with an event early in the life
         cycle of the entry.
       x-go-type: DateConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom published,omitempty'
-        json: 'published,omitempty'
+        xml: "http://www.w3.org/2005/Atom published,omitempty"
+        json: "published,omitempty"
     Subtitle:
       description: >
         is an element of type Text construct that conveys a human-readable subtitle for an entry or feed.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom subtitle,omitempty'
-        json: 'subtitle,omitempty'
+        xml: "http://www.w3.org/2005/Atom subtitle,omitempty"
+        json: "subtitle,omitempty"
     Summary:
       description: >
         is an element of type Text construct that conveys a short summary, abstract, or excerpt of an entry.
       x-go-type: TextConstruct
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom summary,omitempty'
-        json: 'summary,omitempty'
+        xml: "http://www.w3.org/2005/Atom summary,omitempty"
+        json: "summary,omitempty"
     Content:
       description: >
         either contains or links to the content of the entry.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           properties:
             type:
               description: >
                 represents what the content of the element is.
               type: string
-              enum: ['text', 'html', 'xhtml']
-              default: 'text'
+              enum: ["text", "html", "xhtml"]
+              default: "text"
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'type,attr,omitempty'
-                json: 'type,omitempty'
-                validate: 'omitnil,oneof=text html xhtml|mimetype_string'
+                xml: "type,attr,omitempty"
+                json: "type,omitempty"
+                validate: "omitnil,oneof=text html xhtml|mimetype_string"
             src:
               description: >
                 is an attribute that links to the source content.
@@ -468,9 +467,9 @@ components:
               xml:
                 attribute: true
               x-oapi-codegen-extra-tags:
-                xml: 'src,attr,omitempty'
-                json: 'src,omitempty'
-                validate: 'omitempty,required_without=Value,uri'
+                xml: "src,attr,omitempty"
+                json: "src,omitempty"
+                validate: "omitempty,required_without=Value,uri"
             text:
               description: >
                 contains the value when Type is "text"/"html", or a "text/*" MIME type.
@@ -488,37 +487,37 @@ components:
             Base64:
               description: >
                 contains the value when any other MIME type: out-of-band binary content.
-              x-go-type: '[]byte'
+              x-go-type: "[]byte"
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom content,omitempty'
-        json: 'content,omitempty'
-        validate: 'omitempty,validateFn'
+        xml: "http://www.w3.org/2005/Atom content,omitempty"
+        json: "content,omitempty"
+        validate: "omitempty"
     Contributors:
       description: >
         a list of persons who contributed to the feed.
       type: array
       items:
-        $ref: '#/components/schemas/PersonConstruct'
+        $ref: "#/components/schemas/PersonConstruct"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom contributor,omitempty'
-        validate: 'omitempty,gt=0,dive,validateFn'
+        xml: "http://www.w3.org/2005/Atom contributor,omitempty"
+        validate: "omitempty,gt=0,dive,validateFn"
       x-go-type-skip-optional-pointer: true
     Authors:
       description: >
         a list of persons who maintain authorship of the feed.
       type: array
       items:
-        $ref: '#/components/schemas/PersonConstruct'
+        $ref: "#/components/schemas/PersonConstruct"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom author,omitempty'
-        validate: 'gt=0,dive,validateFn'
+        xml: "http://www.w3.org/2005/Atom author,omitempty"
+        validate: "gt=0,dive,validateFn"
       x-go-type-skip-optional-pointer: true
     FeedMetadata:
       description: >
         is the feed metadata.
       allOf:
-        - $ref: '#/components/schemas/CommonAttributes'
+        - $ref: "#/components/schemas/CommonAttributes"
         - type: object
           required:
             - ID
@@ -526,98 +525,97 @@ components:
             - updated
           properties:
             ID:
-              $ref: '#/components/schemas/ID'
+              $ref: "#/components/schemas/ID"
             title:
-              $ref: '#/components/schemas/Title'
+              $ref: "#/components/schemas/Title"
             published:
-              $ref: '#/components/schemas/Published'
+              $ref: "#/components/schemas/Published"
             updated:
-              $ref: '#/components/schemas/Updated'
+              $ref: "#/components/schemas/Updated"
             authors:
-              $ref: '#/components/schemas/Authors'
+              $ref: "#/components/schemas/Authors"
             categories:
-              $ref: '#/components/schemas/Categories'
+              $ref: "#/components/schemas/Categories"
             contributors:
-              $ref: '#/components/schemas/Contributors'
+              $ref: "#/components/schemas/Contributors"
             generator:
-              $ref: '#/components/schemas/Generator'
+              $ref: "#/components/schemas/Generator"
             icon:
-              $ref: '#/components/schemas/Icon'
+              $ref: "#/components/schemas/Icon"
             links:
-              $ref: '#/components/schemas/Links'
+              $ref: "#/components/schemas/Links"
             logo:
-              $ref: '#/components/schemas/Logo'
+              $ref: "#/components/schemas/Logo"
             rights:
-              $ref: '#/components/schemas/Rights'
+              $ref: "#/components/schemas/Rights"
             subtitle:
-              $ref: '#/components/schemas/Subtitle'
+              $ref: "#/components/schemas/Subtitle"
     Feed:
       description: >
         is the document (i.e., top-level) element of an Atom Feed Document, acting as a container for metadata and data
         associated with the feed.
       allOf:
-        - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
-        - $ref: 'dc.yaml#/components/schemas/DCElements'
-        - $ref: '#/components/schemas/FeedMetadata'
-        - $ref: 'source.yaml#/components/schemas/ChannelSource'
+        - $ref: "media-rss.yaml#/components/schemas/MediaMetadata"
+        - $ref: "dc.yaml#/components/schemas/DCElements"
+        - $ref: "#/components/schemas/FeedMetadata"
+        - $ref: "source.yaml#/components/schemas/ChannelSource"
         - type: object
           properties:
             DefaultNamespace:
               type: string
               x-oapi-codegen-extra-tags:
-                xml: '-'
+                xml: "-"
             namespaces:
               description: >
                 contains all namespaces in use by this RSS feed.
               type: array
               items:
-                $ref: 'extensions.yaml#/components/schemas/Namespace'
+                $ref: "extensions.yaml#/components/schemas/Namespace"
               x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
-                xml: '-'
+                xml: "-"
             entries:
               description: >
                 is the list of <entry> elements for the feed.
               type: array
               items:
-                $ref: '#/components/schemas/Entry'
+                $ref: "#/components/schemas/Entry"
               x-oapi-codegen-extra-tags:
-                xml: 'entry,omitempty'
-                json: 'entry,omitempty'
-                validate: 'dive,validateFn'
+                xml: "entry,omitempty"
+                json: "entry,omitempty"
+                validate: "dive"
               x-go-type-skip-optional-pointer: true
             Extensions:
               description: >
                 represents any additional, undefined content for this element.
               type: array
               items:
-                $ref: 'extensions.yaml#/components/schemas/Extension'
+                $ref: "extensions.yaml#/components/schemas/Extension"
               x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
-                json: 'extensions,omitempty'
-                xml: ',any'
+                json: "extensions,omitempty"
+                xml: ",any"
       x-oapi-codegen-extra-tags:
-        json: 'feed'
-        validate: 'validateFn'
+        json: "feed"
     Source:
       description: >
         contains the metadata from the source feed for the entry.
       allOf:
-        - $ref: '#/components/schemas/FeedMetadata'
+        - $ref: "#/components/schemas/FeedMetadata"
       x-oapi-codegen-extra-tags:
-        json: 'source,omitempty'
-        validate: 'omitempty'
+        json: "source,omitempty"
+        validate: "omitempty"
     Entry:
       description: >
         represents an individual entry, acting as a container for metadata and data associated with the entry.
       type: object
       allOf:
-        - $ref: 'media-rss.yaml#/components/schemas/MediaMetadata'
-        - $ref: 'dc.yaml#/components/schemas/DCElements'
-        - $ref: '#/components/schemas/CommonAttributes'
-        - $ref: 'source.yaml#/components/schemas/ItemSource'
-        - $ref: 'basicgeo.yaml#/components/schemas/Position'
-        - $ref: 'georss.yaml#/components/schemas/GeoRSSSimple'
+        - $ref: "media-rss.yaml#/components/schemas/MediaMetadata"
+        - $ref: "dc.yaml#/components/schemas/DCElements"
+        - $ref: "#/components/schemas/CommonAttributes"
+        - $ref: "source.yaml#/components/schemas/ItemSource"
+        - $ref: "basicgeo.yaml#/components/schemas/Position"
+        - $ref: "georss.yaml#/components/schemas/GeoRSSSimple"
         - type: object
           required:
             - ID
@@ -625,45 +623,44 @@ components:
             - updated
           properties:
             ID:
-              $ref: '#/components/schemas/ID'
+              $ref: "#/components/schemas/ID"
             title:
-              $ref: '#/components/schemas/Title'
+              $ref: "#/components/schemas/Title"
             updated:
-              $ref: '#/components/schemas/Updated'
+              $ref: "#/components/schemas/Updated"
             authors:
-              $ref: '#/components/schemas/Authors'
+              $ref: "#/components/schemas/Authors"
             categories:
-              $ref: '#/components/schemas/Categories'
+              $ref: "#/components/schemas/Categories"
             content:
-              $ref: '#/components/schemas/Content'
+              $ref: "#/components/schemas/Content"
             contributors:
-              $ref: '#/components/schemas/Contributors'
+              $ref: "#/components/schemas/Contributors"
             links:
-              $ref: '#/components/schemas/Links'
+              $ref: "#/components/schemas/Links"
             published:
-              $ref: '#/components/schemas/Published'
+              $ref: "#/components/schemas/Published"
             rights:
-              $ref: '#/components/schemas/Rights'
+              $ref: "#/components/schemas/Rights"
             source:
-              $ref: '#/components/schemas/Source'
+              $ref: "#/components/schemas/Source"
             summary:
-              $ref: '#/components/schemas/Summary'
+              $ref: "#/components/schemas/Summary"
             MediaGroup:
-              $ref: 'media-rss.yaml#/components/schemas/MediaGroup'
+              $ref: "media-rss.yaml#/components/schemas/MediaGroup"
             Extensions:
               description: >
                 records any elements that are unknown extensions to the schema.
               type: array
               items:
-                $ref: 'extensions.yaml#/components/schemas/Extension'
+                $ref: "extensions.yaml#/components/schemas/Extension"
               x-oapi-codegen-extra-tags:
-                json: 'extensions,omitempty'
-                xml: ',any'
+                json: "extensions,omitempty"
+                xml: ",any"
               x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.w3.org/2005/Atom entry'
-        json: 'entry'
-        validate: 'validateFn'
+        xml: "http://www.w3.org/2005/Atom entry"
+        json: "entry"
     StandaloneEntry:
       description: >
         is a document whose root element is atom:entry rather than atom:feed. Kept as a distinct wrapper rather than
@@ -671,19 +668,19 @@ components:
         stays simple and un-verbose.
       type: object
       allOf:
-        - $ref: '#/components/schemas/Entry'
+        - $ref: "#/components/schemas/Entry"
         - type: object
           properties:
             DefaultNamespace:
               type: string
               x-oapi-codegen-extra-tags:
-                xml: '-'
+                xml: "-"
             namespaces:
               description: >
                 contains all namespaces in use by this RSS feed.
               type: array
               items:
-                $ref: 'extensions.yaml#/components/schemas/Namespace'
+                $ref: "extensions.yaml#/components/schemas/Namespace"
               x-go-type-skip-optional-pointer: true
               x-oapi-codegen-extra-tags:
-                xml: '-'
+                xml: "-"

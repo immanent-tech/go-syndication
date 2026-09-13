@@ -307,13 +307,13 @@ type Entry struct {
 	Box *externalRef3.Box `json:"box,omitempty" xml:"http://www.georss.org/georss box"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Circle a center point plus a radius in meters (georss:circle).
 	Circle *externalRef3.Circle `json:"circle,omitempty" xml:"http://www.georss.org/georss circle"`
 
 	// Content either contains or links to the content of the entry.
-	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"http://www.w3.org/2005/Atom content,omitempty"`
+	Content *Content `json:"content,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom content,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
 	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
@@ -391,7 +391,7 @@ type Entry struct {
 	Line externalRef3.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
 
 	// Lon is the longitude in decimal degress
 	Lon *externalRef1.Longitude `json:"lon,omitempty" validate:"omitempty,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
@@ -543,7 +543,7 @@ type Feed struct {
 	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
 	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
@@ -607,7 +607,7 @@ type Feed struct {
 	DcType externalRef2.Type `json:"dc_type,omitempty" xml:"http://purl.org/dc/elements/1.1/ type,omitempty"`
 
 	// Entries is the list of <entry> elements for the feed.
-	Entries []Entry `json:"entry,omitempty" validate:"dive,validateFn" xml:"entry,omitempty"`
+	Entries []Entry `json:"entry,omitempty" validate:"dive" xml:"entry,omitempty"`
 
 	// Generator is an element identifies the agent used to generate a feed.
 	Generator *Generator `json:"generator,omitempty" xml:"http://www.w3.org/2005/Atom generator,omitempty"`
@@ -616,7 +616,7 @@ type Feed struct {
 	Icon *Icon `json:"icon,omitempty" xml:"http://www.w3.org/2005/Atom icon,omitempty"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
 
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
 	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom logo,omitempty"`
@@ -658,7 +658,7 @@ type FeedMetadata struct {
 	Authors Authors `json:"authors,omitempty" validate:"gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom author,omitempty"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
 	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
@@ -670,7 +670,7 @@ type FeedMetadata struct {
 	Icon *Icon `json:"icon,omitempty" xml:"http://www.w3.org/2005/Atom icon,omitempty"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
 
 	// Logo is an element that contains a URI to an logo suitable for representing a feed.
 	Logo *Logo `json:"logo,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom logo,omitempty"`
@@ -939,13 +939,13 @@ type StandaloneEntry struct {
 	Box *externalRef3.Box `json:"box,omitempty" xml:"http://www.georss.org/georss box"`
 
 	// Categories a list of categories associated with the feed.
-	Categories Categories `json:"categories,omitempty" validate:"dive,validateFn" xml:"category,omitempty"`
+	Categories Categories `json:"categories,omitempty" validate:"dive" xml:"category,omitempty"`
 
 	// Circle a center point plus a radius in meters (georss:circle).
 	Circle *externalRef3.Circle `json:"circle,omitempty" xml:"http://www.georss.org/georss circle"`
 
 	// Content either contains or links to the content of the entry.
-	Content *Content `json:"content,omitempty" validate:"omitempty,validateFn" xml:"http://www.w3.org/2005/Atom content,omitempty"`
+	Content *Content `json:"content,omitempty" validate:"omitempty" xml:"http://www.w3.org/2005/Atom content,omitempty"`
 
 	// Contributors a list of persons who contributed to the feed.
 	Contributors Contributors `json:"contributors,omitempty" validate:"omitempty,gt=0,dive,validateFn" xml:"http://www.w3.org/2005/Atom contributor,omitempty"`
@@ -1023,7 +1023,7 @@ type StandaloneEntry struct {
 	Line externalRef3.Line `json:"line,omitempty" xml:"http://www.georss.org/georss line"`
 
 	// Links a list of links associated with the feed.
-	Links Links `json:"links,omitempty" validate:"dive,validateFn" xml:"link,omitempty"`
+	Links Links `json:"links,omitempty" validate:"dive" xml:"link,omitempty"`
 
 	// Lon is the longitude in decimal degress
 	Lon *externalRef1.Longitude `json:"lon,omitempty" validate:"omitempty,gte=-180,lte=180" xml:"http://www.w3.org/2003/01/geo/wgs84_pos# long"`
