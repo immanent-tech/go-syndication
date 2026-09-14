@@ -2902,7 +2902,7 @@ var atomGeoRSS = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			item := feed.Entries[0]
-			require.NoError(t, item.Line.Validate())
+			require.Nil(t, validation.ValidateStruct(item.Line))
 			line := *item.Line
 			assert.InEpsilon(t, 45.256, line[0].Lat, 0.001)
 			assert.InEpsilon(t, -110.45, line[0].Lon, 0.001)
@@ -2928,7 +2928,7 @@ var atomGeoRSS = map[string]atomTestSuite{
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
 			item := feed.Entries[0]
-			require.NoError(t, item.Polygon.Validate())
+			require.Nil(t, validation.ValidateStruct(item.Polygon))
 			polygon := *item.Polygon
 			assert.InEpsilon(t, 45.256, polygon[0].Lat, 0.001)
 			assert.InEpsilon(t, -110.45, polygon[0].Lon, 0.01)
@@ -2959,7 +2959,7 @@ var atomGeoRSS = map[string]atomTestSuite{
 			t.Helper()
 			item := feed.Entries[0]
 			assert.NotNil(t, item.Where)
-			require.NoError(t, item.Where.Validate())
+			require.Nil(t, validation.ValidateStruct(item.Where))
 			point := item.Where.Point
 			assert.InEpsilon(t, 45.256, point.Pos.Lat, 0.001)
 			assert.InEpsilon(t, -71.92, point.Pos.Lon, 0.001)
@@ -2971,7 +2971,7 @@ var atomGeoRSS = map[string]atomTestSuite{
 			t.Helper()
 			item := feed.Entries[0]
 			assert.NotNil(t, item.Where)
-			require.NoError(t, item.Where.Validate())
+			require.Nil(t, validation.ValidateStruct(item.Where))
 			line := item.Where.LineString
 			assert.InEpsilon(t, 45.256, line.PosList[0].Lat, 0.001)
 			assert.InEpsilon(t, -110.45, line.PosList[0].Lon, 0.001)
@@ -2987,7 +2987,7 @@ var atomGeoRSS = map[string]atomTestSuite{
 			t.Helper()
 			item := feed.Entries[0]
 			assert.NotNil(t, item.Where)
-			require.NoError(t, item.Where.Validate())
+			require.Nil(t, validation.ValidateStruct(item.Where))
 			polygon := item.Where.Polygon
 			assert.InEpsilon(t, 45.256, polygon.Exterior.LinearRing.PosList[0].Lat, 0.001)
 			assert.InEpsilon(t, -110.45, polygon.Exterior.LinearRing.PosList[0].Lon, 0.01)
@@ -3005,7 +3005,7 @@ var atomGeoRSS = map[string]atomTestSuite{
 			t.Helper()
 			item := feed.Entries[0]
 			assert.NotNil(t, item.Where)
-			require.NoError(t, item.Where.Validate())
+			require.Nil(t, validation.ValidateStruct(item.Where))
 			box := item.Where.Envelope
 			assert.InEpsilon(t, 42.943, box.LowerCorner.Lat, 0.001)
 			assert.InEpsilon(t, -71.032, box.LowerCorner.Lon, 0.001)

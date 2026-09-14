@@ -9,8 +9,16 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/validation"
 )
+
+func init() {
+	validation.RegisterStructValidation(lineCustomValidation, Line{})
+	validation.RegisterStructValidation(polygonCustomValidation, Polygon{})
+	validation.RegisterStructValidation(whereCustomValidation, Where{})
+	validation.RegisterStructValidation(geoRSSSimpleCustomValidation, GeoRSSSimple{})
+}
 
 const (
 	georssNS = "http://www.georss.org/georss"
@@ -124,14 +132,16 @@ func (l *Line) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-func (l Line) Validate() error {
+func lineCustomValidation(sl validator.StructLevel) {
+	l := sl.Current().Interface().(Line)
 	if err := validation.ValidateField(l, "gte=2,unique"); err != nil {
-		return fmt.Errorf("georss:line: %w", err)
+		sl.ReportError(l, "Line", "Line", "gte,unique", fmt.Sprintf("line is invalid: %s", err.Error()))
+		return
 	}
 	if err := checkAntimeridianRule(l); err != nil {
-		return fmt.Errorf("georss:line: %w", err)
+		sl.ReportError(l, "Line", "Line", "antimeridian", fmt.Sprintf("line is invalid: %s", err.Error()))
+		return
 	}
-	return nil
 }
 
 func (p Polygon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -156,21 +166,28 @@ func (p *Polygon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-func (p Polygon) Validate() error {
+func polygonCustomValidation(sl validator.StructLevel) {
+	p := sl.Current().Interface().(Polygon)
 	if err := validation.ValidateField(p, "gte=4"); err != nil {
-		return fmt.Errorf("georss:polygon: %w", err)
+		sl.ReportError(p, "Polygon", "Polygon", "gte", fmt.Sprintf("polygon is invalid: %s", err.Error()))
+		return
 	}
 	if p[0] != p[len(p)-1] {
-		return fmt.Errorf(
-			"georss:polygon: first and last points must be identical to close the ring (got %v and %v)",
-			p[0],
-			p[len(p)-1],
+		sl.ReportError(
+			p,
+			"Polygon",
+			"Polygon",
+			"gte",
+			fmt.Sprintf("first and last points must be identical to close the ring (got %v and %v)",
+				p[0],
+				p[len(p)-1],
+			),
 		)
+		return
 	}
 	if err := checkAntimeridianRule(p); err != nil {
-		return fmt.Errorf("georss:polygon: %w", err)
+		sl.ReportError(p, "Polygon", "Polygon", "antimeridian", fmt.Sprintf("polygon is invalid: %s", err.Error()))
 	}
-	return nil
 }
 
 func (b Box) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -222,7 +239,8 @@ func (c *Circle) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-func (w Where) Validate() error {
+func whereCustomValidation(sl validator.StructLevel) {
+	w := sl.Current().Interface().(Where)
 	set := 0
 	for _, present := range []bool{w.Point != nil, w.LineString != nil, w.Polygon != nil, w.Envelope != nil} {
 		if present {
@@ -230,30 +248,30 @@ func (w Where) Validate() error {
 		}
 	}
 	if set != 1 {
-		return fmt.Errorf("georss:where: must contain exactly one geometry, found %d", set)
+		sl.ReportError(
+			w,
+			"Where",
+			"Where",
+			"required",
+			fmt.Sprintf("georss:where: must contain exactly one geometry, found %d", set),
+		)
+		return
 	}
-	return nil
 }
 
-// Validate checks each populated geometry's own rules, and flags (as a
-// soft, common-sense rule the spec doesn't state outright) more than one
-// geometry being set at once -- almost certainly a mistake, since an
-// item/entry conceptually has one location.
-func (g GeoRSSSimple) Validate() error {
+// geoRSSSimpleCustomValidation checks each populated geometry's own rules, and flags (as a soft, common-sense rule the spec doesn't state
+// outright) more than one geometry being set at once -- almost certainly a mistake, since an item/entry conceptually
+// has one location.
+func geoRSSSimpleCustomValidation(sl validator.StructLevel) {
+	g := sl.Current().Interface().(GeoRSSSimple)
 	geometries := 0
 	if g.Point != nil {
 		geometries++
 	}
 	if g.Line != nil {
-		if err := g.Line.Validate(); err != nil {
-			return err
-		}
 		geometries++
 	}
 	if g.Polygon != nil {
-		if err := g.Polygon.Validate(); err != nil {
-			return err
-		}
 		geometries++
 	}
 	if g.Box != nil {
@@ -263,15 +281,17 @@ func (g GeoRSSSimple) Validate() error {
 		geometries++
 	}
 	if g.Where != nil {
-		if err := g.Where.Validate(); err != nil {
-			return err
-		}
 		geometries++
 	}
 	if geometries > 1 {
-		return fmt.Errorf("georss: %d geometry elements set simultaneously; expected at most one", geometries)
+		sl.ReportError(
+			g,
+			"GEORSSSimple",
+			"GEORSSSimple",
+			"required",
+			fmt.Sprintf("%d geometry elements set simultaneously; expected at most one", geometries),
+		)
 	}
-	return nil
 }
 
 func (g GeoRSSSimple) IsZero() bool {

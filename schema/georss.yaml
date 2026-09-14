@@ -54,16 +54,12 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Coord"
-      x-oapi-codegen-extra-tags:
-        validate: "validateFn"
     Polygon:
       description: >
         a closed linear ring -- four or more coordinate pairs, with the first and last identical.
       type: array
       items:
         $ref: "#/components/schemas/Coord"
-      x-oapi-codegen-extra-tags:
-        validate: "validateFn"
     Box:
       description: >
         is a bounding box as two coordinate pairs: the lower (southwest) corner, then the upper (northeast) corner
@@ -201,7 +197,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: "http://www.opengis.net/gml Envelope"
       x-oapi-codegen-extra-tags:
-        xml: "http://www.opengis.net/gml validateFn"
+        xml: "http://www.opengis.net/gml Where"
     GeoRSSSimple:
       description: >
         is the full set of GeoRSS Simple elements (including the GML-profile georss:where as an alternative to the
