@@ -156,7 +156,10 @@ func mediaRestrictionCustomValidation(sl validator.StructLevel) {
 			"Type",
 			"Type",
 			"oneof",
-			fmt.Sprintf("type must be \"country\", \"uri\", or \"sharing\" unless value is \"all\"/\"none\", got %q"),
+			fmt.Sprintf(
+				"type must be \"country\", \"uri\", or \"sharing\" unless value is \"all\"/\"none\", got %q",
+				*r.Type,
+			),
 		)
 	}
 }
