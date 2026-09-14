@@ -300,7 +300,10 @@ func (i *Item) GetGeoInfo() *types.GeoInfo {
 	if err != nil {
 		return nil
 	}
-	return &info
+	if !info.IsZero() {
+		return &info
+	}
+	return nil
 }
 
 func itemCustomValidation(sl validator.StructLevel) {

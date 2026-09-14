@@ -257,7 +257,10 @@ func (e *Entry) GetGeoInfo() *types.GeoInfo {
 	if err != nil {
 		return nil
 	}
-	return &info
+	if !info.IsZero() {
+		return &info
+	}
+	return nil
 }
 
 func (s StandaloneEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

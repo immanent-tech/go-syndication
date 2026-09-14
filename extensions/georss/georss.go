@@ -273,3 +273,14 @@ func (g GeoRSSSimple) Validate() error {
 	}
 	return nil
 }
+
+func (g GeoRSSSimple) IsZero() bool {
+	return !(g.Box != nil || g.Circle != nil || g.Elev != nil || g.Floor != nil || g.Line != nil ||
+		g.Point != nil ||
+		g.Polygon != nil ||
+		g.Radius != nil ||
+		g.Where != nil ||
+		g.FeatureName != nil ||
+		g.FeatureTypeTag != nil ||
+		g.RelationshipTag != nil)
+}
