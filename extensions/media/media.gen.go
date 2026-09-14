@@ -325,7 +325,7 @@ type MediaContent struct {
 	MediaResponses MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
@@ -545,7 +545,7 @@ type MediaGroup struct {
 	MediaResponses MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
@@ -653,7 +653,7 @@ type MediaMetadata struct {
 	MediaResponses MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`

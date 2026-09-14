@@ -374,7 +374,6 @@ components:
       x-oapi-codegen-extra-tags:
         xml: "http://search.yahoo.com/mrss/ restriction,omitempty"
         json: "media_restriction"
-        validate: "omitempty,validateFn"
     MediaStarRating:
       description: >
         specifies the rating-related information about a media object.

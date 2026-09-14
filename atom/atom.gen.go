@@ -258,7 +258,7 @@ type Entry struct {
 	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
@@ -492,7 +492,7 @@ type Feed struct {
 	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
@@ -890,7 +890,7 @@ type StandaloneEntry struct {
 	MediaResponses externalRef4.MediaResponses `json:"media_responses" xml:"http://search.yahoo.com/mrss/ response,omitempty"`
 
 	// MediaRestriction allows restrictions to be placed on the aggregator rendering the media in the feed.
-	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" validate:"omitempty,validateFn" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
+	MediaRestriction *externalRef4.MediaRestriction `json:"media_restriction" xml:"http://search.yahoo.com/mrss/ restriction,omitempty"`
 
 	// MediaRights specifies the rights information of a media object.
 	MediaRights *externalRef4.MediaRights `json:"media_rights" xml:"http://search.yahoo.com/mrss/ rights,omitempty"`
