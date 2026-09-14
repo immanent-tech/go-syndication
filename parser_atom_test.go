@@ -2903,12 +2903,13 @@ var atomGeoRSS = map[string]atomTestSuite{
 			t.Helper()
 			item := feed.Entries[0]
 			require.NoError(t, item.Line.Validate())
-			assert.InEpsilon(t, 45.256, item.Line[0].Lat, 0.001)
-			assert.InEpsilon(t, -110.45, item.Line[0].Lon, 0.001)
-			assert.InEpsilon(t, 46.46, item.Line[1].Lat, 0.001)
-			assert.InEpsilon(t, -109.48, item.Line[1].Lon, 0.001)
-			assert.InEpsilon(t, 43.84, item.Line[2].Lat, 0.001)
-			assert.InEpsilon(t, -109.86, item.Line[2].Lon, 0.001)
+			line := *item.Line
+			assert.InEpsilon(t, 45.256, line[0].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, line[0].Lon, 0.001)
+			assert.InEpsilon(t, 46.46, line[1].Lat, 0.001)
+			assert.InEpsilon(t, -109.48, line[1].Lon, 0.001)
+			assert.InEpsilon(t, 43.84, line[2].Lat, 0.001)
+			assert.InEpsilon(t, -109.86, line[2].Lon, 0.001)
 		},
 	},
 	"box.xml": {
@@ -2928,14 +2929,15 @@ var atomGeoRSS = map[string]atomTestSuite{
 			t.Helper()
 			item := feed.Entries[0]
 			require.NoError(t, item.Polygon.Validate())
-			assert.InEpsilon(t, 45.256, item.Polygon[0].Lat, 0.001)
-			assert.InEpsilon(t, -110.45, item.Polygon[0].Lon, 0.01)
-			assert.InEpsilon(t, 46.46, item.Polygon[1].Lat, 0.01)
-			assert.InEpsilon(t, -109.48, item.Polygon[1].Lon, 0.01)
-			assert.InEpsilon(t, 43.84, item.Polygon[2].Lat, 0.01)
-			assert.InEpsilon(t, -109.86, item.Polygon[2].Lon, 0.01)
-			assert.InEpsilon(t, 45.256, item.Polygon[3].Lat, 0.001)
-			assert.InEpsilon(t, -110.45, item.Polygon[3].Lon, 0.01)
+			polygon := *item.Polygon
+			assert.InEpsilon(t, 45.256, polygon[0].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, polygon[0].Lon, 0.01)
+			assert.InEpsilon(t, 46.46, polygon[1].Lat, 0.01)
+			assert.InEpsilon(t, -109.48, polygon[1].Lon, 0.01)
+			assert.InEpsilon(t, 43.84, polygon[2].Lat, 0.01)
+			assert.InEpsilon(t, -109.86, polygon[2].Lon, 0.01)
+			assert.InEpsilon(t, 45.256, polygon[3].Lat, 0.001)
+			assert.InEpsilon(t, -110.45, polygon[3].Lon, 0.01)
 		},
 	},
 	"props.xml": {
