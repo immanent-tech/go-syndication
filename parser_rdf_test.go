@@ -48,7 +48,7 @@ var rdfMustPass = map[string]rdfTestSuite{
 }
 
 var rdfTests = map[string]map[string]rdfTestSuite{
-	"test/assets/rss/must": rdfMustPass,
+	"test/feedvalidator/testcases/rss/must": rdfMustPass,
 }
 
 func TestNewFeedFromBytesRDF(t *testing.T) {

@@ -482,9 +482,9 @@ var rssMedia = map[string]rssTestSuite{
 }
 
 var rssTests = map[string]map[string]rssTestSuite{
-	"test/assets/rss/must":  rssMustPass,
-	"test/assets/ext/media": rssMedia,
-	"test/assets/rss20":     rss20,
+	"test/feedvalidator/testcases/rss/must":  rssMustPass,
+	"test/feedvalidator/testcases/ext/media": rssMedia,
+	"test/feedvalidator/testcases/rss20":     rss20,
 }
 
 func TestNewFeedFromBytesRSS(t *testing.T) {
