@@ -438,7 +438,13 @@ func dateConstructCustomValidation(sl validator.StructLevel) {
 	d := sl.Current().Interface().(DateConstruct)
 	raw := d.String()
 	if _, err := time.Parse(time.RFC3339, raw); err != nil {
-		sl.ReportError(d, "DateConstruct", "DateConstruct", "rfc3339", fmt.Sprintf("invalid date-time %q: %w", raw))
+		sl.ReportError(
+			d,
+			"DateConstruct",
+			"DateConstruct",
+			"rfc3339",
+			fmt.Sprintf("invalid date-time %q: %s", raw, err.Error()),
+		)
 		return
 	}
 	// time.Parse accepts lowercase t/z against this layout too; the spec doesn't, so check the literal separator
