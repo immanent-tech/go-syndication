@@ -166,8 +166,10 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 				}
 				now := time.Now()
 				for i, item := range c.Items {
-					if item.PubDate.Value.After(now) {
-						return fail(metadata, "item %d has a pubDate (%s) in the future", i, item.PubDate)
+					if item.PubDate != nil {
+						if item.PubDate.Value.After(now) {
+							return fail(metadata, "item %d has a pubDate (%s) in the future", i, item.PubDate)
+						}
 					}
 				}
 				return pass(metadata)
@@ -273,6 +275,20 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 				for i, item := range c.Items {
 					if item.GetTitle() == "" {
 						return fail(metadata, "item %d has no title", i)
+					}
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(c rss.Channel) Result {
+				metadata := metadata{
+					ID:          "items-should-have-poublished-dates",
+					Description: "Items should have a published date that indicates when the item was created/published",
+				}
+				for i, item := range c.Items {
+					if item.PubDate == nil {
+						return fail(metadata, "item %d has no published date", i)
 					}
 				}
 				return pass(metadata)
