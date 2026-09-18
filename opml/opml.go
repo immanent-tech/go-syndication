@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/immanent-tech/go-syndication/extensions"
+	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html/charset"
 )
@@ -205,65 +206,6 @@ func (o OPML) Validate() error {
 
 const rfc822OutputLayout = "Mon, 02 Jan 2006 15:04:05 GMT"
 
-var namedZoneOffsets = map[string]int{
-	"UT": 0, "GMT": 0, "Z": 0,
-	"EST": -5 * 3600, "EDT": -4 * 3600,
-	"CST": -6 * 3600, "CDT": -5 * 3600,
-	"MST": -7 * 3600, "MDT": -6 * 3600,
-	"PST": -8 * 3600, "PDT": -7 * 3600,
-}
-
-var rfc822Layouts = []string{
-	"Mon, 02 Jan 2006 15:04:05 -0700",
-	"Mon, 02 Jan 06 15:04:05 -0700",
-	"Mon, 02 Jan 2006 15:04:05",
-	"Mon, 02 Jan 2006",
-	"Mon, 2 Jan 2006",
-	"Mon, 2 Jan 2006 15:04:05 -0700",
-	"Mon, 2 Jan 06 15:04:05 -0700",
-	"02 Jan 2006 15:04:05 -0700",
-	"02 Jan 06 15:04:05 -0700",
-	"Mon, 02 Jan 2006 15:04 -0700",
-	"Mon, 02 Jan 06 15:04 -0700",
-	"Mon, 2 Jan 2006 15:04 -0700",
-	"Mon, 2 Jan 06 15:04 -0700",
-	"02 Jan 2006 15:04 -0700",
-	"02 Jan 06 15:04 -0700",
-	"2006 Jan 02 15:04:05 -0700",
-	"2006 Jan 02 15:04:05 MST",
-	"Jan 02, 2006",
-	"2006-01-02T15:04:05+00:00",
-	"2006-01-02T15:04:05+0000",
-	"2006-01-02 15:04 MST",
-	time.RFC3339,
-}
-
-func ParseRFC822(timestamp string) (time.Time, error) {
-	timestamp = strings.TrimSpace(timestamp)
-	fields := strings.Fields(timestamp)
-	if len(fields) == 0 {
-		return time.Time{}, errors.New("opml: empty date-time value")
-	}
-	last := len(fields) - 1
-	if off, ok := namedZoneOffsets[strings.ToUpper(fields[last])]; ok {
-		sign := "+"
-		if off < 0 {
-			sign, off = "-", -off
-		}
-		fields[last] = fmt.Sprintf("%s%02d%02d", sign, off/3600, (off%3600)/60)
-		timestamp = strings.Join(fields, " ")
-	}
-	var lastErr error
-	for layout := range slices.Values(rfc822Layouts) {
-		if t, err := time.Parse(layout, timestamp); err == nil {
-			return t, nil
-		} else {
-			lastErr = err
-		}
-	}
-	return time.Time{}, fmt.Errorf("opml: could not parse date-time %q: %w", timestamp, lastErr)
-}
-
 func NewRFC822Time(value time.Time) *RFC822Time {
 	return &RFC822Time{Time: value}
 }
@@ -295,7 +237,7 @@ func (t *RFC822Time) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	if err := d.DecodeElement(&v, &start); err != nil {
 		return fmt.Errorf("unmarshal time: %w", err)
 	}
-	parsed, err := ParseRFC822(v.Value)
+	parsed, err := types.ParseRFC822(v.Value)
 	if err != nil {
 		return fmt.Errorf("<%s>: %w", start.Name.Local, err)
 	}
@@ -319,7 +261,7 @@ func (t RFC822AttrTime) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 }
 
 func (t *RFC822AttrTime) UnmarshalXMLAttr(attr xml.Attr) error {
-	parsed, err := ParseRFC822(attr.Value)
+	parsed, err := types.ParseRFC822(attr.Value)
 	if err != nil {
 		return fmt.Errorf("marshal time: attribute %s: %w", attr.Name.Local, err)
 	}
