@@ -4,7 +4,7 @@ go 1.27.1
 
 require (
 	github.com/alecthomas/kong v1.16.1
-	github.com/go-playground/validator/v10 v10.30.4
+	github.com/go-playground/validator/v10 v10.30.5
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/stretchr/testify v1.12.1
