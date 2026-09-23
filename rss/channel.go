@@ -164,10 +164,28 @@ func (c *Channel) GetUpdatedDate() *time.Time {
 	}
 	if len(c.Items) > 0 {
 		slices.SortFunc(c.Items, func(a, b Item) int {
-			return a.GetPublishedDate().Compare(*b.GetPublishedDate())
+			switch {
+			case a.GetPublishedDate() == nil && b.GetPublishedDate() != nil:
+				// Assume a < b when a does not have a published date.
+				return -1
+			case a.GetPublishedDate() != nil && b.GetPublishedDate() == nil:
+				// Assume a > b when b does not have a published date.
+				return 1
+			case a.GetPublishedDate() == nil && b.GetPublishedDate() == nil:
+				// Assume a == b when both a and b do not have a published date.
+				return 0
+			default:
+				return a.GetPublishedDate().Compare(*b.GetPublishedDate())
+			}
 		})
 		slices.Reverse(c.Items)
-		return c.Items[0].GetPublishedDate()
+		// Return the first non-nil item published date.
+		for item := range slices.Values(c.Items) {
+			if item.GetPublishedDate() != nil {
+				return item.GetPublishedDate()
+			}
+		}
+		return nil
 	}
 	return c.GetPublishedDate()
 }

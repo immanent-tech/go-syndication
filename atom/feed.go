@@ -214,10 +214,28 @@ func (f *Feed) GetUpdatedDate() *time.Time {
 	if f.Updated.Value.IsZero() {
 		if len(f.Entries) > 0 {
 			slices.SortFunc(f.Entries, func(a, b Entry) int {
-				return a.GetUpdatedDate().Compare(*b.GetUpdatedDate())
+				switch {
+				case a.GetPublishedDate() == nil && b.GetPublishedDate() != nil:
+					// Assume a < b when a does not have a published date.
+					return -1
+				case a.GetPublishedDate() != nil && b.GetPublishedDate() == nil:
+					// Assume a > b when b does not have a published date.
+					return 1
+				case a.GetPublishedDate() == nil && b.GetPublishedDate() == nil:
+					// Assume a == b when both a and b do not have a published date.
+					return 0
+				default:
+					return a.GetPublishedDate().Compare(*b.GetPublishedDate())
+				}
 			})
 			slices.Reverse(f.Entries)
-			return f.Entries[0].GetUpdatedDate()
+			// Return the first non-nil item updated date.
+			for entry := range slices.Values(f.Entries) {
+				if entry.GetUpdatedDate() != nil {
+					return entry.GetUpdatedDate()
+				}
+			}
+			return nil
 		}
 	}
 	return new(f.Updated.Value)
