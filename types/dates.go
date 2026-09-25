@@ -70,6 +70,7 @@ var DateOnlyLayoutsRFC822 = []string{
 	"2006-01-02 15:04 MST",
 	time.RFC3339,
 	time.DateOnly,
+	time.DateTime,
 }
 
 // ParseRFC822 parses an RSS date-time value leniently: it accepts both numeric zone offsets (+0100, -0600) and the
