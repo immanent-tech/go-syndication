@@ -636,7 +636,10 @@ func (c Content) String() string {
 	case c.Type == nil && c.Text != nil:
 		return *c.Text
 	case *c.Type == ContentTypeText || *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "text/"):
-		return *c.Text
+		if c.Text != nil {
+			return *c.Text
+		}
+		return ""
 	case *c.Type == ContentTypeXhtml && c.XHTML != nil:
 		return *c.XHTML
 	case contentIsXMLMediaType(*c.Type):
