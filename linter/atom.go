@@ -4,6 +4,7 @@
 package linter
 
 import (
+	"net/url"
 	"slices"
 
 	"github.com/immanent-tech/go-syndication/atom"
@@ -54,6 +55,27 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 				return pass(metadata)
 			},
 		},
+		{
+			Check: func(f atom.Feed) Result {
+				metadata := metadata{
+					ID:          "entries-should-have-absolute-urls",
+					Description: "Entries should use absolute (i.e., starting with a scheme and host), not relative URLs",
+				}
+				for i, item := range f.Entries {
+					if link := item.GetLink(); link != "" {
+						itemURL, err := url.Parse(link)
+						if err != nil {
+							return fail(metadata, "entry %d link %q could not be parsed", i, link)
+						}
+						if !itemURL.IsAbs() {
+							return fail(metadata, "entry %d link %q is not absolute", i, link)
+						}
+					}
+				}
+				return pass(metadata)
+			},
+		},
+
 		{
 			Check: func(f atom.Feed) Result {
 				metadata := metadata{

@@ -4,6 +4,7 @@
 package linter
 
 import (
+	"net/url"
 	"slices"
 	"strings"
 	"time"
@@ -289,6 +290,26 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 				for i, item := range c.Items {
 					if item.PubDate == nil {
 						return fail(metadata, "item %d has no published date", i)
+					}
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(c rss.Channel) Result {
+				metadata := metadata{
+					ID:          "items-should-have-absolute-urls",
+					Description: "Items should use absolute (i.e., starting with a scheme and host), not relative URLs",
+				}
+				for i, item := range c.Items {
+					if link := item.GetLink(); link != "" {
+						itemURL, err := url.Parse(link)
+						if err != nil {
+							return fail(metadata, "item %d link %q could not be parsed", i, link)
+						}
+						if !itemURL.IsAbs() {
+							return fail(metadata, "item %d link %q is not absolute", i, link)
+						}
 					}
 				}
 				return pass(metadata)
