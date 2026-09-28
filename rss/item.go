@@ -18,6 +18,7 @@ import (
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
 )
 
@@ -225,6 +226,9 @@ func (i *Item) GetImage() *types.Image {
 		if img.Title == nil {
 			img.Title = new(i.GetTitle())
 		}
+	}
+	if err := validation.ValidateStruct(img); err != nil {
+		return nil
 	}
 	return img
 }

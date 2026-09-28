@@ -14,6 +14,7 @@ import (
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var _ types.ItemSource = (*Entry)(nil)
@@ -138,34 +139,26 @@ func (e *Entry) GetCategories() []string {
 // GetImage retrieves the image (if any) for the Entry. The image is returned as a types.ImageInfo object.
 func (e *Entry) GetImage() *types.Image {
 	// Use the first <media:thumbnail>
+	img := &types.Image{}
 	if len(e.MediaThumbnails) > 0 {
-		thumbnail := e.MediaThumbnails[0]
-		title := e.GetTitle()
-		if title != "" {
-			return &types.Image{
-				URL:   thumbnail.URL,
-				Title: &title,
-			}
-		}
-		return &types.Image{
-			URL: thumbnail.URL,
+		img = e.MediaThumbnails[0].AsImage()
+		if title := e.GetTitle(); title != "" {
+			img.Title = &title
 		}
 	}
 	// If <media:group> exists, use the first <media:thumbnail> in the group.
 	if e.MediaGroup != nil && len(e.MediaGroup.MediaThumbnails) > 0 {
-		thumbnail := e.MediaGroup.MediaThumbnails[0]
-		title := e.GetTitle()
-		if title != "" {
-			return &types.Image{
-				URL:   thumbnail.URL,
-				Title: &title,
-			}
-		}
-		return &types.Image{
-			URL: thumbnail.URL,
+		img = e.MediaGroup.MediaThumbnails[0].AsImage()
+		if title := e.GetTitle(); title != "" {
+			img.Title = &title
 		}
 	}
-	return nil
+
+	if err := validation.ValidateStruct(img); err != nil {
+		return nil
+	}
+
+	return img
 }
 
 // GetMediaGroup returns any media.MediaGroup object for the entry.
