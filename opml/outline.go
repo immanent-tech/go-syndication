@@ -3,7 +3,10 @@
 
 package opml
 
-import "slices"
+import (
+	"encoding/xml"
+	"slices"
+)
 
 // NewSubscriptionOutline creates a new OPML feed outline object from the given options.
 func NewSubscriptionOutline(text, url string, options ...OutlineOption) *Outline {
@@ -56,4 +59,17 @@ func WithVersion(version RSSOutlineVersion) OutlineOption {
 	return func(o *Outline) {
 		o.SetAttr("version", string(version))
 	}
+}
+
+// GetAttr retrieves the attribute with the given name from the [Outline]. If there is no attribute with that name, it
+// returns an empty string. The name is case sensitive and should match exactly as the attribute name would appear in
+// the OPML outline.
+func (o Outline) GetAttr(name string) string {
+	idx := slices.IndexFunc(o.Attrs, func(e xml.Attr) bool {
+		return e.Name.Local == name
+	})
+	if idx != -1 {
+		return o.Attrs[idx].Value
+	}
+	return ""
 }
