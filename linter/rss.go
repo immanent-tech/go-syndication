@@ -284,7 +284,7 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 		{
 			Check: func(c rss.Channel) Result {
 				metadata := metadata{
-					ID:          "items-should-have-poublished-dates",
+					ID:          "items-should-have-published-dates",
 					Description: "Items should have a published date that indicates when the item was created/published",
 				}
 				for i, item := range c.Items {
