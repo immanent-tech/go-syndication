@@ -84,21 +84,21 @@ func (g Generator) String() string {
 }
 
 func (i Icon) String() string {
-	return i.Value
+	return sanitization.SanitizeString(i.Value)
 }
 
 func (i ID) String() string {
-	return i.Value
+	return sanitization.SanitizeString(i.Value)
 }
 
 func (l Logo) String() string {
-	return l.Value
+	return sanitization.SanitizeString(l.Value)
 }
 
 func (l Link) String() string {
 	switch {
 	case l.Href != "":
-		return l.Href
+		return sanitization.SanitizeString(l.Href)
 	case l.UndefinedContent != nil && *l.UndefinedContent != "":
 		return sanitization.SanitizeString(*l.UndefinedContent)
 	default:

@@ -49,7 +49,7 @@ func (f *Feed) GetSourceURL() string {
 	for link := range slices.Values(f.Links) {
 		if link.Rel != nil && *link.Rel == LinkRelSelf {
 			if link.Type != nil && slices.Contains(MimeTypes, *link.Type) {
-				return link.Href
+				return link.String()
 			}
 		}
 	}
