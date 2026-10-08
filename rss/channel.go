@@ -37,7 +37,7 @@ func (c *Channel) GetDescription() string {
 func (c *Channel) GetSourceURL() string {
 	if c.AtomLink != nil {
 		if c.AtomLink.Rel != nil && *c.AtomLink.Rel == atom.LinkRelSelf {
-			return c.AtomLink.Href
+			return c.AtomLink.String()
 		}
 	}
 	return ""
