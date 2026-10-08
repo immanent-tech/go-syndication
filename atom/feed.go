@@ -139,7 +139,8 @@ func (f *Feed) GetLanguage() *string {
 	}
 }
 
-// GetCategories retrieves the categories (if any) of the Feed. The categories are returned as strings.
+// GetCategories retrieves the categories (if any) of the [Feed]. Case insensitive duplicate categories are collapsed. The
+// categories are returned as strings.
 func (f *Feed) GetCategories() []string {
 	categories := make([]string, 0, len(f.Categories))
 	for category := range slices.Values(f.Categories) {
@@ -147,7 +148,10 @@ func (f *Feed) GetCategories() []string {
 			categories = append(categories, str)
 		}
 	}
-	return categories
+	slices.Sort(categories)
+	return slices.CompactFunc(categories, func(a, b string) bool {
+		return strings.EqualFold(a, b)
+	})
 }
 
 // GetImage retrieves the image (if any) for the Feed. The image is returned as a types.Image object. The value will be

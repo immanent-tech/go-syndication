@@ -83,7 +83,9 @@ func (i *Item) GetCategories() []string {
 	i.Tags = slices.DeleteFunc(i.Tags, func(str string) bool {
 		return strings.TrimSpace(str) == ""
 	})
-	return slices.Compact(i.Tags)
+	return slices.CompactFunc(i.Tags, func(a, b string) bool {
+		return strings.EqualFold(a, b)
+	})
 }
 
 // GetImage retrieves the image (if any) for the Item.

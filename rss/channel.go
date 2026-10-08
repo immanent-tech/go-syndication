@@ -87,7 +87,8 @@ func (c *Channel) GetLanguage() *string {
 	return c.Language
 }
 
-// GetCategories retrieves the categories (if any) of the Channel. The categories are returned as strings.
+// GetCategories retrieves the categories (if any) of the [Channel]. Case insensitive duplicate categories are
+// collapsed. The categories are returned as strings.
 func (c *Channel) GetCategories() []string {
 	categories := make([]string, 0, len(c.Categories))
 	for category := range slices.Values(c.Categories) {
@@ -108,7 +109,10 @@ func (c *Channel) GetCategories() []string {
 	if c.ItunesCategory != nil {
 		categories = append(categories, c.ItunesCategory.GetCategories()...)
 	}
-	return categories
+	slices.Sort(categories)
+	return slices.CompactFunc(categories, func(a, b string) bool {
+		return strings.EqualFold(a, b)
+	})
 }
 
 // GetImage retrieves the image (if any) for the Item. The image is returned as a types.ImageInfo object. The value will be

@@ -174,7 +174,8 @@ func (i *Item) GetLanguage() *string {
 	}
 }
 
-// GetCategories retrieves the categories (if any) of the Item. The categories are returned as strings.
+// GetCategories retrieves the categories (if any) of the [Item]. Case insensitive duplicate categories are collapsed.
+// The categories are returned as strings.
 func (i *Item) GetCategories() []string {
 	categories := make([]string, 0, len(i.Categories))
 	for category := range slices.Values(i.Categories) {
@@ -183,7 +184,9 @@ func (i *Item) GetCategories() []string {
 		}
 	}
 	slices.Sort(categories)
-	return slices.Compact(categories)
+	return slices.CompactFunc(categories, func(a, b string) bool {
+		return strings.EqualFold(a, b)
+	})
 }
 
 // GetImage retrieves the image (if any) for the Item. The image is returned as a types.ImageInfo object. There are many

@@ -124,7 +124,8 @@ func (e *Entry) GetLanguage() *string {
 	}
 }
 
-// GetCategories retrieves the categories (if any) of the Entry. The categories are returned as strings.
+// GetCategories retrieves the categories (if any) of the [Entry]. Case insensitive duplicate categories are collapsed.
+// The categories are returned as strings.
 func (e *Entry) GetCategories() []string {
 	categories := make([]string, 0, len(e.Categories))
 	for category := range slices.Values(e.Categories) {
@@ -133,7 +134,9 @@ func (e *Entry) GetCategories() []string {
 		}
 	}
 	slices.Sort(categories)
-	return slices.Compact(categories)
+	return slices.CompactFunc(categories, func(a, b string) bool {
+		return strings.EqualFold(a, b)
+	})
 }
 
 // GetImage retrieves the image (if any) for the Entry. The image is returned as a types.ImageInfo object.
