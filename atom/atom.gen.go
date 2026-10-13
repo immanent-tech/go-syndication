@@ -14,6 +14,7 @@ import (
 	externalRef4 "github.com/immanent-tech/go-syndication/extensions/media"
 	externalRef5 "github.com/immanent-tech/go-syndication/extensions/slash"
 	externalRef6 "github.com/immanent-tech/go-syndication/extensions/source"
+	externalRef7 "github.com/immanent-tech/go-syndication/extensions/syndication"
 )
 
 // Defines values for ContentType.
@@ -524,8 +525,17 @@ type Feed struct {
 	MediaThumbnails externalRef4.MediaThumbnails `json:"media_thumbnails" xml:"http://search.yahoo.com/mrss/ thumbnail,omitempty"`
 
 	// MediaTitle is the title of the particular media object.
-	MediaTitle    *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
-	SourceAccount []externalRef6.Account   `json:"SourceAccount,omitempty" xml:"https://source.scripting.com/ account,omitempty"`
+	MediaTitle *externalRef4.MediaTitle `json:"media_title" xml:"http://search.yahoo.com/mrss/ title,omitempty"`
+
+	// SYUdatePeriod is the period over which the channel format is updated.
+	SYUdatePeriod *externalRef7.SYUpdatePeriod `json:"update_period,omitempty" validate:"omitempty,oneof=hourly daily weekly monthly yearly" xml:"http://purl.org/rss/1.0/modules/syndication/ updatePeriod,omitempty"`
+
+	// SYUpdateBase is a base date to be used in concert with updatePeriod and updateFrequency to calculate the publishing schedule.
+	SYUpdateBase *externalRef7.SYUpdateBase `json:"update_base,omitempty" xml:"http://purl.org/rss/1.0/modules/syndication/ updateBase,omitempty"`
+
+	// SYUpdateFrequency describes the frequency of updates in relation to the update period.
+	SYUpdateFrequency *externalRef7.SYUpdateFrequency `json:"update_frequency,omitempty" validate:"omitempty,number,gte=1" xml:"http://purl.org/rss/1.0/modules/syndication/ updateFrequency,omitempty"`
+	SourceAccount     []externalRef6.Account          `json:"SourceAccount,omitempty" xml:"https://source.scripting.com/ account,omitempty"`
 
 	// SourceArchive is links to the calendar-structured archive for the feed.  The folder pointed to by this address contains one folder for each year, 2009, 2010, 2011, etc. Each of those folders contains one folder for each month, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12. The month folders must be zero-padded to two places. Folders may be missing, indicating that there is no archived content for the month. Each of the month folders contains folders for the days of the month. Day folder names are also zero-padded to two places and may be missing if there were no updates on the given day. Each day folder contains a file named rss.xml, unless the optional <source:filename> sub-element is supplied, which overrides the default. This makes it possible for a single calendar structure to store the archive of more than one feed.
 	SourceArchive *externalRef6.Archive `json:"source_archive,omitempty" xml:"https://source.scripting.com/ archive,omitempty"`

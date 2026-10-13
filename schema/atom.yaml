@@ -556,6 +556,7 @@ components:
         - $ref: "dc.yaml#/components/schemas/DCElements"
         - $ref: "#/components/schemas/FeedMetadata"
         - $ref: "source.yaml#/components/schemas/ChannelSource"
+        - $ref: "syndication.yaml#/components/schemas/SyndicationElements"
         - type: object
           properties:
             DefaultNamespace:

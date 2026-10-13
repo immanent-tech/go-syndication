@@ -14,6 +14,7 @@ output-options:
     - array
 import-mapping:
   dc.yaml: "github.com/immanent-tech/go-syndication/extensions/dc"
-  rss-ext.yaml: "github.com/immanent-tech/go-syndication/extensions/rss"
+  content.yaml: "github.com/immanent-tech/go-syndication/extensions/content"
+  syndication.yaml: "github.com/immanent-tech/go-syndication/extensions/syndication"
   extensions.yaml: "github.com/immanent-tech/go-syndication/extensions"
   slash.yaml: "github.com/immanent-tech/go-syndication/extensions/slash"

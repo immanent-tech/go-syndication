@@ -1,10 +1,9 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
-package rss
+package content
 
 import (
-	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -70,16 +69,5 @@ func (c *ContentEncoded) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("unmarshal content:encoded: %w", err)
 	}
 	c.Value = s
-	return nil
-}
-
-func (p SYUpdatePeriod) MarshalText() ([]byte, error) {
-	return []byte(p), nil
-}
-
-func (p *SYUpdatePeriod) UnmarshalText(data []byte) error {
-	cleaned := bytes.TrimSpace(data)
-	value := SYUpdatePeriod(string(cleaned))
-	*p = value
 	return nil
 }

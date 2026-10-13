@@ -20,3 +20,4 @@ import-mapping:
   basicgeo.yaml: "github.com/immanent-tech/go-syndication/extensions/basicgeo"
   georss.yaml: "github.com/immanent-tech/go-syndication/extensions/georss"
   slash.yaml: "github.com/immanent-tech/go-syndication/extensions/slash"
+  syndication.yaml: "github.com/immanent-tech/go-syndication/extensions/syndication"

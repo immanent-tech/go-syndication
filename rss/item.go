@@ -15,8 +15,8 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/immanent-tech/go-syndication/extensions/content"
 	"github.com/immanent-tech/go-syndication/extensions/media"
-	"github.com/immanent-tech/go-syndication/extensions/rss"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
@@ -81,9 +81,9 @@ func WithItemImage(img *types.Image) ItemOption {
 }
 
 // WithItemContent option sets the item content.
-func WithItemContent(content string, cdata bool) ItemOption {
+func WithItemContent(itemContent string, cdata bool) ItemOption {
 	return func(i *Item) {
-		i.ContentEncoded = new(rss.NewContentEncoded(content, cdata))
+		i.ContentEncoded = new(content.NewContentEncoded(itemContent, cdata))
 	}
 }
 

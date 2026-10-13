@@ -1,0 +1,34 @@
+---
+openapi: "3.1.0"
+info:
+  version: 1.0.0
+  title: Content Namespace Schema
+  description: >
+    A module for the actual content of websites, in multiple formats.
+
+    https://web.resource.org/rss/1.0/modules/content/
+  contact:
+    name: "Joshua Rich"
+    email: joshua.rich@gmail.com
+  license:
+    identifier: MIT
+components:
+  schemas:
+    ContentEncoded:
+      description: >
+        is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
+      type: object
+      required:
+        - value
+        - cdata
+      properties:
+        value:
+          description: is the actual value.
+          type: string
+        cdata:
+          description: indicates whether the data was CDATA encoded.
+          x-go-name: CDATA
+          type: boolean
+      x-oapi-codegen-extra-tags:
+        json: "content_encoded,omitempty"
+        xml: "http://purl.org/rss/1.0/modules/content/ encoded,omitempty"

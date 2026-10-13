@@ -8,11 +8,12 @@ output: ../rss/rss.gen.go
 generate:
   models: true
 output-options:
-  # to make sure that all types are generated
   skip-prune: true
 import-mapping:
   extensions.yaml: "github.com/immanent-tech/go-syndication/extensions"
-  rss-ext.yaml: "github.com/immanent-tech/go-syndication/extensions/rss"
+  content.yaml: "github.com/immanent-tech/go-syndication/extensions/content"
+  syndication.yaml: "github.com/immanent-tech/go-syndication/extensions/syndication"
+  link.yaml: "github.com/immanent-tech/go-syndication/extensions/link"
   dc.yaml: "github.com/immanent-tech/go-syndication/extensions/dc"
   media-rss.yaml: "github.com/immanent-tech/go-syndication/extensions/media"
   itunes.yaml: "github.com/immanent-tech/go-syndication/extensions/itunes"

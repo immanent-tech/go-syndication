@@ -60,7 +60,7 @@ components:
       type: object
       allOf:
         - $ref: "#/components/schemas/RDFResource"
-        - $ref: "rss-ext.yaml#/components/schemas/SyndicationElements"
+        - $ref: "syndication.yaml#/components/schemas/SyndicationElements"
         - $ref: "dc.yaml#/components/schemas/DCElements"
         - type: object
           required:
@@ -215,6 +215,8 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: "http://purl.org/rss/1.0/ description"
                 validate: omitempty,max=500
+            ContentEncoded:
+              $ref: "content.yaml#/components/schemas/ContentEncoded"
       x-oapi-codegen-extra-tags:
         xml: "http://purl.org/rss/1.0/ item"
     TextInput:

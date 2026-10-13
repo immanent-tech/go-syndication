@@ -12,7 +12,9 @@ package schema
 //go:generate go tool oapi-codegen -config media-rss-cfg.yaml media-rss.yaml
 //go:generate go tool oapi-codegen -config itunes-cfg.yaml itunes.yaml
 //go:generate go tool oapi-codegen -config googleplay-cfg.yaml googleplay.yaml
-//go:generate go tool oapi-codegen -config rss-ext-cfg.yaml rss-ext.yaml
+//go:generate go tool oapi-codegen -config syndication-cfg.yaml syndication.yaml
+//go:generate go tool oapi-codegen -config content-cfg.yaml content.yaml
+//go:generate go tool oapi-codegen -config link-cfg.yaml link.yaml
 //go:generate go tool oapi-codegen -config rss.cfg.yaml rss.yaml
 //go:generate go tool oapi-codegen -config jsonfeed-cfg.yaml jsonfeed.yaml
 //go:generate go tool oapi-codegen -config opml-cfg.yaml opml.yaml

@@ -439,7 +439,7 @@ components:
       description: >
         is the element containing metadata (Channel elements) and items.
       allOf:
-        - $ref: "rss-ext.yaml#/components/schemas/SyndicationElements"
+        - $ref: "syndication.yaml#/components/schemas/SyndicationElements"
         - $ref: "media-rss.yaml#/components/schemas/MediaMetadata"
         - $ref: "itunes.yaml#/components/schemas/ItunesElements"
         - $ref: "googleplay.yaml#/components/schemas/GooglePlayElements"
@@ -639,12 +639,12 @@ components:
             image:
               $ref: "#/components/schemas/Image"
             ContentEncoded:
-              $ref: "rss-ext.yaml#/components/schemas/ContentEncoded"
+              $ref: "content.yaml#/components/schemas/ContentEncoded"
             MediaContent:
               $ref: "media-rss.yaml#/components/schemas/MediaContent"
             MediaGroup:
               $ref: "media-rss.yaml#/components/schemas/MediaGroup"
             PermaLink:
-              $ref: "rss-ext.yaml#/components/schemas/PermaLink"
+              $ref: "link.yaml#/components/schemas/PermaLink"
       x-oapi-codegen-extra-tags:
         xml: "item,omitempty"
