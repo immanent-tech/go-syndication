@@ -24,6 +24,7 @@ var WellKnownNamespaces = map[string]string{
 	"georss":  "http://www.georss.org/georss",
 	"geo":     "http://www.w3.org/2003/01/geo/wgs84_pos#",
 	"wfw":     "http://wellformedweb.org/CommentAPI/",
+	"link":    "http://purl.org/rss/1.0/modules/link/",
 }
 
 var caser = cases.Title(language.English)
