@@ -184,6 +184,7 @@ components:
         - $ref: "#/components/schemas/RDFResource"
         - $ref: "dc.yaml#/components/schemas/DCElements"
         - $ref: "slash.yaml#/components/schemas/Elements"
+        - $ref: "wfw.yaml#/components/schemas/CommentElements"
         - type: object
           required:
             - XMLName

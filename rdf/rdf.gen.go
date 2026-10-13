@@ -11,6 +11,7 @@ import (
 	externalRef2 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef3 "github.com/immanent-tech/go-syndication/extensions/slash"
 	externalRef4 "github.com/immanent-tech/go-syndication/extensions/syndication"
+	externalRef5 "github.com/immanent-tech/go-syndication/extensions/wfw"
 )
 
 // Channel contains metadata describing the channel itself, including a title, brief description, and URL link to the described resource (the channel provider's home page, for instance). The {resource} URL of the channel element's rdf:about attribute must be unique with respect to any other rdf:about attributes in the RSS document and is a URI which identifies the channel. Most commonly, this is either the URL of the homepage being described or a URL where the RSS file can be found.
@@ -123,6 +124,15 @@ type Image struct {
 // Item while commonly a news headline, with RSS 1.0's modular extensibility, this can be just about anything: discussion posting, job listing, software patch -- any object with a URI. There may be a minimum of one item per RSS document. While RSS 1.0 does not enforce an upper limit, for backward compatibility with RSS 0.9 and 0.91, a maximum of fifteen items is recommended.
 // {item_uri} must be unique with respect to any other rdf:about attributes in the RSS document and is a URI which identifies the item. {item_uri} should be identical to the value of the <link> sub-element of the <item> element, if possible.
 type Item struct {
+	// Comment identifies a URL endpoint that can receive a comment to the item as a HTTP POST request and save the comment.
+	Comment *externalRef5.Comment `json:"comment,omitempty" xml:"http://wellformedweb.org/CommentAPI/ comment,omitempty"`
+
+	// CommentRSS identifies the URL of an RSS feed that contains user comments submitted in response to that item.
+	CommentRSS *externalRef5.CommentRSS `json:"comment_rss,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRss,omitempty"`
+
+	// CommentRSSLegacy is the documented historical misspelling. Deliberately named and commented to discourage populating it when PRODUCING a feed: only CommentRSS is ever marshaled, so setting this field on an outbound Item has no effect. Use EffectiveCommentRSS() to read whichever spelling a decoded feed actually used.
+	CommentRSSLegacy *externalRef5.CommentRSSLegacy `json:"comment_rss_legacy,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRSS,omitempty"`
+
 	// ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
 	ContentEncoded *externalRef1.ContentEncoded `json:"content_encoded,omitempty" xml:"http://purl.org/rss/1.0/modules/content/ encoded,omitempty"`
 	XMLName        xml.Name                     `json:"XMLName" xml:"http://purl.org/rss/1.0/ item"`
