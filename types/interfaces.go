@@ -59,6 +59,10 @@ type HasGeo interface {
 	GetGeoInfo() *GeoInfo
 }
 
+type hasComments interface {
+	GetCommentRSS() string
+}
+
 // SourceURL contains methods for retrieving or setting the source of the Object.
 type SourceURL interface {
 	GetSourceURL() string
@@ -84,6 +88,7 @@ type ItemSource interface {
 	HasID
 	HasContent
 	HasGeo
+	hasComments
 }
 
 // FeedSource is an abstraction representing any type of Feed.

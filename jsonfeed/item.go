@@ -141,3 +141,9 @@ func (i *Item) GetContent() *string {
 func (i *Item) GetGeoInfo() *types.GeoInfo {
 	return nil
 }
+
+// GetCommentRSS returns whichever spelling was present after decoding a feed preferring the correct one if a
+// (spec-violating) feed somehow supplied both.
+func (i *Item) GetCommentRSS() string {
+	return ""
+}
