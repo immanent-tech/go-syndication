@@ -15,6 +15,7 @@ import (
 	externalRef5 "github.com/immanent-tech/go-syndication/extensions/slash"
 	externalRef6 "github.com/immanent-tech/go-syndication/extensions/source"
 	externalRef7 "github.com/immanent-tech/go-syndication/extensions/syndication"
+	externalRef8 "github.com/immanent-tech/go-syndication/extensions/wfw"
 )
 
 // Defines values for ContentType.
@@ -198,6 +199,15 @@ type DateConstruct struct {
 type Entry struct {
 	// Base establishes the base URI (or IRI) for resolving any relative references found within the effective scope of the xml:base attribute.
 	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
+
+	// Comment identifies a URL endpoint that can receive a comment to the item as a HTTP POST request and save the comment.
+	Comment *externalRef8.Comment `json:"comment,omitempty" xml:"http://wellformedweb.org/CommentAPI/ comment,omitempty"`
+
+	// CommentRSS identifies the URL of an RSS feed that contains user comments submitted in response to that item.
+	CommentRSS *externalRef8.CommentRSS `json:"comment_rss,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRss,omitempty"`
+
+	// CommentRSSLegacy is the documented historical misspelling. Deliberately named and commented to discourage populating it when PRODUCING a feed: only CommentRSS is ever marshaled, so setting this field on an outbound Item has no effect. Use EffectiveCommentRSS() to read whichever spelling a decoded feed actually used.
+	CommentRSSLegacy *externalRef8.CommentRSSLegacy `json:"comment_rss_legacy,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRSS,omitempty"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
 	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`
@@ -847,8 +857,17 @@ type Source = FeedMetadata
 // StandaloneEntry is a document whose root element is atom:entry rather than atom:feed. Kept as a distinct wrapper rather than giving Entry itself a namespace-declaring MarshalXML, so the common case (Entry nested inside Feed.Entries) stays simple and un-verbose.
 type StandaloneEntry struct {
 	// Base establishes the base URI (or IRI) for resolving any relative references found within the effective scope of the xml:base attribute.
-	Base             *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
-	DefaultNamespace *string `json:"DefaultNamespace,omitempty" xml:"-"`
+	Base *string `json:"base,omitempty" validate:"omitempty" xml:"xml:base,attr,omitempty"`
+
+	// Comment identifies a URL endpoint that can receive a comment to the item as a HTTP POST request and save the comment.
+	Comment *externalRef8.Comment `json:"comment,omitempty" xml:"http://wellformedweb.org/CommentAPI/ comment,omitempty"`
+
+	// CommentRSS identifies the URL of an RSS feed that contains user comments submitted in response to that item.
+	CommentRSS *externalRef8.CommentRSS `json:"comment_rss,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRss,omitempty"`
+
+	// CommentRSSLegacy is the documented historical misspelling. Deliberately named and commented to discourage populating it when PRODUCING a feed: only CommentRSS is ever marshaled, so setting this field on an outbound Item has no effect. Use EffectiveCommentRSS() to read whichever spelling a decoded feed actually used.
+	CommentRSSLegacy *externalRef8.CommentRSSLegacy `json:"comment_rss_legacy,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRSS,omitempty"`
+	DefaultNamespace *string                        `json:"DefaultNamespace,omitempty" xml:"-"`
 
 	// Extensions records any elements that are unknown extensions to the schema.
 	Extensions []externalRef0.Extension `json:"extensions,omitempty" xml:",any"`

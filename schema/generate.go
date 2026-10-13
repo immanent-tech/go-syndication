@@ -15,6 +15,7 @@ package schema
 //go:generate go tool oapi-codegen -config syndication-cfg.yaml syndication.yaml
 //go:generate go tool oapi-codegen -config content-cfg.yaml content.yaml
 //go:generate go tool oapi-codegen -config link-cfg.yaml link.yaml
+//go:generate go tool oapi-codegen -config wfw-cfg.yaml wfw.yaml
 //go:generate go tool oapi-codegen -config rss.cfg.yaml rss.yaml
 //go:generate go tool oapi-codegen -config jsonfeed-cfg.yaml jsonfeed.yaml
 //go:generate go tool oapi-codegen -config opml-cfg.yaml opml.yaml

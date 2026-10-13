@@ -259,6 +259,19 @@ func (e *Entry) GetGeoInfo() *types.GeoInfo {
 	return nil
 }
 
+// GetCommentRSS returns whichever spelling was present after decoding a feed preferring the correct one if a
+// (spec-violating) feed somehow supplied both.
+func (e *Entry) GetCommentRSS() string {
+	switch {
+	case e.CommentRSS != nil:
+		return *e.CommentRSS
+	case e.CommentRSSLegacy != nil:
+		return *e.CommentRSSLegacy
+	default:
+		return ""
+	}
+}
+
 func (s StandaloneEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name = xml.Name{Local: "entry"}
 	defaultNS := s.DefaultNamespace

@@ -14,6 +14,7 @@ import-mapping:
   content.yaml: "github.com/immanent-tech/go-syndication/extensions/content"
   syndication.yaml: "github.com/immanent-tech/go-syndication/extensions/syndication"
   link.yaml: "github.com/immanent-tech/go-syndication/extensions/link"
+  wfw.yaml: "github.com/immanent-tech/go-syndication/extensions/wfw"
   dc.yaml: "github.com/immanent-tech/go-syndication/extensions/dc"
   media-rss.yaml: "github.com/immanent-tech/go-syndication/extensions/media"
   itunes.yaml: "github.com/immanent-tech/go-syndication/extensions/itunes"

@@ -20,6 +20,7 @@ import (
 	externalRef10 "github.com/immanent-tech/go-syndication/extensions/slash"
 	externalRef11 "github.com/immanent-tech/go-syndication/extensions/source"
 	externalRef12 "github.com/immanent-tech/go-syndication/extensions/syndication"
+	externalRef13 "github.com/immanent-tech/go-syndication/extensions/wfw"
 )
 
 // Defines values for CloudProtocol.
@@ -428,6 +429,15 @@ type Image struct {
 
 // Item An item may represent a "story" -- much like a story in a newspaper or magazine; if so its description is a synopsis of the story, and the link points to the full story. An item may also be complete in itself, if so, the description contains the text (entity-encoded HTML is allowed; see examples), and the link and title may be omitted. All elements of an item are optional, however at least one of title or description must be present.
 type Item struct {
+	// Comment identifies a URL endpoint that can receive a comment to the item as a HTTP POST request and save the comment.
+	Comment *externalRef13.Comment `json:"comment,omitempty" xml:"http://wellformedweb.org/CommentAPI/ comment,omitempty"`
+
+	// CommentRSS identifies the URL of an RSS feed that contains user comments submitted in response to that item.
+	CommentRSS *externalRef13.CommentRSS `json:"comment_rss,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRss,omitempty"`
+
+	// CommentRSSLegacy is the documented historical misspelling. Deliberately named and commented to discourage populating it when PRODUCING a feed: only CommentRSS is ever marshaled, so setting this field on an outbound Item has no effect. Use EffectiveCommentRSS() to read whichever spelling a decoded feed actually used.
+	CommentRSSLegacy *externalRef13.CommentRSSLegacy `json:"comment_rss_legacy,omitempty" xml:"http://wellformedweb.org/CommentAPI/ commentRSS,omitempty"`
+
 	// ContentEncoded is an element whose contents are the entity-encoded or CDATA-escaped version of the content of the item.
 	ContentEncoded *externalRef3.ContentEncoded `json:"content_encoded,omitempty" xml:"http://purl.org/rss/1.0/modules/content/ encoded,omitempty"`
 
