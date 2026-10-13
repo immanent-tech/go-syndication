@@ -648,6 +648,13 @@ type Item struct {
 	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
 	SlashComments *externalRef9.Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
 
+	// SlashDepartment defines a department to which this item belongs.
+	SlashDepartment *externalRef9.Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
+	SlashHitParade  *externalRef9.HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+
+	// SlashSection defines a section to which this item belongs.
+	SlashSection *externalRef9.Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
+
 	// Source The RSS channel that the item came from.
 	Source *Source `json:"source,omitempty" xml:"source,omitempty"`
 

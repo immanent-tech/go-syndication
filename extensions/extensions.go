@@ -5,6 +5,9 @@ package extensions
 
 import (
 	"encoding/xml"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // WellKnownNamespaces is a convenience registry of namespace URIs commonly seen in RSS feeds. It's just a lookup table
@@ -22,6 +25,8 @@ var WellKnownNamespaces = map[string]string{
 	"geo":     "http://www.w3.org/2003/01/geo/wgs84_pos#",
 	"wfw":     "http://wellformedweb.org/CommentAPI/",
 }
+
+var caser = cases.Title(language.English)
 
 // NewNamespace builds a Namespace. NewNamespace("content") looks up the canonical URI from the well-known registry
 // above. NewNamespace("foo", "http://example.com/foo") declares an arbitrary namespace not in the registry.
@@ -46,13 +51,13 @@ func (r *NamespaceRewriter) Token() (xml.Token, error) {
 	}
 	switch t := tok.(type) {
 	case xml.StartElement:
-		if t.Name.Space == WellKnownNamespaces["slash"] && t.Name.Local == "comments" {
-			t.Name = xml.Name{Local: "slashComments"}
+		if t.Name.Space == WellKnownNamespaces["slash"] {
+			t.Name = xml.Name{Local: "slash" + caser.String(t.Name.Local)}
 			return t, nil
 		}
 	case xml.EndElement:
-		if t.Name.Space == WellKnownNamespaces["slash"] && t.Name.Local == "comments" {
-			t.Name = xml.Name{Local: "slashComments"}
+		if t.Name.Space == WellKnownNamespaces["slash"] {
+			t.Name = xml.Name{Local: "slash" + caser.String(t.Name.Local)}
 			return t, nil
 		}
 	}

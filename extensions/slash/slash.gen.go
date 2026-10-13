@@ -6,8 +6,24 @@ package slash
 // Comments contains a non-negative integer that counts the number of comments that an item has received.
 type Comments = int
 
+// Department defines a department to which this item belongs.
+type Department = string
+
 // Elements contains all the slash namespace elements as an embeddable object.
 type Elements struct {
 	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
 	SlashComments *Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
+
+	// SlashDepartment defines a department to which this item belongs.
+	SlashDepartment *Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
+	SlashHitParade  *HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+
+	// SlashSection defines a section to which this item belongs.
+	SlashSection *Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
 }
+
+// HitParade defines model for HitParade.
+type HitParade = string
+
+// Section defines a section to which this item belongs.
+type Section = string
