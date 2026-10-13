@@ -9,6 +9,7 @@ import (
 	externalRef0 "github.com/immanent-tech/go-syndication/extensions"
 	externalRef1 "github.com/immanent-tech/go-syndication/extensions/dc"
 	externalRef2 "github.com/immanent-tech/go-syndication/extensions/rss"
+	externalRef3 "github.com/immanent-tech/go-syndication/extensions/slash"
 )
 
 // Channel contains metadata describing the channel itself, including a title, brief description, and URL link to the described resource (the channel provider's home page, for instance). The {resource} URL of the channel element's rdf:about attribute must be unique with respect to any other rdf:about attributes in the RSS document and is a URI which identifies the channel. Most commonly, this is either the URL of the homepage being described or a URL where the RSS file can be found.
@@ -187,6 +188,16 @@ type Item struct {
 
 	// Link is the item's URL.
 	Link string `json:"link" validate:"required,max=500,url" xml:"http://purl.org/rss/1.0/ link"`
+
+	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
+	SlashComments *externalRef3.Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
+
+	// SlashDepartment defines a department to which this item belongs.
+	SlashDepartment *externalRef3.Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
+	SlashHitParade  *externalRef3.HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+
+	// SlashSection defines a section to which this item belongs.
+	SlashSection *externalRef3.Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
 
 	// Title is the item's title.
 	Title string `json:"title" validate:"required,max=100" xml:"http://purl.org/rss/1.0/ title"`
