@@ -121,8 +121,8 @@ func (f *Feed) SetImage(image *types.Image) {
 func (f *Feed) GetPublishedDate() *time.Time {
 	published := time.Unix(0, 0)
 	for item := range slices.Values(f.Items) {
-		if item.GetPublishedDate().After(published) {
-			published = *item.GetPublishedDate()
+		if pub := item.GetPublishedDate(); pub != nil && pub.After(published) {
+			published = *pub
 		}
 	}
 	if !published.IsZero() {
@@ -136,8 +136,8 @@ func (f *Feed) GetPublishedDate() *time.Time {
 func (f *Feed) GetUpdatedDate() *time.Time {
 	modified := time.Unix(0, 0)
 	for item := range slices.Values(f.Items) {
-		if item.GetUpdatedDate().After(modified) {
-			modified = *item.GetUpdatedDate()
+		if upd := item.GetUpdatedDate(); upd != nil && upd.After(modified) {
+			modified = *upd
 		}
 	}
 	if !modified.IsZero() {
