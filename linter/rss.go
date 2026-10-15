@@ -256,6 +256,42 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 		{
 			Check: func(c rss.Channel) Result {
 				metadata := metadata{
+					ID:          "channel-should-have-categories",
+					Description: "Channel should define categories to help consumers organise their subscriptions",
+				}
+				if len(c.GetCategories()) == 0 {
+					return fail(metadata, "channel has no categories")
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(c rss.Channel) Result {
+				metadata := metadata{
+					ID:          "channel-should-provide-copyright",
+					Description: "Channel should supply copyright information so consumers understand sharing and distribution rights of the published content",
+				}
+				if c.Copyright == nil {
+					return fail(metadata, "channel has no copyright")
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(c rss.Channel) Result {
+				metadata := metadata{
+					ID:          "update-period",
+					Description: "Channel should supply an update period for consumers to poll for updates. Without one, consumers may excessively poll the channel for updates.",
+				}
+				if c.SYUdatePeriod == nil {
+					return fail(metadata, "channel has no <sy:updatePeriod> set")
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(c rss.Channel) Result {
+				metadata := metadata{
 					ID:          "items-should-have-images",
 					Description: "Items should supply an image consumers can use to represent the item",
 				}
@@ -311,30 +347,6 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 							return fail(metadata, "item %d link %q is not absolute", i, link)
 						}
 					}
-				}
-				return pass(metadata)
-			},
-		},
-		{
-			Check: func(c rss.Channel) Result {
-				metadata := metadata{
-					ID:          "channel-should-provide-copyright",
-					Description: "Channel should supply copyright information so consumers understand sharing and distribution rights of the published content",
-				}
-				if c.Copyright == nil {
-					return fail(metadata, "channel has no copyright")
-				}
-				return pass(metadata)
-			},
-		},
-		{
-			Check: func(c rss.Channel) Result {
-				metadata := metadata{
-					ID:          "update-period",
-					Description: "Feed should supply an update period for consumers to poll for updates. Without one, consumers may excessively poll the feed for updates.",
-				}
-				if c.SYUdatePeriod == nil {
-					return fail(metadata, "channel has no <sy:updatePeriod> set")
 				}
 				return pass(metadata)
 			},

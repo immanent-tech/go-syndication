@@ -44,6 +44,30 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 		{
 			Check: func(f atom.Feed) Result {
 				metadata := metadata{
+					ID:          "feed-should-have-categories",
+					Description: "Feed should define categories to help consumers organise their subscriptions",
+				}
+				if len(f.GetCategories()) == 0 {
+					return fail(metadata, "feed has no categories")
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(f atom.Feed) Result {
+				metadata := metadata{
+					ID:          "update-period",
+					Description: "Feed should supply an update period for consumers to poll for updates. Without one, consumers may excessively poll the feed for updates.",
+				}
+				if f.SYUdatePeriod == nil {
+					return fail(metadata, "feed has no <sy:updatePeriod> set")
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(f atom.Feed) Result {
+				metadata := metadata{
 					ID:          "entries-should-have-images",
 					Description: "Entries should supply an <media:thumbnail> element that consumers can use to represent the entry",
 				}
