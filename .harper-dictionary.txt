@@ -1,3 +1,4 @@
 Unmarshal
 OpenAPI
 submodule
+go-syndication

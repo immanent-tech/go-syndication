@@ -19,10 +19,8 @@
 <br />
 
 [![Project license](https://img.shields.io/github/license/immanent-tech/go-syndication.svg?style=flat-square)](LICENSE)
-
-[![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/immanent-tech/go-syndication/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
-[![code with love by joshuar](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-joshuar-ff1414.svg?style=flat-square)](https://github.com/joshuar)
-
+![Go Version](https://img.shields.io/github/go-mod/go-version/immanent-tech/go-syndication?style=flat-square)
+[![Go Reference](https://pkg.go.dev/badge/github.com/immanent-tech/go-syndication.svg?style=flat-square)](https://pkg.go.dev/github.com/immanent-tech/go-syndication)
 [![tests](https://img.shields.io/github/actions/workflow/status/immanent-tech/go-syndication/test.yml?label=tests&style=flat-square)](https://github.com/immanent-tech/go-syndication/actions/workflows/test.yml)
 
 </div>
@@ -210,7 +208,7 @@ namespaces). It's therefore recommended to always use the Encode/Decode methods 
 ### Setup
 
 1. Clone the go-syndication repo.
-2. Run `./setup-feedvalidator-submodule.sh` to correctly clone and filter the feedvalidator submobule to `testcases`
+2. Run `./setup-feedvalidator-submodule.sh` to correctly clone and filter the feedvalidator submodule to `testcases`
    directory only.
 
 ## Roadmap
