@@ -30,30 +30,34 @@ var (
 )
 
 // AsImage returns the <media:thumbnail> object as a types.ImageInfo object.
-func (t *MediaThumbnail) AsImage() *types.Image {
+func (t MediaThumbnail) AsImage() *types.Image {
 	return &types.Image{
 		URL: t.URL,
 	}
 }
 
+func (c MediaCategory) String() string {
+	if c.Label != nil {
+		return sanitization.SanitizeString(*c.Label)
+	}
+	return sanitization.SanitizeString(c.Value)
+}
+
 // GetCategory retrieves the category assigned to the media:content element (if any).
-func (c *MediaContent) GetCategory() string {
+func (c MediaContent) GetCategory() string {
 	if c.MediaCategory != nil {
-		if c.MediaCategory.Label != nil {
-			return *c.MediaCategory.Label
-		}
-		return sanitization.SanitizeString(c.MediaCategory.Value)
+		return c.MediaCategory.String()
 	}
 	return ""
 }
 
 // GetText retrieves the text of media:content element (if any).
-func (t *MediaText) GetText() string {
+func (t MediaText) GetText() string {
 	return sanitization.SanitizeString(t.Value)
 }
 
 // AsImage will return a types.ImageInfo if the <media:content> element represents an image. If not, it will return nil.
-func (c *MediaContent) AsImage() *types.Image {
+func (c MediaContent) AsImage() *types.Image {
 	// Check if medium attr indicates an image.
 	if c.Medium != nil && *c.Medium == MediaContentMediumImage {
 		return &types.Image{
@@ -87,7 +91,7 @@ func mediaContentCustomValidation(sl validator.StructLevel) {
 	}
 }
 
-func (g *MediaGroup) GetDescription() string {
+func (g MediaGroup) GetDescription() string {
 	if g.MediaDescription != nil {
 		return sanitization.SanitizeString(g.MediaDescription.Value)
 	}

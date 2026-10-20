@@ -56,11 +56,11 @@ func (c Category) String() string {
 	if len(c.Extensions) > 0 {
 		content := make([]string, 0, len(c.Extensions))
 		for value := range slices.Values(c.Extensions) {
-			if value.Content != "" {
-				content = append(content, value.Content)
+			if value.String() != "" {
+				content = append(content, value.String())
 			}
 		}
-		return sanitization.SanitizeString(strings.Join(content, " "))
+		return strings.Join(content, " ")
 	}
 	return ""
 }
@@ -84,7 +84,11 @@ func (g Generator) String() string {
 }
 
 func (i Icon) String() string {
-	return sanitization.SanitizeString(i.Value)
+	safe, err := sanitization.SanitizeURLString(i.Value)
+	if err != nil {
+		return ""
+	}
+	return safe
 }
 
 func (i ID) String() string {
@@ -92,18 +96,29 @@ func (i ID) String() string {
 }
 
 func (l Logo) String() string {
-	return sanitization.SanitizeString(l.Value)
+	safe, err := sanitization.SanitizeURLString(l.Value)
+	if err != nil {
+		return ""
+	}
+	return safe
 }
 
 func (l Link) String() string {
+	var rawStr string
 	switch {
 	case l.Href != "":
-		return sanitization.SanitizeString(l.Href)
+		rawStr = l.Href
 	case l.UndefinedContent != nil && *l.UndefinedContent != "":
-		return sanitization.SanitizeString(*l.UndefinedContent)
+		rawStr = *l.UndefinedContent
 	default:
 		return ""
 	}
+
+	safe, err := sanitization.SanitizeURLString(rawStr)
+	if err != nil {
+		return ""
+	}
+	return safe
 }
 
 func linkCustomValidation(sl validator.StructLevel) {
@@ -162,9 +177,9 @@ func personConstructCustomValidation(sl validator.StructLevel) {
 func (t TextConstruct) String() string {
 	switch {
 	case t.Type == nil || (*t.Type != TextConstructTypeXhtml && !contentIsXMLMediaType(ContentType(*t.Type))):
-		return strings.TrimSpace(t.Value)
+		return sanitization.SanitizeString(t.Value)
 	case t.XHTML != nil:
-		return *t.XHTML
+		return sanitization.SanitizeString(*t.XHTML)
 	default:
 		return ""
 	}
@@ -634,16 +649,16 @@ func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 func (c Content) String() string {
 	switch {
 	case c.Type == nil && c.Text != nil:
-		return *c.Text
+		return sanitization.SanitizeString(*c.Text)
 	case *c.Type == ContentTypeText || *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "text/"):
 		if c.Text != nil {
-			return *c.Text
+			return sanitization.SanitizeString(*c.Text)
 		}
 		return ""
 	case *c.Type == ContentTypeXhtml && c.XHTML != nil:
-		return *c.XHTML
+		return sanitization.SanitizeString(*c.XHTML)
 	case contentIsXMLMediaType(*c.Type):
-		return *c.XML
+		return sanitization.SanitizeString(*c.XML)
 	case c.Base64 != nil:
 		return string(c.Base64)
 	default:

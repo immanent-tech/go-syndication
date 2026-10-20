@@ -86,8 +86,8 @@ var atomOtherTests = map[string]atomTestSuite{
 			assert.Len(t, item.GetAuthors(), 1)
 			assert.Equal(t, "Mark Pilgrim (f8dy@example.com) http://example.org/", item.GetAuthors()[0])
 			assert.Len(t, item.GetContributors(), 2)
-			assert.Equal(t, "Sam Ruby", item.GetContributors()[0])
-			assert.Equal(t, "Joe Gregorio", item.GetContributors()[1])
+			assert.Contains(t, item.GetContributors(), "Sam Ruby")
+			assert.Contains(t, item.GetContributors(), "Joe Gregorio")
 			assert.Equal(t, "<p><i>[Update: The Atom draft is finished.]</i></p>", *item.GetContent())
 			assert.Equal(t, atom.ContentTypeXhtml, *item.Content.Type)
 			assert.Equal(t, "en", *item.Content.Lang)
@@ -276,7 +276,7 @@ var atomMustTests = map[string]atomTestSuite{
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
 			assert.NotNil(t, feed.Entries[0].Content)
-			assert.Equal(t, "\n  <br>\n", feed.Entries[0].Content.String())
+			assert.Equal(t, "<br>", feed.Entries[0].Content.String())
 		},
 	},
 	"entry_content_is_inline.xml": {
@@ -285,7 +285,7 @@ var atomMustTests = map[string]atomTestSuite{
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
 			assert.NotNil(t, feed.Entries[0].Content)
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Entries[0].Content.String())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].Content.String())
 		},
 	},
 	"entry_content_is_inline_2.xml": {
@@ -294,7 +294,7 @@ var atomMustTests = map[string]atomTestSuite{
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
 			assert.NotNil(t, feed.Entries[0].Content)
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Entries[0].Content.String())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].Content.String())
 		},
 	},
 	"entry_content_type_blank.xml": {
@@ -1379,7 +1379,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Entries[0].Summary.String())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].Summary.String())
 		},
 	},
 	"entry_summary_is_inline_2.xml": {
@@ -1387,7 +1387,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Entries[0].Summary.String())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].Summary.String())
 		},
 	},
 	"entry_summary_no_html.xml": {
@@ -1420,7 +1420,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "<a", feed.Entries[0].Summary.String())
+			assert.Equal(t, "", feed.Entries[0].Summary.String())
 		},
 	},
 	"entry_summary_not_inline_cdata.xml": {
@@ -1563,7 +1563,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Entries[0].GetTitle())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].GetTitle())
 		},
 	},
 	"entry_title_is_inline_2.xml": {
@@ -1571,7 +1571,7 @@ var atomMustTests = map[string]atomTestSuite{
 			t.Helper()
 			entries := feed.GetItems()
 			assert.Len(t, entries, 1)
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Entries[0].GetTitle())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Entries[0].GetTitle())
 		},
 	},
 	"entry_title_missing.xml": {
@@ -2583,13 +2583,13 @@ var atomMustTests = map[string]atomTestSuite{
 	"feed_tagline_is_inline.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Subtitle.String())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Subtitle.String())
 		},
 	},
 	"feed_tagline_is_inline_2.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.Subtitle.String())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.Subtitle.String())
 		},
 	},
 	"feed_title_contains_html.xml": {
@@ -2619,13 +2619,13 @@ var atomMustTests = map[string]atomTestSuite{
 	"feed_title_is_inline.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.GetTitle())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.GetTitle())
 		},
 	},
 	"feed_title_is_inline_2.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
 			t.Helper()
-			assert.Equal(t, "<code>&lt;p&gt;foo&lt;/p&gt;</code>", feed.GetTitle())
+			assert.Equal(t, "<code><p>foo</p></code>", feed.GetTitle())
 		},
 	},
 	"feed_title_missing.xml": {

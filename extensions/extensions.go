@@ -6,6 +6,7 @@ package extensions
 import (
 	"encoding/xml"
 
+	"github.com/immanent-tech/go-syndication/sanitization"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -63,4 +64,8 @@ func (r *NamespaceRewriter) Token() (xml.Token, error) {
 		}
 	}
 	return xml.CopyToken(tok), nil
+}
+
+func (e Extension) String() string {
+	return sanitization.SanitizeString(e.Content)
 }

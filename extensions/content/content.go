@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+
+	"github.com/immanent-tech/go-syndication/sanitization"
 )
 
 func NewContentEncoded(value string, cdata bool) ContentEncoded {
@@ -17,7 +19,7 @@ func NewContentEncoded(value string, cdata bool) ContentEncoded {
 }
 
 func (c ContentEncoded) String() string {
-	return c.Value
+	return sanitization.SanitizeString(c.Value)
 }
 
 // MarshalXML implements xml.Marshaler.

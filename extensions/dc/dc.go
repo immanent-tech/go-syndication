@@ -7,7 +7,10 @@ import (
 	"encoding/xml"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
+
+	"github.com/immanent-tech/go-syndication/sanitization"
 )
 
 // w3cdtfLayouts maps each precision to its Go time layout, in the order
@@ -90,4 +93,16 @@ func (d *DCDate) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 		return nil
 	}
 	return fmt.Errorf("<%s>: %q does not match any legal W3CDTF form", start.Name.Local, value.Value)
+}
+
+func (d Description) String() string {
+	return sanitization.SanitizeString(strings.Join(d, " "))
+}
+
+func (r Rights) String() string {
+	return sanitization.SanitizeString(strings.Join(r, " "))
+}
+
+func (l Language) String() string {
+	return sanitization.SanitizeString(strings.Join(l, " "))
 }

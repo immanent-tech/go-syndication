@@ -21,37 +21,37 @@ var _ types.ItemSource = (*Entry)(nil)
 
 // GetID returns an "id" for the Entry. This will be the value of the <id> element, if present, or an empty string if
 // not present.
-func (e *Entry) GetID() string {
+func (e Entry) GetID() string {
 	return e.ID.String()
 }
 
 // GetTitle retrieves the <title> of the Entry.
-func (e *Entry) GetTitle() string {
+func (e Entry) GetTitle() string {
 	return e.Title.String()
 }
 
 // GetLink retrieves the <link> associated with the Entry on the source webpage. This should usually be the link element
 // with rel="self". If that is not found, an empty string is returned. Additional links may be present and can be
 // retrieved directly from the Links field as needed.
-func (e *Entry) GetLink() string {
+func (e Entry) GetLink() string {
 	for link := range slices.Values(e.Links) {
 		if link.Rel == nil {
-			return link.Href
+			return link.String()
 		}
 		if link.Rel != nil && *link.Rel == LinkRelAlternate {
-			return link.Href
+			return link.String()
 		}
 	}
 	return ""
 }
 
 // GetDescription retrieves the <summary> (if any) of the Entry.
-func (e *Entry) GetDescription() string {
+func (e Entry) GetDescription() string {
 	switch {
 	case e.Summary != nil && e.Summary.String() != "":
 		return e.Summary.String()
-	case len(e.DcDescription) > 0:
-		return strings.Join(e.DcDescription, " ")
+	case e.DcDescription.String() != "":
+		return e.DcDescription.String()
 	case e.MediaGroup != nil:
 		return e.MediaGroup.GetDescription()
 	default:
@@ -61,7 +61,7 @@ func (e *Entry) GetDescription() string {
 
 // GetAuthors retrieves the authors (if any) of the Entry. This will be the list of values from any <author>,
 // <source>-><author> and <dc:creator> elements.
-func (e *Entry) GetAuthors() []string {
+func (e Entry) GetAuthors() []string {
 	var authors []string
 	if len(e.Authors) > 0 {
 		for author := range slices.Values(e.Authors) {
@@ -73,15 +73,19 @@ func (e *Entry) GetAuthors() []string {
 			authors = append(authors, author.String())
 		}
 	}
+	if len(e.DcPublisher) > 0 {
+		authors = append(authors, e.DcPublisher...)
+	}
 	if len(e.DcCreator) > 0 {
 		authors = append(authors, e.DcCreator...)
 	}
-	return authors
+	slices.Sort(authors)
+	return slices.Compact(authors)
 }
 
 // GetContributors retrieves the contributors (if any) of the Entry. This will be the list of values from any
 // <contributor>, <source>-><contributor> and <dc:contributor> elements.
-func (e *Entry) GetContributors() []string {
+func (e Entry) GetContributors() []string {
 	var contributors []string
 	if len(e.Contributors) > 0 {
 		for contributor := range slices.Values(e.Contributors) {
@@ -96,29 +100,31 @@ func (e *Entry) GetContributors() []string {
 	if len(e.DcContributor) > 0 {
 		contributors = append(contributors, e.DcContributor...)
 	}
-	return contributors
+	slices.Sort(contributors)
+	return slices.Compact(contributors)
 }
 
 // GetRights retrieves the rights (copyright) of the Entry. This will be the first value found from either <dc:rights>
 // or <rights> elements.
-func (e *Entry) GetRights() *string {
+func (e Entry) GetRights() *string {
 	if e.Rights != nil {
 		return new(e.Rights.String())
 	}
-	if len(e.DcRights) > 0 {
-		return &e.DcRights[0]
+	if rights := e.DcRights.String(); rights != "" {
+		return &rights
 	}
 	return nil
 }
 
 // GetLanguage retrieves the language of the Entry. This will be the first value found from either <dc:language>
 // or <lang> elements.
-func (e *Entry) GetLanguage() *string {
+func (e Entry) GetLanguage() *string {
 	switch {
 	case e.Lang != nil:
 		return e.Lang
-	case len(e.DcLanguage) > 0:
-		return new(strings.Join(e.DcLanguage, " "))
+	case e.DcLanguage.String() != "":
+		lang := e.DcLanguage.String()
+		return &lang
 	default:
 		return nil
 	}
@@ -126,7 +132,7 @@ func (e *Entry) GetLanguage() *string {
 
 // GetCategories retrieves the categories (if any) of the [Entry]. Case insensitive duplicate categories are collapsed.
 // The categories are returned as strings.
-func (e *Entry) GetCategories() []string {
+func (e Entry) GetCategories() []string {
 	categories := make([]string, 0, len(e.Categories))
 	for category := range slices.Values(e.Categories) {
 		if str := strings.TrimSpace(category.String()); str != "" {
@@ -140,7 +146,7 @@ func (e *Entry) GetCategories() []string {
 }
 
 // GetImage retrieves the image (if any) for the Entry. The image is returned as a types.ImageInfo object.
-func (e *Entry) GetImage() *types.Image {
+func (e Entry) GetImage() *types.Image {
 	// Use the first <media:thumbnail>
 	img := &types.Image{}
 	if len(e.MediaThumbnails) > 0 {
@@ -165,13 +171,13 @@ func (e *Entry) GetImage() *types.Image {
 }
 
 // GetMediaGroup returns any media.MediaGroup object for the entry.
-func (e *Entry) GetMediaGroup() *media.MediaGroup {
+func (e Entry) GetMediaGroup() *media.MediaGroup {
 	return e.MediaGroup
 }
 
 // GetPublishedDate returns the <published> of the Entry (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (e *Entry) GetPublishedDate() *time.Time {
+func (e Entry) GetPublishedDate() *time.Time {
 	if e.Published != nil && !e.Published.Value.IsZero() {
 		return new(e.Published.Value)
 	}
@@ -179,7 +185,7 @@ func (e *Entry) GetPublishedDate() *time.Time {
 }
 
 // GetUpdatedDate returns the <updated> of the Entry.
-func (e *Entry) GetUpdatedDate() *time.Time {
+func (e Entry) GetUpdatedDate() *time.Time {
 	if !e.Updated.Value.IsZero() {
 		return new(e.Updated.Value)
 	}
@@ -188,7 +194,7 @@ func (e *Entry) GetUpdatedDate() *time.Time {
 
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
-func (e *Entry) GetContent() *string {
+func (e Entry) GetContent() *string {
 	switch {
 	case e.Content != nil:
 		// Has a Content value.
@@ -228,12 +234,12 @@ func (e *Entry) GetContent() *string {
 }
 
 // HasBasicGeo checks whether an entry has fields from the basic_geo extension.
-func (e *Entry) HasBasicGeo() bool {
+func (e Entry) HasBasicGeo() bool {
 	return e.Alt != nil || e.Lat != nil || e.Lon != nil
 }
 
 // HasGeoRSS checks whether an entry has fields from the georss extension.
-func (e *Entry) HasGeoRSS() bool {
+func (e Entry) HasGeoRSS() bool {
 	return e.Point != nil || e.Line != nil || e.Polygon != nil || e.Box != nil || e.Circle != nil || e.Elev != nil ||
 		e.Floor != nil ||
 		e.Radius != nil ||
@@ -243,7 +249,7 @@ func (e *Entry) HasGeoRSS() bool {
 		e.Where != nil
 }
 
-func (e *Entry) GetGeoInfo() *types.GeoInfo {
+func (e Entry) GetGeoInfo() *types.GeoInfo {
 	info := types.GeoInfo{}
 	data, err := json.Marshal(e)
 	if err != nil {
@@ -261,7 +267,7 @@ func (e *Entry) GetGeoInfo() *types.GeoInfo {
 
 // GetCommentRSS returns whichever spelling was present after decoding a feed preferring the correct one if a
 // (spec-violating) feed somehow supplied both.
-func (e *Entry) GetCommentRSS() string {
+func (e Entry) GetCommentRSS() string {
 	switch {
 	case e.CommentRSS != nil:
 		return *e.CommentRSS

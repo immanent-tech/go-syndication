@@ -35,10 +35,14 @@ func (f *Feed) GetDescription() string {
 
 // GetSourceURL retrieves the URL that links to the JSONFeed file for the Feed.
 func (f *Feed) GetSourceURL() string {
-	if f.FeedURL != nil {
-		return *f.FeedURL
+	if f.FeedURL == nil {
+		return ""
 	}
-	return ""
+	safeURL, err := sanitization.SanitizeURLString(*f.FeedURL)
+	if err != nil {
+		return ""
+	}
+	return safeURL
 }
 
 // SetSourceURL will set a source URL, indicating the URL of the JSONFeed document, in the Feed.
@@ -48,10 +52,14 @@ func (f *Feed) SetSourceURL(url string) {
 
 // GetLink retrieves the link of the Feed. This is the link to the website associated with the JSONFeed.
 func (f *Feed) GetLink() string {
-	if f.HomePageURL != nil {
-		return *f.HomePageURL
+	if f.HomePageURL == nil {
+		return ""
 	}
-	return ""
+	safeURL, err := sanitization.SanitizeURLString(*f.HomePageURL)
+	if err != nil {
+		return ""
+	}
+	return safeURL
 }
 
 // GetAuthors retrieves the authors (if any) of the Feed. This will be the list of values from any <author> and
@@ -103,8 +111,12 @@ func (f *Feed) GetImage() *types.Image {
 		url = *f.Favicon
 	}
 	if url != "" {
+		safeURL, err := sanitization.SanitizeURLString(url)
+		if err != nil {
+			return nil
+		}
 		return &types.Image{
-			URL: url,
+			URL: safeURL,
 		}
 	}
 	return nil

@@ -5,12 +5,16 @@ package sanitization
 
 import (
 	"bytes"
+	"fmt"
 	"html"
+	"net/url"
 	"slices"
 	"strings"
 
 	"github.com/microcosm-cc/bluemonday"
 )
+
+var AllowedURLSchemes = []string{"http", "https", "mailto", "ftp"}
 
 // Option is a functional option applied to a sanitisation method.
 type Option func(*config)
@@ -38,6 +42,25 @@ func SanitizeString(str string, options ...Option) string {
 		option(cfg)
 	}
 	return strings.TrimSpace(html.UnescapeString(cfg.policy.Sanitize(str)))
+}
+
+// SanitizeURLString attempts to "sanitize" a string value representing a URL. It first runs the string through
+// SanitizeString, then unescapes the any path, then parses the URL and returns its string representation.
+func SanitizeURLString(str string) (string, error) {
+	safeStr := SanitizeString(str)
+	var err error
+	safeStr, err = url.PathUnescape(safeStr)
+	if err != nil {
+		return "", fmt.Errorf("unescape URL path: %w", err)
+	}
+	parsedURL, err := url.Parse(safeStr)
+	if err != nil {
+		return "", fmt.Errorf("parse URL: %w", err)
+	}
+	if !slices.Contains(AllowedURLSchemes, parsedURL.Scheme) {
+		return "", fmt.Errorf("scheme is not allowed: %s", parsedURL.Scheme)
+	}
+	return parsedURL.String(), nil
 }
 
 // SanitizeBytes attempts to "sanitize" a []byte value from a Feed/Item object. It will strip any leading/trailing

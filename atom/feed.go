@@ -27,17 +27,17 @@ var (
 var _ types.FeedSource = (*Feed)(nil)
 
 // GetTitle retrieves the <title> of the Feed.
-func (f *Feed) GetTitle() string {
+func (f Feed) GetTitle() string {
 	return f.Title.String()
 }
 
 // GetDescription retrieves the <description> (if any) of the Feed.
-func (f *Feed) GetDescription() string {
+func (f Feed) GetDescription() string {
 	switch {
 	case f.Subtitle != nil && f.Subtitle.String() != "":
 		return f.Subtitle.String()
-	case len(f.DcDescription) > 0:
-		return strings.Join(f.DcDescription, " ")
+	case f.DcDescription.String() != "":
+		return f.DcDescription.String()
 	default:
 		return ""
 	}
@@ -45,7 +45,7 @@ func (f *Feed) GetDescription() string {
 
 // GetSourceURL retrieves the URL that links to the Atom file for the Feed. This will be any <link> element
 // present with a "rel" attribute of "self" and ideally with a mime-type indicating Atom content.
-func (f *Feed) GetSourceURL() string {
+func (f Feed) GetSourceURL() string {
 	for link := range slices.Values(f.Links) {
 		if link.Rel != nil && *link.Rel == LinkRelSelf {
 			if link.Type != nil && slices.Contains(MimeTypes, *link.Type) {
@@ -65,7 +65,7 @@ func (f *Feed) SetSourceURL(url string) {
 // GetLink retrieves the <link> of the Feed. This is the link to the website associated with the Atom feed. Even the
 // spec is ambiguous about what link attributes constitute the correct combination to indicate the site, so we apply
 // some guesses here.
-func (f *Feed) GetLink() string {
+func (f Feed) GetLink() string {
 	for link := range slices.Values(f.Links) {
 		// If there is a rel=self link that does not point to an atom document, use that.
 		if link.Rel != nil {
@@ -89,7 +89,7 @@ func (f *Feed) GetLink() string {
 
 // GetAuthors retrieves the authors (if any) of the Feed. This will be the list of values from any <author> and
 // <dc:creator> elements.
-func (f *Feed) GetAuthors() []string {
+func (f Feed) GetAuthors() []string {
 	var authors []string
 	if len(f.Authors) > 0 {
 		for author := range slices.Values(f.Authors) {
@@ -99,12 +99,16 @@ func (f *Feed) GetAuthors() []string {
 	if len(f.DcCreator) > 0 {
 		authors = append(authors, f.DcCreator...)
 	}
-	return authors
+	if len(f.DcPublisher) > 0 {
+		authors = append(authors, f.DcPublisher...)
+	}
+	slices.Sort(authors)
+	return slices.Compact(authors)
 }
 
 // GetContributors retrieves the contributors (if any) of the Feed. This will be the list of values from any
 // <contributor> and <dc:contributor> elements.
-func (f *Feed) GetContributors() []string {
+func (f Feed) GetContributors() []string {
 	var contributors []string
 	if len(f.Contributors) > 0 {
 		for contributor := range slices.Values(f.Contributors) {
@@ -114,26 +118,31 @@ func (f *Feed) GetContributors() []string {
 	if len(f.DcContributor) > 0 {
 		contributors = append(contributors, f.DcContributor...)
 	}
-	return contributors
+	slices.Sort(contributors)
+	return slices.Compact(contributors)
 }
 
 // GetRights retrieves the rights (copyright) of the Feed. This will be the first value found from either <dc:rights>
 // or <rights> elements.
-func (f *Feed) GetRights() *string {
+func (f Feed) GetRights() *string {
 	if f.Rights != nil {
 		return new(f.Rights.String())
+	}
+	if rights := f.DcRights.String(); rights != "" {
+		return &rights
 	}
 	return nil
 }
 
 // GetLanguage retrieves the language of the Feed. This will be the first value found from either <dc:language>
 // or <lang> elements.
-func (f *Feed) GetLanguage() *string {
+func (f Feed) GetLanguage() *string {
 	switch {
 	case f.Lang != nil:
 		return f.Lang
-	case len(f.DcLanguage) > 0:
-		return new(strings.Join(f.DcLanguage, " "))
+	case f.DcLanguage.String() != "":
+		lang := f.DcLanguage.String()
+		return &lang
 	default:
 		return nil
 	}
@@ -141,7 +150,7 @@ func (f *Feed) GetLanguage() *string {
 
 // GetCategories retrieves the categories (if any) of the [Feed]. Case insensitive duplicate categories are collapsed. The
 // categories are returned as strings.
-func (f *Feed) GetCategories() []string {
+func (f Feed) GetCategories() []string {
 	categories := make([]string, 0, len(f.Categories))
 	for category := range slices.Values(f.Categories) {
 		if str := strings.TrimSpace(category.String()); str != "" {
@@ -156,7 +165,7 @@ func (f *Feed) GetCategories() []string {
 
 // GetImage retrieves the image (if any) for the Feed. The image is returned as a types.Image object. The value will be
 // the first found of <media:thumbnail> element.
-func (f *Feed) GetImage() *types.Image {
+func (f Feed) GetImage() *types.Image {
 	switch {
 	case f.Logo != nil:
 		title := f.GetTitle()
@@ -206,7 +215,7 @@ func (f *Feed) SetImage(image *types.Image) {
 }
 
 // GetPublishedDate returns the <published> element of the Feed.
-func (f *Feed) GetPublishedDate() *time.Time {
+func (f Feed) GetPublishedDate() *time.Time {
 	if f.Published != nil {
 		return new(f.Published.Value)
 	}
@@ -214,7 +223,7 @@ func (f *Feed) GetPublishedDate() *time.Time {
 }
 
 // GetUpdatedDate returns the <updated> of the Feed.
-func (f *Feed) GetUpdatedDate() *time.Time {
+func (f Feed) GetUpdatedDate() *time.Time {
 	if f.Updated.Value.IsZero() {
 		if len(f.Entries) > 0 {
 			slices.SortFunc(f.Entries, func(a, b Entry) int {
@@ -245,7 +254,7 @@ func (f *Feed) GetUpdatedDate() *time.Time {
 	return new(f.Updated.Value)
 }
 
-func (f *Feed) GetUpdateInterval() time.Duration {
+func (f Feed) GetUpdateInterval() time.Duration {
 	if items := f.GetItems(); len(items) > 2 {
 		var intervals []time.Duration
 		for idx := range items {
@@ -263,7 +272,7 @@ func (f *Feed) GetUpdateInterval() time.Duration {
 }
 
 // GetItems returns a slice of Entry values for the Feed.
-func (f *Feed) GetItems() []types.ItemSource {
+func (f Feed) GetItems() []types.ItemSource {
 	items := make([]types.ItemSource, 0, len(f.Entries))
 	for item := range slices.Values(f.Entries) {
 		items = append(items, &item)
@@ -308,7 +317,7 @@ func feedCustomValidation(sl validator.StructLevel) {
 }
 
 // Validate applies custom validation to an feed.
-func (f *Feed) Validate() error {
+func (f Feed) Validate() error {
 	return validation.ValidateStruct(f)
 }
 

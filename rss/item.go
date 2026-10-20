@@ -17,6 +17,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/extensions/content"
 	"github.com/immanent-tech/go-syndication/extensions/media"
+	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 	"golang.org/x/net/html"
@@ -100,25 +101,29 @@ func WithItemPublishedDate(ts time.Time) ItemOption {
 
 // GetID returns an "id" for the item. This will be the value of the <guid> element, if present, or an empty string if
 // not present.
-func (i *Item) GetID() string {
+func (i Item) GetID() string {
 	if i.GUID != nil {
-		return i.GUID.Value
+		return i.GUID.String()
 	}
 	return ""
 }
 
 // GetTitle retrieves the <title> (if any) of the Item.
-func (i *Item) GetTitle() string {
-	return i.Title
+func (i Item) GetTitle() string {
+	return sanitization.SanitizeString(i.Title)
 }
 
 // GetLink retrieves the <link> (if any) of the Item.
-func (i *Item) GetLink() string {
-	return i.Link
+func (i Item) GetLink() string {
+	safe, err := sanitization.SanitizeURLString(i.Link)
+	if err != nil {
+		return ""
+	}
+	return safe
 }
 
 // GetDescription retrieves the <description> (if any) of the Item.
-func (i *Item) GetDescription() string {
+func (i Item) GetDescription() string {
 	// Use the nonempty description.
 	if i.Description.String() != "" {
 		return i.Description.String()
@@ -134,20 +139,24 @@ func (i *Item) GetDescription() string {
 
 // GetAuthors retrieves the authors (if any) of the Item. This will be the list of values from any <author> and
 // <dc:creator> elements.
-func (i *Item) GetAuthors() []string {
-	var authors []string
+func (i Item) GetAuthors() []string {
+	authors := make([]string, 0)
 	if i.Author != nil && *i.Author != "" {
-		authors = append(authors, *i.Author)
+		authors = append(authors, sanitization.SanitizeString(*i.Author))
+	}
+	if len(i.DcPublisher) > 0 {
+		authors = append(authors, i.DcPublisher...)
 	}
 	if len(i.DcCreator) > 0 {
 		authors = append(authors, i.DcCreator...)
 	}
-	return authors
+	slices.Sort(authors)
+	return slices.Compact(authors)
 }
 
 // GetContributors retrieves the contributors (if any) of the Item. This will be the list of values from the
 // <dc:contributor> element.
-func (i *Item) GetContributors() []string {
+func (i Item) GetContributors() []string {
 	var contributors []string
 	if len(i.DcContributor) > 0 {
 		contributors = append(contributors, i.DcContributor...)
@@ -156,27 +165,25 @@ func (i *Item) GetContributors() []string {
 }
 
 // GetRights retrieves the rights (copyright) of the Channel. This will be the value of <dc:rights>, if found.
-func (i *Item) GetRights() *string {
-	if len(i.DcRights) > 0 {
-		return new(strings.Join(i.DcRights, " "))
+func (i Item) GetRights() *string {
+	if rights := i.DcRights.String(); rights != "" {
+		return &rights
 	}
 	return nil
 }
 
 // GetLanguage retrieves the language of the Item. This will be the value found from the <dc:language> element, if
 // present.
-func (i *Item) GetLanguage() *string {
-	switch {
-	case len(i.DcLanguage) > 0:
-		return new(strings.Join(i.DcLanguage, " "))
-	default:
-		return nil
+func (i Item) GetLanguage() *string {
+	if lang := i.DcLanguage.String(); lang != "" {
+		return &lang
 	}
+	return nil
 }
 
 // GetCategories retrieves the categories (if any) of the [Item]. Case insensitive duplicate categories are collapsed.
 // The categories are returned as strings.
-func (i *Item) GetCategories() []string {
+func (i Item) GetCategories() []string {
 	categories := make([]string, 0, len(i.Categories))
 	for category := range slices.Values(i.Categories) {
 		if str := strings.TrimSpace(category.String()); str != "" {
@@ -201,19 +208,17 @@ func (i *Item) GetCategories() []string {
 // - a single <media:thumbnail> element.
 //
 // This method tries to retrieve one of these, first one wins, in the order above.
-func (i *Item) GetImage() *types.Image {
+func (i Item) GetImage() *types.Image {
 	var img *types.Image
 	switch {
 	case i.Image != nil:
 		// Item has an <image> element, use it.
-		img = &types.Image{
-			URL:   i.Image.URL,
-			Title: &i.Image.Title,
-		}
+		img = i.Image.AsImage()
 	case i.Enclosure != nil && types.IsImage(i.Enclosure.Type):
 		// Item has an <enclosure> element, check if it contains an image and use it.
-		img = &types.Image{
-			URL: i.Enclosure.URL,
+		safeURL, err := sanitization.SanitizeURLString(i.Enclosure.URL)
+		if err == nil {
+			img = &types.Image{URL: safeURL}
 		}
 	case i.MediaContent != nil && i.MediaContent.AsImage() != nil:
 		// Item has a <media:content> element, extract the image.
@@ -237,13 +242,13 @@ func (i *Item) GetImage() *types.Image {
 }
 
 // GetMediaGroup returns any media.MediaGroup object for the entry.
-func (i *Item) GetMediaGroup() *media.MediaGroup {
+func (i Item) GetMediaGroup() *media.MediaGroup {
 	return i.MediaGroup
 }
 
 // GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (i *Item) GetPublishedDate() *time.Time {
+func (i Item) GetPublishedDate() *time.Time {
 	if i.PubDate != nil {
 		return &i.PubDate.Value
 	}
@@ -252,12 +257,12 @@ func (i *Item) GetPublishedDate() *time.Time {
 
 // GetUpdatedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (i *Item) GetUpdatedDate() *time.Time {
+func (i Item) GetUpdatedDate() *time.Time {
 	return nil
 }
 
 // GetContent returns the content of the Item (if any). This will be taken from any <content:encoded> element.
-func (i *Item) GetContent() *string {
+func (i Item) GetContent() *string {
 	if i.ContentEncoded == nil || i.ContentEncoded.String() == "" {
 		return nil
 	}
@@ -282,12 +287,12 @@ func (i *Item) GetContent() *string {
 }
 
 // HasBasicGeo checks whether an item has fields from the basic_geo extension.
-func (i *Item) HasBasicGeo() bool {
+func (i Item) HasBasicGeo() bool {
 	return i.Alt != nil || i.Lat != nil || i.Lon != nil
 }
 
 // HasGeoRSS checks whether an item has fields from the georss extension.
-func (i *Item) HasGeoRSS() bool {
+func (i Item) HasGeoRSS() bool {
 	return i.Point != nil || i.Line != nil || i.Polygon != nil || i.Box != nil || i.Circle != nil || i.Elev != nil ||
 		i.Floor != nil ||
 		i.Radius != nil ||
@@ -297,7 +302,7 @@ func (i *Item) HasGeoRSS() bool {
 		i.Where != nil
 }
 
-func (i *Item) GetGeoInfo() *types.GeoInfo {
+func (i Item) GetGeoInfo() *types.GeoInfo {
 	info := types.GeoInfo{}
 	data, err := json.Marshal(i)
 	if err != nil {
@@ -315,7 +320,7 @@ func (i *Item) GetGeoInfo() *types.GeoInfo {
 
 // GetCommentRSS returns whichever spelling was present after decoding a feed preferring the correct one if a
 // (spec-violating) feed somehow supplied both.
-func (i *Item) GetCommentRSS() string {
+func (i Item) GetCommentRSS() string {
 	switch {
 	case i.CommentRSS != nil:
 		return *i.CommentRSS
@@ -341,7 +346,7 @@ func NewItemDescription(value string, cdata bool) ItemDescription {
 }
 
 func (c ItemDescription) String() string {
-	return c.Value
+	return sanitization.SanitizeString(c.Value)
 }
 
 // MarshalXML implements xml.Marshaler.

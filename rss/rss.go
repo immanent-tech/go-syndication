@@ -18,6 +18,7 @@ import (
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/syndication"
 	"github.com/immanent-tech/go-syndication/rdf"
+	"github.com/immanent-tech/go-syndication/sanitization"
 
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
@@ -103,7 +104,23 @@ func (t *Timestamp) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error
 
 // String returns the value of the Category.
 func (c Category) String() string {
-	return c.Value
+	return sanitization.SanitizeString(c.Value)
+}
+
+func (g GUID) String() string {
+	return sanitization.SanitizeString(g.Value)
+}
+
+func (i Image) AsImage() *types.Image {
+	safeURL, err := sanitization.SanitizeURLString(i.URL)
+	if err != nil {
+		return nil
+	}
+	title := sanitization.SanitizeString(i.Title)
+	return &types.Image{
+		URL:   safeURL,
+		Title: &title,
+	}
 }
 
 // NewRSS creates a new RSS version 2.0 object with the required title, description, and link values and any given
@@ -207,73 +224,73 @@ func WithUpdateFrequency(freq int) RSSOption {
 	}
 }
 
-func (r *RSS) GetTitle() string {
+func (r RSS) GetTitle() string {
 	return r.Channel.GetTitle()
 }
 
-func (r *RSS) GetDescription() string {
+func (r RSS) GetDescription() string {
 	return r.Channel.GetDescription()
 }
 
-func (r *RSS) GetSourceURL() string {
+func (r RSS) GetSourceURL() string {
 	return r.Channel.GetSourceURL()
 }
 
-func (r *RSS) SetSourceURL(url string) {
+func (r RSS) SetSourceURL(url string) {
 	r.Channel.SetSourceURL(url)
 }
 
-func (r *RSS) GetLink() string {
+func (r RSS) GetLink() string {
 	return r.Channel.GetLink()
 }
 
-func (r *RSS) GetUpdatedDate() *time.Time {
+func (r RSS) GetUpdatedDate() *time.Time {
 	return r.Channel.GetUpdatedDate()
 }
 
-func (r *RSS) GetPublishedDate() *time.Time {
+func (r RSS) GetPublishedDate() *time.Time {
 	return r.Channel.GetPublishedDate()
 }
 
-func (r *RSS) GetCategories() []string {
+func (r RSS) GetCategories() []string {
 	return r.Channel.GetCategories()
 }
 
-func (r *RSS) GetAuthors() []string {
+func (r RSS) GetAuthors() []string {
 	return r.Channel.GetAuthors()
 }
 
-func (r *RSS) GetContributors() []string {
+func (r RSS) GetContributors() []string {
 	return r.Channel.GetContributors()
 }
 
-func (r *RSS) GetRights() *string {
+func (r RSS) GetRights() *string {
 	return r.Channel.GetRights()
 }
 
-func (r *RSS) GetLanguage() *string {
+func (r RSS) GetLanguage() *string {
 	return r.Channel.GetLanguage()
 }
 
-func (r *RSS) GetImage() *types.Image {
+func (r RSS) GetImage() *types.Image {
 	return r.Channel.GetImage()
 }
 
-func (r *RSS) SetImage(image *types.Image) {
+func (r RSS) SetImage(image *types.Image) {
 	r.Channel.SetImage(image)
 }
 
-func (r *RSS) GetItems() []types.ItemSource {
+func (r RSS) GetItems() []types.ItemSource {
 	return r.Channel.GetItems()
 }
 
-func (r *RSS) GetUpdateInterval() time.Duration {
+func (r RSS) GetUpdateInterval() time.Duration {
 	return r.Channel.GetUpdateInterval()
 }
 
 // Validate applies custom validation to an feed.
-func (r *RSS) Validate() error {
-	if err := validation.ValidateStruct(r); err != nil {
+func (r RSS) Validate() error {
+	if err := validation.ValidateStruct(&r); err != nil {
 		return fmt.Errorf("rss validation failed: %w", err)
 	}
 	return nil

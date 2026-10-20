@@ -7,6 +7,7 @@ import (
 	"slices"
 
 	"github.com/immanent-tech/go-syndication/sanitization"
+	"github.com/immanent-tech/go-syndication/types"
 )
 
 func (c Category) String() string {
@@ -14,7 +15,7 @@ func (c Category) String() string {
 }
 
 // GetCategories returns all iTunes categories associated with the object.
-func (c *Categories) GetCategories() []string {
+func (c Categories) GetCategories() []string {
 	var categories []string
 	main := sanitization.SanitizeString(c.Text)
 	categories = append(categories, main)
@@ -24,4 +25,12 @@ func (c *Categories) GetCategories() []string {
 		}
 	}
 	return categories
+}
+
+func (i Image) AsImage() *types.Image {
+	safeURL, err := sanitization.SanitizeURLString(i.Href)
+	if err != nil {
+		return nil
+	}
+	return &types.Image{URL: safeURL}
 }

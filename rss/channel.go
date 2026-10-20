@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 )
@@ -23,20 +24,20 @@ var (
 var _ types.FeedSource = (*Channel)(nil)
 
 // GetTitle retrieves the <title> (if any) of the Channel.
-func (c *Channel) GetTitle() string {
-	return c.Title
+func (c Channel) GetTitle() string {
+	return sanitization.SanitizeString(c.Title)
 }
 
 // GetDescription retrieves the <description> (if any) of the Channel.
-func (c *Channel) GetDescription() string {
-	return c.Description
+func (c Channel) GetDescription() string {
+	return sanitization.SanitizeString(c.Description)
 }
 
 // GetSourceURL retrieves the URL that links to the RSS file for the channel. This will be any <atom:link> element
 // present in the Channel with a "rel" attribute of "self".
-func (c *Channel) GetSourceURL() string {
-	if c.AtomLink != nil {
-		if c.AtomLink.Rel != nil && *c.AtomLink.Rel == atom.LinkRelSelf {
+func (c Channel) GetSourceURL() string {
+	if link := c.AtomLink; link != nil {
+		if link.Rel != nil && *link.Rel == atom.LinkRelSelf {
 			return c.AtomLink.String()
 		}
 	}
@@ -45,51 +46,81 @@ func (c *Channel) GetSourceURL() string {
 
 // SetSourceURL will set a source URL, indicating the URL to the RSS file, in the Channel.
 func (c *Channel) SetSourceURL(url string) {
-	rel := atom.LinkRelSelf
-	c.AtomLink = &atom.Link{Href: url, Rel: &rel}
+	c.AtomLink = &atom.Link{Href: url, Rel: new(atom.LinkRelSelf)}
 }
 
 // GetLink retrieves the <link> (if any) of the Channel. This is the link to the website associated with the RSS feed.
-func (c *Channel) GetLink() string {
+func (c Channel) GetLink() string {
 	if c.Link == "" {
 		return c.GetSourceURL()
 	}
-	return c.Link
+	safe, err := sanitization.SanitizeURLString(c.Link)
+	if err != nil {
+		return ""
+	}
+	return safe
 }
 
 // GetAuthors retrieves the authors (if any) of the Channel. This will be the list of values from any <dc:creator>
 // elements.
-func (c *Channel) GetAuthors() []string {
-	if c.WebMaster != nil {
-		return []string{*c.WebMaster}
+func (c Channel) GetAuthors() []string {
+	authors := make([]string, 0)
+	if webmaster := c.WebMaster; webmaster != nil {
+		authors = append(authors, sanitization.SanitizeString(*webmaster))
 	}
-	return nil
+	if len(c.DcPublisher) > 0 {
+		authors = append(authors, c.DcPublisher...)
+	}
+	if len(c.DcCreator) > 0 {
+		authors = append(authors, c.DcPublisher...)
+	}
+	slices.Sort(authors)
+	return slices.Compact(authors)
 }
 
 // GetContributors retrieves the contributors (if any) of the Channel. This will be the list of values from the
 // <dc:contributor> element.
-func (c *Channel) GetContributors() []string {
-	if c.ManagingEditor != nil {
-		return []string{*c.ManagingEditor}
+func (c Channel) GetContributors() []string {
+	contributors := make([]string, 0)
+	if editor := c.ManagingEditor; editor != nil {
+		contributors = append(contributors, sanitization.SanitizeString(*editor))
 	}
-	return nil
+	if len(c.DcContributor) > 0 {
+		contributors = append(contributors, c.DcContributor...)
+	}
+	slices.Sort(contributors)
+	return slices.Compact(contributors)
 }
 
 // GetRights retrieves the rights (copyright) of the Channel. This will be the first value found from either <dc:rights>
 // or <copyright> elements.
-func (c *Channel) GetRights() *string {
-	return c.Copyright
+func (c Channel) GetRights() *string {
+	if rights := c.Copyright; rights != nil {
+		safeRights := sanitization.SanitizeString(*rights)
+		return &safeRights
+	}
+	if rights := c.DcRights.String(); rights != "" {
+		return &rights
+	}
+	return nil
 }
 
 // GetLanguage retrieves the language of the Channel. This will be the first value found from either <dc:language>
 // or <lang> elements.
-func (c *Channel) GetLanguage() *string {
-	return c.Language
+func (c Channel) GetLanguage() *string {
+	if lang := c.Language; lang != nil {
+		safeLang := sanitization.SanitizeString(*lang)
+		return &safeLang
+	}
+	if lang := c.DcLanguage.String(); lang != "" {
+		return &lang
+	}
+	return nil
 }
 
 // GetCategories retrieves the categories (if any) of the [Channel]. Case insensitive duplicate categories are
 // collapsed. The categories are returned as strings.
-func (c *Channel) GetCategories() []string {
+func (c Channel) GetCategories() []string {
 	categories := make([]string, 0, len(c.Categories))
 	for category := range slices.Values(c.Categories) {
 		if str := strings.TrimSpace(category.String()); str != "" {
@@ -97,8 +128,8 @@ func (c *Channel) GetCategories() []string {
 		}
 	}
 	if c.MediaCategory != nil {
-		if str := strings.TrimSpace(c.MediaCategory.Value); str != "" {
-			categories = append(categories, str)
+		if value := c.MediaCategory.String(); value != "" {
+			categories = append(categories, value)
 		}
 	}
 	if c.GooglePlayCategory != nil {
@@ -118,24 +149,19 @@ func (c *Channel) GetCategories() []string {
 // GetImage retrieves the image (if any) for the Item. The image is returned as a types.ImageInfo object. The value will be
 // the first found of either any <image> or <media:thumbnail> element. Any errors is retrieving the image will result in
 // a nil result being returned.
-func (c *Channel) GetImage() *types.Image {
+func (c Channel) GetImage() *types.Image {
 	var img *types.Image
 	switch {
 	case c.Image != nil:
-		img = &types.Image{
-			URL:   c.Image.URL,
-			Title: &c.Image.Title,
-		}
+		img = c.Image.AsImage()
 	case c.MediaContent != nil && c.MediaContent.AsImage() != nil:
 		// Item has a <media:content> element, extract the image.
 		img = c.MediaContent.AsImage()
 	case len(c.MediaThumbnails) > 0:
 		// Check for a <media:thumbnails> element and assume the first element is an appropriate image.
 		img = c.MediaThumbnails[0].AsImage()
-	case c.ItunesImage != nil && c.ItunesImage.Href != "":
-		img = &types.Image{
-			URL: c.ItunesImage.Href,
-		}
+	case c.ItunesImage != nil:
+		img = c.ItunesImage.AsImage()
 	default:
 		return nil
 	}
@@ -153,7 +179,7 @@ func (c *Channel) SetImage(image *types.Image) {
 
 // GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (c *Channel) GetPublishedDate() *time.Time {
+func (c Channel) GetPublishedDate() *time.Time {
 	if c.PubDate != nil {
 		return &c.PubDate.Value
 	}
@@ -162,7 +188,7 @@ func (c *Channel) GetPublishedDate() *time.Time {
 
 // GetUpdatedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
 // DateTime equal to Unix epoch.
-func (c *Channel) GetUpdatedDate() *time.Time {
+func (c Channel) GetUpdatedDate() *time.Time {
 	if c.LastBuildDate != nil {
 		return &c.LastBuildDate.Value
 	}
@@ -194,7 +220,7 @@ func (c *Channel) GetUpdatedDate() *time.Time {
 	return c.GetPublishedDate()
 }
 
-func (c *Channel) GetUpdateInterval() time.Duration {
+func (c Channel) GetUpdateInterval() time.Duration {
 	if c.SYUdatePeriod != nil {
 		var baseInterval time.Duration
 		switch *c.SYUdatePeriod {
@@ -235,7 +261,7 @@ func (c *Channel) GetUpdateInterval() time.Duration {
 }
 
 // GetItems retrieves a slice of Item values for the Channel.
-func (c *Channel) GetItems() []types.ItemSource {
+func (c Channel) GetItems() []types.ItemSource {
 	items := make([]types.ItemSource, 0, len(c.Items))
 	for item := range slices.Values(c.Items) {
 		items = append(items, &item)
@@ -244,7 +270,7 @@ func (c *Channel) GetItems() []types.ItemSource {
 }
 
 // Validate applies custom validation to an Channel.
-func (c *Channel) Validate() error {
+func (c Channel) Validate() error {
 	if err := validation.ValidateStruct(c); err != nil {
 		return fmt.Errorf("channel validation failed: %w", err)
 	}
