@@ -35,6 +35,7 @@
 - [Usage](#usage)
   - [Encoding and Decoding](#encoding-and-decoding)
   - [Validation](#validation)
+  - [Sanitization](#sanitization)
   - [Generic Feed/Item Types](#generic-feeditem-types)
   - [Command Line Interface (CLI)](#command-line-interface-cli)
 - [Design](#design)
@@ -117,6 +118,22 @@ rss, err := Decode[*rss.RSS]("", data)
 // Validate the atom feed.
 err := validation.ValidateStruct(rss)
 ```
+
+### Sanitization
+
+The `Encode`/`Decode` methods do not perform sanitization of data, so the parsed feed structures contain raw values. If
+you use the various `Get*` and other methods on the feed/item types, values will be sanitised. Accessing the field
+structs directly will return the raw, unsanitized data. For example, for an `rss.RSS` object:
+
+| Sanitized Output            | Unsanitized Output    |
+| --------------------------- | --------------------- |
+| `channel.GetTitle()` method | `channel.Title` field |
+| `item.GetTitle()` method    | `item.Title` field    |
+
+...and so on.
+
+Sanitization is handled by the `sanitization` package. It exposes a number of methods that might be useful for manual
+sanitization or as a starting point for your own sanitization methods.
 
 ### Generic Feed/Item Types
 
