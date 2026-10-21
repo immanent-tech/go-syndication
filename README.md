@@ -41,6 +41,7 @@
 - [Design](#design)
   - [OpenAPI for Models](#openapi-for-models)
   - [Validation Built In](#validation-built-in)
+  - [Sanitization on Helpers not Data](#sanitization-on-helpers-not-data)
   - [Dynamic Namespace Support](#dynamic-namespace-support)
   - [Custom Marshal/Unmarshal](#custom-marshalunmarshal)
 - [Development](#development)
@@ -208,6 +209,13 @@ extensions. You can view test results with the standard `go test`:
 ```shell
 go test -v ./...
 ```
+
+### Sanitization on Helpers not Data
+
+go-syndication largely leaves the parsed feed data untouched. This means that the data, being user-generated content,
+should not be trusted. Using any struct fields should be sanitized as appropriate.  Nearly all objects have various
+`Get*` and other methods that do provide sanitized output that should cover most malformed, dodgy or otherwise incorrect
+data issues, though perfectly safe output cannot be guaranteed.
 
 ### Dynamic Namespace Support
 
