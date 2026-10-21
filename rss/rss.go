@@ -104,11 +104,11 @@ func (t *Timestamp) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error
 
 // String returns the value of the Category.
 func (c Category) String() string {
-	return sanitization.SanitizeString(c.Value)
+	return sanitization.SanitizeText(c.Value, sanitization.DefaultMaxRunes)
 }
 
 func (g GUID) String() string {
-	return sanitization.SanitizeString(g.Value)
+	return sanitization.SanitizeHTML(g.Value)
 }
 
 func (i Image) AsImage() *types.Image {
@@ -116,11 +116,19 @@ func (i Image) AsImage() *types.Image {
 	if err != nil {
 		return nil
 	}
-	title := sanitization.SanitizeString(i.Title)
+	title := sanitization.SanitizeHTML(i.Title)
 	return &types.Image{
 		URL:   safeURL,
 		Title: &title,
 	}
+}
+
+func (e Enclosure) GetURL() string {
+	safeURL, err := sanitization.SanitizeURLString(e.URL)
+	if err != nil {
+		return ""
+	}
+	return safeURL
 }
 
 // NewRSS creates a new RSS version 2.0 object with the required title, description, and link values and any given

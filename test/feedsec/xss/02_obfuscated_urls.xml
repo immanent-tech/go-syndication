@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>XSS: dangerous and obfuscated URLs</title>
+<link>https://feed.example.com/</link>
+<description>Test fixture: XSS: dangerous and obfuscated URLs</description>
+<item>
+<title>javascript plain</title>
+<link>https://feed.example.com/1</link>
+<guid isPermaLink="false">fixture-1</guid>
+<description><![CDATA[<a href="javascript:window.PWNED=1">x</a>]]></description>
+</item>
+<item>
+<title>javascript mixed case</title>
+<link>https://feed.example.com/2</link>
+<guid isPermaLink="false">fixture-2</guid>
+<content:encoded><![CDATA[<a href="JaVaScRiPt:window.PWNED=2">x</a>]]></content:encoded>
+</item>
+<item>
+<title>decimal entity</title>
+<link>https://feed.example.com/3</link>
+<guid isPermaLink="false">fixture-3</guid>
+<description><![CDATA[<a href="&#106;avascript:window.PWNED=3">x</a>]]></description>
+</item>
+<item>
+<title>hex entities</title>
+<link>https://feed.example.com/4</link>
+<guid isPermaLink="false">fixture-4</guid>
+<content:encoded><![CDATA[<a href="&#x6A;&#x61;vascript:window.PWNED=4">x</a>]]></content:encoded>
+</item>
+<item>
+<title>embedded tab</title>
+<link>https://feed.example.com/5</link>
+<guid isPermaLink="false">fixture-5</guid>
+<description><![CDATA[<a href="java&#9;script:window.PWNED=5">x</a>]]></description>
+</item>
+<item>
+<title>embedded newline</title>
+<link>https://feed.example.com/6</link>
+<guid isPermaLink="false">fixture-6</guid>
+<content:encoded><![CDATA[<a href="java&#10;script:window.PWNED=6">x</a>]]></content:encoded>
+</item>
+<item>
+<title>leading space</title>
+<link>https://feed.example.com/7</link>
+<guid isPermaLink="false">fixture-7</guid>
+<description><![CDATA[<a href=" javascript:window.PWNED=7">x</a>]]></description>
+</item>
+<item>
+<title>leading control char</title>
+<link>https://feed.example.com/8</link>
+<guid isPermaLink="false">fixture-8</guid>
+<content:encoded><![CDATA[<a href="&#1;javascript:window.PWNED=8">x</a>]]></content:encoded>
+</item>
+<item>
+<title>named colon entity</title>
+<link>https://feed.example.com/9</link>
+<guid isPermaLink="false">fixture-9</guid>
+<description><![CDATA[<a href="javascript&colon;window.PWNED=9">x</a>]]></description>
+</item>
+<item>
+<title>data html</title>
+<link>https://feed.example.com/10</link>
+<guid isPermaLink="false">fixture-10</guid>
+<content:encoded><![CDATA[<a href="data:text/html;base64,PHNjcmlwdD53aW5kb3cuUFdORUQ9ODwvc2NyaXB0Pg==">x</a>]]></content:encoded>
+</item>
+<item>
+<title>vbscript</title>
+<link>https://feed.example.com/11</link>
+<guid isPermaLink="false">fixture-11</guid>
+<description><![CDATA[<a href="vbscript:msgbox(1)">x</a>]]></description>
+</item>
+<item>
+<title>img javascript src</title>
+<link>https://feed.example.com/12</link>
+<guid isPermaLink="false">fixture-12</guid>
+<content:encoded><![CDATA[<img src="javascript:window.PWNED=12">]]></content:encoded>
+</item>
+<item>
+<title>file scheme</title>
+<link>https://feed.example.com/13</link>
+<guid isPermaLink="false">fixture-13</guid>
+<description><![CDATA[<a href="file:///etc/passwd">x</a>]]></description>
+</item>
+<item>
+<title>protocol relative</title>
+<link>https://feed.example.com/14</link>
+<guid isPermaLink="false">fixture-14</guid>
+<content:encoded><![CDATA[<a href="//evil.example/x">x</a>]]></content:encoded>
+</item>
+<item>
+<title>relative path</title>
+<link>https://feed.example.com/15</link>
+<guid isPermaLink="false">fixture-15</guid>
+<description><![CDATA[<a href="/admin/delete-all">x</a>]]></description>
+</item>
+<item>
+<title>ftp and gopher</title>
+<link>https://feed.example.com/16</link>
+<guid isPermaLink="false">fixture-16</guid>
+<content:encoded><![CDATA[<a href="ftp://example.com/x">a</a><a href="gopher://127.0.0.1:6379/_INFO">b</a>]]></content:encoded>
+</item>
+<item>
+<title>userinfo confusion</title>
+<link>https://feed.example.com/17</link>
+<guid isPermaLink="false">fixture-17</guid>
+<description><![CDATA[<a href="https://trusted.example.com@evil.example/">x</a>]]></description>
+</item>
+</channel>
+</rss>

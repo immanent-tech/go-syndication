@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>XSS: script tags and event handlers</title>
+<link>https://feed.example.com/</link>
+<description>Test fixture: XSS: script tags and event handlers</description>
+<item>
+<title>script tag</title>
+<link>https://feed.example.com/1</link>
+<guid isPermaLink="false">fixture-1</guid>
+<description><![CDATA[<p>hello</p><script>window.PWNED=1</script>]]></description>
+</item>
+<item>
+<title>external script</title>
+<link>https://feed.example.com/2</link>
+<guid isPermaLink="false">fixture-2</guid>
+<content:encoded><![CDATA[<script src="https://evil.example/x.js"></script>]]></content:encoded>
+</item>
+<item>
+<title>img onerror</title>
+<link>https://feed.example.com/3</link>
+<guid isPermaLink="false">fixture-3</guid>
+<description><![CDATA[<img src="x" onerror="window.PWNED=3">]]></description>
+</item>
+<item>
+<title>svg onload</title>
+<link>https://feed.example.com/4</link>
+<guid isPermaLink="false">fixture-4</guid>
+<content:encoded><![CDATA[<svg onload="window.PWNED=4"></svg>]]></content:encoded>
+</item>
+<item>
+<title>details ontoggle</title>
+<link>https://feed.example.com/5</link>
+<guid isPermaLink="false">fixture-5</guid>
+<description><![CDATA[<details open ontoggle="window.PWNED=5">x</details>]]></description>
+</item>
+<item>
+<title>body onload</title>
+<link>https://feed.example.com/6</link>
+<guid isPermaLink="false">fixture-6</guid>
+<content:encoded><![CDATA[<body onload="window.PWNED=6">text]]></content:encoded>
+</item>
+<item>
+<title>slash separators</title>
+<link>https://feed.example.com/7</link>
+<guid isPermaLink="false">fixture-7</guid>
+<description><![CDATA[<img/src=x/onerror=window.PWNED=7>]]></description>
+</item>
+<item>
+<title>unclosed tag</title>
+<link>https://feed.example.com/8</link>
+<guid isPermaLink="false">fixture-8</guid>
+<content:encoded><![CDATA[<img src=x onerror=window.PWNED=8 //]]></content:encoded>
+</item>
+<item>
+<title>split tags</title>
+<link>https://feed.example.com/9</link>
+<guid isPermaLink="false">fixture-9</guid>
+<description><![CDATA[<scr<script>ipt>window.PWNED=9</scr</script>ipt>]]></description>
+</item>
+<item>
+<title>mixed case + spaces</title>
+<link>https://feed.example.com/10</link>
+<guid isPermaLink="false">fixture-10</guid>
+<content:encoded><![CDATA[<ScRiPt >window.PWNED=10</sCrIpT >]]></content:encoded>
+</item>
+<item>
+<title>onclick with spaces</title>
+<link>https://feed.example.com/11</link>
+<guid isPermaLink="false">fixture-11</guid>
+<description><![CDATA[<a href="https://example.com/" onclick = "window.PWNED=11">click</a>]]></description>
+</item>
+<item>
+<title>autofocus input</title>
+<link>https://feed.example.com/12</link>
+<guid isPermaLink="false">fixture-12</guid>
+<content:encoded><![CDATA[<input autofocus onfocus=window.PWNED=12>]]></content:encoded>
+</item>
+<item>
+<title>marquee onstart</title>
+<link>https://feed.example.com/13</link>
+<guid isPermaLink="false">fixture-13</guid>
+<description><![CDATA[<marquee onstart=window.PWNED=13>x</marquee>]]></description>
+</item>
+<item>
+<title>video source onerror</title>
+<link>https://feed.example.com/14</link>
+<guid isPermaLink="false">fixture-14</guid>
+<content:encoded><![CDATA[<video><source onerror="window.PWNED=14"></video>]]></content:encoded>
+</item>
+<item>
+<title>backtick attribute</title>
+<link>https://feed.example.com/15</link>
+<guid isPermaLink="false">fixture-15</guid>
+<description><![CDATA[<img src=`x` onerror=window.PWNED=15>]]></description>
+</item>
+<item>
+<title>attribute breakout via alt</title>
+<link>https://feed.example.com/16</link>
+<guid isPermaLink="false">fixture-16</guid>
+<content:encoded><![CDATA[<img src="https://example.com/a.png" alt="&quot; onerror=&quot;window.PWNED=16">]]></content:encoded>
+</item>
+<item>
+<title>onmouseover on anchor</title>
+<link>https://feed.example.com/17</link>
+<guid isPermaLink="false">fixture-17</guid>
+<description><![CDATA[<a name="x" onmouseover="window.PWNED=17">hover</a>]]></description>
+</item>
+</channel>
+</rss>

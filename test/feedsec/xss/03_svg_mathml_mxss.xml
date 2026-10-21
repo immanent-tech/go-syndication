@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>XSS: SVG, MathML and mutation XSS</title>
+<link>https://feed.example.com/</link>
+<description>Test fixture: XSS: SVG, MathML and mutation XSS</description>
+<item>
+<title>svg script</title>
+<link>https://feed.example.com/1</link>
+<guid isPermaLink="false">fixture-1</guid>
+<description><![CDATA[<svg><script>window.PWNED=1</script></svg>]]></description>
+</item>
+<item>
+<title>svg xlink javascript</title>
+<link>https://feed.example.com/2</link>
+<guid isPermaLink="false">fixture-2</guid>
+<content:encoded><![CDATA[<svg><a xlink:href="javascript:window.PWNED=2"><text>x</text></a></svg>]]></content:encoded>
+</item>
+<item>
+<title>svg animate onbegin</title>
+<link>https://feed.example.com/3</link>
+<guid isPermaLink="false">fixture-3</guid>
+<description><![CDATA[<svg><animate onbegin="window.PWNED=3" attributeName="x" dur="1s"/></svg>]]></description>
+</item>
+<item>
+<title>svg use data</title>
+<link>https://feed.example.com/4</link>
+<guid isPermaLink="false">fixture-4</guid>
+<content:encoded><![CDATA[<svg><use href="data:image/svg+xml;base64,PHN2Zy8+"/></svg>]]></content:encoded>
+</item>
+<item>
+<title>math mglyph style</title>
+<link>https://feed.example.com/5</link>
+<guid isPermaLink="false">fixture-5</guid>
+<description><![CDATA[<math><mtext><table><mglyph><style><!--</style><img title="--&gt;&lt;img src=1 onerror=window.PWNED=5&gt;">]]></description>
+</item>
+<item>
+<title>math href</title>
+<link>https://feed.example.com/6</link>
+<guid isPermaLink="false">fixture-6</guid>
+<content:encoded><![CDATA[<math href="javascript:window.PWNED=6">click</math>]]></content:encoded>
+</item>
+<item>
+<title>math maction</title>
+<link>https://feed.example.com/7</link>
+<guid isPermaLink="false">fixture-7</guid>
+<description><![CDATA[<math><maction actiontype="statusline#" xlink:href="javascript:window.PWNED=7">x</maction></math>]]></description>
+</item>
+<item>
+<title>form math mglyph</title>
+<link>https://feed.example.com/8</link>
+<guid isPermaLink="false">fixture-8</guid>
+<content:encoded><![CDATA[<form><math><mtext></form><form><mglyph><style></math><img src onerror=window.PWNED=8>]]></content:encoded>
+</item>
+<item>
+<title>noscript attr closer</title>
+<link>https://feed.example.com/9</link>
+<guid isPermaLink="false">fixture-9</guid>
+<description><![CDATA[<noscript><p title="</noscript><img src=x onerror=window.PWNED=9>">]]></description>
+</item>
+<item>
+<title>svg style attr closer</title>
+<link>https://feed.example.com/10</link>
+<guid isPermaLink="false">fixture-10</guid>
+<content:encoded><![CDATA[<svg></p><style><a id="</style><img src=1 onerror=window.PWNED=10>">]]></content:encoded>
+</item>
+<item>
+<title>xmp attr closer</title>
+<link>https://feed.example.com/11</link>
+<guid isPermaLink="false">fixture-11</guid>
+<description><![CDATA[<xmp><p title="</xmp><img src=x onerror=window.PWNED=11>">]]></description>
+</item>
+<item>
+<title>textarea attr closer</title>
+<link>https://feed.example.com/12</link>
+<guid isPermaLink="false">fixture-12</guid>
+<content:encoded><![CDATA[<textarea><p title="</textarea><img src=x onerror=window.PWNED=12>">]]></content:encoded>
+</item>
+<item>
+<title>iframe attr closer</title>
+<link>https://feed.example.com/13</link>
+<guid isPermaLink="false">fixture-13</guid>
+<description><![CDATA[<iframe><p title="</iframe><img src=x onerror=window.PWNED=13>">]]></description>
+</item>
+<item>
+<title>title attr closer</title>
+<link>https://feed.example.com/14</link>
+<guid isPermaLink="false">fixture-14</guid>
+<content:encoded><![CDATA[<title><p title="</title><img src=x onerror=window.PWNED=14>">]]></content:encoded>
+</item>
+<item>
+<title>svg foreignObject</title>
+<link>https://feed.example.com/15</link>
+<guid isPermaLink="false">fixture-15</guid>
+<description><![CDATA[<svg><foreignObject><img src=x onerror=window.PWNED=15></foreignObject></svg>]]></description>
+</item>
+</channel>
+</rss>

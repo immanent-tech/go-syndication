@@ -22,13 +22,13 @@ var _ types.FeedSource = (*Feed)(nil)
 
 // GetTitle retrieves the title of the Feed.
 func (f *Feed) GetTitle() string {
-	return sanitization.SanitizeString(f.Title)
+	return sanitization.SanitizeText(f.Title, sanitization.DefaultMaxRunes)
 }
 
 // GetDescription retrieves the description (if any) of the Feed.
 func (f *Feed) GetDescription() string {
 	if f.Description != nil {
-		return sanitization.SanitizeString(*f.Description)
+		return sanitization.SanitizeText(*f.Description, 600)
 	}
 	return ""
 }

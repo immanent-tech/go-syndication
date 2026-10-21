@@ -1,0 +1,5 @@
+{"version":"https://jsonfeed.org/version/1.1","title":"<script>window.PWNED=0</script>","home_page_url":"https://feed.example.com/","items":[
+{"id":"1","url":"https://feed.example.com/1","title":"<img src=x onerror=window.PWNED=1>","content_html":"<script>window.PWNED=2</script><p>x</p>"},
+{"id":"2","url":"javascript:window.PWNED=3","title":"bad url","content_html":"<a href=\"javascript:window.PWNED=4\">x</a>","content_text":"<script>window.PWNED=5</script>"},
+{"id":"3","url":"https://feed.example.com/3","title":"summary","summary":"<svg onload=window.PWNED=6>","content_html":"<img src=x onerror=window.PWNED=7>"}
+]}

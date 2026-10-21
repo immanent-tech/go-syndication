@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="javascript:window.PWNED=1//">
+<title>xml:base abuse</title><id>urn:uuid:22222222-2222-2222-2222-222222222222</id><updated>2024-10-15T10:00:00Z</updated>
+<entry><title>BAD: relative link under javascript base</title><id>urn:a1</id><updated>2024-10-15T10:00:00Z</updated><link href="x"/></entry>
+<entry xml:base="data:text/html,"><title>BAD: relative link under data base</title><id>urn:a2</id><updated>2024-10-15T10:00:00Z</updated><link href="x"/></entry>
+<entry><title>BAD: javascript href</title><id>urn:a3</id><updated>2024-10-15T10:00:00Z</updated><link href="javascript:window.PWNED=2"/></entry>
+<entry><title>BAD: alternate is javascript, self is fine</title><id>urn:a4</id><updated>2024-10-15T10:00:00Z</updated><link rel="alternate" href="javascript:window.PWNED=3"/><link rel="self" href="https://example.com/self"/></entry>
+<entry xml:base="https://example.com/"><title>GOOD: relative resolved against https base</title><id>urn:a5</id><updated>2024-10-15T10:00:00Z</updated><link href="post/1"/></entry>
+</feed>

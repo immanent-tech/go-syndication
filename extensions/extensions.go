@@ -67,5 +67,5 @@ func (r *NamespaceRewriter) Token() (xml.Token, error) {
 }
 
 func (e Extension) String() string {
-	return sanitization.SanitizeString(e.Content)
+	return sanitization.SanitizeHTML(e.Content)
 }

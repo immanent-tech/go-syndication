@@ -5,16 +5,22 @@ package feeds
 
 import (
 	"bytes"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
+	"unicode/utf8"
 
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/rss"
+	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -446,7 +452,7 @@ var rssMedia = map[string]rssTestSuite{
 				assert.Len(t, item.MediaContent.MediaCredits, 2)
 				assert.Equal(t, "producer", *item.MediaContent.MediaCredits[0].Role)
 				assert.Equal(t, "producer's name", item.MediaContent.MediaCredits[0].Value)
-				assert.Equal(t, "music/artist \n                name/album/song", item.MediaContent.GetCategory())
+				assert.Equal(t, "music/artist name/album/song", item.MediaContent.GetCategory())
 				assert.Equal(t, "http://blah.com/scheme", *item.MediaContent.MediaCategory.Scheme)
 				assert.Len(t, item.MediaContent.MediaTexts, 1)
 				assert.Equal(
@@ -481,10 +487,117 @@ var rssMedia = map[string]rssTestSuite{
 	},
 }
 
+var rssSecFields = map[string]rssTestSuite{
+	"bad_values.xml": {
+		wantDecodeErr: true,
+	},
+	"hostile_titles.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			t.Helper()
+			if strings.Contains(feed.GetTitle(), "&lt;script&gt;window.PWNED=1") {
+				t.Errorf("hostile title should appear as escaped text; page was:\n%s", trunc(feed.GetTitle()))
+			}
+			for item := range slices.Values(feed.GetItems()) {
+				for _, bad := range []string{"<img src=x onerror", "<script>window.PWNED", "<svg/onload"} {
+					if strings.Contains(item.GetTitle(), bad) {
+						t.Errorf("raw hostile markup in title %q reached the page unescaped", bad)
+					}
+				}
+			}
+		},
+	},
+	"links_rss.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *rss.RSS) {
+			t.Helper()
+			for item := range slices.Values(feed.Channel.Items) {
+				var (
+					link          string
+					enclosureLink string
+				)
+				link = item.GetLink()
+				if item.Enclosure != nil {
+					enclosureLink = item.Enclosure.GetURL()
+				}
+				switch {
+				case strings.HasPrefix(item.GetTitle(), "BAD:"):
+					if item.Enclosure != nil && enclosureLink != "" {
+						t.Errorf(
+							"%q: link=%q enclosure=%q",
+							item.GetTitle(),
+							item.Link,
+							item.Enclosure.URL,
+						)
+					} else if item.Enclosure == nil && link != "" {
+						t.Errorf(
+							"%q: link=%q",
+							item.GetTitle(),
+							item.Link,
+						)
+					}
+				}
+			}
+		},
+	},
+	"unicode.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			t.Helper()
+			for item := range slices.Values(feed.GetItems()) {
+				if utf8.RuneCountInString(item.GetTitle()) > sanitization.DefaultMaxRunes {
+					t.Errorf("title not capped: %d runes", utf8.RuneCountInString(item.GetTitle()))
+				}
+				for _, r := range item.GetTitle() {
+					if (r >= 0x202A && r <= 0x202E) || (r >= 0x2066 && r <= 0x2069) || r == 0x200B || r == 0xFEFF ||
+						r < 0x20 {
+						t.Errorf("dangerous rune %U survived in %q", r, trunc(item.GetTitle()))
+					}
+				}
+			}
+
+		},
+	},
+}
+
+var rssSecMalformed = map[string]rssTestSuite{
+	"doctype_only.xml": {
+		wantDecodeErr: true,
+	},
+	"empty.xml": {
+		wantDecodeErr: true,
+	},
+	"invalid_utf8.xml": {
+		wantDecodeErr: true,
+	},
+	"not_a_feed.html": {
+		wantInvalid: true,
+	},
+	"nul_bytes.xml": {
+		wantDecodeErr: true,
+	},
+	"truncated.xml": {
+		wantDecodeErr: true,
+	},
+	"unclosed_tags.xml": {
+		wantInvalid: true,
+	},
+	"utf16_declared.xml": {
+		wantDecodeErr: true,
+	},
+	"wrong_encoding.xml": {
+		wantDecodeErr: true,
+	},
+	"wrong_root.xml": {
+		wantInvalid: true,
+	},
+}
+
 var rssTests = map[string]map[string]rssTestSuite{
 	"test/feedvalidator/testcases/rss/must":  rssMustPass,
 	"test/feedvalidator/testcases/ext/media": rssMedia,
 	"test/feedvalidator/testcases/rss20":     rss20,
+	"test/feedsec/fields":                    rssSecFields,
+	"test/feedsec/malformed":                 rssSecMalformed,
+	// "test/feedsec/xss":                       feedSecXSS,
 }
 
 func TestNewFeedFromBytesRSS(t *testing.T) {
@@ -500,28 +613,28 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 	for set, testSuites := range rssTests {
 		for name, suite := range testSuites {
 			testFile := filepath.Join(set, name)
-			if data, err := os.ReadFile(testFile); err != nil {
-				t.Error("could not read file: " + name)
-			} else {
-				tests = append(tests, struct {
-					name  string
-					args  args
-					want  *Feed
-					suite rssTestSuite
-				}{
-					name:  "file:" + testFile,
-					args:  args{data: data},
-					suite: suite,
-				})
-			}
+			data := readFile(t, testFile)
+			tests = append(tests, struct {
+				name  string
+				args  args
+				want  *Feed
+				suite rssTestSuite
+			}{
+				name:  "file:" + testFile,
+				args:  args{data: data},
+				suite: suite,
+			})
 		}
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			feed, err := Decode[*rss.RSS]("", bytes.NewReader(tt.args.data))
+			if err != nil {
+				t.Logf("decode error: %v", err)
+			}
 			if (err != nil) != tt.suite.wantDecodeErr {
-				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
+				t.Errorf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return
 			}
 
@@ -531,8 +644,12 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 			}
 			// If wantErr, make sure that occurs.
 			if tt.suite.wantInvalid {
-				if err := feed.Validate(); (err != nil) != tt.suite.wantInvalid {
-					t.Fatalf("Validate() error = %v, wantErr %v", err, tt.suite.wantInvalid)
+				err := feed.Validate()
+				if err != nil {
+					t.Logf("validate error: %v", err)
+				}
+				if (err != nil) != tt.suite.wantInvalid {
+					t.Errorf("Validate() error = %v, wantErr %v", err, tt.suite.wantInvalid)
 					return
 				}
 			}
@@ -591,5 +708,123 @@ func TestBasicGeo(t *testing.T) {
 		require.NoError(t, err)
 		require.InEpsilon(t, 5.5319, *doc.Channel.Items[0].Lat, 0.0001)
 		require.InEpsilon(t, 95.8972, *doc.Channel.Items[0].Lon, 0.0001)
+	})
+}
+
+func TestXXEAndEntityExpansion(t *testing.T) {
+	const secret = "XXE_FILE_CANARY_9f3a7c"
+	canaryFile := filepath.Join(t.TempDir(), "secret.txt")
+	if err := os.WriteFile(canaryFile, []byte(secret), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	var hits atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hits.Add(1)
+		_, _ = w.Write([]byte("<!ENTITY x 'XXE_HTTP_CANARY'>"))
+	}))
+	defer srv.Close()
+
+	const testFiles = "test/feedsec/xml_attacks"
+
+	for _, name := range []string{"xxe_file.xml", "xxe_ssrf.xml", "billion_laughs.xml"} {
+		t.Run(name, func(t *testing.T) {
+			raw := string(readFile(t, filepath.Join(testFiles, name)))
+			raw = strings.ReplaceAll(raw, "__CANARY_FILE__", filepath.ToSlash(canaryFile))
+			raw = strings.ReplaceAll(raw, "__CANARY_URL__", srv.URL)
+
+			start := time.Now()
+			feed, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(raw)))
+			if err != nil {
+				t.Fatalf("decode error: %v", err)
+			}
+
+			if d := time.Since(start); d > 3*time.Second {
+				t.Errorf("parsing took %v; possible entity-expansion DoS", d)
+			}
+			if feed == nil {
+				return // rejecting the feed outright is an acceptable outcome
+			}
+
+			data, err := Encode(feed)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if bytes.Contains(data, []byte(secret)) {
+				t.Error("local file contents leaked into output (XXE)")
+			}
+			if bytes.Contains(data, []byte("XXE_HTTP_CANARY")) {
+				t.Error("remote entity content leaked into output")
+			}
+			if len(data) > 1<<20 {
+				t.Errorf("output is %d bytes; entities were expanded", len(data))
+			}
+		})
+	}
+	if n := hits.Load(); n != 0 {
+		t.Errorf("parser made %d outbound request(s) while parsing hostile feeds", n)
+	}
+}
+
+func TestResourceExhaustionShapes(t *testing.T) {
+	const feedHead = `<?xml version="1.0"?><rss version="2.0"><channel><title>t</title><link>https://feed.example.com/</link><description>d</description>`
+
+	t.Run("deeply nested XML elements", func(t *testing.T) {
+		n := 20000
+		doc := feedHead + `<item><title>x</title>` + strings.Repeat(
+			"<a>",
+			n,
+		) + strings.Repeat(
+			"</a>",
+			n,
+		) + `</item></channel></rss>`
+		_, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(doc)))
+		if err != nil {
+			t.Fatalf("decode error: %v", err)
+		}
+	})
+
+	t.Run("multi-megabyte title", func(t *testing.T) {
+		doc := feedHead + `<item><title>` + strings.Repeat(
+			"A",
+			2_000_000,
+		) + `</title><link>https://feed.example.com/1</link></item></channel></rss>`
+		feed, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(doc)))
+		if err != nil {
+			t.Fatalf("decode error: %v", err)
+		}
+
+		if feed == nil {
+			return
+		}
+
+		if len(feed.GetTitle()) > 20_000 {
+			t.Errorf("rendered feed is %d bytes; titles are not length-capped", len(feed.GetTitle()))
+		}
+
+		_, err = Encode(feed)
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("many items", func(t *testing.T) {
+		var sb strings.Builder
+		sb.WriteString(feedHead)
+		for i := 0; i < 20000; i++ {
+			fmt.Fprintf(&sb, "<item><title>i%d</title><link>https://feed.example.com/%d</link></item>", i, i)
+		}
+		sb.WriteString("</channel></rss>")
+		start := time.Now()
+		feed, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(sb.String())))
+		if err != nil {
+			t.Fatalf("decode error: %v", err)
+		}
+		if feed != nil {
+			t.Logf(
+				"parsed %d items in %v; consider capping items per feed in your ingest code",
+				len(feed.Channel.Items),
+				time.Since(start),
+			)
+		}
 	})
 }

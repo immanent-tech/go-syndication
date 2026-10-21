@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE rss [
+ <!ENTITY a SYSTEM "__CANARY_URL__/entity">
+ <!ENTITY % p SYSTEM "__CANARY_URL__/param-dtd">
+ %p;
+]>
+<?xml-stylesheet type="text/xsl" href="__CANARY_URL__/xsl"?>
+<rss version="2.0"><channel><title>&a;</title><link>https://feed.example.com/</link><description>d</description>
+<item><title>&a;</title><link>https://feed.example.com/1</link>
+<description><![CDATA[<img src="__CANARY_URL__/img">]]></description>
+<enclosure url="__CANARY_URL__/enclosure" length="1" type="audio/mpeg"/></item>
+</channel></rss>

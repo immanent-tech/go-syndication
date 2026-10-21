@@ -11,13 +11,13 @@ import (
 )
 
 func (c Category) String() string {
-	return sanitization.SanitizeString(c.Text)
+	return sanitization.SanitizeText(c.Text, sanitization.DefaultMaxRunes)
 }
 
 // GetCategories returns all iTunes categories associated with the object.
 func (c Categories) GetCategories() []string {
 	var categories []string
-	main := sanitization.SanitizeString(c.Text)
+	main := sanitization.SanitizeText(c.Text, sanitization.DefaultMaxRunes)
 	categories = append(categories, main)
 	if len(c.Categories) > 0 {
 		for subcategory := range slices.Values(c.Categories) {

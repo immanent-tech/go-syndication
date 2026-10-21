@@ -96,13 +96,13 @@ func (d *DCDate) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 }
 
 func (d Description) String() string {
-	return sanitization.SanitizeString(strings.Join(d, " "))
+	return sanitization.SanitizeHTML(strings.Join(d, " "))
 }
 
 func (r Rights) String() string {
-	return sanitization.SanitizeString(strings.Join(r, " "))
+	return sanitization.SanitizeText(strings.Join(r, " "), sanitization.DefaultMaxRunes)
 }
 
 func (l Language) String() string {
-	return sanitization.SanitizeString(strings.Join(l, " "))
+	return sanitization.SanitizeText(strings.Join(l, " "), sanitization.DefaultMaxRunes)
 }

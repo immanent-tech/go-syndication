@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>&lt;img src=x onerror=window.PWNED=1&gt;</title>
+<link>https://feed.example.com/</link>
+<description>&lt;script&gt;window.PWNED=0&lt;/script&gt;</description>
+<item>
+<title>&lt;script&gt;window.PWNED=2&lt;/script&gt;</title>
+<link>https://feed.example.com/1</link>
+<dc:creator>&lt;img src=x onerror=window.PWNED=a1&gt;</dc:creator>
+<category>&lt;script&gt;window.PWNED=2&lt;/script&gt;</category>
+<description>plain body</description>
+</item>
+<item>
+<title>"&gt;&lt;img src=x onerror=window.PWNED=3&gt;</title>
+<link>https://feed.example.com/2</link>
+<dc:creator>&lt;img src=x onerror=window.PWNED=a2&gt;</dc:creator>
+<category>"&gt;&lt;img src=x onerror=window.PWNED=3&gt;</category>
+<description>plain body</description>
+</item>
+<item>
+<title>' onmouseover='window.PWNED=4</title>
+<link>https://feed.example.com/3</link>
+<dc:creator>&lt;img src=x onerror=window.PWNED=a3&gt;</dc:creator>
+<category>' onmouseover='window.PWNED=4</category>
+<description>plain body</description>
+</item>
+<item>
+<title>&lt;/a&gt;&lt;script&gt;window.PWNED=5&lt;/script&gt;</title>
+<link>https://feed.example.com/4</link>
+<dc:creator>&lt;img src=x onerror=window.PWNED=a4&gt;</dc:creator>
+<category>&lt;/a&gt;&lt;script&gt;window.PWNED=5&lt;/script&gt;</category>
+<description>plain body</description>
+</item>
+<item>
+<title>{{7*7}} {{.}} ${7*7} &lt;%= 7*7 %&gt;</title>
+<link>https://feed.example.com/5</link>
+<dc:creator>&lt;img src=x onerror=window.PWNED=a5&gt;</dc:creator>
+<category>{{7*7}} {{.}} ${7*7} &lt;%= 7*7 %&gt;</category>
+<description>plain body</description>
+</item>
+<item>
+<title>&lt;svg/onload=window.PWNED=6&gt;</title>
+<link>https://feed.example.com/6</link>
+<dc:creator>&lt;img src=x onerror=window.PWNED=a6&gt;</dc:creator>
+<category>&lt;svg/onload=window.PWNED=6&gt;</category>
+<description>plain body</description>
+</item>
+<item>
+<title>javascript:window.PWNED=7</title>
+<link>https://feed.example.com/7</link>
+<dc:creator>&lt;img src=x onerror=window.PWNED=a7&gt;</dc:creator>
+<category>javascript:window.PWNED=7</category>
+<description>plain body</description>
+</item>
+<item><title></title><description></description></item>
+<item></item>
+</channel>
+</rss>

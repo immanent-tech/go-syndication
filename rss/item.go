@@ -110,7 +110,7 @@ func (i Item) GetID() string {
 
 // GetTitle retrieves the <title> (if any) of the Item.
 func (i Item) GetTitle() string {
-	return sanitization.SanitizeString(i.Title)
+	return sanitization.SanitizeHTML(sanitization.SanitizeText(i.Title, sanitization.DefaultMaxRunes))
 }
 
 // GetLink retrieves the <link> (if any) of the Item.
@@ -142,7 +142,7 @@ func (i Item) GetDescription() string {
 func (i Item) GetAuthors() []string {
 	authors := make([]string, 0)
 	if i.Author != nil && *i.Author != "" {
-		authors = append(authors, sanitization.SanitizeString(*i.Author))
+		authors = append(authors, sanitization.SanitizeText(*i.Author, sanitization.DefaultMaxRunes))
 	}
 	if len(i.DcPublisher) > 0 {
 		authors = append(authors, i.DcPublisher...)
@@ -186,7 +186,7 @@ func (i Item) GetLanguage() *string {
 func (i Item) GetCategories() []string {
 	categories := make([]string, 0, len(i.Categories))
 	for category := range slices.Values(i.Categories) {
-		if str := strings.TrimSpace(category.String()); str != "" {
+		if str := sanitization.SanitizeText(category.String(), sanitization.DefaultMaxRunes); str != "" {
 			categories = append(categories, str)
 		}
 	}
@@ -346,7 +346,7 @@ func NewItemDescription(value string, cdata bool) ItemDescription {
 }
 
 func (c ItemDescription) String() string {
-	return sanitization.SanitizeString(c.Value)
+	return sanitization.SanitizeText(c.Value, sanitization.DefaultMaxRunes*2)
 }
 
 // MarshalXML implements xml.Marshaler.

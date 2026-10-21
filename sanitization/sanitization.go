@@ -4,52 +4,46 @@
 package sanitization
 
 import (
-	"bytes"
+	"errors"
 	"fmt"
 	"html"
 	"net/url"
 	"slices"
 	"strings"
+	"sync"
+	"unicode"
 
 	"github.com/microcosm-cc/bluemonday"
 )
 
-var AllowedURLSchemes = []string{"http", "https", "mailto", "ftp"}
+const DefaultMaxRunes = 300
 
-// Option is a functional option applied to a sanitisation method.
-type Option func(*config)
+var AllowedURLSchemes = []string{"http", "https", "ftp", "mailto"}
 
-// WithPolicy will set a custom policy for a sanitisation method.
-func WithPolicy(policy *bluemonday.Policy) Option {
-	return func(s *config) {
-		s.policy = policy
-	}
+var policy = sync.OnceValue(func() *bluemonday.Policy {
+	return bluemonday.UGCPolicy()
+})
+
+// SanitizeHTML sanitizes strings containing HTML. It performs:
+//
+// bluemonday -> html unescaping -> trimspace
+//
+// The resulting string should still contain valid HTML, but will be much safer to use.
+func SanitizeHTML(str string) string {
+	return strings.TrimSpace(html.UnescapeString(policy().Sanitize(str)))
 }
 
-// config holds configuration for sanitisation methods.
-type config struct {
-	policy *bluemonday.Policy
-}
-
-// SanitizeString attempts to "sanitize" a string value from a Feed/Item object. It will strip any leading/trailing
-// whitespace and then run the string through bluemonday to remove dangerous components. This should retain HTML5
-// content.
-func SanitizeString(str string, options ...Option) string {
-	cfg := &config{
-		policy: bluemonday.UGCPolicy(),
-	}
-	for option := range slices.Values(options) {
-		option(cfg)
-	}
-	return strings.TrimSpace(html.UnescapeString(cfg.policy.Sanitize(str)))
-}
-
-// SanitizeURLString attempts to "sanitize" a string value representing a URL. It first runs the string through
-// SanitizeString, then unescapes the any path, then parses the URL and returns its string representation.
+// SanitizeURLString attempts to "sanitize" a string value representing a URL. It performs:
+//
+// path unescaping -> url parsing -> scheme validation
+//
+// It does not perform other validation, such as checking for absolute vs relative, host, etc.
 func SanitizeURLString(str string) (string, error) {
-	safeStr := SanitizeString(str)
-	var err error
-	safeStr, err = url.PathUnescape(safeStr)
+	var (
+		safeStr string
+		err     error
+	)
+	safeStr, err = url.PathUnescape(str)
 	if err != nil {
 		return "", fmt.Errorf("unescape URL path: %w", err)
 	}
@@ -60,17 +54,44 @@ func SanitizeURLString(str string) (string, error) {
 	if !slices.Contains(AllowedURLSchemes, parsedURL.Scheme) {
 		return "", fmt.Errorf("scheme is not allowed: %s", parsedURL.Scheme)
 	}
+	if parsedURL.Scheme != "mailto" && (parsedURL.Host == "" || parsedURL.User != nil) {
+		return "", errors.New("contains illegal elements")
+	}
 	return parsedURL.String(), nil
 }
 
-// SanitizeBytes attempts to "sanitize" a []byte value from a Feed/Item object. It will strip any leading/trailing
-// whitespace and then run the string through bluemonday to remove dangerous components.
-func SanitizeBytes(data []byte, options ...Option) []byte {
-	cfg := &config{
-		policy: bluemonday.UGCPolicy(),
+// SanitizeText prepares a plain-text field:
+//
+// strips control bidi-override and zero-width characters -> replaces newlines -> and caps the length.
+//
+// Output is still untrusted and must be escaped.
+func SanitizeText(s string, maxRunes int) string {
+	s = strings.ToValidUTF8(s, "\uFFFD")
+	var b strings.Builder
+	n := 0
+	prevSpace := true // true at the start, so leading whitespace is dropped
+	for _, r := range s {
+		switch {
+		case unicode.IsSpace(r): // \n \r \t, NBSP, U+2028/2029, ideographic space...
+			if prevSpace {
+				continue
+			}
+			r = ' '
+			prevSpace = true
+		case unicode.IsControl(r):
+			continue
+		case r >= 0x202A && r <= 0x202E, r >= 0x2066 && r <= 0x2069,
+			r == 0x200B, r == 0x200C, r == 0x200E, r == 0x200F,
+			r == 0x2060, r == 0xFEFF:
+			continue // keeps U+200D (ZWJ) so emoji sequences survive
+		default:
+			prevSpace = false
+		}
+		b.WriteRune(r)
+		n++
+		if n >= maxRunes {
+			break
+		}
 	}
-	for option := range slices.Values(options) {
-		option(cfg)
-	}
-	return cfg.policy.SanitizeBytes(bytes.TrimSpace(data))
+	return strings.TrimSpace(b.String())
 }

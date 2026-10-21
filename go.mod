@@ -23,6 +23,7 @@ require (
 	github.com/go-openapi/swag/jsonname v0.26.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/goforj/godump v1.10.0
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/klauspost/compress v1.20.0 // indirect
 	github.com/leodido/go-urn v1.5.0 // indirect

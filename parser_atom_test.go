@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -3015,11 +3016,30 @@ var atomGeoRSS = map[string]atomTestSuite{
 	},
 }
 
+var atomSecFields = map[string]atomTestSuite{
+	"links_atom_xmlbase.xml": {
+		wantInvalid: true,
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			for item := range slices.Values(feed.Entries) {
+				if strings.HasPrefix(item.GetTitle(), "BAD:") && item.GetLink() != "" {
+					t.Errorf(
+						"%q: link=%q",
+						item.GetTitle(),
+						item.GetLink(),
+					)
+				}
+			}
+		},
+	},
+}
+
 // atomTests are the groups of test cases to run.
 var atomTests = map[string]map[string]atomTestSuite{
 	"test/feedvalidator/testcases/atom/1.1":  atomOtherTests,
 	"test/feedvalidator/testcases/atom/must": atomMustTests,
 	"test/extensions/georss":                 atomGeoRSS,
+	"test/feedsec/fields":                    atomSecFields,
 }
 
 func TestNewFeedFromBytesAtom(t *testing.T) {

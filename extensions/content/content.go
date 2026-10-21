@@ -19,7 +19,7 @@ func NewContentEncoded(value string, cdata bool) ContentEncoded {
 }
 
 func (c ContentEncoded) String() string {
-	return sanitization.SanitizeString(c.Value)
+	return sanitization.SanitizeHTML(c.Value)
 }
 
 // MarshalXML implements xml.Marshaler.

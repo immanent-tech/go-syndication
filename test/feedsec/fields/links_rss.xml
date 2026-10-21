@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss
+  version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>Link and enclosure validation</title>
+<link>https://feed.example.com/</link>
+<description>Test fixture: Link and enclosure validation</description>
+<item>
+<title>GOOD: https</title>
+<link>https://example.com/a</link>
+<enclosure url="https://example.com/a.mp3" length="1024" type="audio/mpeg" />
+<description>x</description>
+</item>
+<item>
+<title>GOOD: http</title>
+<link>http://example.com/a</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: javascript</title>
+<link>javascript:window.PWNED=1</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: javascript mixed case</title>
+<link>JaVaScRiPt:window.PWNED=2</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: javascript via char ref</title>
+<link>&#x6A;avascript:window.PWNED=3</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: data</title>
+<link>data:text/html;base64,PHNjcmlwdD53aW5kb3cuUFdORUQ9ODwvc2NyaXB0Pg==</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: vbscript</title>
+<link>vbscript:msgbox(1)</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: file</title>
+<link>file:///etc/passwd</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: gopher</title>
+<link>gopher://127.0.0.1:6379/_INFO</link>
+<description>x</description>
+</item>
+<item>
+<title>GOOD: ftp</title>
+<link>ftp://example.com/x</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: leading whitespace</title>
+<link>   javascript:window.PWNED=4</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: embedded tab</title>
+<link>java&#9;script:window.PWNED=5</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: embedded newline</title>
+<link>java&#10;script:window.PWNED=6</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: no scheme</title>
+<link>www.example.com/page</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: empty link</title>
+<link />
+<description>x</description>
+</item>
+<item>
+<title>BAD: credentials in url</title>
+<link>https://trusted.example.com@evil.example/</link>
+<description>x</description>
+</item>
+<item>
+<title>BAD: good link but javascript enclosure</title>
+<link>https://example.com/ok</link>
+<enclosure url="javascript:window.PWNED=7" length="1024" type="audio/mpeg" />
+<description>x</description>
+</item>
+<item>
+<title>BAD: good link but file enclosure</title>
+<link>https://example.com/ok</link>
+<enclosure url="file:///etc/passwd" length="1024" type="audio/mpeg" />
+<description>x</description>
+</item>
+<item>
+<title>BAD: good link but internal enclosure</title>
+<link>https://example.com/ok</link>
+<enclosure url="gopher://127.0.0.1:6379/_INFO" length="1024" type="audio/mpeg" />
+<description>x</description>
+</item>
+</channel>
+</rss>

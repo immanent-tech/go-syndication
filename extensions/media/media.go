@@ -38,9 +38,9 @@ func (t MediaThumbnail) AsImage() *types.Image {
 
 func (c MediaCategory) String() string {
 	if c.Label != nil {
-		return sanitization.SanitizeString(*c.Label)
+		return sanitization.SanitizeText(*c.Label, sanitization.DefaultMaxRunes)
 	}
-	return sanitization.SanitizeString(c.Value)
+	return sanitization.SanitizeText(c.Value, sanitization.DefaultMaxRunes)
 }
 
 // GetCategory retrieves the category assigned to the media:content element (if any).
@@ -53,7 +53,7 @@ func (c MediaContent) GetCategory() string {
 
 // GetText retrieves the text of media:content element (if any).
 func (t MediaText) GetText() string {
-	return sanitization.SanitizeString(t.Value)
+	return sanitization.SanitizeHTML(t.Value)
 }
 
 // AsImage will return a types.ImageInfo if the <media:content> element represents an image. If not, it will return nil.
@@ -93,7 +93,7 @@ func mediaContentCustomValidation(sl validator.StructLevel) {
 
 func (g MediaGroup) GetDescription() string {
 	if g.MediaDescription != nil {
-		return sanitization.SanitizeString(g.MediaDescription.Value)
+		return sanitization.SanitizeText(g.MediaDescription.Value, 600)
 	}
 	return ""
 }

@@ -46,11 +46,11 @@ const dateLayout = time.RFC3339Nano
 func (c Category) String() string {
 	// Use the term attribute.
 	if c.Term.Value != "" {
-		return sanitization.SanitizeString(c.Term.Value)
+		return sanitization.SanitizeText(c.Term.Value, sanitization.DefaultMaxRunes)
 	}
 	// Use the label attribute if present.
 	if c.Label != nil && c.Label.Value != "" {
-		return sanitization.SanitizeString(c.Label.Value)
+		return sanitization.SanitizeText(c.Label.Value, sanitization.DefaultMaxRunes)
 	}
 	// Use any value if present.
 	if len(c.Extensions) > 0 {
@@ -68,16 +68,19 @@ func (c Category) String() string {
 // String formats the generator value as a string in the format VALUE[/VERSION] [(URI)].
 func (g Generator) String() string {
 	var gen strings.Builder
-	gen.WriteString(strings.TrimSpace(g.Value))
+	gen.WriteString(sanitization.SanitizeText(g.Value, sanitization.DefaultMaxRunes))
 	if g.Version != nil && *g.Version != "" {
 		gen.WriteString("/")
-		gen.WriteString(*g.Version)
+		gen.WriteString(sanitization.SanitizeText(*g.Version, sanitization.DefaultMaxRunes))
 	}
 	if g.URI != nil && *g.URI != "" {
-		gen.WriteString(" ")
-		gen.WriteString("(")
-		gen.WriteString(*g.URI)
-		gen.WriteString(")")
+		safeURL, err := sanitization.SanitizeURLString(*g.URI)
+		if err == nil {
+			gen.WriteString(" ")
+			gen.WriteString("(")
+			gen.WriteString(safeURL)
+			gen.WriteString(")")
+		}
 	}
 
 	return gen.String()
@@ -92,7 +95,7 @@ func (i Icon) String() string {
 }
 
 func (i ID) String() string {
-	return sanitization.SanitizeString(i.Value)
+	return sanitization.SanitizeHTML(i.Value)
 }
 
 func (l Logo) String() string {
@@ -154,15 +157,18 @@ func linkCustomValidation(sl validator.StructLevel) {
 // omitted if the PersonConstruct has no email.
 func (p PersonConstruct) String() string {
 	var value strings.Builder
-	value.WriteString(p.Name)
+	value.WriteString(sanitization.SanitizeText(p.Name, sanitization.DefaultMaxRunes))
 	if p.Email != nil && *p.Email != "" {
 		value.WriteString(" (")
-		value.WriteString(*p.Email)
+		value.WriteString(sanitization.SanitizeText(*p.Email, sanitization.DefaultMaxRunes))
 		value.WriteString(")")
 	}
 	if p.URI != nil && *p.URI != "" {
-		value.WriteString(" ")
-		value.WriteString(*p.URI)
+		safeURL, err := sanitization.SanitizeURLString(*p.URI)
+		if err == nil {
+			value.WriteString(" ")
+			value.WriteString(safeURL)
+		}
 	}
 	return value.String()
 }
@@ -177,9 +183,9 @@ func personConstructCustomValidation(sl validator.StructLevel) {
 func (t TextConstruct) String() string {
 	switch {
 	case t.Type == nil || (*t.Type != TextConstructTypeXhtml && !contentIsXMLMediaType(ContentType(*t.Type))):
-		return sanitization.SanitizeString(t.Value)
+		return sanitization.SanitizeHTML(t.Value)
 	case t.XHTML != nil:
-		return sanitization.SanitizeString(*t.XHTML)
+		return sanitization.SanitizeHTML(*t.XHTML)
 	default:
 		return ""
 	}
@@ -649,16 +655,16 @@ func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 func (c Content) String() string {
 	switch {
 	case c.Type == nil && c.Text != nil:
-		return sanitization.SanitizeString(*c.Text)
+		return sanitization.SanitizeHTML(*c.Text)
 	case *c.Type == ContentTypeText || *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "text/"):
 		if c.Text != nil {
-			return sanitization.SanitizeString(*c.Text)
+			return sanitization.SanitizeHTML(*c.Text)
 		}
 		return ""
 	case *c.Type == ContentTypeXhtml && c.XHTML != nil:
-		return sanitization.SanitizeString(*c.XHTML)
+		return sanitization.SanitizeHTML(*c.XHTML)
 	case contentIsXMLMediaType(*c.Type):
-		return sanitization.SanitizeString(*c.XML)
+		return sanitization.SanitizeHTML(*c.XML)
 	case c.Base64 != nil:
 		return string(c.Base64)
 	default:

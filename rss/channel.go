@@ -25,12 +25,12 @@ var _ types.FeedSource = (*Channel)(nil)
 
 // GetTitle retrieves the <title> (if any) of the Channel.
 func (c Channel) GetTitle() string {
-	return sanitization.SanitizeString(c.Title)
+	return sanitization.SanitizeHTML(sanitization.SanitizeText(c.Title, sanitization.DefaultMaxRunes))
 }
 
 // GetDescription retrieves the <description> (if any) of the Channel.
 func (c Channel) GetDescription() string {
-	return sanitization.SanitizeString(c.Description)
+	return sanitization.SanitizeText(c.Description, sanitization.DefaultMaxRunes*2)
 }
 
 // GetSourceURL retrieves the URL that links to the RSS file for the channel. This will be any <atom:link> element
@@ -66,7 +66,7 @@ func (c Channel) GetLink() string {
 func (c Channel) GetAuthors() []string {
 	authors := make([]string, 0)
 	if webmaster := c.WebMaster; webmaster != nil {
-		authors = append(authors, sanitization.SanitizeString(*webmaster))
+		authors = append(authors, sanitization.SanitizeText(*webmaster, sanitization.DefaultMaxRunes))
 	}
 	if len(c.DcPublisher) > 0 {
 		authors = append(authors, c.DcPublisher...)
@@ -83,7 +83,7 @@ func (c Channel) GetAuthors() []string {
 func (c Channel) GetContributors() []string {
 	contributors := make([]string, 0)
 	if editor := c.ManagingEditor; editor != nil {
-		contributors = append(contributors, sanitization.SanitizeString(*editor))
+		contributors = append(contributors, sanitization.SanitizeText(*editor, sanitization.DefaultMaxRunes))
 	}
 	if len(c.DcContributor) > 0 {
 		contributors = append(contributors, c.DcContributor...)
@@ -96,7 +96,7 @@ func (c Channel) GetContributors() []string {
 // or <copyright> elements.
 func (c Channel) GetRights() *string {
 	if rights := c.Copyright; rights != nil {
-		safeRights := sanitization.SanitizeString(*rights)
+		safeRights := sanitization.SanitizeText(*rights, sanitization.DefaultMaxRunes)
 		return &safeRights
 	}
 	if rights := c.DcRights.String(); rights != "" {
@@ -109,7 +109,7 @@ func (c Channel) GetRights() *string {
 // or <lang> elements.
 func (c Channel) GetLanguage() *string {
 	if lang := c.Language; lang != nil {
-		safeLang := sanitization.SanitizeString(*lang)
+		safeLang := sanitization.SanitizeText(*lang, sanitization.DefaultMaxRunes)
 		return &safeLang
 	}
 	if lang := c.DcLanguage.String(); lang != "" {
@@ -123,7 +123,7 @@ func (c Channel) GetLanguage() *string {
 func (c Channel) GetCategories() []string {
 	categories := make([]string, 0, len(c.Categories))
 	for category := range slices.Values(c.Categories) {
-		if str := strings.TrimSpace(category.String()); str != "" {
+		if str := sanitization.SanitizeText(category.String(), sanitization.DefaultMaxRunes); str != "" {
 			categories = append(categories, str)
 		}
 	}
@@ -133,7 +133,7 @@ func (c Channel) GetCategories() []string {
 		}
 	}
 	if c.GooglePlayCategory != nil {
-		if str := strings.TrimSpace(c.GooglePlayCategory.String()); str != "" {
+		if str := c.GooglePlayCategory.String(); str != "" {
 			categories = append(categories, str)
 		}
 	}

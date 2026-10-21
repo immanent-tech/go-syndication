@@ -5,7 +5,9 @@ package feeds
 
 import (
 	"errors"
+	"os"
 	"slices"
+	"testing"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/validation"
@@ -25,4 +27,20 @@ func getFailedValidations(err error) (map[string][]string, error) {
 		}
 	}
 	return failedValidations, nil
+}
+
+func trunc(s string) string {
+	if len(s) > 160 {
+		return s[:160] + "..."
+	}
+	return s
+}
+
+func readFile(t *testing.T, path string) []byte {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
 }

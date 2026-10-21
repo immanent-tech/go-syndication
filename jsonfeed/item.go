@@ -22,7 +22,7 @@ func (i *Item) GetID() string {
 // GetTitle retrieves title (if any) of the Item.
 func (i *Item) GetTitle() string {
 	if i.Title != nil {
-		return sanitization.SanitizeString(*i.Title)
+		return sanitization.SanitizeText(*i.Title, sanitization.DefaultMaxRunes)
 	}
 	return ""
 }
@@ -30,20 +30,26 @@ func (i *Item) GetTitle() string {
 // GetLink retrieves URL associated with the item (if any). It will retrieve either the URL or ExternalURL, whichever is
 // found first, or an empty string if neither is found.
 func (i *Item) GetLink() string {
+	var rawURL string
 	switch {
 	case i.URL != nil:
-		return *i.URL
+		rawURL = *i.URL
 	case i.ExternalURL != nil:
-		return *i.ExternalURL
+		rawURL = *i.ExternalURL
 	default:
 		return ""
 	}
+	safeURL, err := sanitization.SanitizeURLString(rawURL)
+	if err != nil {
+		return ""
+	}
+	return safeURL
 }
 
 // GetDescription retrieves the summary (if any) of the Item.
 func (i *Item) GetDescription() string {
 	if i.Summary != nil {
-		return sanitization.SanitizeString(*i.Summary)
+		return sanitization.SanitizeText(*i.Summary, 600)
 	}
 	return ""
 }
@@ -74,7 +80,11 @@ func (i *Item) GetRights() *string {
 
 // GetLanguage retrieves the language (if any) of the item.
 func (i *Item) GetLanguage() *string {
-	return i.Language
+	if i.Language != nil {
+		lang := sanitization.SanitizeText(*i.Language, sanitization.DefaultMaxRunes)
+		return &lang
+	}
+	return nil
 }
 
 // GetCategories retrieves the categories (if any) of the Item.
@@ -83,6 +93,9 @@ func (i *Item) GetCategories() []string {
 	i.Tags = slices.DeleteFunc(i.Tags, func(str string) bool {
 		return strings.TrimSpace(str) == ""
 	})
+	for idx, tag := range i.Tags {
+		i.Tags[idx] = sanitization.SanitizeText(tag, sanitization.DefaultMaxRunes)
+	}
 	return slices.CompactFunc(i.Tags, func(a, b string) bool {
 		return strings.EqualFold(a, b)
 	})
@@ -91,8 +104,12 @@ func (i *Item) GetCategories() []string {
 // GetImage retrieves the image (if any) for the Item.
 func (i *Item) GetImage() *types.Image {
 	if i.Image != nil {
+		safeURL, err := sanitization.SanitizeURLString(*i.Image)
+		if err != nil {
+			return nil
+		}
 		return &types.Image{
-			URL: *i.Image,
+			URL: safeURL,
 		}
 	}
 	return nil
@@ -128,9 +145,9 @@ func (i *Item) GetContent() *string {
 	var content string
 	switch {
 	case i.ContentHTML != nil:
-		content = sanitization.SanitizeString(*i.ContentHTML)
+		content = sanitization.SanitizeHTML(*i.ContentHTML)
 	case i.ContentText != nil:
-		content = sanitization.SanitizeString(*i.ContentText)
+		content = sanitization.SanitizeHTML(*i.ContentText)
 	}
 	if content != "" {
 		return &content

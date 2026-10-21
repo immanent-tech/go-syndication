@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>XSS: entity layers and parser tricks</title>
+<link>https://feed.example.com/</link>
+<description>Test fixture: XSS: entity layers and parser tricks</description>
+<item>
+<title>entity-escaped script (normal RSS)</title>
+<link>https://feed.example.com/1</link>
+<guid isPermaLink="false">fixture-1</guid>
+<description>&lt;script&gt;window.PWNED=1&lt;/script&gt;&lt;img src=x onerror=window.PWNED=1&gt;</description>
+</item>
+<item>
+<title>double escaped</title>
+<link>https://feed.example.com/2</link>
+<guid isPermaLink="false">fixture-2</guid>
+<description>&amp;lt;script&amp;gt;window.PWNED=2&amp;lt;/script&amp;gt;</description>
+</item>
+<item>
+<title>triple escaped</title>
+<link>https://feed.example.com/3</link>
+<guid isPermaLink="false">fixture-3</guid>
+<description>&amp;amp;lt;img src=x onerror=window.PWNED=3&amp;amp;gt;</description>
+</item>
+<item>
+<title>split CDATA sections</title>
+<link>https://feed.example.com/4</link>
+<guid isPermaLink="false">fixture-4</guid>
+<description><![CDATA[<scr]]><![CDATA[ipt>window.PWNED=4</scr]]><![CDATA[ipt>]]></description>
+</item>
+<item>
+<title>empty comment then script</title>
+<link>https://feed.example.com/5</link>
+<guid isPermaLink="false">fixture-5</guid>
+<description><![CDATA[<!--><script>window.PWNED=5</script>-->]]></description>
+</item>
+<item>
+<title>conditional comment</title>
+<link>https://feed.example.com/6</link>
+<guid isPermaLink="false">fixture-6</guid>
+<description><![CDATA[<!--[if IE]><script>window.PWNED=6</script><![endif]--><p>x</p>]]></description>
+</item>
+<item>
+<title>numeric refs for angle brackets</title>
+<link>https://feed.example.com/7</link>
+<guid isPermaLink="false">fixture-7</guid>
+<description><![CDATA[&#60;script&#62;window.PWNED=7&#60;/script&#62;]]></description>
+</item>
+<item>
+<title>CDATA marker inside HTML</title>
+<link>https://feed.example.com/8</link>
+<guid isPermaLink="false">fixture-8</guid>
+<description><![CDATA[<![CDATA[<img src=x onerror=window.PWNED=8>]] >]]></description>
+</item>
+<item>
+<title>UTF-7 style</title>
+<link>https://feed.example.com/9</link>
+<guid isPermaLink="false">fixture-9</guid>
+<description>+ADw-script+AD4-window.PWNED=9+ADw-/script+AD4-</description>
+</item>
+<item>
+<title>processing instructions</title>
+<link>https://feed.example.com/10</link>
+<guid isPermaLink="false">fixture-10</guid>
+<description><![CDATA[<?php echo 1; ?><?xml-stylesheet href="javascript:window.PWNED=10"?>]]></description>
+</item>
+<item>
+<title>nested sanitizer-looking markup</title>
+<link>https://feed.example.com/11</link>
+<guid isPermaLink="false">fixture-11</guid>
+<description><![CDATA[<p><p><p><a href="https://example.com/"><a href="javascript:window.PWNED=11">x</a></a>]]></description>
+</item>
+<item>
+<title>unterminated comment</title>
+<link>https://feed.example.com/12</link>
+<guid isPermaLink="false">fixture-12</guid>
+<description><![CDATA[<p>before</p><!-- <script>window.PWNED=12</script>]]></description>
+</item>
+</channel>
+</rss>
