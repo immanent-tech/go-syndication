@@ -249,7 +249,9 @@ type Channel struct {
 	SourceSelf             *externalRef11.Self              `json:"source_self,omitempty" validate:"omitempty,url" xml:"https://source.scripting.com/ self,omitempty"`
 	SourceSubscriptionList []externalRef11.SubscriptionList `json:"SourceSubscriptionList,omitempty" xml:"https://source.scripting.com/ subscriptionList,omitempty"`
 	XMLName                xml.Name                         `json:"XMLName" validate:"required" xml:"channel"`
-	AtomLink               *AtomLink                        `json:"atom_link" validate:"omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
+
+	// AtomLinks contains the atom:link elements present in the channel.
+	AtomLinks []AtomLink `json:"atom_links,omitempty" xml:"http://www.w3.org/2005/Atom link,omitempty"`
 
 	// Categories is a list of categories associated with the channel.
 	Categories []Category `json:"category,omitempty" xml:"category,omitempty"`

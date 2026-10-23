@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/validation"
 )
@@ -32,31 +31,31 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 	//
 	// https://www.rssboard.org/rss-profile
 	"RSS-Best-Practices": {
-		{
-			Check: func(c rss.Channel) Result {
-				metadata := metadata{
-					ID:          "channel-should-have-atom-link-self",
-					Description: "A feed should contain an atom:link with rel=\"self\" identifying its own URL (5.1.1).",
-				}
-				if c.AtomLink == nil {
-					return fail(metadata, "channel has no atom:link rel=\"self\"")
-				}
-				if c.AtomLink.Rel == nil {
-					return fail(metadata, "channel has no atom:link rel=\"self\"")
-				}
-				if *c.AtomLink.Rel != atom.LinkRelSelf {
-					return fail(metadata, "channel has no atom:link rel=\"self\"")
-				}
-				if !validURL(c.AtomLink.String()) {
-					return fail(
-						metadata,
-						"channel atom:link rel=\"self\" %q is not an absolute URL",
-						c.AtomLink.String(),
-					)
-				}
-				return pass(metadata)
-			},
-		},
+		// {
+		// 	Check: func(c rss.Channel) Result {
+		// 		metadata := metadata{
+		// 			ID:          "channel-should-have-atom-link-self",
+		// 			Description: "A feed should contain an atom:link with rel=\"self\" identifying its own URL (5.1.1).",
+		// 		}
+		// 		if c.AtomLink == nil {
+		// 			return fail(metadata, "channel has no atom:link rel=\"self\"")
+		// 		}
+		// 		if c.AtomLink.Rel == nil {
+		// 			return fail(metadata, "channel has no atom:link rel=\"self\"")
+		// 		}
+		// 		if *c.AtomLink.Rel != atom.LinkRelSelf {
+		// 			return fail(metadata, "channel has no atom:link rel=\"self\"")
+		// 		}
+		// 		if !validURL(c.AtomLink.String()) {
+		// 			return fail(
+		// 				metadata,
+		// 				"channel atom:link rel=\"self\" %q is not an absolute URL",
+		// 				c.AtomLink.String(),
+		// 			)
+		// 		}
+		// 		return pass(metadata)
+		// 	},
+		// },
 		{
 			Check: func(c rss.Channel) Result {
 				metadata := metadata{

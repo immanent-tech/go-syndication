@@ -158,7 +158,7 @@ type RSSOption func(*RSS)
 
 func WithAtomLink(link *atom.Link) RSSOption {
 	return func(r *RSS) {
-		r.Channel.AtomLink = link
+		r.Channel.AtomLinks = append(r.Channel.AtomLinks, *link)
 	}
 }
 
@@ -384,7 +384,7 @@ func (r *RSS) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 // declare a namespace for a typed extension field you populated.
 func (r *RSS) AutoDeclareNamespaces() {
 	need := map[string]bool{}
-	if r.Channel.AtomLink != nil {
+	if len(r.Channel.AtomLinks) > 0 {
 		need["atom"] = true
 	}
 	if r.Channel.SYUdatePeriod != nil || r.Channel.SYUpdateFrequency != nil {

@@ -480,8 +480,14 @@ components:
               x-oapi-codegen-extra-tags:
                 xml: "description"
                 validate: "required"
-            atom_link:
-              $ref: "#/components/schemas/AtomLink"
+            atom_links:
+              description: contains the atom:link elements present in the channel.
+              type: array
+              items:
+                $ref: "#/components/schemas/AtomLink"
+              x-oapi-codegen-extra-tags:
+                xml: "http://www.w3.org/2005/Atom link,omitempty"
+              x-go-type-skip-optional-pointer: true
             language:
               description: >
                 is the language the channel is written in. This allows aggregators to group all Italian language sites, for
