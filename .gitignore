@@ -31,5 +31,7 @@
 !.devcontainer/*
 !test/setup-feedvalidator-submodule.sh
 !test/feedvalidator
+!test/feedsec/**/*.html
+!test/feedsec/**/*.xml
 # ...even if they are in subdirectories
 !*/
