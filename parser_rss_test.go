@@ -38,18 +38,24 @@ var rssMustPass = map[string]rssTestSuite{
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, atom.LinkRelSelf, *feed.Channel.AtomLink.Rel)
-			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLink.UndefinedContent)
-			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
+			idx := slices.IndexFunc(feed.Channel.AtomLinks, func(e rss.AtomLink) bool {
+				return e.Rel != nil && *e.Rel == atom.LinkRelSelf
+			})
+			assert.GreaterOrEqual(t, idx, 0)
+			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLinks[idx].UndefinedContent)
+			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLinks[idx].Href)
 		},
 	},
 	"atom_link.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
 			t.Helper()
-			assert.Equal(t, atom.LinkRelSelf, *feed.Channel.AtomLink.Rel)
-			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLink.UndefinedContent)
-			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLink.Href)
+			idx := slices.IndexFunc(feed.Channel.AtomLinks, func(e rss.AtomLink) bool {
+				return e.Rel != nil && *e.Rel == atom.LinkRelSelf
+			})
+			assert.GreaterOrEqual(t, idx, 0)
+			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLinks[idx].UndefinedContent)
+			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLinks[idx].Href)
 		},
 	},
 	// TODO: implement blogChannel
