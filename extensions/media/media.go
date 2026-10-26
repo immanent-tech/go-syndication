@@ -93,7 +93,7 @@ func mediaContentCustomValidation(sl validator.StructLevel) {
 
 func (g MediaGroup) GetDescription() string {
 	if g.MediaDescription != nil {
-		return sanitization.SanitizeText(g.MediaDescription.Value, 600)
+		return sanitization.SanitizeHTML(g.MediaDescription.Value)
 	}
 	return ""
 }

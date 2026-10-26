@@ -346,7 +346,7 @@ func NewItemDescription(value string, cdata bool) ItemDescription {
 }
 
 func (c ItemDescription) String() string {
-	return sanitization.SanitizeText(c.Value, sanitization.DefaultMaxRunes*2)
+	return sanitization.SanitizeHTML(c.Value)
 }
 
 // MarshalXML implements xml.Marshaler.
