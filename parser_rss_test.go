@@ -463,7 +463,7 @@ var rssMedia = map[string]rssTestSuite{
 				assert.Len(t, item.MediaContent.MediaTexts, 1)
 				assert.Equal(
 					t,
-					"Oh, say, can you see, by the dawn's early light",
+					"Oh, say, can you see, by the dawn&#39;s early light",
 					item.MediaContent.MediaTexts[0].GetText(),
 				)
 				assert.Equal(t, "nonadult", item.MediaContent.MediaRating.Value)
@@ -617,7 +617,7 @@ var rssSecXSS = map[string]rssTestSuite{
 			assert.Nil(feed.Channel.Items[13].GetContent(), "video source onerror")
 			assert.Equal(`<img src="%60x%60">`, feed.Channel.Items[14].GetDescription(), "backtick attribute")
 			assert.Equal(
-				`<img src="https://example.com/a.png">`,
+				`<img src="https://example.com/a.png" alt="">`,
 				*feed.Channel.Items[15].GetContent(),
 				"attribute breakout via alt",
 			)
@@ -716,6 +716,28 @@ var rssSecXSS = map[string]rssTestSuite{
 			)
 			assert.Nil(feed.Channel.Items[19].GetContent(), "input type image")
 			assert.Empty(feed.Channel.Items[20].GetDescription(), "applet and isindex")
+		},
+	},
+	"05_encoding_layers.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			t.Helper()
+			assert := assert.New(t)
+			assert.Equal(`<img src="x">`, feed.Channel.Items[0].GetDescription(), "entity-escaped script (normal RSS)")
+			assert.NotContains(feed.Channel.Items[1].GetDescription(), "PWNED", "double escaped")
+			assert.NotContains(feed.Channel.Items[2].GetDescription(), "PWNED", "triple escaped")
+			assert.NotContains(feed.Channel.Items[3].GetDescription(), "PWNED", "split CDATA sections")
+			assert.NotContains(feed.Channel.Items[4].GetDescription(), "PWNED", "empty comment then script")
+			assert.NotContains(feed.Channel.Items[5].GetDescription(), "PWNED", "conditional comment")
+			assert.NotContains(feed.Channel.Items[6].GetDescription(), "PWNED", "numeric refs for angle brackets")
+			assert.NotContains(feed.Channel.Items[7].GetDescription(), "PWNED", "CDATA marker inside HTML")
+			assert.Equal(
+				"+ADw-script+AD4-window.PWNED=9+ADw-/script+AD4-",
+				feed.Channel.Items[8].GetDescription(),
+				"UTF-7 style",
+			)
+			assert.NotContains(feed.Channel.Items[9].GetDescription(), "PWNED", "processing instructions")
+			assert.NotContains(feed.Channel.Items[10].GetDescription(), "PWNED", "nested sanitizer-looking markup")
+			assert.NotContains(feed.Channel.Items[11].GetDescription(), "PWNED", "unterminated comment")
 		},
 	},
 }
