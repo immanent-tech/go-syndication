@@ -16,7 +16,12 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-const DefaultMaxRunes = 300
+const (
+	// DefaultMaxRunes applies to text sanitization. It defines a default number of runes to truncate a string to if no value is given.
+	DefaultMaxRunes = 300
+	// DefaultEscapePasses defines a max number of passes to attempt to unescape a string before giving up.
+	DefaultEscapePasses = 5
+)
 
 var AllowedURLSchemes = []string{"http", "https", "ftp", "mailto"}
 
@@ -35,7 +40,12 @@ var policy = sync.OnceValue(func() *bluemonday.Policy {
 //
 // The resulting string should still contain valid HTML, but will be much safer to use.
 func SanitizeHTML(str string) string {
-	return strings.TrimSpace(html.UnescapeString(policy().Sanitize(str)))
+	var err error
+	str, err = fullyUnescape(strings.TrimSpace(str), 5)
+	if err != nil {
+		return ""
+	}
+	return policy().Sanitize(str)
 }
 
 // SanitizeURLString attempts to "sanitize" a string value representing a URL. It performs:
@@ -70,6 +80,9 @@ func SanitizeURLString(str string) (string, error) {
 // strips control bidi-override and zero-width characters -> replaces newlines -> and caps the length.
 //
 // Output is still untrusted and must be escaped.
+//
+// If maxRunes is -1, the string is not truncated. Otherwise specifying a positive value for maxRunes will truncate the
+// final string to that number of runes.
 func SanitizeText(s string, maxRunes int) string {
 	s = strings.ToValidUTF8(s, "\uFFFD")
 	var b strings.Builder
@@ -94,9 +107,24 @@ func SanitizeText(s string, maxRunes int) string {
 		}
 		b.WriteRune(r)
 		n++
-		if maxRunes > 0 && n >= maxRunes {
-			break
+		if maxRunes > 0 {
+			if n >= maxRunes {
+				break
+			}
 		}
 	}
 	return strings.TrimSpace(b.String())
+}
+
+// fullUnEscape handles nested escaped strings. It will unescape continually up to maxPasses times, or until the string
+// is no longer escaped. After maxPasses, an empty string is returned.
+func fullyUnescape(s string, maxPasses int) (string, error) {
+	for range maxPasses {
+		u := html.UnescapeString(s)
+		if u == s {
+			return s, nil
+		}
+		s = u
+	}
+	return "", errors.New("too many layers of escaping")
 }
