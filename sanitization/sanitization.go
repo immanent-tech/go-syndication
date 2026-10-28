@@ -89,7 +89,7 @@ func SanitizeText(s string, maxRunes int) string {
 		}
 		b.WriteRune(r)
 		n++
-		if n >= maxRunes {
+		if maxRunes > 0 && n >= maxRunes {
 			break
 		}
 	}

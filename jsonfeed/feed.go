@@ -28,7 +28,7 @@ func (f *Feed) GetTitle() string {
 // GetDescription retrieves the description (if any) of the Feed.
 func (f *Feed) GetDescription() string {
 	if f.Description != nil {
-		return sanitization.SanitizeText(*f.Description, 600)
+		return sanitization.SanitizeText(*f.Description, -1)
 	}
 	return ""
 }

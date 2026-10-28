@@ -49,7 +49,7 @@ func (i *Item) GetLink() string {
 // GetDescription retrieves the summary (if any) of the Item.
 func (i *Item) GetDescription() string {
 	if i.Summary != nil {
-		return sanitization.SanitizeText(*i.Summary, 600)
+		return sanitization.SanitizeText(*i.Summary, -1)
 	}
 	return ""
 }

@@ -30,7 +30,7 @@ func (c Channel) GetTitle() string {
 
 // GetDescription retrieves the <description> (if any) of the Channel.
 func (c Channel) GetDescription() string {
-	return sanitization.SanitizeText(c.Description, sanitization.DefaultMaxRunes*2)
+	return sanitization.SanitizeText(c.Description, -1)
 }
 
 // GetSourceURL retrieves the URL that links to the RSS file for the channel. This will be any <atom:link> element
