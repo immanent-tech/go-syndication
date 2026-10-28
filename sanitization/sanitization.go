@@ -21,7 +21,12 @@ const DefaultMaxRunes = 300
 var AllowedURLSchemes = []string{"http", "https", "ftp", "mailto"}
 
 var policy = sync.OnceValue(func() *bluemonday.Policy {
-	return bluemonday.UGCPolicy()
+	return bluemonday.UGCPolicy().
+		AllowURLSchemes(AllowedURLSchemes...).
+		RequireNoFollowOnLinks(true).
+		RequireNoReferrerOnLinks(true).
+		AllowAttrs("src").OnElements("img").
+		AllowElements("svg")
 })
 
 // SanitizeHTML sanitizes strings containing HTML. It performs:
