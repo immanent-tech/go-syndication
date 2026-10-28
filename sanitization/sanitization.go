@@ -22,11 +22,11 @@ var AllowedURLSchemes = []string{"http", "https", "ftp", "mailto"}
 
 var policy = sync.OnceValue(func() *bluemonday.Policy {
 	return bluemonday.UGCPolicy().
-		AllowURLSchemes(AllowedURLSchemes...).
-		RequireNoFollowOnLinks(true).
-		RequireNoReferrerOnLinks(true).
-		AllowAttrs("src").OnElements("img").
-		AllowElements("svg")
+		AllowURLSchemes(AllowedURLSchemes...). // match schemes allowed in the feed specs.
+		RequireNoFollowOnLinks(true).          // add nofollow on href.
+		RequireNoReferrerOnLinks(true).        // add noreferer on href.
+		AllowAttrs("src").OnElements("img").   // allow src on image.
+		AllowElements("svg")                   // allow svg.
 })
 
 // SanitizeHTML sanitizes strings containing HTML. It performs:
