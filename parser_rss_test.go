@@ -37,13 +37,13 @@ var rssMustPass = map[string]rssTestSuite{
 	"atom_link2.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
+			assert := assert.New(t)
 			idx := slices.IndexFunc(feed.Channel.AtomLinks, func(e rss.AtomLink) bool {
 				return e.Rel != nil && *e.Rel == atom.LinkRelSelf
 			})
-			assert.GreaterOrEqual(t, idx, 0)
-			assert.Equal(t, "http://www.rss-world.info/", *feed.Channel.AtomLinks[idx].UndefinedContent)
-			assert.Equal(t, "http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLinks[idx].Href)
+			assert.GreaterOrEqual(idx, 0, "contains valid atom link")
+			assert.Equal("http://www.rss-world.info/", *feed.Channel.AtomLinks[idx].UndefinedContent)
+			assert.Equal("http://feeds.feedburner.com/rssworld/news", feed.Channel.AtomLinks[idx].Href)
 		},
 	},
 	"atom_link.xml": {
@@ -597,13 +597,65 @@ var rssSecMalformed = map[string]rssTestSuite{
 	},
 }
 
+var rssSecXSS = map[string]rssTestSuite{
+	"01_script_and_handlers.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert := assert.New(t)
+			assert.Equal("<p>hello</p>", feed.Channel.Items[0].GetDescription(), "script tag")
+			assert.Nil(feed.Channel.Items[1].GetContent(), "external script")
+			assert.Equal(`<img src="x">`, feed.Channel.Items[2].GetDescription(), "img onerror")
+			assert.Nil(feed.Channel.Items[3].GetContent(), "svg onload")
+			assert.Equal(`<details open="">x</details>`, feed.Channel.Items[4].GetDescription(), "details ontoggle")
+			assert.Equal("text", *feed.Channel.Items[5].GetContent(), "body onload")
+			assert.NotContains(feed.Channel.Items[6].GetDescription(), " onerror", "slash separators")
+			assert.Nil(feed.Channel.Items[7].GetContent(), "unclosed tag")
+			assert.NotContains(feed.Channel.Items[8].GetDescription(), "<script>", "split tags")
+			assert.Nil(feed.Channel.Items[9].GetContent(), "mixed case and spaces")
+			assert.NotContains(feed.Channel.Items[10].GetDescription(), "onclick", "onclick with spaces")
+			assert.Nil(feed.Channel.Items[11].GetContent(), "autofocus input")
+			assert.NotContains(feed.Channel.Items[12].GetDescription(), "onstart", "marquee onstart")
+			assert.Nil(feed.Channel.Items[13].GetContent(), "video source onerror")
+			assert.Equal(`<img src="%60x%60">`, feed.Channel.Items[14].GetDescription(), "backtick attribute")
+			assert.Equal(
+				`<img src="https://example.com/a.png">`,
+				*feed.Channel.Items[15].GetContent(),
+				"attribute breakout via alt",
+			)
+			assert.NotContains(feed.Channel.Items[16].GetDescription(), "onmouseover", "onmouseover on anchor")
+
+		},
+	},
+	"02_obfuscated_urls.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert := assert.New(t)
+			assert.Equal("x", feed.Channel.Items[0].GetDescription(), "javascript plain")
+			assert.Equal("x", *feed.Channel.Items[1].GetContent(), "javascript mixed case")
+			assert.Equal("x", feed.Channel.Items[2].GetDescription(), "decimal entity")
+			assert.Equal("x", *feed.Channel.Items[3].GetContent(), "hex entities")
+			assert.Equal("x", feed.Channel.Items[4].GetDescription(), "embedded tab")
+			assert.Equal("x", *feed.Channel.Items[5].GetContent(), "embedded newline")
+			assert.Equal("x", feed.Channel.Items[6].GetDescription(), "leading space")
+			assert.Equal("x", *feed.Channel.Items[7].GetContent(), "leading control character")
+			assert.Equal("x", feed.Channel.Items[8].GetDescription(), "named colon entity")
+			assert.Equal("x", *feed.Channel.Items[9].GetContent(), "data html")
+			assert.Equal("x", feed.Channel.Items[10].GetDescription(), "vbscript")
+			assert.Nil(feed.Channel.Items[11].GetContent(), "img javascript attribute")
+			assert.Equal("x", feed.Channel.Items[12].GetDescription(), "file scheme")
+			// assert.Equal("x", *feed.Channel.Items[13].GetContent(), "protocol relative")
+			// assert.Empty(feed.Channel.Items[14].GetDescription(), "relative path")
+			assert.Equal("ab", *feed.Channel.Items[15].GetContent(), "ftp and gopher")
+			// assert.Empty(feed.Channel.Items[16].GetDescription(), "userinfo confusion")
+		},
+	},
+}
+
 var rssTests = map[string]map[string]rssTestSuite{
 	"test/feedvalidator/testcases/rss/must":  rssMustPass,
 	"test/feedvalidator/testcases/ext/media": rssMedia,
 	"test/feedvalidator/testcases/rss20":     rss20,
 	"test/feedsec/fields":                    rssSecFields,
 	"test/feedsec/malformed":                 rssSecMalformed,
-	// "test/feedsec/xss":                       feedSecXSS,
+	"test/feedsec/xss":                       rssSecXSS,
 }
 
 func TestNewFeedFromBytesRSS(t *testing.T) {
@@ -706,14 +758,15 @@ func TestBasicGeo(t *testing.T) {
 
 	t.Run("example feed", func(t *testing.T) {
 		_, err := Encode(exampleFeed)
-		require.NoError(t, err)
+		require.NoError(t, err, "no errors in example feed")
 	})
 
 	t.Run("example doc", func(t *testing.T) {
 		doc, err := Decode[*rss.RSS]("", strings.NewReader(exampleDoc))
-		require.NoError(t, err)
-		require.InEpsilon(t, 5.5319, *doc.Channel.Items[0].Lat, 0.0001)
-		require.InEpsilon(t, 95.8972, *doc.Channel.Items[0].Lon, 0.0001)
+		require := require.New(t)
+		require.NoError(err, "no errors in example feed")
+		require.InEpsilon(5.5319, *doc.Channel.Items[0].Lat, 0.0001, "lat matches")
+		require.InEpsilon(95.8972, *doc.Channel.Items[0].Lon, 0.0001, "long matches")
 	})
 }
 
@@ -816,7 +869,7 @@ func TestResourceExhaustionShapes(t *testing.T) {
 	t.Run("many items", func(t *testing.T) {
 		var sb strings.Builder
 		sb.WriteString(feedHead)
-		for i := 0; i < 20000; i++ {
+		for i := range 20000 {
 			fmt.Fprintf(&sb, "<item><title>i%d</title><link>https://feed.example.com/%d</link></item>", i, i)
 		}
 		sb.WriteString("</channel></rss>")

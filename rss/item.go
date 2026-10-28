@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"log/slog"
 	"net/url"
 	"slices"
 	"strings"
@@ -20,7 +19,6 @@ import (
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
-	"golang.org/x/net/html"
 )
 
 var _ types.ItemSource = (*Item)(nil)
@@ -266,24 +264,8 @@ func (i Item) GetContent() *string {
 	if i.ContentEncoded == nil || i.ContentEncoded.String() == "" {
 		return nil
 	}
-	// Parse the value.
-	doc, err := html.Parse(strings.NewReader(i.ContentEncoded.String()))
-	if err != nil {
-		slog.Error("Unable to parse content:encoded.",
-			slog.Any("error", err),
-		)
-		return nil
-	}
-	// Write out.
-	var out strings.Builder
-	err = html.Render(&out, doc)
-	if err != nil {
-		slog.Error("Unable to render content:encoded.",
-			slog.Any("error", err),
-		)
-		return nil
-	}
-	return new(out.String())
+	content := i.ContentEncoded.String()
+	return &content
 }
 
 // HasBasicGeo checks whether an item has fields from the basic_geo extension.

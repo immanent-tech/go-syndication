@@ -43,7 +43,7 @@ func SanitizeURLString(str string) (string, error) {
 		safeStr string
 		err     error
 	)
-	safeStr, err = url.PathUnescape(str)
+	safeStr, err = url.PathUnescape(policy().Sanitize(str))
 	if err != nil {
 		return "", fmt.Errorf("unescape URL path: %w", err)
 	}
