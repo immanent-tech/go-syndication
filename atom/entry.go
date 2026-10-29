@@ -13,6 +13,7 @@ import (
 
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/media"
+	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
 	"github.com/immanent-tech/go-syndication/validation"
 )
@@ -200,34 +201,14 @@ func (e Entry) GetContent() *string {
 		// Has a Content value.
 		switch {
 		case e.Content != nil && e.Content.String() != "":
-			return new(e.Content.String())
-		// 	switch {
-		// 	case e.Content.Type == nil:
-		// 		return nil
-		// 	case *e.Content.Type == "text":
-		// 		return e.Content.Value
-		// 	case *e.Content.Type == "html" || *e.Content.Type == "xhtml":
-		// 		// Parse the value.
-		// 		doc, err := html.Parse(strings.NewReader(*e.Content.Value))
-		// 		if err != nil {
-		// 			slog.Error("Unable to parse content.",
-		// 				slog.Any("error", err),
-		// 			)
-		// 			return nil
-		// 		}
-		// 		// Write out.
-		// 		var out strings.Builder
-		// 		err = html.Render(&out, doc)
-		// 		if err != nil {
-		// 			slog.Error("Unable to render content.",
-		// 				slog.Any("error", err),
-		// 			)
-		// 			return nil
-		// 		}
-		// 		return new(out.String())
-		// 	}
+			content := e.Content.String()
+			return &content
 		case e.Content.Source != nil && *e.Content.Source != "":
-			return e.Content.Source
+			safeSrc, err := sanitization.SanitizeURLString(*e.Content.Source)
+			if err != nil {
+				return nil
+			}
+			return &safeSrc
 		}
 	}
 	return nil
