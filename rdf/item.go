@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
 )
 
@@ -28,12 +29,25 @@ func (i *Item) GetContributors() []string {
 }
 
 func (i *Item) GetCategories() []string {
+	categories := make([]string, 0)
 	if len(i.DcSubject) > 0 {
-		return slices.DeleteFunc(i.DcSubject, func(str string) bool {
-			return strings.TrimSpace(str) == ""
-		})
+		categories = append(categories, i.DcSubject...)
 	}
-	return nil
+	// Treat <slash:department> as a category.
+	if i.SlashDepartment != nil {
+		categories = append(categories, sanitization.SanitizeText(*i.SlashDepartment, sanitization.DefaultMaxRunes))
+	}
+	// Treat <slash:section> as a category.
+	if i.SlashSection != nil {
+		categories = append(categories, sanitization.SanitizeText(*i.SlashSection, sanitization.DefaultMaxRunes))
+	}
+	categories = slices.DeleteFunc(categories, func(str string) bool {
+		return strings.TrimSpace(str) == ""
+	})
+	slices.Sort(categories)
+	return slices.CompactFunc(categories, func(a, b string) bool {
+		return strings.EqualFold(a, b)
+	})
 }
 
 func (i *Item) GetDescription() string {
@@ -74,6 +88,12 @@ func (i *Item) GetPublishedDate() *time.Time {
 	if len(i.DcDate) > 0 {
 		v := (i.DcDate)[0].Value
 		return &v
+	}
+	if len(i.DcDate) == 1 {
+		dcDate := i.DcDate[0]
+		if !dcDate.Value.IsZero() {
+			return new(dcDate.Value)
+		}
 	}
 	return nil
 }

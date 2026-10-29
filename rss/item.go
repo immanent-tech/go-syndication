@@ -188,6 +188,18 @@ func (i Item) GetCategories() []string {
 			categories = append(categories, str)
 		}
 	}
+	// Treat <dc:subject> values as categories.
+	if len(i.DcSubject) > 0 {
+		categories = append(categories, i.DcSubject...)
+	}
+	// Treat <slash:department> as a category.
+	if i.SlashDepartment != nil {
+		categories = append(categories, sanitization.SanitizeText(*i.SlashDepartment, sanitization.DefaultMaxRunes))
+	}
+	// Treat <slash:section> as a category.
+	if i.SlashSection != nil {
+		categories = append(categories, sanitization.SanitizeText(*i.SlashSection, sanitization.DefaultMaxRunes))
+	}
 	slices.Sort(categories)
 	return slices.CompactFunc(categories, func(a, b string) bool {
 		return strings.EqualFold(a, b)
@@ -249,6 +261,12 @@ func (i Item) GetMediaGroup() *media.MediaGroup {
 func (i Item) GetPublishedDate() *time.Time {
 	if i.PubDate != nil {
 		return &i.PubDate.Value
+	}
+	if len(i.DcDate) == 1 {
+		dcDate := i.DcDate[0]
+		if !dcDate.Value.IsZero() {
+			return new(dcDate.Value)
+		}
 	}
 	return nil
 }
