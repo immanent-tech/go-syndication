@@ -108,7 +108,7 @@ func (i Item) GetID() string {
 
 // GetTitle retrieves the <title> (if any) of the Item.
 func (i Item) GetTitle() string {
-	return sanitization.SanitizeHTML(sanitization.SanitizeText(i.Title, sanitization.DefaultMaxRunes))
+	return sanitization.SanitizeText(sanitization.SanitizeHTML(i.Title), sanitization.DefaultMaxRunes)
 }
 
 // GetLink retrieves the <link> (if any) of the Item.
