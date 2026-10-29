@@ -19,3 +19,4 @@ import-mapping:
   extensions.yaml: "github.com/immanent-tech/go-syndication/extensions"
   slash.yaml: "github.com/immanent-tech/go-syndication/extensions/slash"
   wfw.yaml: "github.com/immanent-tech/go-syndication/extensions/wfw"
+  media-rss.yaml: "github.com/immanent-tech/go-syndication/extensions/media"

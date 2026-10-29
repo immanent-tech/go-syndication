@@ -62,6 +62,7 @@ components:
         - $ref: "#/components/schemas/RDFResource"
         - $ref: "syndication.yaml#/components/schemas/SyndicationElements"
         - $ref: "dc.yaml#/components/schemas/DCElements"
+        - $ref: "media-rss.yaml#/components/schemas/MediaMetadata"
         - type: object
           required:
             - XMLName
@@ -123,6 +124,10 @@ components:
               $ref: "#/components/schemas/ResourceRef"
               x-oapi-codegen-extra-tags:
                 xml: "http://purl.org/rss/1.0/ textinput"
+            MediaContent:
+              $ref: "media-rss.yaml#/components/schemas/MediaContent"
+            MediaGroup:
+              $ref: "media-rss.yaml#/components/schemas/MediaGroup"
       x-oapi-codegen-extra-tags:
         xml: "http://purl.org/rss/1.0/ channel"
     Image:
@@ -185,6 +190,7 @@ components:
         - $ref: "dc.yaml#/components/schemas/DCElements"
         - $ref: "slash.yaml#/components/schemas/Elements"
         - $ref: "wfw.yaml#/components/schemas/CommentElements"
+        - $ref: "media-rss.yaml#/components/schemas/MediaMetadata"
         - type: object
           required:
             - XMLName
@@ -218,6 +224,10 @@ components:
                 validate: omitempty,max=500
             ContentEncoded:
               $ref: "content.yaml#/components/schemas/ContentEncoded"
+            MediaContent:
+              $ref: "media-rss.yaml#/components/schemas/MediaContent"
+            MediaGroup:
+              $ref: "media-rss.yaml#/components/schemas/MediaGroup"
       x-oapi-codegen-extra-tags:
         xml: "http://purl.org/rss/1.0/ item"
     TextInput:

@@ -10,6 +10,7 @@ import (
 
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
+	"github.com/immanent-tech/go-syndication/validation"
 )
 
 var _ types.ItemSource = (*Item)(nil)
@@ -81,7 +82,27 @@ func (i *Item) GetID() string {
 }
 
 func (i *Item) GetImage() *types.Image {
-	return nil
+	var img *types.Image
+	switch {
+	case i.MediaContent != nil && i.MediaContent.AsImage() != nil:
+		// Item has a <media:content> element, extract the image.
+		img = i.MediaContent.AsImage()
+	case len(i.MediaThumbnails) > 0:
+		// Check for a <media:thumbnails> element and assume the first element is an appropriate image.
+		img = i.MediaThumbnails[0].AsImage()
+	default:
+		return nil
+	}
+	// If the image does not have a title, set it to the item title.
+	if img != nil {
+		if img.Title == nil {
+			img.Title = new(i.GetTitle())
+		}
+	}
+	if err := validation.ValidateStruct(img); err != nil {
+		return nil
+	}
+	return img
 }
 
 func (i *Item) GetPublishedDate() *time.Time {

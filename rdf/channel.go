@@ -7,23 +7,25 @@ import (
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/immanent-tech/go-syndication/types"
 )
 
-func (c *Channel) GetAuthors() []string {
+func (c Channel) GetAuthors() []string {
 	if len(c.DcCreator) > 0 {
 		return c.DcCreator
 	}
 	return nil
 }
 
-func (c *Channel) GetContributors() []string {
+func (c Channel) GetContributors() []string {
 	if len(c.DcContributor) > 0 {
 		return c.DcContributor
 	}
 	return nil
 }
 
-func (c *Channel) GetCategories() []string {
+func (c Channel) GetCategories() []string {
 	if len(c.DcSubject) > 0 {
 		return slices.DeleteFunc(c.DcSubject, func(str string) bool {
 			return strings.TrimSpace(str) == ""
@@ -32,26 +34,26 @@ func (c *Channel) GetCategories() []string {
 	return nil
 }
 
-func (c *Channel) GetDescription() string {
+func (c Channel) GetDescription() string {
 	return c.Description
 }
 
-func (c *Channel) GetTitle() string {
+func (c Channel) GetTitle() string {
 	return c.Title
 }
 
-func (c *Channel) GetLanguage() *string {
+func (c Channel) GetLanguage() *string {
 	if len(c.DcLanguage) > 0 {
 		return new(strings.Join(c.DcLanguage, " "))
 	}
 	return nil
 }
 
-func (c *Channel) GetLink() string {
+func (c Channel) GetLink() string {
 	return c.Link
 }
 
-func (c *Channel) GetSourceURL() string {
+func (c Channel) GetSourceURL() string {
 	return c.About
 }
 
@@ -59,7 +61,7 @@ func (c *Channel) SetSourceURL(value string) {
 	c.About = value
 }
 
-func (c *Channel) GetPublishedDate() *time.Time {
+func (c Channel) GetPublishedDate() *time.Time {
 	if len(c.DcDate) > 0 {
 		v := (c.DcDate)[0].Value
 		return &v
@@ -67,14 +69,14 @@ func (c *Channel) GetPublishedDate() *time.Time {
 	return nil
 }
 
-func (c *Channel) GetRights() *string {
+func (c Channel) GetRights() *string {
 	if c.DcRights != nil {
 		return new(strings.Join(c.DcRights, " "))
 	}
 	return nil
 }
 
-func (c *Channel) GetUpdateInterval() time.Duration {
+func (c Channel) GetUpdateInterval() time.Duration {
 	if c.SYUdatePeriod != nil {
 		var baseInterval time.Duration
 		switch *c.SYUdatePeriod {
@@ -95,4 +97,23 @@ func (c *Channel) GetUpdateInterval() time.Duration {
 		return baseInterval
 	}
 	return 0
+}
+
+func (c Channel) GetImage() *types.Image {
+	var img *types.Image
+	switch {
+	case c.MediaContent != nil && c.MediaContent.AsImage() != nil:
+		// Item has a <media:content> element, extract the image.
+		img = c.MediaContent.AsImage()
+	case len(c.MediaThumbnails) > 0:
+		// Check for a <media:thumbnails> element and assume the first element is an appropriate image.
+		img = c.MediaThumbnails[0].AsImage()
+	default:
+		return nil
+	}
+	// If the image does not have a title, set it to the channel title.
+	if img.Title == nil {
+		img.Title = new(c.GetTitle())
+	}
+	return img
 }
