@@ -3034,12 +3034,29 @@ var atomSecFields = map[string]atomTestSuite{
 	},
 }
 
+var atomSecXSS = map[string]atomTestSuite{
+	"06_atom_content_types.xml": {
+		tests: func(t *testing.T, feed *atom.Feed) {
+			t.Helper()
+			assert := assert.New(t)
+			assert.NotContains(*feed.Entries[0].GetContent(), "PWNED", "html type")
+			assert.NotContains(*feed.Entries[1].GetContent(), "PWNED", "xhtml type")
+			assert.Nil(feed.Entries[2].GetContent(), "text type holding markup")
+			assert.NotContains(feed.Entries[3].GetDescription(), "PWNED", "xhtml summary")
+			assert.NotContains(*feed.Entries[4].GetContent(), "PWNED", "svg media type content")
+			assert.Nil(feed.Entries[5].GetContent(), "external content source")
+			assert.NotContains(feed.Entries[5].GetDescription(), "PWNED", "xhtml summary")
+		},
+	},
+}
+
 // atomTests are the groups of test cases to run.
 var atomTests = map[string]map[string]atomTestSuite{
 	"test/feedvalidator/testcases/atom/1.1":  atomOtherTests,
 	"test/feedvalidator/testcases/atom/must": atomMustTests,
 	"test/extensions/georss":                 atomGeoRSS,
 	"test/feedsec/fields":                    atomSecFields,
+	"test/feedsec/xss":                       atomSecXSS,
 }
 
 func TestNewFeedFromBytesAtom(t *testing.T) {
