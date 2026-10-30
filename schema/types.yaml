@@ -9,6 +9,7 @@ info:
     name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
 components:
   schemas:
@@ -20,21 +21,73 @@ components:
       enum: ["HTML", "RSS", "Atom", "JSONFeed", "RDF", "Unknown"]
       x-oapi-codegen-extra-tags:
         validate: "oneof=HTML RSS Atom JSONFeed RDF Unknown"
+    URL:
+      description: the URL to the image.
+      type: string
+      x-go-name: URL
+      x-oapi-codegen-extra-tags:
+        validate: "required,url"
+    Title:
+      description: is a short summary of the media.
+      type: string
+    Width:
+      description: the width of the media, in pixels.
+      type: integer
+      x-oapi-codegen-extra-tags:
+        validate: "omitempty,gt=0"
+    Height:
+      description: the height of the media, in pixels.
+      type: integer
+      x-oapi-codegen-extra-tags:
+        validate: "omitempty,gt=0"
     Image:
-      description: represents a remote image.
+      description: represents an image file.
       type: object
       required:
         - url
       properties:
         url:
-          description: the URL to the image.
-          type: string
-          x-go-name: URL
-          x-oapi-codegen-extra-tags:
-            validate: "required,url"
+          $ref: "#/components/schemas/URL"
+        width:
+          $ref: "#/components/schemas/Width"
+        height:
+          $ref: "#/components/schemas/Height"
         title:
-          description: is a description of the image (for example, the alt tag associated with the image).
-          type: string
+          $ref: "#/components/schemas/Title"
+    Audio:
+      description: represents an audio file.
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          $ref: "#/components/schemas/URL"
+        duration:
+          description: is the duration of the audio, in seconds.
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,gt=0"
+        title:
+          $ref: "#/components/schemas/Title"
+    Video:
+      description: represents a video file.
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          $ref: "#/components/schemas/URL"
+        duration:
+          description: is the duration of the video, in seconds.
+          type: integer
+          x-oapi-codegen-extra-tags:
+            validate: "omitempty,gt=0"
+        width:
+          $ref: "#/components/schemas/Width"
+        height:
+          $ref: "#/components/schemas/Height"
+        title:
+          $ref: "#/components/schemas/Title"
     Link:
       description: >
         is an 'address', usually of a person. For example, an email, website or social media handle. An address has a

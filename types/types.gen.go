@@ -58,16 +58,37 @@ func (e Source) Valid() bool {
 	}
 }
 
+// Audio represents an audio file.
+type Audio struct {
+	// Duration is the duration of the audio, in seconds.
+	Duration *int `json:"duration,omitempty" validate:"omitempty,gt=0"`
+
+	// Title is a short summary of the media.
+	Title *Title `json:"title,omitempty"`
+
+	// URL the URL to the image.
+	URL URL `json:"url" validate:"required,url"`
+}
+
 // GeoInfo contains geographical information.
 type GeoInfo = externalRef0.GeoRSSSimple
 
-// Image represents a remote image.
+// Height the height of the media, in pixels.
+type Height = int
+
+// Image represents an image file.
 type Image struct {
-	// Title is a description of the image (for example, the alt tag associated with the image).
-	Title *string `json:"title,omitempty"`
+	// Height the height of the media, in pixels.
+	Height *Height `json:"height,omitempty" validate:"omitempty,gt=0"`
+
+	// Title is a short summary of the media.
+	Title *Title `json:"title,omitempty"`
 
 	// URL the URL to the image.
-	URL string `json:"url" validate:"required,url"`
+	URL URL `json:"url" validate:"required,url"`
+
+	// Width the width of the media, in pixels.
+	Width *Width `json:"width,omitempty" validate:"omitempty,gt=0"`
 }
 
 // Link is an 'address', usually of a person. For example, an email, website or social media handle. An address has a type and a value and/or URI associated with it.
@@ -96,3 +117,30 @@ type Person struct {
 
 // Source is the type of source the feed or object came from. This can be used with abstractions that generalize different feed types into a common format to preserve information on the original.
 type Source string
+
+// Title is a short summary of the media.
+type Title = string
+
+// URL the URL to the image.
+type URL = string
+
+// Video represents a video file.
+type Video struct {
+	// Duration is the duration of the video, in seconds.
+	Duration *int `json:"duration,omitempty" validate:"omitempty,gt=0"`
+
+	// Height the height of the media, in pixels.
+	Height *Height `json:"height,omitempty" validate:"omitempty,gt=0"`
+
+	// Title is a short summary of the media.
+	Title *Title `json:"title,omitempty"`
+
+	// URL the URL to the image.
+	URL URL `json:"url" validate:"required,url"`
+
+	// Width the width of the media, in pixels.
+	Width *Width `json:"width,omitempty" validate:"omitempty,gt=0"`
+}
+
+// Width the width of the media, in pixels.
+type Width = int
