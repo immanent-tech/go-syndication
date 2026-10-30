@@ -1,5 +1,7 @@
-// Copyright 2024 Joshua Rich <joshua.rich@gmail.com>.
-// SPDX-License-Identifier: 	MIT
+/*
+ * Copyright (c) Joshua Rich <joshua.rich@gmail.com>.
+ * SPDX-License-Identifier: MIT
+ */
 
 // Package schema contains the OpenAPI schema definitions for go-syndication.
 package schema

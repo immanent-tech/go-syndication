@@ -12,6 +12,7 @@ info:
     name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
 components:
   schemas:
@@ -41,8 +42,6 @@ components:
         is the type of object.
       type: string
       enum: ["image", "audio", "video", "document", "executable"]
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: "medium,attr,omitempty"
         validate: "omitempty,oneof=image audio video document executable"
@@ -50,8 +49,6 @@ components:
       description: >
         is the URI that identifies the scheme used by the element.
       type: string
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: "scheme,attr,omitempty"
         validate: "omitempty,urn_rfc2141|uri"
@@ -61,8 +58,6 @@ components:
       type: string
       enum: ["plain", "html"]
       default: "plain"
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: "type,attr,omitempty"
         validate: "omitempty,oneof=plain html"
@@ -70,8 +65,6 @@ components:
       description: >
         is the human readable label that can be displayed in end user applications.
       type: string
-      xml:
-        attribute: true
       x-oapi-codegen-extra-tags:
         xml: "label,attr,omitempty"
     Lang:
@@ -263,8 +256,6 @@ components:
           description: >
             specifies the role the entity played.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "role,attr,omitempty"
             validate: "omitempty,lowercase"
@@ -279,8 +270,6 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/MediaCredit"
-      xml:
-        name: credit
       x-oapi-codegen-extra-tags:
         xml: "credit,omitempty"
         json: "media_credits"
@@ -342,8 +331,6 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/MediaText"
-      xml:
-        name: text
       x-oapi-codegen-extra-tags:
         xml: "text,omitempty"
         json: "media_texts"
@@ -482,7 +469,6 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/MediaComment"
-        json: "media_comments"
       x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         json: "media_comments"
@@ -500,8 +486,6 @@ components:
           description: >
             is the name of the param.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "name,attr"
       x-oapi-codegen-extra-tags:
@@ -573,8 +557,6 @@ components:
             indicates the status.
           type: string
           enum: ["active", "blocked", "deleted"]
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "state,attr"
             validate: "omitempty,oneof=active blocked deleted"
@@ -582,8 +564,6 @@ components:
           description: >
             is a reason explaining why a media object has been blocked/deleted.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "reason,attr"
       x-oapi-codegen-extra-tags:
@@ -600,8 +580,6 @@ components:
             is the type of pricing for the media object.
           type: string
           enum: ["rent", "purchase", "package", "subscription"]
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "type,attr,omitempty"
             validate: "omitempty,oneof=rent purchase package subscription"
@@ -609,8 +587,6 @@ components:
           description: >
             is a URL pointing to package or subscription information.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "info,attr,omitempty"
             validate: "omitempty,url"
@@ -618,8 +594,6 @@ components:
           description: >
             is the price of the media object.
           type: number
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "price,attr,omitempty"
             validate: "omitempty,numeric"
@@ -627,8 +601,6 @@ components:
           description: >
             is the currency code of the price.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "currency,attr,omitempty"
             validate: "omitempty,iso4217"
@@ -764,8 +736,6 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/MediaScene"
-      xml:
-        name: scenes
       x-oapi-codegen-extra-tags:
         xml: "http://search.yahoo.com/mrss/ scene,omitempty"
         json: "media_scenes"
@@ -906,8 +876,6 @@ components:
                 side, as well as flushes out any ambiguities between MIME type and object type.
               type: string
               enum: ["image", "audio", "video", "document", "executable"]
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "medium,attr"
                 validate: "omitempty,oneof=image audio video document executable"
@@ -916,8 +884,6 @@ components:
                 determines if this is the default object that should be used for the <media:group>. There should only be one
                 default object per <media:group>.
               type: string
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "isDefault,attr"
                 validate: "omitempty,boolean"
@@ -925,8 +891,6 @@ components:
               description: >
                 determines if the object is a sample or the full version of the object, or even if it is a continuous stream.
               type: string
-              xml:
-                attribute: true
               enum: ["sample", "full", "nonstop"]
               default: "full"
               x-oapi-codegen-extra-tags:
@@ -949,8 +913,6 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/MediaContent"
-              xml:
-                name: content
               x-oapi-codegen-extra-tags:
                 json: "content,omitempty"
                 xml: "http://search.yahoo.com/mrss/ content,omitempty"

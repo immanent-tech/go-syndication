@@ -1,5 +1,5 @@
 ---
-openapi: '3.1.0'
+openapi: "3.1.0"
 info:
   version: 1.0.0
   title: Dublin Core RSS Extension
@@ -8,9 +8,10 @@ info:
 
     https://www.dublincore.org/specifications/dublin-core/dcmi-terms/
   contact:
-    name: 'Joshua Rich'
+    name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
 components:
   schemas:
@@ -20,18 +21,18 @@ components:
       type: string
       enum:
         [
-          'Collection',
-          'Dataset',
-          'Event',
-          'Image',
-          'InteractiveResource',
-          'MovingImage',
-          'PhysicalObject',
-          'Service',
-          'Software',
-          'Sound',
-          'StillImage',
-          'Text',
+          "Collection",
+          "Dataset",
+          "Event",
+          "Image",
+          "InteractiveResource",
+          "MovingImage",
+          "PhysicalObject",
+          "Service",
+          "Software",
+          "Sound",
+          "StillImage",
+          "Text",
         ]
     W3CDTFPrecision:
       description: >
@@ -62,17 +63,17 @@ components:
         value:
           x-go-type: time.Time
         precision:
-          $ref: '#/components/schemas/W3CDTFPrecision'
+          $ref: "#/components/schemas/W3CDTFPrecision"
       x-oapi-codegen-extra-tags:
-        xml: 'http://purl.org/dc/terms/ date,omitempty'
+        xml: "http://purl.org/dc/terms/ date,omitempty"
     Abstract:
       description: is a summary of the resource.
       type: array
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'abstract,omitempty'
-        xml: 'http://purl.org/dc/terms/ abstract,omitempty'
+        json: "abstract,omitempty"
+        xml: "http://purl.org/dc/terms/ abstract,omitempty"
     AccessRights:
       description: >
         is information about who access the resource or an indication of its security status.
@@ -83,8 +84,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'accessRights,omitempty'
-        xml: 'http://purl.org/dc/terms/ accessRights,omitempty'
+        json: "accessRights,omitempty"
+        xml: "http://purl.org/dc/terms/ accessRights,omitempty"
     AccrualMethod:
       description: >
         is information about who access the resource or an indication of its security status.
@@ -95,8 +96,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'accrualMethod,omitempty'
-        xml: 'http://purl.org/dc/terms/ accrualMethod,omitempty'
+        json: "accrualMethod,omitempty"
+        xml: "http://purl.org/dc/terms/ accrualMethod,omitempty"
     AccrualPeriodicity:
       description: >
         is the frequency with which items are added to a collection.
@@ -106,8 +107,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'accrualPeriodicity,omitempty'
-        xml: 'http://purl.org/dc/terms/ accrualPeriodicity,omitempty'
+        json: "accrualPeriodicity,omitempty"
+        xml: "http://purl.org/dc/terms/ accrualPeriodicity,omitempty"
     AccrualPolicy:
       description: >
         is the policy governing the addition of items to a collection.
@@ -118,8 +119,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'accrualPolicy,omitempty'
-        xml: 'http://purl.org/dc/terms/ accrualPolicy,omitempty'
+        json: "accrualPolicy,omitempty"
+        xml: "http://purl.org/dc/terms/ accrualPolicy,omitempty"
     Alternative:
       description: >
         is an alternative name for the resource.
@@ -129,8 +130,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'alternative,omitempty'
-        xml: 'http://purl.org/dc/terms/ alternative,omitempty'
+        json: "alternative,omitempty"
+        xml: "http://purl.org/dc/terms/ alternative,omitempty"
     Audience:
       description: >
         is a class of agents for whom the resource is intended or useful.
@@ -140,8 +141,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'audience,omitempty'
-        xml: 'http://purl.org/dc/terms/ audience,omitempty'
+        json: "audience,omitempty"
+        xml: "http://purl.org/dc/terms/ audience,omitempty"
     Available:
       description: >
         is the frequency with which items are added to a collection.
@@ -149,10 +150,10 @@ components:
         Recommended practice is to use a value from the Collection Description Frequency Vocabulary [DCMI-COLLFREQ].
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'available,omitempty'
-        xml: 'http://purl.org/dc/terms/ available,omitempty'
+        json: "available,omitempty"
+        xml: "http://purl.org/dc/terms/ available,omitempty"
     BibliographicCitation:
       description: >
         is a bibliographic reference for the resource.
@@ -163,8 +164,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'bibliographicCitation,omitempty'
-        xml: 'http://purl.org/dc/terms/ bibliographicCitation,omitempty'
+        json: "bibliographicCitation,omitempty"
+        xml: "http://purl.org/dc/terms/ bibliographicCitation,omitempty"
     ConformsTo:
       description: >
         is an established standard to which the described resource conforms.
@@ -172,8 +173,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'conformsTo,omitempty'
-        xml: 'http://purl.org/dc/terms/ conformsTo,omitempty'
+        json: "conformsTo,omitempty"
+        xml: "http://purl.org/dc/terms/ conformsTo,omitempty"
     Contributor:
       description: >
         is an entity responsible for making contributions to the resource.
@@ -183,8 +184,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'contributor,omitempty'
-        xml: 'http://purl.org/dc/terms/ contributor,omitempty'
+        json: "contributor,omitempty"
+        xml: "http://purl.org/dc/terms/ contributor,omitempty"
     Coverage:
       description: >
         is the spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under
@@ -201,8 +202,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'coverage,omitempty'
-        xml: 'http://purl.org/dc/terms/ coverage,omitempty'
+        json: "coverage,omitempty"
+        xml: "http://purl.org/dc/terms/ coverage,omitempty"
     Created:
       description: >
         is the date of creation of the resource.
@@ -211,10 +212,10 @@ components:
         of which this is a subproperty.
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'created,omitempty'
-        xml: 'http://purl.org/dc/terms/ created,omitempty'
+        json: "created,omitempty"
+        xml: "http://purl.org/dc/terms/ created,omitempty"
     Creator:
       description: >
         is an entity responsible for making the resource.
@@ -225,8 +226,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'creator,omitempty'
-        xml: 'http://purl.org/dc/terms/ creator,omitempty'
+        json: "creator,omitempty"
+        xml: "http://purl.org/dc/terms/ creator,omitempty"
     Date:
       description: >
         is a point or period of time associated with an event in the lifecycle of the resource.
@@ -239,10 +240,10 @@ components:
         (slash) character. Either the start or end date may be missing.
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'date,omitempty'
-        xml: 'http://purl.org/dc/terms/ date,omitempty'
+        json: "date,omitempty"
+        xml: "http://purl.org/dc/terms/ date,omitempty"
     DateAccepted:
       description: >
         is the date of acceptance of the resource.
@@ -252,10 +253,10 @@ components:
         (accepted by a university department) or an article (accepted by a journal).
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'dateAccepted,omitempty'
-        xml: 'http://purl.org/dc/terms/ dateAccepted,omitempty'
+        json: "dateAccepted,omitempty"
+        xml: "http://purl.org/dc/terms/ dateAccepted,omitempty"
     DateCopyrighted:
       description: >
         is the date of copyright of the resource.
@@ -264,10 +265,10 @@ components:
         the property Date, of which this is a subproperty.
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'dateCopyrighted,omitempty'
-        xml: 'http://purl.org/dc/terms/ dateCopyrighted,omitempty'
+        json: "dateCopyrighted,omitempty"
+        xml: "http://purl.org/dc/terms/ dateCopyrighted,omitempty"
     DateSubmitted:
       description: >
         is the date of submission of the resource.
@@ -277,10 +278,10 @@ components:
         thesis (submitted to a university department) or an article (submitted to a journal).
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'dateSubmitted,omitempty'
-        xml: 'http://purl.org/dc/terms/ dateSubmitted,omitempty'
+        json: "dateSubmitted,omitempty"
+        xml: "http://purl.org/dc/terms/ dateSubmitted,omitempty"
     Description:
       description: >
         is an account of the resource.
@@ -291,8 +292,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'description,omitempty'
-        xml: 'http://purl.org/dc/terms/ description,omitempty'
+        json: "description,omitempty"
+        xml: "http://purl.org/dc/terms/ description,omitempty"
     EducationLevel:
       description: >
         is the audience Education Level
@@ -303,8 +304,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'educationLevel,omitempty'
-        xml: 'http://purl.org/dc/terms/ educationLevel,omitempty'
+        json: "educationLevel,omitempty"
+        xml: "http://purl.org/dc/terms/ educationLevel,omitempty"
     Extent:
       description: >
         is the size or duration of the resource.
@@ -314,8 +315,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'extent,omitempty'
-        xml: 'http://purl.org/dc/terms/ extent,omitempty'
+        json: "extent,omitempty"
+        xml: "http://purl.org/dc/terms/ extent,omitempty"
     Format:
       description: >
         is the file format, physical medium, or dimensions of the resource.
@@ -326,8 +327,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'format,omitempty'
-        xml: 'http://purl.org/dc/terms/ format,omitempty'
+        json: "format,omitempty"
+        xml: "http://purl.org/dc/terms/ format,omitempty"
     HasFormat:
       description: >
         is a related resource that is substantially the same as the pre-existing described resource, but in another
@@ -339,8 +340,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'hasFormat,omitempty'
-        xml: 'http://purl.org/dc/terms/ hasFormat,omitempty'
+        json: "hasFormat,omitempty"
+        xml: "http://purl.org/dc/terms/ hasFormat,omitempty"
     HasPart:
       description: >
         is a related resource that is included either physically or logically in the described resource.
@@ -351,8 +352,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'hasPart,omitempty'
-        xml: 'http://purl.org/dc/terms/ hasPart,omitempty'
+        json: "hasPart,omitempty"
+        xml: "http://purl.org/dc/terms/ hasPart,omitempty"
     HasVersion:
       description: >
         is a related resource that is a version, edition, or adaptation of the described resource.
@@ -360,8 +361,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'hasVersion,omitempty'
-        xml: 'http://purl.org/dc/terms/ hasVersion,omitempty'
+        json: "hasVersion,omitempty"
+        xml: "http://purl.org/dc/terms/ hasVersion,omitempty"
     Identifier:
       description: >
         is an unambiguous reference to the resource within a given context.
@@ -373,8 +374,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'identifier,omitempty'
-        xml: 'http://purl.org/dc/terms/ identifier,omitempty'
+        json: "identifier,omitempty"
+        xml: "http://purl.org/dc/terms/ identifier,omitempty"
     InstructionalMethod:
       description: >
         is a process, used to engender knowledge, attitudes and skills, that the described resource is designed to
@@ -388,8 +389,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'instructionalMethod,omitempty'
-        xml: 'http://purl.org/dc/terms/ instructionalMethod,omitempty'
+        json: "instructionalMethod,omitempty"
+        xml: "http://purl.org/dc/terms/ instructionalMethod,omitempty"
     IsFormatOf:
       description: >
         is a pre-existing related resource that is substantially the same as the described resource, but in another
@@ -401,8 +402,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'isFormatOf,omitempty'
-        xml: 'http://purl.org/dc/terms/ isFormatOf,omitempty'
+        json: "isFormatOf,omitempty"
+        xml: "http://purl.org/dc/terms/ isFormatOf,omitempty"
     IsPartOf:
       description: >
         is a related resource in which the described resource is physically or logically included.
@@ -412,8 +413,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'isPartOf,omitempty'
-        xml: 'http://purl.org/dc/terms/ isPartOf,omitempty'
+        json: "isPartOf,omitempty"
+        xml: "http://purl.org/dc/terms/ isPartOf,omitempty"
     IsReferencedBy:
       description: >
         is a related resource that references, cites, or otherwise points to the described resource.
@@ -424,8 +425,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'isReferencedBy,omitempty'
-        xml: 'http://purl.org/dc/terms/ isReferencedBy,omitempty'
+        json: "isReferencedBy,omitempty"
+        xml: "http://purl.org/dc/terms/ isReferencedBy,omitempty"
     IsReplacedBy:
       description: >
         is a related resource that supplants, displaces, or supersedes the described resource.
@@ -436,8 +437,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'isReplacedBy,omitempty'
-        xml: 'http://purl.org/dc/terms/ isReplacedBy,omitempty'
+        json: "isReplacedBy,omitempty"
+        xml: "http://purl.org/dc/terms/ isReplacedBy,omitempty"
     IsRequiredBy:
       description: >
         is a related resource that requires the described resource to support its function, delivery, or coherence.
@@ -448,8 +449,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'isRequiredBy,omitempty'
-        xml: 'http://purl.org/dc/terms/ isRequiredBy,omitempty'
+        json: "isRequiredBy,omitempty"
+        xml: "http://purl.org/dc/terms/ isRequiredBy,omitempty"
     Issued:
       description: >
         is the date of formal issuance of the resource.
@@ -458,10 +459,10 @@ components:
         of which this is a subproperty.
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'issued,omitempty'
-        xml: 'http://purl.org/dc/terms/ issued,omitempty'
+        json: "issued,omitempty"
+        xml: "http://purl.org/dc/terms/ issued,omitempty"
     IsVersionOf:
       description: >
         is a related resource of which the described resource is a version, edition, or adaptation.
@@ -472,8 +473,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'isVersionOf,omitempty'
-        xml: 'http://purl.org/dc/terms/ isVersionOf,omitempty'
+        json: "isVersionOf,omitempty"
+        xml: "http://purl.org/dc/terms/ isVersionOf,omitempty"
     Language:
       description: >
         is a language of the resource.
@@ -485,8 +486,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'language,omitempty'
-        xml: 'http://purl.org/dc/terms/ language,omitempty'
+        json: "language,omitempty"
+        xml: "http://purl.org/dc/terms/ language,omitempty"
     License:
       description: >
         is a legal document giving official permission to do something with the resource.
@@ -497,8 +498,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'license,omitempty'
-        xml: 'http://purl.org/dc/terms/ license,omitempty'
+        json: "license,omitempty"
+        xml: "http://purl.org/dc/terms/ license,omitempty"
     Mediator:
       description: >
         is an entity that mediates access to the resource.
@@ -508,8 +509,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'mediator,omitempty'
-        xml: 'http://purl.org/dc/terms/ mediator,omitempty'
+        json: "mediator,omitempty"
+        xml: "http://purl.org/dc/terms/ mediator,omitempty"
     Medium:
       description: >
         is the material or physical carrier of the resource.
@@ -517,8 +518,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'medium,omitempty'
-        xml: 'http://purl.org/dc/terms/ medium,omitempty'
+        json: "medium,omitempty"
+        xml: "http://purl.org/dc/terms/ medium,omitempty"
     Modified:
       description: >
         is the date on which the resource was changed.
@@ -527,10 +528,10 @@ components:
         of which this is a subproperty.
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'modified,omitempty'
-        xml: 'http://purl.org/dc/terms/ modified,omitempty'
+        json: "modified,omitempty"
+        xml: "http://purl.org/dc/terms/ modified,omitempty"
     Provenance:
       description: >
         is a statement of any changes in ownership and custody of the resource since its creation that are significant
@@ -541,8 +542,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'provenance,omitempty'
-        xml: 'http://purl.org/dc/terms/ provenance,omitempty'
+        json: "provenance,omitempty"
+        xml: "http://purl.org/dc/terms/ provenance,omitempty"
     Publisher:
       description: >
         is an entity responsible for making the resource available.
@@ -550,8 +551,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'publisher,omitempty'
-        xml: 'http://purl.org/dc/terms/ publisher,omitempty'
+        json: "publisher,omitempty"
+        xml: "http://purl.org/dc/terms/ publisher,omitempty"
     References:
       description: >
         is a related resource that is referenced, cited, or otherwise pointed to by the described resource.
@@ -562,8 +563,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'references,omitempty'
-        xml: 'http://purl.org/dc/terms/ references,omitempty'
+        json: "references,omitempty"
+        xml: "http://purl.org/dc/terms/ references,omitempty"
     Relation:
       description: >
         is a related resource.
@@ -574,8 +575,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'relation,omitempty'
-        xml: 'http://purl.org/dc/terms/ relation,omitempty'
+        json: "relation,omitempty"
+        xml: "http://purl.org/dc/terms/ relation,omitempty"
     Replaces:
       description: >
         is a related resource that is supplanted, displaced, or superseded by the described resource.
@@ -586,8 +587,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'replaces,omitempty'
-        xml: 'http://purl.org/dc/terms/ replaces,omitempty'
+        json: "replaces,omitempty"
+        xml: "http://purl.org/dc/terms/ replaces,omitempty"
     Requires:
       description: >
         is a related resource that is required by the described resource to support its function, delivery, or
@@ -599,8 +600,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'requires,omitempty'
-        xml: 'http://purl.org/dc/terms/ requires,omitempty'
+        json: "requires,omitempty"
+        xml: "http://purl.org/dc/terms/ requires,omitempty"
     Rights:
       description: >
         is information about rights held in and over the resource.
@@ -612,8 +613,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'rights,omitempty'
-        xml: 'http://purl.org/dc/terms/ rights,omitempty'
+        json: "rights,omitempty"
+        xml: "http://purl.org/dc/terms/ rights,omitempty"
     RightsHolder:
       description: >
         is a person or organization owning or managing rights over the resource.
@@ -624,8 +625,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'rightsHolder,omitempty'
-        xml: 'http://purl.org/dc/terms/ rightsHolder,omitempty'
+        json: "rightsHolder,omitempty"
+        xml: "http://purl.org/dc/terms/ rightsHolder,omitempty"
     Source:
       description: >
         is a related resource from which the described resource is derived.
@@ -637,8 +638,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'source,omitempty'
-        xml: 'http://purl.org/dc/terms/ source,omitempty'
+        json: "source,omitempty"
+        xml: "http://purl.org/dc/terms/ source,omitempty"
     Spatial:
       description: >
         is spatial characteristics of the resource.
@@ -646,8 +647,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'spatial,omitempty'
-        xml: 'http://purl.org/dc/terms/ spatial,omitempty'
+        json: "spatial,omitempty"
+        xml: "http://purl.org/dc/terms/ spatial,omitempty"
     Subject:
       description: >
         is a topic of the resource.
@@ -659,8 +660,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'subject,omitempty'
-        xml: 'http://purl.org/dc/terms/ subject,omitempty'
+        json: "subject,omitempty"
+        xml: "http://purl.org/dc/terms/ subject,omitempty"
     TableOfContents:
       description: >
         is a list of subunits of the resource.
@@ -668,8 +669,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'tableOfContents,omitempty'
-        xml: 'http://purl.org/dc/terms/ tableOfContents,omitempty'
+        json: "tableOfContents,omitempty"
+        xml: "http://purl.org/dc/terms/ tableOfContents,omitempty"
     Temporal:
       description: >
         is temporal characteristics of the resource.
@@ -677,8 +678,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'temporal,omitempty'
-        xml: 'http://purl.org/dc/terms/ temporal,omitempty'
+        json: "temporal,omitempty"
+        xml: "http://purl.org/dc/terms/ temporal,omitempty"
     Title:
       description: >
         is a name given to the resource.
@@ -686,8 +687,8 @@ components:
       items:
         type: string
       x-oapi-codegen-extra-tags:
-        json: 'title,omitempty'
-        xml: 'http://purl.org/dc/terms/ title,omitempty'
+        json: "title,omitempty"
+        xml: "http://purl.org/dc/terms/ title,omitempty"
     Type:
       description: >
         is the nature or genre of the resource.
@@ -696,10 +697,10 @@ components:
         the file format, physical medium, or dimensions of the resource, use the property Format.
       type: array
       items:
-        $ref: '#/components/schemas/TypeVocabulary'
+        $ref: "#/components/schemas/TypeVocabulary"
       x-oapi-codegen-extra-tags:
-        json: 'type,omitempty'
-        xml: 'http://purl.org/dc/terms/ type,omitempty'
+        json: "type,omitempty"
+        xml: "http://purl.org/dc/terms/ type,omitempty"
     Valid:
       description: >
         is a date (often a range) of validity of a resource.
@@ -708,10 +709,10 @@ components:
         of which this is a subproperty.
       type: array
       items:
-        $ref: '#/components/schemas/DCDate'
+        $ref: "#/components/schemas/DCDate"
       x-oapi-codegen-extra-tags:
-        json: 'valid,omitempty'
-        xml: 'http://purl.org/dc/terms/ valid,omitempty'
+        json: "valid,omitempty"
+        xml: "http://purl.org/dc/terms/ valid,omitempty"
     DCElements:
       description: >
         /elements/1.1/ namespace: the legacy fifteen-element "Simple Dublin Core", most commonly what feeds actually use
@@ -719,79 +720,79 @@ components:
       type: object
       properties:
         dc_contributor:
-          $ref: '#/components/schemas/Contributor'
+          $ref: "#/components/schemas/Contributor"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ contributor,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ contributor,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_coverage:
-          $ref: '#/components/schemas/Coverage'
+          $ref: "#/components/schemas/Coverage"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ coverage,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ coverage,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_creator:
-          $ref: '#/components/schemas/Creator'
+          $ref: "#/components/schemas/Creator"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ creator,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ creator,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_date:
-          $ref: '#/components/schemas/Date'
+          $ref: "#/components/schemas/Date"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ date,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ date,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_description:
-          $ref: '#/components/schemas/Description'
+          $ref: "#/components/schemas/Description"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ description,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ description,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_format:
-          $ref: '#/components/schemas/Format'
+          $ref: "#/components/schemas/Format"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ format,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ format,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_identifier:
-          $ref: '#/components/schemas/Identifier'
+          $ref: "#/components/schemas/Identifier"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ identifier,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ identifier,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_language:
-          $ref: '#/components/schemas/Language'
+          $ref: "#/components/schemas/Language"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ language,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ language,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_publisher:
-          $ref: '#/components/schemas/Publisher'
+          $ref: "#/components/schemas/Publisher"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ publisher,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ publisher,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_relation:
-          $ref: '#/components/schemas/Relation'
+          $ref: "#/components/schemas/Relation"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ relation,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ relation,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_rights:
-          $ref: '#/components/schemas/Rights'
+          $ref: "#/components/schemas/Rights"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ rights,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ rights,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_source:
-          $ref: '#/components/schemas/Source'
+          $ref: "#/components/schemas/Source"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ source,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ source,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_subject:
-          $ref: '#/components/schemas/Subject'
+          $ref: "#/components/schemas/Subject"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ subject,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ subject,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_title:
-          $ref: '#/components/schemas/Title'
+          $ref: "#/components/schemas/Title"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ title,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ title,omitempty"
           x-go-type-skip-optional-pointer: true
         dc_type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
           x-oapi-codegen-extra-tags:
-            xml: 'http://purl.org/dc/elements/1.1/ type,omitempty'
+            xml: "http://purl.org/dc/elements/1.1/ type,omitempty"
           x-go-type-skip-optional-pointer: true
     DCTerms:
       description: >
@@ -802,167 +803,167 @@ components:
       type: object
       properties:
         dc_abstract:
-          $ref: '#/components/schemas/Abstract'
+          $ref: "#/components/schemas/Abstract"
           x-go-type-skip-optional-pointer: true
         dc_accessRights:
-          $ref: '#/components/schemas/AccessRights'
+          $ref: "#/components/schemas/AccessRights"
           x-go-type-skip-optional-pointer: true
         dc_accrualMethod:
-          $ref: '#/components/schemas/AccrualMethod'
+          $ref: "#/components/schemas/AccrualMethod"
           x-go-type-skip-optional-pointer: true
         dc_accrualPeriodicity:
-          $ref: '#/components/schemas/AccrualPeriodicity'
+          $ref: "#/components/schemas/AccrualPeriodicity"
           x-go-type-skip-optional-pointer: true
         dc_accrualPolicy:
-          $ref: '#/components/schemas/AccrualPolicy'
+          $ref: "#/components/schemas/AccrualPolicy"
           x-go-type-skip-optional-pointer: true
         dc_alternative:
-          $ref: '#/components/schemas/Alternative'
+          $ref: "#/components/schemas/Alternative"
           x-go-type-skip-optional-pointer: true
         dc_audience:
-          $ref: '#/components/schemas/Audience'
+          $ref: "#/components/schemas/Audience"
           x-go-type-skip-optional-pointer: true
         dc_available:
-          $ref: '#/components/schemas/Available'
+          $ref: "#/components/schemas/Available"
           x-go-type-skip-optional-pointer: true
         dc_bibliographicCitation:
-          $ref: '#/components/schemas/BibliographicCitation'
+          $ref: "#/components/schemas/BibliographicCitation"
           x-go-type-skip-optional-pointer: true
         dc_conformsTo:
-          $ref: '#/components/schemas/ConformsTo'
+          $ref: "#/components/schemas/ConformsTo"
           x-go-type-skip-optional-pointer: true
         dc_contributor:
-          $ref: '#/components/schemas/Contributor'
+          $ref: "#/components/schemas/Contributor"
           x-go-type-skip-optional-pointer: true
         dc_coverage:
-          $ref: '#/components/schemas/Coverage'
+          $ref: "#/components/schemas/Coverage"
           x-go-type-skip-optional-pointer: true
         dc_creator:
-          $ref: '#/components/schemas/Creator'
+          $ref: "#/components/schemas/Creator"
           x-go-type-skip-optional-pointer: true
         dc_created:
-          $ref: '#/components/schemas/Created'
+          $ref: "#/components/schemas/Created"
           x-go-type-skip-optional-pointer: true
         dc_date:
-          $ref: '#/components/schemas/Date'
+          $ref: "#/components/schemas/Date"
           x-go-type-skip-optional-pointer: true
         dc_dateAccepted:
-          $ref: '#/components/schemas/DateAccepted'
+          $ref: "#/components/schemas/DateAccepted"
           x-go-type-skip-optional-pointer: true
         dc_dateCopyrighted:
-          $ref: '#/components/schemas/DateCopyrighted'
+          $ref: "#/components/schemas/DateCopyrighted"
           x-go-type-skip-optional-pointer: true
         dc_dateSubmitted:
-          $ref: '#/components/schemas/DateSubmitted'
+          $ref: "#/components/schemas/DateSubmitted"
           x-go-type-skip-optional-pointer: true
         dc_description:
-          $ref: '#/components/schemas/Description'
+          $ref: "#/components/schemas/Description"
           x-go-type-skip-optional-pointer: true
         dc_educationLevel:
-          $ref: '#/components/schemas/EducationLevel'
+          $ref: "#/components/schemas/EducationLevel"
           x-go-type-skip-optional-pointer: true
         dc_extent:
-          $ref: '#/components/schemas/Extent'
+          $ref: "#/components/schemas/Extent"
           x-go-type-skip-optional-pointer: true
         dc_format:
-          $ref: '#/components/schemas/Format'
+          $ref: "#/components/schemas/Format"
           x-go-type-skip-optional-pointer: true
         dc_hasFormat:
-          $ref: '#/components/schemas/HasFormat'
+          $ref: "#/components/schemas/HasFormat"
           x-go-type-skip-optional-pointer: true
         dc_hasPart:
-          $ref: '#/components/schemas/HasPart'
+          $ref: "#/components/schemas/HasPart"
           x-go-type-skip-optional-pointer: true
         dc_hasVersion:
-          $ref: '#/components/schemas/HasVersion'
+          $ref: "#/components/schemas/HasVersion"
           x-go-type-skip-optional-pointer: true
         dc_identifier:
-          $ref: '#/components/schemas/Identifier'
+          $ref: "#/components/schemas/Identifier"
           x-go-type-skip-optional-pointer: true
         dc_instructionalMethod:
-          $ref: '#/components/schemas/InstructionalMethod'
+          $ref: "#/components/schemas/InstructionalMethod"
           x-go-type-skip-optional-pointer: true
         dc_isFormatOf:
-          $ref: '#/components/schemas/IsFormatOf'
+          $ref: "#/components/schemas/IsFormatOf"
           x-go-type-skip-optional-pointer: true
         dc_isPartOf:
-          $ref: '#/components/schemas/IsPartOf'
+          $ref: "#/components/schemas/IsPartOf"
           x-go-type-skip-optional-pointer: true
         dc_isReferencedBy:
-          $ref: '#/components/schemas/IsReferencedBy'
+          $ref: "#/components/schemas/IsReferencedBy"
           x-go-type-skip-optional-pointer: true
         dc_isReplacedBy:
-          $ref: '#/components/schemas/IsReplacedBy'
+          $ref: "#/components/schemas/IsReplacedBy"
           x-go-type-skip-optional-pointer: true
         dc_isRequiredBy:
-          $ref: '#/components/schemas/IsRequiredBy'
+          $ref: "#/components/schemas/IsRequiredBy"
           x-go-type-skip-optional-pointer: true
         dc_issued:
-          $ref: '#/components/schemas/Issued'
+          $ref: "#/components/schemas/Issued"
           x-go-type-skip-optional-pointer: true
         dc_isVersionOf:
-          $ref: '#/components/schemas/IsVersionOf'
+          $ref: "#/components/schemas/IsVersionOf"
           x-go-type-skip-optional-pointer: true
         dc_language:
-          $ref: '#/components/schemas/Language'
+          $ref: "#/components/schemas/Language"
           x-go-type-skip-optional-pointer: true
         dc_license:
-          $ref: '#/components/schemas/License'
+          $ref: "#/components/schemas/License"
           x-go-type-skip-optional-pointer: true
         dc_mediator:
-          $ref: '#/components/schemas/Mediator'
+          $ref: "#/components/schemas/Mediator"
           x-go-type-skip-optional-pointer: true
         dc_medium:
-          $ref: '#/components/schemas/Medium'
+          $ref: "#/components/schemas/Medium"
           x-go-type-skip-optional-pointer: true
         dc_modified:
-          $ref: '#/components/schemas/Modified'
+          $ref: "#/components/schemas/Modified"
           x-go-type-skip-optional-pointer: true
         dc_provenance:
-          $ref: '#/components/schemas/Provenance'
+          $ref: "#/components/schemas/Provenance"
           x-go-type-skip-optional-pointer: true
         dc_publisher:
-          $ref: '#/components/schemas/Publisher'
+          $ref: "#/components/schemas/Publisher"
           x-go-type-skip-optional-pointer: true
         dc_references:
-          $ref: '#/components/schemas/References'
+          $ref: "#/components/schemas/References"
           x-go-type-skip-optional-pointer: true
         dc_relation:
-          $ref: '#/components/schemas/Relation'
+          $ref: "#/components/schemas/Relation"
           x-go-type-skip-optional-pointer: true
         dc_replaces:
-          $ref: '#/components/schemas/Replaces'
+          $ref: "#/components/schemas/Replaces"
           x-go-type-skip-optional-pointer: true
         dc_requires:
-          $ref: '#/components/schemas/Requires'
+          $ref: "#/components/schemas/Requires"
           x-go-type-skip-optional-pointer: true
         dc_rights:
-          $ref: '#/components/schemas/Rights'
+          $ref: "#/components/schemas/Rights"
           x-go-type-skip-optional-pointer: true
         dc_rightsHolder:
-          $ref: '#/components/schemas/RightsHolder'
+          $ref: "#/components/schemas/RightsHolder"
           x-go-type-skip-optional-pointer: true
         dc_source:
-          $ref: '#/components/schemas/Source'
+          $ref: "#/components/schemas/Source"
           x-go-type-skip-optional-pointer: true
         dc_spatial:
-          $ref: '#/components/schemas/Spatial'
+          $ref: "#/components/schemas/Spatial"
           x-go-type-skip-optional-pointer: true
         dc_subject:
-          $ref: '#/components/schemas/Subject'
+          $ref: "#/components/schemas/Subject"
           x-go-type-skip-optional-pointer: true
         dc_tableOfContents:
-          $ref: '#/components/schemas/TableOfContents'
+          $ref: "#/components/schemas/TableOfContents"
           x-go-type-skip-optional-pointer: true
         dc_temporal:
-          $ref: '#/components/schemas/Temporal'
+          $ref: "#/components/schemas/Temporal"
           x-go-type-skip-optional-pointer: true
         dc_title:
-          $ref: '#/components/schemas/Title'
+          $ref: "#/components/schemas/Title"
           x-go-type-skip-optional-pointer: true
         dc_type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
           x-go-type-skip-optional-pointer: true
         dc_valid:
-          $ref: '#/components/schemas/Valid'
+          $ref: "#/components/schemas/Valid"
           x-go-type-skip-optional-pointer: true

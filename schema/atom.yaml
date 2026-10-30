@@ -11,6 +11,7 @@ info:
     name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
 components:
   schemas:
@@ -24,8 +25,6 @@ components:
             establishes the base URI (or IRI) for resolving any relative references found within the effective scope of
             the xml:base attribute.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "xml:base,attr,omitempty"
             json: "base,omitempty"
@@ -34,8 +33,6 @@ components:
           description: >
             indicates the natural language for the element and its descendents.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
             xml: "xml:lang,attr,omitempty"
             json: "lang,omitempty"
@@ -85,8 +82,6 @@ components:
               type: string
               enum: ["text", "html", "xhtml"]
               default: "text"
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "type,attr,omitempty"
                 json: "type,omitempty"
@@ -206,8 +201,6 @@ components:
               description: >
                 is a string that identifies the category to which the entry or feed belongs.
               x-go-type: xml.Attr
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "term,attr"
                 json: "term"
@@ -216,8 +209,6 @@ components:
               description: >
                 is an IRI that identifies a categorization scheme.
               x-go-type: xml.Attr
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "scheme,attr,omitempty"
                 json: "scheme,omitempty"
@@ -225,8 +216,6 @@ components:
               description: >
                 provides a human-readable label for display in end-user applications.
               x-go-type: xml.Attr
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "label,attr,omitempty"
                 json: "label,omitempty"
@@ -261,16 +250,12 @@ components:
             uri:
               type: string
               x-go-name: URI
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "uri,attr,omitempty"
                 json: "uri,omitempty"
                 validate: "omitempty,url"
             version:
               type: string
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "version,attr,omitempty"
                 json: "version,omitempty"
@@ -307,8 +292,6 @@ components:
               description: >
                 contains the URL of the related resource.
               type: string
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "href,attr"
                 validate: "required,url|hostname"
@@ -317,8 +300,6 @@ components:
                 identifies the language used by the related resource using an HTML language code.
               type: string
               x-go-name: HrefLang
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "hreflang,attr,omitempty"
                 validate: "omitempty,rfc3066lang"
@@ -326,8 +307,6 @@ components:
               description: >
                 contains the resource's size, in bytes.
               type: integer
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "length,attr,omitempty"
                 validate: "omitempty,number"
@@ -335,8 +314,6 @@ components:
               description: >
                 provides a human-readable description of the resource.
               type: string
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "title,attr,omitempty"
                 validate: "omitnil,required"
@@ -344,8 +321,6 @@ components:
               description: >
                 identifies the resource's MIME media type.
               type: string
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "type,attr,omitempty"
                 validate: "omitnil,mimetype_string"
@@ -367,8 +342,6 @@ components:
                   "standout",
                   "http://schemas.google.com/g/2005#feed",
                 ]
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "rel,attr,omitempty"
                 validate: "omitempty,oneof=alternate enclosure related self via hub edit next standout http://schemas.google.com/g/2005#feed"
@@ -447,8 +420,6 @@ components:
               type: string
               enum: ["text", "html", "xhtml"]
               default: "text"
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "type,attr,omitempty"
                 json: "type,omitempty"
@@ -458,8 +429,6 @@ components:
                 is an attribute that links to the source content.
               type: string
               x-go-name: Source
-              xml:
-                attribute: true
               x-oapi-codegen-extra-tags:
                 xml: "src,attr,omitempty"
                 json: "src,omitempty"

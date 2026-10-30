@@ -1,14 +1,15 @@
 ---
-openapi: '3.1.0'
+openapi: "3.1.0"
 info:
   version: 1.0.0
   title: Extensions Plumbing Code
   description: >
     Additional types and methods that provide plumbing for specific extensions functionality.
   contact:
-    name: 'Joshua Rich'
+    name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
 components:
   schemas:
@@ -36,16 +37,16 @@ components:
         - content
       properties:
         XMLName:
-          x-go-type: 'xml.Name'
+          x-go-type: "xml.Name"
           x-oapi-codegen-extra-tags:
-            json: 'xml'
-            validate: 'required'
+            json: "xml"
+            validate: "required"
         content:
           description: is the element value.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: ',innerxml'
-            validate: 'required'
+            xml: ",innerxml"
+            validate: "required"
         attributes:
           description: are any attributes of the element.
           type: array
@@ -53,4 +54,4 @@ components:
             x-go-type: xml.Attr
           x-go-type-skip-optional-pointer: true
           x-oapi-codegen-extra-tags:
-            xml: ',any,attr'
+            xml: ",any,attr"
