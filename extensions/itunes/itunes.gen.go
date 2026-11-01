@@ -39,7 +39,7 @@ type Category struct {
 }
 
 // Explicit indicates whether the content is explicit in nature.
-type Explicit = bool
+type Explicit = string
 
 // Image is the artwork for the show.
 type Image struct {

@@ -1,5 +1,5 @@
 ---
-openapi: '3.1.0'
+openapi: "3.1.0"
 info:
   version: 1.0.0
   title: iTunes RSS extension
@@ -8,9 +8,10 @@ info:
 
     https://help.apple.com/itc/podcasts_connect/#/itcb54353390
   contact:
-    name: 'Joshua Rich'
+    name: "Joshua Rich"
     email: joshua.rich@gmail.com
   license:
+    name: MIT
     identifier: MIT
 components:
   schemas:
@@ -25,31 +26,29 @@ components:
           description: >
             is the text that describes the category.
           type: string
-          xml:
-            attribute: true
           x-oapi-codegen-extra-tags:
-            xml: 'text,attr'
+            xml: "text,attr"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty'
-        json: 'itunes_category'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty"
+        json: "itunes_category"
     Categories:
       description: >
         is the set of all taxonomies that represent the show.
       type: object
       allOf:
-        - $ref: '#/components/schemas/Category'
+        - $ref: "#/components/schemas/Category"
         - type: object
           properties:
             categories:
               type: array
               items:
-                $ref: '#/components/schemas/Category'
+                $ref: "#/components/schemas/Category"
               x-oapi-codegen-extra-tags:
-                xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty'
-                json: 'itunes_category'
+                xml: "http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty"
+                json: "itunes_category"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty'
-        json: 'itunes_category'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd category,omitempty"
+        json: "itunes_category"
     Image:
       description: >
         is the artwork for the show.
@@ -62,39 +61,39 @@ components:
             is a URL that represents the element content.
           type: string
           x-oapi-codegen-extra-tags:
-            xml: 'href,attr,omitempty'
-            validate: 'omitempty,url'
+            xml: "href,attr,omitempty"
+            validate: "omitempty,url"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty'
-        json: 'itunes_image'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd image,omitempty"
+        json: "itunes_image"
     Explicit:
       description: >
         indicates whether the content is explicit in nature.
-      type: boolean
+      type: string
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd explicit,omitempty'
-        json: 'itunes_explicit'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd explicit,omitempty"
+        json: "itunes_explicit"
     Summary:
       description: >
         is a summary of the show content.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd summary,omitempty'
-        json: 'itunes_summary'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd summary,omitempty"
+        json: "itunes_summary"
     Subtitle:
       description: >
         is a subtitle for the show content.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd subtitle,omitempty'
-        json: 'itunes_subtitle'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd subtitle,omitempty"
+        json: "itunes_subtitle"
     Author:
       description: >
         is the author of the show content.
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd author,omitempty'
-        json: 'itunes_author'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd author,omitempty"
+        json: "itunes_author"
     Type:
       description: >
         is the type of show
@@ -103,38 +102,38 @@ components:
         - Episodic
         - Serial
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty'
-        json: 'itunes_type'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd type,omitempty"
+        json: "itunes_type"
     Name:
       type: string
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd name,omitempty'
-        json: 'itunes_name'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd name,omitempty"
+        json: "itunes_name"
     Owner:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
       x-oapi-codegen-extra-tags:
-        xml: 'http://www.itunes.com/dtds/podcast-1.0.dtd owner,omitempty'
-        json: 'itunes_owner'
+        xml: "http://www.itunes.com/dtds/podcast-1.0.dtd owner,omitempty"
+        json: "itunes_owner"
     ItunesElements:
       description: >
         is the list itunes elements.
       properties:
         ItunesCategory:
-          $ref: '#/components/schemas/Categories'
+          $ref: "#/components/schemas/Categories"
         ItunesImage:
-          $ref: '#/components/schemas/Image'
+          $ref: "#/components/schemas/Image"
         ItunesExplicit:
-          $ref: '#/components/schemas/Explicit'
+          $ref: "#/components/schemas/Explicit"
         ItunesSummary:
-          $ref: '#/components/schemas/Summary'
+          $ref: "#/components/schemas/Summary"
         ItunesSubtitle:
-          $ref: '#/components/schemas/Subtitle'
+          $ref: "#/components/schemas/Subtitle"
         ItunesAuthor:
-          $ref: '#/components/schemas/Author'
+          $ref: "#/components/schemas/Author"
         ItunesType:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         ItunesOwner:
-          $ref: '#/components/schemas/Owner'
+          $ref: "#/components/schemas/Owner"
