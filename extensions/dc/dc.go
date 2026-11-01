@@ -80,6 +80,7 @@ func (d *DCDate) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	if err := dec.DecodeElement(&value, &start); err != nil {
 		return fmt.Errorf("unmarshal dcdate: %w", err)
 	}
+	value.Value = strings.TrimSpace(value.Value)
 	for _, candidate := range w3cdtfLayouts {
 		if !candidate.pattern.MatchString(value.Value) {
 			continue
