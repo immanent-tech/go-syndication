@@ -1,5 +1,7 @@
-// Copyright 2026 Joshua Rich <joshua.rich@gmail.com>.
-// SPDX-License-Identifier: 	AGPL-3.0-or-later
+/*
+ * Copyright (c) 2026 Immanent Tech
+ * SPDX-License-Identifier: MIT
+ */
 
 package rdf
 
@@ -145,4 +147,9 @@ func (i *Item) GetCommentRSS() string {
 	default:
 		return ""
 	}
+}
+
+// GetCommentURL is a no-op as RDF items have no comment element.
+func (i Item) GetCommentURL() string {
+	return ""
 }

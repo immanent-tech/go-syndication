@@ -1,0 +1,29 @@
+{
+    "psi-header.config": {
+        "forceToTop": true,
+        "creation": "new",
+        "blankLinesAfter": 1,
+        "license": "MIT"
+    },
+    "psi-header.templates": [
+        {
+            "language": "*",
+            "template": [
+                "Copyright (c) <<year>> <<company>>",
+                "SPDX-License-Identifier: <<license>>"
+            ]
+        }
+    ],
+    "psi-header.changes-tracking": {
+        "isActive": true,
+        "modAuthor": "Modified By:",
+        "modDate": "Last Modified:",
+        "modDateFormat": "date"
+    },
+    "psi-header.variables": [
+        [
+            "company",
+            "Immanent Tech"
+        ]
+    ],
+}
