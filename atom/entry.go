@@ -277,6 +277,11 @@ func (e Entry) GetCommentRSS() string {
 	}
 }
 
+// GetCommentURL is a no-op as Atom has no comment URL element.
+func (e Entry) GetCommentURL() string {
+	return ""
+}
+
 func (s StandaloneEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name = xml.Name{Local: "entry"}
 	defaultNS := s.DefaultNamespace

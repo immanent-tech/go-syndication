@@ -331,6 +331,14 @@ func (i Item) GetCommentRSS() string {
 	}
 }
 
+// GetCommentURL returns the URL for a HTML page containing comments against the item.
+func (i Item) GetCommentURL() string {
+	if i.Comments != nil {
+		return *i.Comments
+	}
+	return ""
+}
+
 func itemCustomValidation(sl validator.StructLevel) {
 	i := sl.Current().Interface().(Item)
 	if i.Description.String() == "" && i.Title == "" {

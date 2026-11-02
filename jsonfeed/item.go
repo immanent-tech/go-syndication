@@ -15,12 +15,12 @@ import (
 var _ types.ItemSource = (*Item)(nil)
 
 // GetID returns an "id" for the Item.
-func (i *Item) GetID() string {
+func (i Item) GetID() string {
 	return i.ID
 }
 
 // GetTitle retrieves title (if any) of the Item.
-func (i *Item) GetTitle() string {
+func (i Item) GetTitle() string {
 	if i.Title != nil {
 		return sanitization.SanitizeText(*i.Title, sanitization.DefaultMaxRunes)
 	}
@@ -29,7 +29,7 @@ func (i *Item) GetTitle() string {
 
 // GetLink retrieves URL associated with the item (if any). It will retrieve either the URL or ExternalURL, whichever is
 // found first, or an empty string if neither is found.
-func (i *Item) GetLink() string {
+func (i Item) GetLink() string {
 	var rawURL string
 	switch {
 	case i.URL != nil:
@@ -47,7 +47,7 @@ func (i *Item) GetLink() string {
 }
 
 // GetDescription retrieves the summary (if any) of the Item.
-func (i *Item) GetDescription() string {
+func (i Item) GetDescription() string {
 	if i.Summary != nil {
 		return sanitization.SanitizeText(*i.Summary, -1)
 	}
@@ -55,7 +55,7 @@ func (i *Item) GetDescription() string {
 }
 
 // GetAuthors retrieves the authors (if any) of the Item.
-func (i *Item) GetAuthors() []string {
+func (i Item) GetAuthors() []string {
 	authors := make([]string, 0, len(i.Authors))
 	if i.Author != nil {
 		authors = append(authors, i.Author.String())
@@ -69,17 +69,17 @@ func (i *Item) GetAuthors() []string {
 }
 
 // GetContributors is a no-op for JSONFeed items.
-func (i *Item) GetContributors() []string {
+func (i Item) GetContributors() []string {
 	return nil
 }
 
 // GetRights is a no-op for JSONFeed items.
-func (i *Item) GetRights() *string {
+func (i Item) GetRights() *string {
 	return nil
 }
 
 // GetLanguage retrieves the language (if any) of the item.
-func (i *Item) GetLanguage() *string {
+func (i Item) GetLanguage() *string {
 	if i.Language != nil {
 		lang := sanitization.SanitizeText(*i.Language, sanitization.DefaultMaxRunes)
 		return &lang
@@ -88,7 +88,7 @@ func (i *Item) GetLanguage() *string {
 }
 
 // GetCategories retrieves the categories (if any) of the Item.
-func (i *Item) GetCategories() []string {
+func (i Item) GetCategories() []string {
 	slices.Sort(i.Tags)
 	i.Tags = slices.DeleteFunc(i.Tags, func(str string) bool {
 		return strings.TrimSpace(str) == ""
@@ -102,7 +102,7 @@ func (i *Item) GetCategories() []string {
 }
 
 // GetImage retrieves the image (if any) for the Item.
-func (i *Item) GetImage() *types.Image {
+func (i Item) GetImage() *types.Image {
 	if i.Image != nil {
 		safeURL, err := sanitization.SanitizeURLString(*i.Image)
 		if err != nil {
@@ -116,7 +116,7 @@ func (i *Item) GetImage() *types.Image {
 }
 
 // GetPublishedDate returns the published date of the Item.
-func (i *Item) GetPublishedDate() *time.Time {
+func (i Item) GetPublishedDate() *time.Time {
 	if i.DatePublished != nil {
 		ts, err := time.Parse(time.RFC3339, *i.DatePublished)
 		if err != nil {
@@ -128,7 +128,7 @@ func (i *Item) GetPublishedDate() *time.Time {
 }
 
 // GetUpdatedDate returns the updated (modified) date of the Item.
-func (i *Item) GetUpdatedDate() *time.Time {
+func (i Item) GetUpdatedDate() *time.Time {
 	if i.DateModified != nil {
 		ts, err := time.Parse(time.RFC3339, *i.DateModified)
 		if err != nil {
@@ -139,9 +139,9 @@ func (i *Item) GetUpdatedDate() *time.Time {
 	return nil
 }
 
-// GetContent returns the content of the Item (if any). This will be either the html or text content, whichever is found
+// GetContent returns the content of the Item (if any). This will be either the HTML or text content, whichever is found
 // first.
-func (i *Item) GetContent() *string {
+func (i Item) GetContent() *string {
 	var content string
 	switch {
 	case i.ContentHTML != nil:
@@ -155,12 +155,17 @@ func (i *Item) GetContent() *string {
 	return nil
 }
 
-func (i *Item) GetGeoInfo() *types.GeoInfo {
+// GetGeoInfo is a no-op as geo information is not supported in JSONFeed.
+func (i Item) GetGeoInfo() *types.GeoInfo {
 	return nil
 }
 
-// GetCommentRSS returns whichever spelling was present after decoding a feed preferring the correct one if a
-// (spec-violating) feed somehow supplied both.
-func (i *Item) GetCommentRSS() string {
+// GetCommentRSS is a no-op as JSONFeed has no wfw extension equivalent.
+func (i Item) GetCommentRSS() string {
+	return ""
+}
+
+// GetCommentURL is a no-op as JSONFeed has no comment URL element.
+func (i Item) GetCommentURL() string {
 	return ""
 }
