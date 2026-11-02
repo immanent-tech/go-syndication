@@ -61,6 +61,7 @@ type HasGeo interface {
 
 type hasComments interface {
 	GetCommentRSS() string
+	GetCommentURL() string
 }
 
 // SourceURL contains methods for retrieving or setting the source of the Object.
