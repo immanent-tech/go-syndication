@@ -255,12 +255,18 @@ func (f Feed) GetUpdatedDate() *time.Time {
 }
 
 func (f Feed) GetUpdateInterval() time.Duration {
+	if f.SYUdatePeriod != nil {
+		return f.SYUdatePeriod.Interval(f.SYUpdateFrequency)
+	}
 	if items := f.GetItems(); len(items) > 2 {
 		var intervals []time.Duration
 		for idx := range items {
 			if idx < len(items)-1 {
-				if items[idx].GetUpdatedDate() != nil && items[idx+1].GetUpdatedDate() != nil {
-					intervals = append(intervals, items[idx].GetUpdatedDate().Sub(*items[idx+1].GetUpdatedDate()).Abs())
+				if items[idx].GetPublishedDate() != nil && items[idx+1].GetPublishedDate() != nil {
+					intervals = append(
+						intervals,
+						items[idx].GetPublishedDate().Sub(*items[idx+1].GetPublishedDate()).Abs(),
+					)
 				}
 			}
 		}

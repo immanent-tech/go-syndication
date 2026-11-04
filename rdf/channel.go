@@ -78,25 +78,9 @@ func (c Channel) GetRights() *string {
 
 func (c Channel) GetUpdateInterval() time.Duration {
 	if c.SYUdatePeriod != nil {
-		var baseInterval time.Duration
-		switch *c.SYUdatePeriod {
-		case "hourly":
-			baseInterval = time.Hour
-		case "daily":
-			baseInterval = 24 * time.Hour
-		case "weekly":
-			baseInterval = 7 * 24 * time.Hour
-		case "yearly":
-			baseInterval = 365 * 24 * time.Hour
-		default:
-			baseInterval = 5 * time.Hour
-		}
-		if c.SYUpdateFrequency != nil && *c.SYUpdateFrequency > 1 {
-			return time.Duration(int64(float64(baseInterval) / float64(*c.SYUpdateFrequency)))
-		}
-		return baseInterval
+		return c.SYUdatePeriod.Interval(c.SYUpdateFrequency)
 	}
-	return 0
+	return DefaultFeedUpdateInterval
 }
 
 func (c Channel) GetImage() *types.Image {

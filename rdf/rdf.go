@@ -26,7 +26,7 @@ var (
 	// one cannot be calculated based off item frequency.
 	DefaultFeedUpdateInterval = time.Hour
 
-	// MimeTypesRDF contains canonical/standard mimetypes for RDF.
+	// MimeTypes contains canonical/standard mimetypes for RDF.
 	MimeTypes = []string{"application/rdf+xml"}
 )
 
