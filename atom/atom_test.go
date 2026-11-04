@@ -1,10 +1,11 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
-package feeds
+package atom_test
 
 import (
 	"bytes"
+	"errors"
 	"os"
 	"path/filepath"
 	"slices"
@@ -12,6 +13,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-playground/validator/v10"
+	feeds "github.com/immanent-tech/go-syndication"
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/extensions/dc"
@@ -3052,11 +3055,11 @@ var atomSecXSS = map[string]atomTestSuite{
 
 // atomTests are the groups of test cases to run.
 var atomTests = map[string]map[string]atomTestSuite{
-	"test/feedvalidator/testcases/atom/1.1":  atomOtherTests,
-	"test/feedvalidator/testcases/atom/must": atomMustTests,
-	"test/extensions/georss":                 atomGeoRSS,
-	"test/feedsec/fields":                    atomSecFields,
-	"test/feedsec/xss":                       atomSecXSS,
+	"../test/feedvalidator/testcases/atom/1.1":  atomOtherTests,
+	"../test/feedvalidator/testcases/atom/must": atomMustTests,
+	"../test/extensions/georss":                 atomGeoRSS,
+	"../test/feedsec/fields":                    atomSecFields,
+	"../test/feedsec/xss":                       atomSecXSS,
 }
 
 func TestNewFeedFromBytesAtom(t *testing.T) {
@@ -3066,7 +3069,7 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 	tests := []struct {
 		name  string
 		args  args
-		want  *Feed
+		want  *feeds.Feed
 		suite atomTestSuite
 	}{}
 	for set, testSuites := range atomTests {
@@ -3079,7 +3082,7 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 				tests = append(tests, struct {
 					name  string
 					args  args
-					want  *Feed
+					want  *feeds.Feed
 					suite atomTestSuite
 				}{
 					name:  "file:" + testFile,
@@ -3092,7 +3095,7 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			feed, err := Decode[*atom.Feed]("", bytes.NewReader(tt.args.data))
+			feed, err := feeds.Decode[*atom.Feed]("", bytes.NewReader(tt.args.data))
 			if (err != nil) != tt.suite.wantDecodeErr {
 				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return
@@ -3111,4 +3114,36 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 			}
 		})
 	}
+}
+
+// getFailedValidations extracts the validation errors from the given error object and converts them into a map of the
+// struct field name and validation tags that failed. Test helpers use this format to check that specific validation
+// rules have passed or failed.
+func getFailedValidations(err error) (map[string][]string, error) {
+	failedValidations := make(map[string][]string)
+	if invalidValidationError, ok := errors.AsType[*validator.InvalidValidationError](err); ok {
+		return nil, invalidValidationError
+	}
+	if validateErrs, ok := errors.AsType[*validation.Errors](err); ok && validateErrs != nil {
+		for e := range slices.Values(validateErrs.Fields) {
+			failedValidations[e.StructNamespace] = append(failedValidations[e.StructNamespace], e.Tag)
+		}
+	}
+	return failedValidations, nil
+}
+
+func trunc(s string) string {
+	if len(s) > 160 {
+		return s[:160] + "..."
+	}
+	return s
+}
+
+func readFile(t *testing.T, path string) []byte {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
 }

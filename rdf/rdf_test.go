@@ -1,7 +1,7 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
-package feeds
+package rdf_test
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	feeds "github.com/immanent-tech/go-syndication"
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/stretchr/testify/assert"
 )
@@ -48,7 +49,7 @@ var rdfMustPass = map[string]rdfTestSuite{
 }
 
 var rdfTests = map[string]map[string]rdfTestSuite{
-	"test/feedvalidator/testcases/rss/must": rdfMustPass,
+	"../test/feedvalidator/testcases/rss/must": rdfMustPass,
 }
 
 func TestNewFeedFromBytesRDF(t *testing.T) {
@@ -84,7 +85,7 @@ func TestNewFeedFromBytesRDF(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			feed, err := Decode[*rdf.RDF]("", bytes.NewReader(tt.args.data))
+			feed, err := feeds.Decode[*rdf.RDF]("", bytes.NewReader(tt.args.data))
 			if (err != nil) != tt.suite.wantDecodeErr {
 				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return

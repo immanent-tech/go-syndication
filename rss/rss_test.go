@@ -1,7 +1,7 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
-package feeds
+package rss_test
 
 import (
 	"bytes"
@@ -17,12 +17,12 @@ import (
 	"time"
 	"unicode/utf8"
 
+	feeds "github.com/immanent-tech/go-syndication"
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type rssTestSuite struct {
@@ -743,12 +743,12 @@ var rssSecXSS = map[string]rssTestSuite{
 }
 
 var rssTests = map[string]map[string]rssTestSuite{
-	"test/feedvalidator/testcases/rss/must":  rssMustPass,
-	"test/feedvalidator/testcases/ext/media": rssMedia,
-	"test/feedvalidator/testcases/rss20":     rss20,
-	"test/feedsec/fields":                    rssSecFields,
-	"test/feedsec/malformed":                 rssSecMalformed,
-	"test/feedsec/xss":                       rssSecXSS,
+	"../test/feedvalidator/testcases/rss/must":  rssMustPass,
+	"../test/feedvalidator/testcases/ext/media": rssMedia,
+	"../test/feedvalidator/testcases/rss20":     rss20,
+	"../test/feedsec/fields":                    rssSecFields,
+	"../test/feedsec/malformed":                 rssSecMalformed,
+	"../test/feedsec/xss":                       rssSecXSS,
 }
 
 func TestNewFeedFromBytesRSS(t *testing.T) {
@@ -758,7 +758,7 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 	tests := []struct {
 		name  string
 		args  args
-		want  *Feed
+		want  *feeds.Feed
 		suite rssTestSuite
 	}{}
 	for set, testSuites := range rssTests {
@@ -768,10 +768,10 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 			tests = append(tests, struct {
 				name  string
 				args  args
-				want  *Feed
+				want  *feeds.Feed
 				suite rssTestSuite
 			}{
-				name:  "file:" + testFile,
+				name:  name,
 				args:  args{data: data},
 				suite: suite,
 			})
@@ -780,7 +780,7 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			feed, err := Decode[*rss.RSS]("", bytes.NewReader(tt.args.data))
+			feed, err := feeds.Decode[*rss.RSS]("", bytes.NewReader(tt.args.data))
 			if err != nil {
 				t.Logf("decode error: %v", err)
 			}
@@ -808,61 +808,6 @@ func TestNewFeedFromBytesRSS(t *testing.T) {
 	}
 }
 
-func TestBasicGeo(t *testing.T) {
-	exampleFeed := rss.RSS{
-		Version: "2.0",
-		Channel: rss.Channel{
-			Title: "Geotagged items",
-			Link:  "http://example.org",
-			Items: []rss.Item{
-				{
-					Title: "A photo taken in Copenhagen",
-					Link:  "http://example.org/photo/1",
-					Lat:   new(55.701),
-					Lon:   new(12.552),
-				},
-			},
-		},
-	}
-	exampleDoc := `
- <?xml version="1.0"?>
- <?xml-stylesheet href="/eqcenter/catalogs/rssxsl.php?feed=eqs7day-M5.xml" type="text/xsl"
-                  media="screen"?>
- <rss version="2.0"
-      xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
-      xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <channel>
-     <title>USGS M5+ Earthquakes</title>
-     <description>Real-time, worldwide earthquake list for the past 7 days</description>
-     <link>https://earthquake.usgs.gov/eqcenter/</link>
-     <dc:publisher>U.S. Geological Survey</dc:publisher>
-     <pubDate>Thu, 27 Dec 2007 23:56:15 PST</pubDate>
-     <item>
-       <pubDate>Fri, 28 Dec 2007 05:24:17 GMT</pubDate>
-       <title>M 5.3, northern Sumatra, Indonesia</title>
-       <description>December 28, 2007 05:24:17 GMT</description>
-       <link>https://earthquake.usgs.gov/eqcenter/recenteqsww/Quakes/us2007llai.php</link>
-       <geo:lat>5.5319</geo:lat>
-       <geo:long>95.8972</geo:long>
-     </item>
-   </channel>
- </rss>
-	`
-
-	t.Run("example feed", func(t *testing.T) {
-		_, err := Encode(exampleFeed)
-		require.NoError(t, err, "no errors in example feed")
-	})
-
-	t.Run("example doc", func(t *testing.T) {
-		doc, err := Decode[*rss.RSS]("", strings.NewReader(exampleDoc))
-		require := require.New(t)
-		require.NoError(err, "no errors in example feed")
-		require.InEpsilon(5.5319, *doc.Channel.Items[0].Lat, 0.0001, "lat matches")
-		require.InEpsilon(95.8972, *doc.Channel.Items[0].Lon, 0.0001, "long matches")
-	})
-}
-
 func TestXXEAndEntityExpansion(t *testing.T) {
 	const secret = "XXE_FILE_CANARY_9f3a7c"
 	canaryFile := filepath.Join(t.TempDir(), "secret.txt")
@@ -876,7 +821,7 @@ func TestXXEAndEntityExpansion(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	const testFiles = "test/feedsec/xml_attacks"
+	const testFiles = "../test/feedsec/xml_attacks"
 
 	for _, name := range []string{"xxe_file.xml", "xxe_ssrf.xml", "billion_laughs.xml"} {
 		t.Run(name, func(t *testing.T) {
@@ -885,7 +830,7 @@ func TestXXEAndEntityExpansion(t *testing.T) {
 			raw = strings.ReplaceAll(raw, "__CANARY_URL__", srv.URL)
 
 			start := time.Now()
-			feed, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(raw)))
+			feed, err := feeds.Decode[*rss.RSS]("", bytes.NewReader([]byte(raw)))
 			if err != nil {
 				t.Fatalf("decode error: %v", err)
 			}
@@ -897,7 +842,7 @@ func TestXXEAndEntityExpansion(t *testing.T) {
 				return // rejecting the feed outright is an acceptable outcome
 			}
 
-			data, err := Encode(feed)
+			data, err := feeds.Encode(feed)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -929,7 +874,7 @@ func TestResourceExhaustionShapes(t *testing.T) {
 			"</a>",
 			n,
 		) + `</item></channel></rss>`
-		_, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(doc)))
+		_, err := feeds.Decode[*rss.RSS]("", bytes.NewReader([]byte(doc)))
 		if err != nil {
 			t.Fatalf("decode error: %v", err)
 		}
@@ -940,7 +885,7 @@ func TestResourceExhaustionShapes(t *testing.T) {
 			"A",
 			2_000_000,
 		) + `</title><link>https://feed.example.com/1</link></item></channel></rss>`
-		feed, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(doc)))
+		feed, err := feeds.Decode[*rss.RSS]("", bytes.NewReader([]byte(doc)))
 		if err != nil {
 			t.Fatalf("decode error: %v", err)
 		}
@@ -953,7 +898,7 @@ func TestResourceExhaustionShapes(t *testing.T) {
 			t.Errorf("rendered feed is %d bytes; titles are not length-capped", len(feed.GetTitle()))
 		}
 
-		_, err = Encode(feed)
+		_, err = feeds.Encode(feed)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -967,7 +912,7 @@ func TestResourceExhaustionShapes(t *testing.T) {
 		}
 		sb.WriteString("</channel></rss>")
 		start := time.Now()
-		feed, err := Decode[*rss.RSS]("", bytes.NewReader([]byte(sb.String())))
+		feed, err := feeds.Decode[*rss.RSS]("", bytes.NewReader([]byte(sb.String())))
 		if err != nil {
 			t.Fatalf("decode error: %v", err)
 		}
@@ -979,4 +924,20 @@ func TestResourceExhaustionShapes(t *testing.T) {
 			)
 		}
 	})
+}
+
+func trunc(s string) string {
+	if len(s) > 160 {
+		return s[:160] + "..."
+	}
+	return s
+}
+
+func readFile(t *testing.T, path string) []byte {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
 }

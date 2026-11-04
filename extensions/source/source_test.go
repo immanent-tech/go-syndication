@@ -1,7 +1,7 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
-package feeds
+package source_test
 
 import (
 	"bytes"
@@ -11,6 +11,7 @@ import (
 	"slices"
 	"testing"
 
+	feeds "github.com/immanent-tech/go-syndication"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/validation"
 	"github.com/stretchr/testify/assert"
@@ -62,7 +63,7 @@ var sourceMustPass = map[string]sourceTestSuite{
 }
 
 var sourceTests = map[string]map[string]sourceTestSuite{
-	"test/extensions/source": sourceMustPass,
+	"../../test/extensions/source": sourceMustPass,
 }
 
 func TestExtensionsSource(t *testing.T) {
@@ -97,7 +98,7 @@ func TestExtensionsSource(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			feed, err := Decode[*rss.RSS]("", bytes.NewReader(tt.args.data))
+			feed, err := feeds.Decode[*rss.RSS]("", bytes.NewReader(tt.args.data))
 			if (err != nil) != tt.suite.wantDecodeErr {
 				t.Fatalf("Decode() error = %v, wantDecodeErr %v", err, tt.suite.wantDecodeErr)
 				return
