@@ -335,7 +335,7 @@ func TestEntry_GetUpdatedDate(t *testing.T) {
 }
 
 func TestStandaloneEntry_MarshalXML(t *testing.T) {
-	testTime := time.Unix(0, 0)
+	testTime := time.Unix(0, 0).UTC()
 	tests := []struct {
 		name    string
 		entry   atom.StandaloneEntry
@@ -354,7 +354,7 @@ func TestStandaloneEntry_MarshalXML(t *testing.T) {
 				Summary: &atom.Summary{Value: "Some text."},
 			},
 			want: []byte(
-				`<entry xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></entry>`,
+				`<entry xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T00:00:00Z</updated></entry>`,
 			),
 		},
 	}
@@ -384,7 +384,7 @@ func TestStandaloneEntry_UnmarshalXML(t *testing.T) {
 		{
 			name: "ok",
 			data: []byte(
-				`<entry xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></entry>`,
+				`<entry xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T00:00:00Z</updated></entry>`,
 			),
 		},
 	}
@@ -405,7 +405,7 @@ func TestStandaloneEntry_UnmarshalXML(t *testing.T) {
 			assert.Equal("Atom-Powered Robots Run Amok", entry.Title.Value)
 			assert.Equal("http://example.org/2003/12/13/atom03", entry.Links[0].Href)
 			assert.Equal("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a", entry.ID.Value)
-			assert.Equal(time.Unix(0, 0), entry.Updated.Value)
+			assert.Equal(time.Unix(0, 0).UTC(), entry.Updated.Value)
 			assert.Equal("Some text.", entry.Summary.Value)
 		})
 	}

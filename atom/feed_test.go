@@ -521,7 +521,7 @@ func TestFeed_AutoDeclareNamespaces(t *testing.T) {
 }
 
 func TestFeed_MarshalXML(t *testing.T) {
-	testTime := time.Unix(0, 0)
+	testTime := time.Unix(0, 0).UTC()
 	tests := []struct {
 		name    string
 		feed    atom.Feed
@@ -553,7 +553,7 @@ func TestFeed_MarshalXML(t *testing.T) {
 				},
 			},
 			want: []byte(
-				`<feed xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id><author xmlns="http://www.w3.org/2005/Atom"><name>John Doe</name></author><entry><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></entry><link href="http://example.org"></link><title xmlns="http://www.w3.org/2005/Atom" type="text">Example Feed</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></feed>`,
+				`<feed xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id><author xmlns="http://www.w3.org/2005/Atom"><name>John Doe</name></author><entry><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T00:00:00Z</updated></entry><link href="http://example.org"></link><title xmlns="http://www.w3.org/2005/Atom" type="text">Example Feed</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T00:00:00Z</updated></feed>`,
 			),
 		},
 	}
