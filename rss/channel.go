@@ -51,20 +51,23 @@ func (c *Channel) SetSourceURL(url string) {
 
 // GetLink retrieves the <link> (if any) of the Channel. This is the link to the website associated with the RSS feed.
 func (c Channel) GetLink() string {
-	if c.Link == "" {
-		return c.GetSourceURL()
+	if c.Link != "" {
+		if safe, err := sanitization.SanitizeURLString(c.Link); err == nil {
+			return safe
+		}
 	}
-	safe, err := sanitization.SanitizeURLString(c.Link)
-	if err != nil {
-		return ""
+	for link := range slices.Values(c.AtomLinks) {
+		if link.Rel != nil && *link.Rel == atom.LinkRelAlternate {
+			return link.String()
+		}
 	}
-	return safe
+	return c.GetSourceURL()
 }
 
 // GetAuthors retrieves the authors (if any) of the Channel. This will be the list of values from any <dc:creator>
 // elements.
 func (c Channel) GetAuthors() []string {
-	authors := make([]string, 0)
+	var authors []string
 	if webmaster := c.WebMaster; webmaster != nil {
 		authors = append(authors, sanitization.SanitizeText(*webmaster, sanitization.DefaultMaxRunes))
 	}
@@ -72,7 +75,7 @@ func (c Channel) GetAuthors() []string {
 		authors = append(authors, c.DcPublisher...)
 	}
 	if len(c.DcCreator) > 0 {
-		authors = append(authors, c.DcPublisher...)
+		authors = append(authors, c.DcCreator...)
 	}
 	slices.Sort(authors)
 	return slices.Compact(authors)
@@ -81,7 +84,7 @@ func (c Channel) GetAuthors() []string {
 // GetContributors retrieves the contributors (if any) of the Channel. This will be the list of values from the
 // <dc:contributor> element.
 func (c Channel) GetContributors() []string {
-	contributors := make([]string, 0)
+	var contributors []string
 	if editor := c.ManagingEditor; editor != nil {
 		contributors = append(contributors, sanitization.SanitizeText(*editor, sanitization.DefaultMaxRunes))
 	}

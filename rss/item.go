@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/immanent-tech/go-syndication/extensions/content"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"github.com/immanent-tech/go-syndication/types"
@@ -22,80 +21,6 @@ import (
 )
 
 var _ types.ItemSource = (*Item)(nil)
-
-// NewItem creates a new Item with the given options.
-func NewItem(options ...ItemOption) *Item {
-	item := &Item{
-		PubDate: NewTimestamp(time.Now().UTC()),
-	}
-
-	for option := range slices.Values(options) {
-		option(item)
-	}
-
-	return item
-}
-
-// ItemOption is a functional option applied to an Item.
-type ItemOption func(*Item)
-
-// WithItemTitle option sets the item title. Note to be value, an item needs either the title or description set.
-func WithItemTitle(title string) ItemOption {
-	return func(i *Item) {
-		i.Title = title
-	}
-}
-
-// WithItemDescription option sets the item description. Note to be value, an item needs either the title or description
-// set.
-func WithItemDescription(desc string, cdata bool) ItemOption {
-	return func(i *Item) {
-		i.Description = NewItemDescription(desc, cdata)
-	}
-}
-
-// WithItemLink option sets the URL to the original page displaying the item.
-func WithItemLink(link string) ItemOption {
-	return func(i *Item) {
-		i.Link = link
-	}
-}
-
-// WithItemGUID option assigns the given GUID to the item.
-func WithItemGUID(guid *GUID) ItemOption {
-	return func(i *Item) {
-		i.GUID = guid
-	}
-}
-
-// WithItemImage option sets the item image.
-func WithItemImage(img *types.Image) ItemOption {
-	return func(i *Item) {
-		i.MediaThumbnails = media.MediaThumbnails{
-			media.MediaThumbnail{
-				URL: img.GetURL(),
-			},
-		}
-	}
-}
-
-// WithItemContent option sets the item content.
-func WithItemContent(itemContent string, cdata bool) ItemOption {
-	return func(i *Item) {
-		i.ContentEncoded = new(content.NewContentEncoded(itemContent, cdata))
-	}
-}
-
-// WithItemPublishedDate option sets the published date of the item.
-func WithItemPublishedDate(ts time.Time) ItemOption {
-	return func(i *Item) {
-		if ts.IsZero() {
-			// Ignore zero value.
-			return
-		}
-		i.PubDate = NewTimestamp(ts)
-	}
-}
 
 // GetID returns an "id" for the item. This will be the value of the <guid> element, if present, or an empty string if
 // not present.
@@ -138,7 +63,7 @@ func (i Item) GetDescription() string {
 // GetAuthors retrieves the authors (if any) of the Item. This will be the list of values from any <author> and
 // <dc:creator> elements.
 func (i Item) GetAuthors() []string {
-	authors := make([]string, 0)
+	var authors []string
 	if i.Author != nil && *i.Author != "" {
 		authors = append(authors, sanitization.SanitizeText(*i.Author, sanitization.DefaultMaxRunes))
 	}
@@ -366,6 +291,7 @@ func (c ItemDescription) MarshalXML(enc *xml.Encoder, start xml.StartElement) er
 		}{c.Value}, start); err != nil {
 			return fmt.Errorf("encode description: %w", err)
 		}
+		return nil
 	}
 	if err := enc.EncodeElement(struct {
 		Value string `xml:",chardata"`
@@ -409,14 +335,6 @@ func (c *ItemDescription) UnmarshalJSON(data []byte) error {
 	}
 	c.Value = s
 	return nil
-}
-
-// NewGUID creates a GUID from the given value, with the given permalink status.
-func NewGUID(value string, permalink bool) *GUID {
-	return &GUID{
-		IsPermaLink: permalink,
-		Value:       value,
-	}
 }
 
 func guidCustomValidation(sl validator.StructLevel) {

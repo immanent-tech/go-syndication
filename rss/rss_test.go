@@ -5,6 +5,7 @@ package rss_test
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -940,4 +941,73 @@ func readFile(t *testing.T, path string) []byte {
 		t.Fatal(err)
 	}
 	return b
+}
+
+func TestTimestamp_MarshalXML(t *testing.T) {
+	tests := []struct {
+		name    string
+		value   time.Time
+		wantErr bool
+		want    []byte
+	}{
+		{
+			name:    "zero value",
+			value:   time.Time{},
+			wantErr: true,
+		},
+		{
+			name:    "ok",
+			value:   time.Unix(0, 0).UTC(),
+			wantErr: false,
+			want:    []byte(`<Timestamp>Thu, 01 Jan 1970 00:00:00 +0000</Timestamp>`),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ti := rss.NewTimestamp(tt.value)
+			got, gotErr := xml.Marshal(ti)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("MarshalXML() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("MarshalXML() succeeded unexpectedly")
+			} else {
+				assert.Equal(t, string(tt.want), string(got))
+			}
+		})
+	}
+}
+
+func TestIsCanonical(t *testing.T) {
+	tests := []struct {
+		name string
+		ts   string
+		want bool
+	}{
+		{
+			name: "string timezone",
+			ts:   time.Unix(0, 0).Format("Mon, 02 Jan 2006 15:04:05 GMT"),
+			want: true,
+		},
+		{
+			name: "numeric timezone",
+			ts:   time.Unix(0, 0).Format("Mon, 02 Jan 2006 15:04:05 +0000"),
+			want: true,
+		},
+		{
+			name: "non canonical",
+			ts:   time.Unix(0, 0).Format(time.RFC1123),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := rss.IsCanonical(tt.ts)
+			if got != tt.want {
+				t.Errorf("IsCanonical() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

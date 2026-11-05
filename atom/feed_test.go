@@ -51,6 +51,19 @@ func TestFeed_GetUpdateInterval(t *testing.T) {
 			want: 2 * time.Hour,
 		},
 		{
+			name: "unreliable items",
+			feed: atom.Feed{
+				Entries: []atom.Entry{
+					{Published: &atom.DateConstruct{Value: testTime}},
+					{},
+					{Published: &atom.DateConstruct{Value: testTime.Add(2 * time.Hour)}},
+					{Published: &atom.DateConstruct{Value: testTime.Add(4 * time.Hour)}},
+					{},
+				},
+			},
+			want: 2 * time.Hour,
+		},
+		{
 			name: "default",
 			feed: atom.Feed{},
 			want: time.Hour,

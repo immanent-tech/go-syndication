@@ -218,10 +218,10 @@ func TestEntry_GetImage(t *testing.T) {
 			name: "use <media:thumbnail>",
 			entry: atom.Entry{
 				MediaThumbnails: []media.MediaThumbnail{
-					{URL: "http://example.com/image.webp"},
+					{URL: "http://example.com/image.png"},
 				},
 			},
-			wantURL:   "http://example.com/image.webp",
+			wantURL:   "http://example.com/image.png",
 			wantTitle: "",
 		},
 		{
@@ -229,11 +229,11 @@ func TestEntry_GetImage(t *testing.T) {
 			entry: atom.Entry{
 				MediaGroup: &media.MediaGroup{
 					MediaThumbnails: []media.MediaThumbnail{
-						{URL: "http://example.com/image.webp"},
+						{URL: "http://example.com/image.png"},
 					},
 				},
 			},
-			wantURL:   "http://example.com/image.webp",
+			wantURL:   "http://example.com/image.png",
 			wantTitle: "",
 		},
 		{

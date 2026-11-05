@@ -1,9 +1,6 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
-// Package rss contains objects and methods defining the RSS syndication format.
-//
-//revive:disable:exported // function definitions can be ascertained from Channel.
 package rss
 
 import (
@@ -14,9 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions"
-	"github.com/immanent-tech/go-syndication/extensions/syndication"
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/sanitization"
 
@@ -102,9 +97,21 @@ func (t *Timestamp) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error
 	return nil
 }
 
+func NewPubDate(value time.Time) *PubDate {
+	return &PubDate{Value: value}
+}
+
 // String returns the value of the Category.
 func (c Category) String() string {
 	return sanitization.SanitizeText(c.Value, sanitization.DefaultMaxRunes)
+}
+
+// NewGUID creates a GUID from the given value, with the given permalink status.
+func NewGUID(value string, permalink bool) *GUID {
+	return &GUID{
+		IsPermaLink: permalink,
+		Value:       value,
+	}
 }
 
 func (g GUID) String() string {
@@ -129,107 +136,6 @@ func (e Enclosure) GetURL() string {
 		return ""
 	}
 	return safeURL
-}
-
-// NewRSS creates a new RSS version 2.0 object with the required title, description, and link values and any given
-// options.
-func NewRSS(title, description, link string, options ...RSSOption) *RSS {
-	rss := &RSS{
-		Version: N20,
-		Channel: Channel{
-			Title:         title,
-			Description:   description,
-			Link:          link,
-			LastBuildDate: NewTimestamp(time.Now().UTC()),
-			Generator:     new("go-syndication"),
-			Docs:          new("https://www.rssboard.org/rss-specification"),
-		},
-	}
-
-	for option := range slices.Values(options) {
-		option(rss)
-	}
-
-	return rss
-}
-
-// RSSOption is a functional applied to an RSS object.
-type RSSOption func(*RSS)
-
-func WithAtomLink(link *atom.Link) RSSOption {
-	return func(r *RSS) {
-		r.Channel.AtomLinks = append(r.Channel.AtomLinks, *link)
-	}
-}
-
-// WithCopyright option sets the RSS channel copyright.
-func WithCopyright(copyright string) RSSOption {
-	return func(r *RSS) {
-		r.Channel.Copyright = new(copyright)
-	}
-}
-
-// WithGenerator options sets the generator. This will default to "go-syndication".
-func WithGenerator(generator string) RSSOption {
-	return func(r *RSS) {
-		r.Channel.Generator = new(generator)
-	}
-}
-
-// WithManagingEditor option sets the RSS channel managingEditor.
-func WithManagingEditor(editor string) RSSOption {
-	return func(r *RSS) {
-		r.Channel.ManagingEditor = new(editor)
-	}
-}
-
-// WithWebmaster option sets the RSS channel webmaster.
-func WithWebmaster(webmaster string) RSSOption {
-	return func(r *RSS) {
-		r.Channel.WebMaster = new(webmaster)
-	}
-}
-
-// WithLastBuildDate option sets the last build date of the RSS object. This will default to time.Now().UTC().
-func WithLastBuildDate(ts time.Time) RSSOption {
-	return func(r *RSS) {
-		r.Channel.LastBuildDate = NewTimestamp(ts)
-	}
-}
-
-// WithPublishedDate option sets the published date of the RSS object.
-func WithPublishedDate(ts time.Time) RSSOption {
-	return func(r *RSS) {
-		r.Channel.PubDate = NewTimestamp(ts)
-	}
-}
-
-// WithChannelLanguage option sets the RSS channel language. Should be an ISO country code to be valid.
-func WithChannelLanguage(lang string) RSSOption {
-	return func(r *RSS) {
-		r.Channel.Language = new(lang)
-	}
-}
-
-// WithChannelImage option sets an image.
-func WithChannelImage(image *Image) RSSOption {
-	return func(r *RSS) {
-		r.Channel.Image = image
-	}
-}
-
-// WithUpdatePeriod option sets the update period of the feed.
-func WithUpdatePeriod(up string) RSSOption {
-	return func(r *RSS) {
-		r.Channel.SYUdatePeriod = new(syndication.SYUpdatePeriod(up))
-	}
-}
-
-// WithUpdateFrequency option sets the update frequency of the feed.
-func WithUpdateFrequency(freq int) RSSOption {
-	return func(r *RSS) {
-		r.Channel.SYUpdateFrequency = &freq
-	}
 }
 
 func (r RSS) GetTitle() string {
