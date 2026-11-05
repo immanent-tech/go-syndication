@@ -42,15 +42,15 @@ const xmlNS = "http://www.w3.org/XML/1998/namespace"
 const dateLayout = time.RFC3339Nano
 
 // String returns the string-ified format of the Category. It will return the first found of: any human-readable label,
-// the element value or the term attribute value, in that order.
+// the term attribute value, or any value in that order.
 func (c Category) String() string {
-	// Use the term attribute.
-	if c.Term.Value != "" {
-		return sanitization.SanitizeText(c.Term.Value, sanitization.DefaultMaxRunes)
-	}
 	// Use the label attribute if present.
 	if c.Label != nil && c.Label.Value != "" {
 		return sanitization.SanitizeText(c.Label.Value, sanitization.DefaultMaxRunes)
+	}
+	// Use the term attribute.
+	if c.Term.Value != "" {
+		return sanitization.SanitizeText(c.Term.Value, sanitization.DefaultMaxRunes)
 	}
 	// Use any value if present.
 	if len(c.Extensions) > 0 {
@@ -182,7 +182,9 @@ func personConstructCustomValidation(sl validator.StructLevel) {
 
 func (t TextConstruct) String() string {
 	switch {
-	case t.Type == nil || (*t.Type != TextConstructTypeXhtml && !contentIsXMLMediaType(ContentType(*t.Type))):
+	case t.Type != nil && (*t.Type != TextConstructTypeXhtml && !contentIsXMLMediaType(ContentType(*t.Type))):
+		fallthrough
+	case t.Value != "":
 		return sanitization.SanitizeHTML(t.Value)
 	case t.XHTML != nil:
 		return sanitization.SanitizeHTML(*t.XHTML)

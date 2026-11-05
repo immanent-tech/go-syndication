@@ -117,7 +117,7 @@ func TestEntry_GetCategories(t *testing.T) {
 					atom.Category{Label: &xml.Attr{Value: "category2label"}, Term: xml.Attr{Value: "category2"}},
 				},
 			},
-			want: []string{"category1", "category2"},
+			want: []string{"category1", "category2label"},
 		},
 		{
 			name: "no duplicates",
@@ -128,7 +128,7 @@ func TestEntry_GetCategories(t *testing.T) {
 					atom.Category{Label: &xml.Attr{Value: "category1"}},
 				},
 			},
-			want: []string{"category1", "category2"},
+			want: []string{"category1", "category2label"},
 		},
 		{
 			name: "multiple sources",
@@ -143,7 +143,7 @@ func TestEntry_GetCategories(t *testing.T) {
 				SlashDepartment: new(slash.Department("category4")),
 				SlashSection:    new(slash.Section("category5")),
 			},
-			want: []string{"category1", "category2", "category3", "category4", "category5"},
+			want: []string{"category1", "category2label", "category3", "category4", "category5"},
 		},
 	}
 	for _, tt := range tests {
@@ -330,6 +330,83 @@ func TestEntry_GetUpdatedDate(t *testing.T) {
 			} else {
 				assert.Nil(t, got, "no date")
 			}
+		})
+	}
+}
+
+func TestStandaloneEntry_MarshalXML(t *testing.T) {
+	testTime := time.Unix(0, 0)
+	tests := []struct {
+		name    string
+		entry   atom.StandaloneEntry
+		want    []byte
+		wantErr bool
+	}{
+		{
+			name: "ok",
+			entry: atom.StandaloneEntry{
+				Title: atom.Title{Value: "Atom-Powered Robots Run Amok"},
+				Links: atom.Links{
+					atom.Link{Href: "http://example.org/2003/12/13/atom03"},
+				},
+				ID:      atom.ID{Value: "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a"},
+				Updated: atom.Updated{Value: testTime},
+				Summary: &atom.Summary{Value: "Some text."},
+			},
+			want: []byte(
+				`<entry xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></entry>`,
+			),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, gotErr := xml.Marshal(tt.entry)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("MarshalXML() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("MarshalXML() succeeded unexpectedly")
+			}
+			assert.Equal(t, string(tt.want), string(got))
+		})
+	}
+}
+
+func TestStandaloneEntry_UnmarshalXML(t *testing.T) {
+	tests := []struct {
+		name    string // description of this test case
+		data    []byte
+		wantErr bool
+	}{
+		{
+			name: "ok",
+			data: []byte(
+				`<entry xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></entry>`,
+			),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var entry atom.StandaloneEntry
+			gotErr := xml.Unmarshal(tt.data, &entry)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("UnmarshalXML() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("UnmarshalXML() succeeded unexpectedly")
+			}
+			assert := assert.New(t)
+			assert.Equal("Atom-Powered Robots Run Amok", entry.Title.Value)
+			assert.Equal("http://example.org/2003/12/13/atom03", entry.Links[0].Href)
+			assert.Equal("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a", entry.ID.Value)
+			assert.Equal(time.Unix(0, 0), entry.Updated.Value)
+			assert.Equal("Some text.", entry.Summary.Value)
 		})
 	}
 }

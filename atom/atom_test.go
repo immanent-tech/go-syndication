@@ -3193,6 +3193,43 @@ func TestContent_String(t *testing.T) {
 	}
 }
 
+func TestTextConstruct_String(t *testing.T) {
+	tests := []struct {
+		name    string
+		element atom.TextConstruct
+		want    string
+	}{
+		{
+			name: "text",
+			element: atom.TextConstruct{
+				Value: "text",
+			},
+			want: "text",
+		},
+		{
+			name: "xhtml",
+			element: atom.TextConstruct{
+				XHTML: new("<div>text</div>"),
+				Type:  new(atom.TextConstructTypeXhtml),
+			},
+			want: "<div>text</div>",
+		},
+		{
+			name:    "empty",
+			element: atom.TextConstruct{},
+			want:    "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.element.String()
+			if got != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestTextConstruct_MarshalXML(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -3356,6 +3393,85 @@ func TestContent_MarshalXML(t *testing.T) {
 				t.Fatal("MarshalXML() succeeded unexpectedly")
 			}
 			assert.Equal(t, string(tt.want), string(got))
+		})
+	}
+}
+
+func TestCategory_String(t *testing.T) {
+	tests := []struct {
+		name     string // description of this test case
+		category atom.Category
+		want     string
+	}{
+		{
+			name: "uses label",
+			category: atom.Category{
+				Label: &xml.Attr{Value: "test label"},
+				Term:  xml.Attr{Value: "test term"},
+			},
+			want: "test label",
+		},
+		{
+			name: "uses term",
+			category: atom.Category{
+				Term: xml.Attr{Value: "test term"},
+			},
+			want: "test term",
+		},
+		{
+			name: "uses extension value",
+			category: atom.Category{
+				Extensions: []extensions.Extension{
+					{Content: "extension"},
+				},
+			},
+			want: "extension",
+		},
+		{
+			name:     "no value",
+			category: atom.Category{},
+			want:     "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.category.String()
+			if got != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGenerator_String(t *testing.T) {
+	tests := []struct {
+		name      string
+		generator atom.Generator
+		want      string
+	}{
+		{
+			name: "all parts",
+			generator: atom.Generator{
+				Value:   "value",
+				Version: new("version"),
+				URI:     new("https://example.com"),
+			},
+			want: "value/version (https://example.com)",
+		},
+		{
+			name: "value only",
+			generator: atom.Generator{
+				Value: "value",
+			},
+			want: "value",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.generator.String()
+			if got != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

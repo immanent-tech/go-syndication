@@ -285,6 +285,8 @@ func (e Entry) GetCommentURL() string {
 }
 
 func (s StandaloneEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	type plain StandaloneEntry // same fields/tags, no MarshalXML
+
 	start.Name = xml.Name{Local: "entry"}
 	defaultNS := s.DefaultNamespace
 	if defaultNS == nil {
@@ -294,7 +296,7 @@ func (s StandaloneEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	for _, ns := range s.Namespaces {
 		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "xmlns:" + ns.Prefix}, Value: ns.URI})
 	}
-	return e.EncodeElement(s, start)
+	return e.EncodeElement(plain(s), start)
 }
 
 func (s *StandaloneEntry) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -306,8 +308,11 @@ func (s *StandaloneEntry) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 			s.Namespaces = append(s.Namespaces, extensions.NewNamespace(a.Name.Local, a.Value))
 		}
 	}
-	if err := d.DecodeElement(s, &start); err != nil {
+	type plain StandaloneEntry
+	var p plain
+	if err := d.DecodeElement(&p, &start); err != nil {
 		return err
 	}
+	*s = StandaloneEntry(p)
 	return nil
 }

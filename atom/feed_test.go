@@ -428,7 +428,7 @@ func TestFeed_GetCategories(t *testing.T) {
 					atom.Category{Label: &xml.Attr{Value: "category2label"}, Term: xml.Attr{Value: "category2"}},
 				},
 			},
-			want: []string{"category1", "category2"},
+			want: []string{"category1", "category2label"},
 		},
 		{
 			name: "no duplicates",
@@ -439,7 +439,7 @@ func TestFeed_GetCategories(t *testing.T) {
 					atom.Category{Label: &xml.Attr{Value: "category1"}},
 				},
 			},
-			want: []string{"category1", "category2"},
+			want: []string{"category1", "category2label"},
 		},
 		{
 			name: "multiple sources",
@@ -452,7 +452,7 @@ func TestFeed_GetCategories(t *testing.T) {
 					"category3",
 				},
 			},
-			want: []string{"category1", "category2", "category3"},
+			want: []string{"category1", "category2label", "category3"},
 		},
 	}
 	for _, tt := range tests {
