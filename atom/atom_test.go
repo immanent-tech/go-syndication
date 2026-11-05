@@ -3061,10 +3061,10 @@ var atomSecXSS = map[string]atomTestSuite{
 			assert := assert.New(t)
 			assert.NotContains(*feed.Entries[0].GetContent(), "PWNED", "html type")
 			assert.NotContains(*feed.Entries[1].GetContent(), "PWNED", "xhtml type")
-			assert.Nil(feed.Entries[2].GetContent(), "text type holding markup")
+			assert.NotContains(*feed.Entries[2].GetContent(), "PWNED", "text type holding markup")
 			assert.NotContains(feed.Entries[3].GetDescription(), "PWNED", "xhtml summary")
 			assert.NotContains(*feed.Entries[4].GetContent(), "PWNED", "svg media type content")
-			assert.Nil(feed.Entries[5].GetContent(), "external content source")
+			assert.NotContains(*feed.Entries[5].GetContent(), "PWNED", "external content source")
 			assert.NotContains(feed.Entries[5].GetDescription(), "PWNED", "xhtml summary")
 		},
 	},

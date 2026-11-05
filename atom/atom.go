@@ -1,7 +1,6 @@
 // Copyright 2025 Joshua Rich <joshua.rich@gmail.com>.
 // SPDX-License-Identifier: 	MIT
 
-// Package atom contains objects and methods defining the Atom syndication format.
 package atom
 
 import (

@@ -216,20 +216,9 @@ func (e Entry) GetUpdatedDate() *time.Time {
 // GetContent returns the content of the Entry (if any). This will be either the <content> element value or its source
 // attribute.
 func (e Entry) GetContent() *string {
-	switch {
-	case e.Content != nil:
-		// Has a Content value.
-		switch {
-		case e.Content != nil && e.Content.String() != "":
-			content := e.Content.String()
-			return &content
-		case e.Content.Source != nil && *e.Content.Source != "":
-			safeSrc, err := sanitization.SanitizeURLString(*e.Content.Source)
-			if err != nil {
-				return nil
-			}
-			return &safeSrc
-		}
+	if e.Content != nil {
+		content := e.Content.String()
+		return &content
 	}
 	return nil
 }

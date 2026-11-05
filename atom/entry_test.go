@@ -9,9 +9,12 @@ import (
 	"time"
 
 	"github.com/immanent-tech/go-syndication/atom"
+	"github.com/immanent-tech/go-syndication/extensions/basicgeo"
 	"github.com/immanent-tech/go-syndication/extensions/dc"
+	"github.com/immanent-tech/go-syndication/extensions/georss"
 	"github.com/immanent-tech/go-syndication/extensions/media"
 	"github.com/immanent-tech/go-syndication/extensions/slash"
+	"github.com/immanent-tech/go-syndication/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -407,6 +410,171 @@ func TestStandaloneEntry_UnmarshalXML(t *testing.T) {
 			assert.Equal("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a", entry.ID.Value)
 			assert.Equal(time.Unix(0, 0).UTC(), entry.Updated.Value)
 			assert.Equal("Some text.", entry.Summary.Value)
+		})
+	}
+}
+
+func TestEntry_HasBasicGeo(t *testing.T) {
+	tests := []struct {
+		name  string
+		entry atom.Entry
+		want  bool
+	}{
+		{
+			name: "has geo",
+			entry: atom.Entry{
+				Lat: new(basicgeo.Latitude(1)),
+				Lon: new(basicgeo.Longitude(1)),
+			},
+			want: true,
+		},
+		{
+			name:  "no geo",
+			entry: atom.Entry{},
+			want:  false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.entry.HasBasicGeo()
+			if got != tt.want {
+				t.Errorf("HasBasicGeo() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEntry_HasGeoRSS(t *testing.T) {
+	tests := []struct {
+		name  string
+		entry atom.Entry
+		want  bool
+	}{
+		{
+			name: "has geo",
+			entry: atom.Entry{
+				Point: &georss.Point{Lat: 1, Lon: 1},
+			},
+			want: true,
+		},
+		{
+			name:  "no geo",
+			entry: atom.Entry{},
+			want:  false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.entry.HasGeoRSS()
+			if got != tt.want {
+				t.Errorf("HasGeoRSS() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEntry_GetGeoInfo(t *testing.T) {
+	tests := []struct {
+		name    string
+		entry   atom.Entry
+		want    *types.GeoInfo
+		wantNil bool
+	}{
+		{
+			name: "geo point",
+			entry: atom.Entry{
+				Point: &georss.Point{Lat: 1, Lon: 1},
+			},
+		},
+		{
+			name:    "no geo",
+			entry:   atom.Entry{},
+			wantNil: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.entry.GetGeoInfo()
+			assert := assert.New(t)
+			if !tt.wantNil {
+				assert.InEpsilon(1, got.Point.Lat, 0.001)
+				assert.InEpsilon(1, got.Point.Lon, 0.001)
+			} else {
+				assert.Nil(got)
+			}
+		})
+	}
+}
+
+func TestEntry_GetCommentRSS(t *testing.T) {
+	tests := []struct {
+		name  string
+		entry atom.Entry
+		want  string
+	}{
+		{
+			name: "has comment RSS",
+			entry: atom.Entry{
+				CommentRSS: new("https://example.com/comments/rss"),
+			},
+			want: "https://example.com/comments/rss",
+		},
+		{
+			name: "has comment RSS (legacy)",
+			entry: atom.Entry{
+				CommentRSSLegacy: new("https://example.com/comments/rss"),
+			},
+			want: "https://example.com/comments/rss",
+		},
+		{
+			name:  "no comment RSS",
+			entry: atom.Entry{},
+			want:  "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.entry.GetCommentRSS()
+			if got != tt.want {
+				t.Errorf("GetCommentRSS() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEntry_GetContent(t *testing.T) {
+	tests := []struct {
+		name    string
+		entry   atom.Entry
+		want    string
+		wantNil bool
+	}{
+		{
+			name: "content",
+			entry: atom.Entry{
+				Content: &atom.Content{
+					Text: new("test"),
+					Type: new(atom.ContentTypeText),
+				},
+			},
+			want: "test",
+		},
+		{
+			name:    "no content",
+			entry:   atom.Entry{},
+			wantNil: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.entry.GetContent()
+			if !tt.wantNil {
+				if *got != tt.want {
+					t.Errorf("GetContent() = %v, want %v", *got, tt.want)
+				}
+			} else {
+				assert.Nil(t, got)
+			}
 		})
 	}
 }
