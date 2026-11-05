@@ -5,6 +5,7 @@ package syndication
 
 import (
 	"bytes"
+	"fmt"
 	"time"
 )
 
@@ -15,6 +16,9 @@ func (p SYUpdatePeriod) MarshalText() ([]byte, error) {
 func (p *SYUpdatePeriod) UnmarshalText(data []byte) error {
 	cleaned := bytes.TrimSpace(data)
 	value := SYUpdatePeriod(string(cleaned))
+	if !value.Valid() {
+		return fmt.Errorf("sy:updatePeriod: %s is invalid value", value)
+	}
 	*p = value
 	return nil
 }
