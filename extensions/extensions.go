@@ -6,7 +6,6 @@ package extensions
 import (
 	"encoding/xml"
 
-	"github.com/goforj/godump"
 	"github.com/immanent-tech/go-syndication/sanitization"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -55,7 +54,6 @@ func (r *NamespaceRewriter) Token() (xml.Token, error) {
 	switch t := tok.(type) {
 	case xml.StartElement:
 		if t.Name.Space == WellKnownNamespaces["slash"] {
-			godump.Dump(tok)
 			t.Name = xml.Name{Local: "slash" + caser.String(t.Name.Local)}
 			return t, nil
 		}
