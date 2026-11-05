@@ -519,3 +519,57 @@ func TestFeed_AutoDeclareNamespaces(t *testing.T) {
 		})
 	}
 }
+
+func TestFeed_MarshalXML(t *testing.T) {
+	testTime := time.Unix(0, 0)
+	tests := []struct {
+		name    string
+		feed    atom.Feed
+		want    []byte
+		wantErr bool
+	}{
+		{
+			name: "ok",
+			feed: atom.Feed{
+				Title: atom.Title{Value: "Example Feed"},
+				Links: atom.Links{
+					atom.Link{Href: "http://example.org"},
+				},
+				Updated: atom.Updated{Value: testTime},
+				Authors: atom.Authors{
+					atom.PersonConstruct{Name: "John Doe"},
+				},
+				ID: atom.ID{Value: "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6"},
+				Entries: []atom.Entry{
+					{
+						Title: atom.Title{Value: "Atom-Powered Robots Run Amok"},
+						Links: atom.Links{
+							atom.Link{Href: "http://example.org/2003/12/13/atom03"},
+						},
+						ID:      atom.ID{Value: "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a"},
+						Updated: atom.Updated{Value: testTime},
+						Summary: &atom.Summary{Value: "Some text."},
+					},
+				},
+			},
+			want: []byte(
+				`<feed xmlns="http://www.w3.org/1999/xhtml"><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id><author xmlns="http://www.w3.org/2005/Atom"><name>John Doe</name></author><entry><id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id><link href="http://example.org/2003/12/13/atom03"></link><summary xmlns="http://www.w3.org/2005/Atom" type="text">Some text.</summary><title xmlns="http://www.w3.org/2005/Atom" type="text">Atom-Powered Robots Run Amok</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></entry><link href="http://example.org"></link><title xmlns="http://www.w3.org/2005/Atom" type="text">Example Feed</title><updated xmlns="http://www.w3.org/2005/Atom">1970-01-01T10:00:00+10:00</updated></feed>`,
+			),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, gotErr := xml.Marshal(tt.feed)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("MarshalXML() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("MarshalXML() succeeded unexpectedly")
+			}
+			assert.Equal(t, string(tt.want), string(got))
+		})
+	}
+}

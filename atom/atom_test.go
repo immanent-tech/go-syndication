@@ -5,6 +5,7 @@ package atom_test
 
 import (
 	"bytes"
+	"encoding/xml"
 	"errors"
 	"os"
 	"path/filepath"
@@ -3188,6 +3189,173 @@ func TestContent_String(t *testing.T) {
 			if got != tt.want {
 				t.Errorf("String() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestTextConstruct_MarshalXML(t *testing.T) {
+	tests := []struct {
+		name    string
+		element atom.TextConstruct
+		want    []byte
+		wantErr bool
+	}{
+		{
+			name: "marshal text",
+			element: atom.TextConstruct{
+				Value: "test",
+			},
+			want: []byte(`<TextConstruct type="text">test</TextConstruct>`),
+		},
+		{
+			name: "marshal xhtml",
+			element: atom.TextConstruct{
+				XHTML: new("<div>test</div>"),
+				Type:  new(atom.TextConstructTypeXhtml),
+			},
+			want: []byte(
+				`<TextConstruct type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><div>test</div></div></TextConstruct>`,
+			),
+		},
+		{
+			name: "marshal with attributes",
+			element: atom.TextConstruct{
+				Lang:  new("en"),
+				Value: "test",
+			},
+			want: []byte(`<TextConstruct type="text" xmlns:_xml="xml" _xml:lang="en">test</TextConstruct>`),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, gotErr := xml.Marshal(tt.element)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("MarshalXML() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("MarshalXML() succeeded unexpectedly")
+			}
+			assert.Equal(t, string(tt.want), string(got))
+		})
+	}
+}
+
+func TestDateConstruct_MarshalXML(t *testing.T) {
+	testTime := time.Now()
+	tests := []struct {
+		name    string
+		element atom.DateConstruct
+		want    []byte
+		wantErr bool
+	}{
+		{
+			name: "marshal text",
+			element: atom.DateConstruct{
+				Value: testTime,
+			},
+			want: []byte(`<DateConstruct>` + testTime.Format(time.RFC3339Nano) + `</DateConstruct>`),
+		},
+		{
+			name: "marshal with attributes",
+			element: atom.DateConstruct{
+				Lang:  new("en"),
+				Value: testTime,
+			},
+			want: []byte(
+				`<DateConstruct xmlns:_xml="xml" _xml:lang="en">` + testTime.Format(
+					time.RFC3339Nano,
+				) + `</DateConstruct>`,
+			),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, gotErr := xml.Marshal(tt.element)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("MarshalXML() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("MarshalXML() succeeded unexpectedly")
+			}
+			assert.Equal(t, string(tt.want), string(got))
+		})
+	}
+}
+
+func TestContent_MarshalXML(t *testing.T) {
+	tests := []struct {
+		name    string
+		content atom.Content
+		want    []byte
+		wantErr bool
+	}{
+		{
+			name: "text content",
+			content: atom.Content{
+				Text: new("test"),
+				Type: new(atom.ContentTypeText),
+			},
+			want: []byte(`<Content type="text">test</Content>`),
+		},
+		{
+			name: "xhtml content",
+			content: atom.Content{
+				XHTML: new("<div>test</div>"),
+				Type:  new(atom.ContentTypeXhtml),
+			},
+			want: []byte(
+				`<Content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><div>test</div></div></Content>`,
+			),
+		},
+		{
+			name: "xml content",
+			content: atom.Content{
+				XML:  new("<div>test</div>"),
+				Type: new(atom.ContentType("application/xml")),
+			},
+			want: []byte(
+				`<Content type="application/xml"><div>test</div></Content>`,
+			),
+		},
+		{
+			name: "base64 content",
+			content: atom.Content{
+				Base64: []byte(`test`),
+				Type:   new(atom.ContentType("application/octet-stream")),
+			},
+			want: []byte(`<Content type="application/octet-stream">dGVzdA==</Content>`),
+		},
+		{
+			name: "marshal with attributes",
+			content: atom.Content{
+				Text: new("test"),
+				Type: new(atom.ContentTypeText),
+				Lang: new("en"),
+			},
+			want: []byte(
+				`<Content type="text" xmlns:_xml="xml" _xml:lang="en">test</Content>`,
+			),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, gotErr := xml.Marshal(tt.content)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("MarshalXML() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("MarshalXML() succeeded unexpectedly")
+			}
+			assert.Equal(t, string(tt.want), string(got))
 		})
 	}
 }

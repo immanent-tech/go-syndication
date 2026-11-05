@@ -344,9 +344,8 @@ func (f Feed) Validate() error {
 	return validation.ValidateStruct(f)
 }
 
-// MarshalXML builds the dynamic xmlns attribute list, then delegates
-// everything else to ordinary tag-driven marshaling via the type-alias
-// idiom.
+// MarshalXML builds the dynamic xmlns attribute list, then delegates everything else to ordinary tag-driven marshaling
+// via the type-alias idiom.
 func (f Feed) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	start.Name = xml.Name{Local: "feed"}
 	defaultNS := f.DefaultNamespace
