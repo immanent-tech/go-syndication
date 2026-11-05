@@ -67,17 +67,17 @@ func (f *Feed) SetSourceURL(url string) {
 // some guesses here.
 func (f Feed) GetLink() string {
 	for link := range slices.Values(f.Links) {
-		// If there is a rel=self link that does not point to an atom document, use that.
-		if link.Rel != nil {
-			if *link.Rel == LinkRelSelf && link.Type != nil {
+		switch {
+		case link.Rel != nil && *link.Rel == LinkRelSelf:
+			if linkType := link.Type; linkType != nil {
+				// If there is a rel=self link that does not point to an atom document, use that.
 				if !slices.Contains(MimeTypes, *link.Type) {
-					return link.Href
+					return link.String()
 				}
 			}
+		case link.Rel != nil && *link.Rel == LinkRelAlternate:
 			// If there is a rel=alt, use that.
-			if *link.Rel == LinkRelAlternate {
-				return link.Href
-			}
+			return link.String()
 		}
 	}
 	// Use the first link found.
@@ -157,6 +157,10 @@ func (f Feed) GetCategories() []string {
 			categories = append(categories, str)
 		}
 	}
+	// Treat <dc:subject> values as categories.
+	if len(f.DcSubject) > 0 {
+		categories = append(categories, f.DcSubject...)
+	}
 	slices.Sort(categories)
 	return slices.CompactFunc(categories, func(a, b string) bool {
 		return strings.EqualFold(a, b)
@@ -214,46 +218,59 @@ func (f *Feed) SetImage(image *types.Image) {
 	}
 }
 
-// GetPublishedDate returns the <published> element of the Feed.
+// GetPublishedDate returns the <published> element of the Feed. If there is no <published> element, it uses <dc:date>
+// (if any). Otherwise it returns nil.
 func (f Feed) GetPublishedDate() *time.Time {
 	if f.Published != nil {
 		return new(f.Published.Value)
 	}
+	if len(f.DcDate) > 0 {
+		v := (f.DcDate)[0].Value
+		return &v
+	}
 	return nil
 }
 
-// GetUpdatedDate returns the <updated> of the Feed.
+// GetUpdatedDate returns the <updated> for the feed. If there is no <updated> element, it tries to calculate an updated
+// date from the timestamps of any entries. If that fails, it uses the <published> element. Otherwise, it returns nil.
 func (f Feed) GetUpdatedDate() *time.Time {
-	if f.Updated.Value.IsZero() {
-		if len(f.Entries) > 0 {
-			slices.SortFunc(f.Entries, func(a, b Entry) int {
-				switch {
-				case a.GetPublishedDate() == nil && b.GetPublishedDate() != nil:
-					// Assume a < b when a does not have a published date.
-					return -1
-				case a.GetPublishedDate() != nil && b.GetPublishedDate() == nil:
-					// Assume a > b when b does not have a published date.
-					return 1
-				case a.GetPublishedDate() == nil && b.GetPublishedDate() == nil:
-					// Assume a == b when both a and b do not have a published date.
-					return 0
-				default:
-					return a.GetPublishedDate().Compare(*b.GetPublishedDate())
-				}
-			})
-			slices.Reverse(f.Entries)
-			// Return the first non-nil item updated date.
-			for entry := range slices.Values(f.Entries) {
-				if entry.GetUpdatedDate() != nil {
-					return entry.GetUpdatedDate()
-				}
-			}
-			return nil
-		}
+	if updated := f.Updated.Value; !updated.IsZero() {
+		return &updated
 	}
-	return new(f.Updated.Value)
+	if len(f.Entries) > 0 {
+		slices.SortFunc(f.Entries, func(a, b Entry) int {
+			switch {
+			case a.GetUpdatedDate() == nil && b.GetUpdatedDate() != nil:
+				// Assume a < b when a does not have a published date.
+				return -1
+			case a.GetUpdatedDate() != nil && b.GetUpdatedDate() == nil:
+				// Assume a > b when b does not have a published date.
+				return 1
+			case a.GetUpdatedDate() == nil && b.GetUpdatedDate() == nil:
+				// Assume a == b when both a and b do not have a published date.
+				return 0
+			default:
+				return a.GetUpdatedDate().Compare(*b.GetUpdatedDate())
+			}
+		})
+		slices.Reverse(f.Entries)
+		// Return the first non-nil item updated date.
+		for entry := range slices.Values(f.Entries) {
+			if entry.GetUpdatedDate() != nil {
+				return entry.GetUpdatedDate()
+			}
+		}
+		return nil
+	}
+	if published := f.GetPublishedDate(); published != nil {
+		return published
+	}
+	return nil
 }
 
+// GetUpdateInterval calculates how often entries are updated for the channel. It uses any <sy:*> elements, otherwise it
+// will calculate an update interval based on the median interval between entry published dates. If there are no <sy:*>
+// elements and a entry median interval cannot be calculated, it uses [DefaultFeedUpdateInterval].
 func (f Feed) GetUpdateInterval() time.Duration {
 	if f.SYUdatePeriod != nil {
 		return f.SYUdatePeriod.Interval(f.SYUpdateFrequency)
@@ -262,10 +279,10 @@ func (f Feed) GetUpdateInterval() time.Duration {
 		var intervals []time.Duration
 		for idx := range items {
 			if idx < len(items)-1 {
-				if items[idx].GetPublishedDate() != nil && items[idx+1].GetPublishedDate() != nil {
+				if items[idx].GetUpdatedDate() != nil && items[idx+1].GetUpdatedDate() != nil {
 					intervals = append(
 						intervals,
-						items[idx].GetPublishedDate().Sub(*items[idx+1].GetPublishedDate()).Abs(),
+						items[idx].GetUpdatedDate().Sub(*items[idx+1].GetUpdatedDate()).Abs(),
 					)
 				}
 			}

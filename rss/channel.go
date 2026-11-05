@@ -140,6 +140,10 @@ func (c Channel) GetCategories() []string {
 	if c.ItunesCategory != nil {
 		categories = append(categories, c.ItunesCategory.GetCategories()...)
 	}
+	// Treat <dc:subject> values as categories.
+	if len(c.DcSubject) > 0 {
+		categories = append(categories, c.DcSubject...)
+	}
 	slices.Sort(categories)
 	return slices.CompactFunc(categories, func(a, b string) bool {
 		return strings.EqualFold(a, b)
@@ -177,17 +181,21 @@ func (c *Channel) SetImage(image *types.Image) {
 	c.Image = &Image{URL: image.GetURL(), Title: image.GetTitle()}
 }
 
-// GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
-// DateTime equal to Unix epoch.
+// GetPublishedDate returns the <pubDate> of the Channel (if any). If there is no <pubDate> element, it uses any
+// <dc:date> element. Otherwise, it returns nil.
 func (c Channel) GetPublishedDate() *time.Time {
 	if c.PubDate != nil {
 		return &c.PubDate.Value
 	}
+	if len(c.DcDate) > 0 {
+		v := (c.DcDate)[0].Value
+		return &v
+	}
 	return nil
 }
 
-// GetUpdatedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
-// DateTime equal to Unix epoch.
+// GetUpdatedDate returns the <lastBuildDate> for the channel. If there is no <lastBuildDate>, it tries to calculate an
+// updated date from any item timestamps. Failing that, it uses the <pubDate> (if any). Otherwise, it returns nil.
 func (c Channel) GetUpdatedDate() *time.Time {
 	if c.LastBuildDate != nil {
 		return &c.LastBuildDate.Value
@@ -195,31 +203,37 @@ func (c Channel) GetUpdatedDate() *time.Time {
 	if len(c.Items) > 0 {
 		slices.SortFunc(c.Items, func(a, b Item) int {
 			switch {
-			case a.GetPublishedDate() == nil && b.GetPublishedDate() != nil:
+			case a.GetUpdatedDate() == nil && b.GetUpdatedDate() != nil:
 				// Assume a < b when a does not have a published date.
 				return -1
-			case a.GetPublishedDate() != nil && b.GetPublishedDate() == nil:
+			case a.GetUpdatedDate() != nil && b.GetUpdatedDate() == nil:
 				// Assume a > b when b does not have a published date.
 				return 1
-			case a.GetPublishedDate() == nil && b.GetPublishedDate() == nil:
+			case a.GetUpdatedDate() == nil && b.GetUpdatedDate() == nil:
 				// Assume a == b when both a and b do not have a published date.
 				return 0
 			default:
-				return a.GetPublishedDate().Compare(*b.GetPublishedDate())
+				return a.GetUpdatedDate().Compare(*b.GetUpdatedDate())
 			}
 		})
 		slices.Reverse(c.Items)
 		// Return the first non-nil item published date.
 		for item := range slices.Values(c.Items) {
-			if item.GetPublishedDate() != nil {
-				return item.GetPublishedDate()
+			if item.GetUpdatedDate() != nil {
+				return item.GetUpdatedDate()
 			}
 		}
 		return nil
 	}
-	return c.GetPublishedDate()
+	if pubdate := c.GetPublishedDate(); pubdate != nil {
+		return pubdate
+	}
+	return nil
 }
 
+// GetUpdateInterval calculates how often items are updated for the channel. It uses any <sy:*> elements, otherwise it
+// will calculate an update interval based on the median interval between item published dates. If there are no <sy:*>
+// elements and a item median interval cannot be calculated, it uses [DefaultFeedUpdateInterval].
 func (c Channel) GetUpdateInterval() time.Duration {
 	if c.SYUdatePeriod != nil {
 		return c.SYUdatePeriod.Interval(c.SYUpdateFrequency)

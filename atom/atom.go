@@ -492,12 +492,6 @@ func dateConstructCustomValidation(sl validator.StructLevel) {
 	}
 }
 
-func contentIsXMLMediaType(t ContentType) bool {
-	return t != ContentTypeText && t != ContentTypeHtml && t != ContentTypeXhtml &&
-		!strings.HasPrefix(string(t), "text/") &&
-		(strings.HasSuffix(string(t), "+xml") || strings.HasSuffix(string(t), "/xml"))
-}
-
 func (c Content) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	var typ ContentType
 	if c.Type == nil {
@@ -654,19 +648,19 @@ func (c *Content) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 
 func (c Content) String() string {
 	switch {
+	case c.Base64 != nil:
+		return string(c.Base64)
+	case c.Type != nil && contentIsXMLMediaType(*c.Type):
+		return sanitization.SanitizeHTML(*c.XML)
 	case c.Type == nil && c.Text != nil:
 		return sanitization.SanitizeHTML(*c.Text)
-	case *c.Type == ContentTypeText || *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "text/"):
+	case c.Type != nil && (*c.Type == ContentTypeText || *c.Type == ContentTypeHtml || strings.HasPrefix(string(*c.Type), "text/")):
 		if c.Text != nil {
 			return sanitization.SanitizeHTML(*c.Text)
 		}
 		return ""
-	case *c.Type == ContentTypeXhtml && c.XHTML != nil:
+	case c.Type != nil && (*c.Type == ContentTypeXhtml && c.XHTML != nil):
 		return sanitization.SanitizeHTML(*c.XHTML)
-	case contentIsXMLMediaType(*c.Type):
-		return sanitization.SanitizeHTML(*c.XML)
-	case c.Base64 != nil:
-		return string(c.Base64)
 	default:
 		return ""
 	}
@@ -684,6 +678,12 @@ func (c Content) RequiresSummary() bool {
 		return false
 	}
 	return !contentIsXMLMediaType(typ) // i.e. it's the Base64 branch
+}
+
+func contentIsXMLMediaType(t ContentType) bool {
+	return t != ContentTypeText && t != ContentTypeHtml && t != ContentTypeXhtml &&
+		!strings.HasPrefix(string(t), "text/") &&
+		(strings.HasSuffix(string(t), "+xml") || strings.HasSuffix(string(t), "/xml"))
 }
 
 func contentCustomValidation(sl validator.StructLevel) {

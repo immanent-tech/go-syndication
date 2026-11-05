@@ -188,25 +188,27 @@ func (e Entry) GetMediaGroup() *media.MediaGroup {
 	return e.MediaGroup
 }
 
-// GetPublishedDate returns the <published> of the Entry (if any). If there is no publish date, it will return a
-// DateTime equal to Unix epoch.
+// GetPublishedDate returns the <published> of the Entry (if any). Otherwise it uses <dc:date> (if it exists). Otherwise
+// it returns nil.
 func (e Entry) GetPublishedDate() *time.Time {
 	if e.Published != nil && !e.Published.Value.IsZero() {
 		return new(e.Published.Value)
 	}
-	if len(e.DcDate) == 1 {
-		dcDate := e.DcDate[0]
-		if !dcDate.Value.IsZero() {
-			return new(dcDate.Value)
-		}
+	if len(e.DcDate) > 0 {
+		v := (e.DcDate)[0].Value
+		return &v
 	}
 	return nil
 }
 
-// GetUpdatedDate returns the <updated> of the Entry.
+// GetUpdatedDate returns the <updated> of the Entry. If that is zero, it uses <published> (if it exists). Otherwise it
+// returns nil.
 func (e Entry) GetUpdatedDate() *time.Time {
-	if !e.Updated.Value.IsZero() {
-		return new(e.Updated.Value)
+	if updated := e.Updated.Value; !updated.IsZero() {
+		return &updated
+	}
+	if published := e.GetPublishedDate(); published != nil {
+		return published
 	}
 	return nil
 }

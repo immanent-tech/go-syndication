@@ -32,6 +32,22 @@ type atomTestSuite struct {
 	tests         func(t *testing.T, feed *atom.Feed)
 }
 
+// getFailedValidations extracts the validation errors from the given error object and converts them into a map of the
+// struct field name and validation tags that failed. Test helpers use this format to check that specific validation
+// rules have passed or failed.
+func getFailedValidations(err error) (map[string][]string, error) {
+	failedValidations := make(map[string][]string)
+	if invalidValidationError, ok := errors.AsType[*validator.InvalidValidationError](err); ok {
+		return nil, invalidValidationError
+	}
+	if validateErrs, ok := errors.AsType[*validation.Errors](err); ok && validateErrs != nil {
+		for e := range slices.Values(validateErrs.Fields) {
+			failedValidations[e.StructNamespace] = append(failedValidations[e.StructNamespace], e.Tag)
+		}
+	}
+	return failedValidations, nil
+}
+
 var atomOtherTests = map[string]atomTestSuite{
 	"brief-noerror.xml": {
 		tests: func(t *testing.T, feed *atom.Feed) {
@@ -3116,34 +3132,62 @@ func TestNewFeedFromBytesAtom(t *testing.T) {
 	}
 }
 
-// getFailedValidations extracts the validation errors from the given error object and converts them into a map of the
-// struct field name and validation tags that failed. Test helpers use this format to check that specific validation
-// rules have passed or failed.
-func getFailedValidations(err error) (map[string][]string, error) {
-	failedValidations := make(map[string][]string)
-	if invalidValidationError, ok := errors.AsType[*validator.InvalidValidationError](err); ok {
-		return nil, invalidValidationError
+func TestContent_String(t *testing.T) {
+	tests := []struct {
+		name    string
+		content atom.Content
+		want    string
+	}{
+		{
+			name: "text without declaration",
+			content: atom.Content{
+				Text: new("text"),
+			},
+			want: "text",
+		},
+		{
+			name: "text with declaration",
+			content: atom.Content{
+				Text: new("text"),
+				Type: new(atom.ContentTypeText),
+			},
+			want: "text",
+		},
+		{
+			name: "xhtml",
+			content: atom.Content{
+				XHTML: new("<div>text</div>"),
+				Type:  new(atom.ContentTypeXhtml),
+			},
+			want: "<div>text</div>",
+		},
+		{
+			name: "xhtml",
+			content: atom.Content{
+				XML:  new("<div>text</div>"),
+				Type: new(atom.ContentType("application/xml")),
+			},
+			want: "<div>text</div>",
+		},
+		{
+			name: "base64",
+			content: atom.Content{
+				Base64: []byte("test"),
+			},
+			want: "test",
+		},
+		{
+			name:    "emtpy content",
+			content: atom.Content{},
+			want:    "",
+		},
 	}
-	if validateErrs, ok := errors.AsType[*validation.Errors](err); ok && validateErrs != nil {
-		for e := range slices.Values(validateErrs.Fields) {
-			failedValidations[e.StructNamespace] = append(failedValidations[e.StructNamespace], e.Tag)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.content.String()
+			if got != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
 	}
-	return failedValidations, nil
-}
-
-func trunc(s string) string {
-	if len(s) > 160 {
-		return s[:160] + "..."
-	}
-	return s
-}
-
-func readFile(t *testing.T, path string) []byte {
-	t.Helper()
-	b, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return b
 }

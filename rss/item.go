@@ -256,25 +256,22 @@ func (i Item) GetMediaGroup() *media.MediaGroup {
 	return i.MediaGroup
 }
 
-// GetPublishedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
-// DateTime equal to Unix epoch.
+// GetPublishedDate returns the <pubDate> of the Item (if any). Otherwise it uses <dc:date> if it exists. Otherwise it
+// returns nil.
 func (i Item) GetPublishedDate() *time.Time {
 	if i.PubDate != nil {
 		return &i.PubDate.Value
 	}
-	if len(i.DcDate) == 1 {
-		dcDate := i.DcDate[0]
-		if !dcDate.Value.IsZero() {
-			return new(dcDate.Value)
-		}
+	if len(i.DcDate) > 0 {
+		v := (i.DcDate)[0].Value
+		return &v
 	}
 	return nil
 }
 
-// GetUpdatedDate returns the <pubDate> of the Item (if any). If there is no publish date, it will return a
-// DateTime equal to Unix epoch.
+// GetUpdatedDate returns the <pubDate> of the Item (if any) as RSS items do not have an updated element.
 func (i Item) GetUpdatedDate() *time.Time {
-	return nil
+	return i.GetPublishedDate()
 }
 
 // GetContent returns the content of the Item (if any). This will be taken from any <content:encoded> element.

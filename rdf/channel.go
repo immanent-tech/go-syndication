@@ -76,6 +76,8 @@ func (c Channel) GetRights() *string {
 	return nil
 }
 
+// GetUpdateInterval calculates how often items are updated for the channel. It uses any <sy:*> elements, otherwise if
+// there are no <sy:*> elements it uses [DefaultFeedUpdateInterval].
 func (c Channel) GetUpdateInterval() time.Duration {
 	if c.SYUdatePeriod != nil {
 		return c.SYUdatePeriod.Interval(c.SYUpdateFrequency)
