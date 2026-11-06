@@ -660,14 +660,14 @@ type Item struct {
 	RelationshipTag *string  `json:"relationshipTag,omitempty" xml:"http://www.georss.org/georss relationshiptag,omitempty"`
 
 	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
-	SlashComments *externalRef10.Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
+	SlashComments *externalRef10.Comments `json:"slash_comments,omitempty" validate:"omitnil,gt=0" xml:"slash-comments,omitempty"`
 
 	// SlashDepartment defines a department to which this item belongs.
-	SlashDepartment *externalRef10.Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
-	SlashHitParade  *externalRef10.HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+	SlashDepartment *externalRef10.Department `json:"slash_department,omitempty" xml:"slash-department,omitempty"`
+	SlashHitParade  *externalRef10.HitParade  `json:"slash_hit_parade,omitempty" xml:"slash-hit_parade,omitempty"`
 
 	// SlashSection defines a section to which this item belongs.
-	SlashSection *externalRef10.Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
+	SlashSection *externalRef10.Section `json:"slash_section,omitempty" xml:"slash-section,omitempty"`
 
 	// Source The RSS channel that the item came from.
 	Source *Source `json:"source,omitempty" xml:"source,omitempty"`
@@ -714,7 +714,7 @@ type Rating = string
 
 // SkipDays is a hint for aggregators telling them which days they can skip. This
 type SkipDays struct {
-	Day *[]SkipDaysDay `json:"day,omitempty" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day"`
+	Day []SkipDaysDay `json:"day,omitempty" validate:"omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday" xml:"day"`
 }
 
 // SkipDaysDay is a day of the week to skip.

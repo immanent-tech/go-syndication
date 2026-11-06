@@ -12,14 +12,14 @@ type Department = string
 // Elements contains all the slash namespace elements as an embeddable object.
 type Elements struct {
 	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
-	SlashComments *Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
+	SlashComments *Comments `json:"slash_comments,omitempty" validate:"omitnil,gt=0" xml:"slash-comments,omitempty"`
 
 	// SlashDepartment defines a department to which this item belongs.
-	SlashDepartment *Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
-	SlashHitParade  *HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+	SlashDepartment *Department `json:"slash_department,omitempty" xml:"slash-department,omitempty"`
+	SlashHitParade  *HitParade  `json:"slash_hit_parade,omitempty" xml:"slash-hit_parade,omitempty"`
 
 	// SlashSection defines a section to which this item belongs.
-	SlashSection *Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
+	SlashSection *Section `json:"slash_section,omitempty" xml:"slash-section,omitempty"`
 }
 
 // HitParade defines model for HitParade.

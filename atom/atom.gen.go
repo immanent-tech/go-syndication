@@ -425,14 +425,14 @@ type Entry struct {
 	Rights *Rights `json:"rights,omitempty" xml:"http://www.w3.org/2005/Atom rights,omitempty"`
 
 	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
-	SlashComments *externalRef5.Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
+	SlashComments *externalRef5.Comments `json:"slash_comments,omitempty" validate:"omitnil,gt=0" xml:"slash-comments,omitempty"`
 
 	// SlashDepartment defines a department to which this item belongs.
-	SlashDepartment *externalRef5.Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
-	SlashHitParade  *externalRef5.HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+	SlashDepartment *externalRef5.Department `json:"slash_department,omitempty" xml:"slash-department,omitempty"`
+	SlashHitParade  *externalRef5.HitParade  `json:"slash_hit_parade,omitempty" xml:"slash-hit_parade,omitempty"`
 
 	// SlashSection defines a section to which this item belongs.
-	SlashSection *externalRef5.Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
+	SlashSection *externalRef5.Section `json:"slash_section,omitempty" xml:"slash-section,omitempty"`
 
 	// Source contains the metadata from the source feed for the entry.
 	Source *Source `json:"source,omitempty" validate:"omitempty"`
@@ -1088,14 +1088,14 @@ type StandaloneEntry struct {
 	Rights *Rights `json:"rights,omitempty" xml:"http://www.w3.org/2005/Atom rights,omitempty"`
 
 	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
-	SlashComments *externalRef5.Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
+	SlashComments *externalRef5.Comments `json:"slash_comments,omitempty" validate:"omitnil,gt=0" xml:"slash-comments,omitempty"`
 
 	// SlashDepartment defines a department to which this item belongs.
-	SlashDepartment *externalRef5.Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
-	SlashHitParade  *externalRef5.HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+	SlashDepartment *externalRef5.Department `json:"slash_department,omitempty" xml:"slash-department,omitempty"`
+	SlashHitParade  *externalRef5.HitParade  `json:"slash_hit_parade,omitempty" xml:"slash-hit_parade,omitempty"`
 
 	// SlashSection defines a section to which this item belongs.
-	SlashSection *externalRef5.Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
+	SlashSection *externalRef5.Section `json:"slash_section,omitempty" xml:"slash-section,omitempty"`
 
 	// Source contains the metadata from the source feed for the entry.
 	Source *Source `json:"source,omitempty" validate:"omitempty"`

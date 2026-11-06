@@ -360,14 +360,14 @@ type Item struct {
 	Link string `json:"link" validate:"required,max=500,url" xml:"http://purl.org/rss/1.0/ link"`
 
 	// SlashComments contains a non-negative integer that counts the number of comments that an item has received.
-	SlashComments *externalRef4.Comments `json:"slash_comments,omitempty" validate:"omitempty,number,gte=0" xml:"slashComments,omitempty"`
+	SlashComments *externalRef4.Comments `json:"slash_comments,omitempty" validate:"omitnil,gt=0" xml:"slash-comments,omitempty"`
 
 	// SlashDepartment defines a department to which this item belongs.
-	SlashDepartment *externalRef4.Department `json:"slash_department,omitempty" xml:"slashDepartment,omitempty"`
-	SlashHitParade  *externalRef4.HitParade  `json:"slash_hit_parade,omitempty" xml:"slashHitParade,omitempty"`
+	SlashDepartment *externalRef4.Department `json:"slash_department,omitempty" xml:"slash-department,omitempty"`
+	SlashHitParade  *externalRef4.HitParade  `json:"slash_hit_parade,omitempty" xml:"slash-hit_parade,omitempty"`
 
 	// SlashSection defines a section to which this item belongs.
-	SlashSection *externalRef4.Section `json:"slash_section,omitempty" xml:"slashSection,omitempty"`
+	SlashSection *externalRef4.Section `json:"slash_section,omitempty" xml:"slash-section,omitempty"`
 
 	// Title is the item's title.
 	Title string `json:"title" validate:"required,max=100" xml:"http://purl.org/rss/1.0/ title"`

@@ -19,28 +19,28 @@ components:
       type: string
       x-oapi-codegen-extra-tags:
         json: "slash_department,omitempty"
-        xml: "slashDepartment,omitempty"
+        xml: "slash-department,omitempty"
       x-go-type-skip-optional-pointer: false
     Section:
       description: defines a section to which this item belongs.
       type: string
       x-oapi-codegen-extra-tags:
         json: "slash_section,omitempty"
-        xml: "slashSection,omitempty"
+        xml: "slash-section,omitempty"
       x-go-type-skip-optional-pointer: false
     HitParade:
       type: string
       x-oapi-codegen-extra-tags:
         json: "slash_hit_parade,omitempty"
-        xml: "slashHitParade,omitempty"
+        xml: "slash-hit_parade,omitempty"
       x-go-type-skip-optional-pointer: false
     Comments:
       description: contains a non-negative integer that counts the number of comments that an item has received.
       type: integer
       x-oapi-codegen-extra-tags:
         json: "slash_comments,omitempty"
-        xml: "slashComments,omitempty"
-        validate: "omitempty,number,gte=0"
+        xml: "slash-comments,omitempty"
+        validate: "omitnil,gt=0"
       x-go-type-skip-optional-pointer: false
     Elements:
       description: contains all the slash namespace elements as an embeddable object.
