@@ -96,6 +96,23 @@ func (d *DCDate) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
 	return fmt.Errorf("<%s>: %q does not match any legal W3CDTF form", start.Name.Local, value.Value)
 }
 
+func (d DCDate) String() string {
+	var layout string
+	switch d.Precision {
+	case PrecisionYear:
+		layout = "2006"
+	case PrecisionMonth:
+		layout = "2006-01"
+	case PrecisionDay:
+		layout = "2006-01-02"
+	case PrecisionMinute:
+		layout = "2006-01-02T15:04Z07:00"
+	default: // PrecisionSecond
+		layout = "2006-01-02T15:04:05.999999999Z07:00"
+	}
+	return d.Value.Format(layout)
+}
+
 func (d Description) String() string {
 	return sanitization.SanitizeHTML(strings.Join(d, " "))
 }
