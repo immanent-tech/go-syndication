@@ -27,7 +27,7 @@ func TestNamespaceRewriter_Token(t *testing.T) {
 					),
 				),
 			},
-			want: "slashComments",
+			want: "slash-comments",
 		},
 	}
 	for _, tt := range tests {
