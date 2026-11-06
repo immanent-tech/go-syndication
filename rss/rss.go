@@ -8,9 +8,11 @@ import (
 	"fmt"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/immanent-tech/go-syndication/extensions"
 	"github.com/immanent-tech/go-syndication/rdf"
 	"github.com/immanent-tech/go-syndication/sanitization"
@@ -22,6 +24,9 @@ import (
 func init() {
 	validation.RegisterStructValidation(guidCustomValidation, GUID{})
 	validation.RegisterStructValidation(itemCustomValidation, Item{})
+	validation.RegisterStructValidation(rssCustomValidation, RSS{})
+	validation.RegisterStructValidation(skipDaysCustomValidation, SkipDays{})
+	validation.RegisterStructValidation(cloudCustomValidation, Cloud{})
 }
 
 var (
@@ -322,5 +327,56 @@ func (r *RSS) AutoDeclareNamespaces() {
 		if !existing[prefix] {
 			r.Namespaces = append(r.Namespaces, extensions.NewNamespace(prefix))
 		}
+	}
+}
+
+func rssCustomValidation(sl validator.StructLevel) {
+	rss := sl.Current().Interface().(RSS)
+	if !rss.Version.Valid() {
+		sl.ReportError(rss.Version, "Version", "Version", "oneof", fmt.Sprintf("invalid rss version: %s", rss.Version))
+		return
+	}
+}
+
+func skipDaysCustomValidation(sl validator.StructLevel) {
+	skipDays := sl.Current().Interface().(SkipDays)
+	if len(skipDays.Day) == 0 {
+		return
+	}
+	if len(skipDays.Day) > 7 {
+		sl.ReportError(
+			skipDays.Day,
+			"SkipDay",
+			"SkipDays.Day",
+			"len",
+			fmt.Sprintf("too many days: %d", len(skipDays.Day)),
+		)
+		return
+	}
+	for idx, skipDay := range skipDays.Day {
+		if !skipDay.Valid() {
+			sl.ReportError(
+				skipDay,
+				"SkipDay",
+				"SkipDays.Day["+strconv.Itoa(idx)+"]",
+				"oneof",
+				fmt.Sprintf("day %d is invalid: %s", idx, skipDay),
+			)
+			return
+		}
+	}
+}
+
+func cloudCustomValidation(sl validator.StructLevel) {
+	cloud := sl.Current().Interface().(Cloud)
+	if !cloud.Protocol.Valid() {
+		sl.ReportError(
+			cloud.Protocol,
+			"Protocol",
+			"Cloud.Protocol",
+			"oneof",
+			fmt.Sprintf("protocol is invalid: %s", cloud.Protocol),
+		)
+		return
 	}
 }

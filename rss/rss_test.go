@@ -6,6 +6,7 @@ package rss_test
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -18,11 +19,14 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/go-playground/validator/v10"
 	feeds "github.com/immanent-tech/go-syndication"
 	"github.com/immanent-tech/go-syndication/atom"
 	"github.com/immanent-tech/go-syndication/extensions/media"
+	"github.com/immanent-tech/go-syndication/extensions/syndication"
 	"github.com/immanent-tech/go-syndication/rss"
 	"github.com/immanent-tech/go-syndication/sanitization"
+	"github.com/immanent-tech/go-syndication/validation"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -211,9 +215,9 @@ var rssMustPass = map[string]rssTestSuite{
 	"invalid_sy_updateFrequency_decimal.xml":  {wantDecodeErr: true},
 	"invalid_sy_updateFrequency_negative.xml": {wantInvalid: true},
 	"invalid_sy_updateFrequency_zero.xml":     {wantInvalid: true},
-	// "invalid_sy_updatePeriod_blank.xml":       {wantInvalid: true},
-	// "invalid_sy_updatePeriod.xml": {wantInvalid: true},
-	// "invalid_xml.xml": {wantDecodeErr: true},
+	"invalid_sy_updatePeriod_blank.xml":       {wantDecodeErr: true},
+	"invalid_sy_updatePeriod.xml":             {wantDecodeErr: true},
+	"invalid_xml.xml":                         {wantInvalid: true},
 	// "l_permalink.xml":
 	"missing_namespace2.xml":          {wantInvalid: true},
 	"missing_namespace_attr_only.xml": {wantInvalid: true},
@@ -314,14 +318,49 @@ var rssMustPass = map[string]rssTestSuite{
 	// rss91n_entity.xml
 	// rss91rab.xml
 	// rss91u_entity.xml
-	// slash_zero_comments.xml
-	// "sy_updateBase.xml": {wantInvalid: false},
-	// sy_updateFrequency.xml
-	// sy_updatePeriod_daily.xml
-	// sy_updatePeriod_hourly.xml
-	// sy_updatePeriod_monthly.xml
-	// sy_updatePeriod_weekly.xml
-	// sy_updatePeriod_yearly.xml
+	"slash_zero_comments.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			failedValidations, err := getFailedValidations(validation.ValidateStruct(feed.Channel.Items[0]))
+			assert := assert.New(t)
+			assert.NoError(err)
+			assert.Contains(failedValidations["Item.SlashComments"], "gt")
+		},
+	},
+	"sy_updateBase.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.Equal(t, "2000-01-01 12:00:00 +0000 +0000", feed.Channel.SYUpdateBase.Value.String())
+		},
+	},
+	"sy_updateFrequency.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.Equal(t, 1, *feed.Channel.SYUpdateFrequency)
+		},
+	},
+	"sy_updatePeriod_daily.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.Equal(t, syndication.UpdatedDaily, *feed.Channel.SYUdatePeriod)
+		},
+	},
+	"sy_updatePeriod_hourly.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.Equal(t, syndication.UpdatedHourly, *feed.Channel.SYUdatePeriod)
+		},
+	},
+	"sy_updatePeriod_monthly.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.Equal(t, syndication.UpdatedMonthly, *feed.Channel.SYUdatePeriod)
+		},
+	},
+	"sy_updatePeriod_weekly.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.Equal(t, syndication.UpdatedWeekly, *feed.Channel.SYUdatePeriod)
+		},
+	},
+	"sy_updatePeriod_yearly.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.Equal(t, syndication.UpdatedYearly, *feed.Channel.SYUdatePeriod)
+		},
+	},
 	// thr_children.xml
 	// ulcc_channel_url.xml
 	// ulcc_item_url.xml
@@ -332,7 +371,35 @@ var rssMustPass = map[string]rssTestSuite{
 	// unknown_namespace.xml
 	// unknown_root_element.xml
 	// valid_ag_all.xml*
-	// valid_all_rss2_attributes.xml
+	"valid_all_rss2_attributes.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert := assert.New(t)
+			assert.Equal("All the valid RSS 2.0 attributes", feed.GetTitle())
+			assert.Equal("http://purl.org/rss/2.0/", feed.GetLink())
+			assert.Equal("A description with significant whitespace", feed.GetDescription())
+			assert.Len(feed.Channel.Categories, 1)
+			assert.Equal("http://www.fool.com/cusips", *feed.Channel.Categories[0].Domain)
+			assert.Equal("MSFT", feed.Channel.Categories[0].Value)
+			assert.Equal("rpc.sys.com", feed.Channel.Cloud.Domain)
+			assert.Equal(80, feed.Channel.Cloud.Port)
+			assert.Equal("/RPC2", feed.Channel.Cloud.Path)
+			assert.Equal("pingMe", feed.Channel.Cloud.RegisterProcedure)
+			assert.Equal(rss.Soap, feed.Channel.Cloud.Protocol)
+			assert.Len(feed.Channel.Items, 1)
+			item := feed.Channel.Items[0]
+			assert.Equal("An item with all item-level attributes", item.GetTitle())
+			assert.Equal("http://inessential.com/2002/09/01.php#a2", item.GetID())
+			assert.True(item.GUID.IsPermaLink)
+			assert.Equal("http://static.userland.com/tomalak/links2.xml", item.Source.URL)
+			assert.Equal("Tomalak's Realm", item.Source.Value)
+			assert.Equal("http://www.scripting.com/mp3s/weatherReportSuite.mp3", item.Enclosure.URL)
+			assert.Equal(12216320, item.Enclosure.Length)
+			assert.Equal("audio/mpeg", item.Enclosure.Type)
+			assert.Len(item.Categories, 1)
+			assert.Equal("http://www.fool.com/cusips", *item.Categories[0].Domain)
+			assert.Equal("MSFT", item.Categories[0].Value)
+		},
+	},
 	// valid_dc_all2.xml
 	// valid_dc_all.xml
 	// valid_dcterms_all2.xml*
@@ -340,7 +407,16 @@ var rssMustPass = map[string]rssTestSuite{
 	// valid_ev_all.xml
 	// valid_geo_all.xml*
 	// valid_rss_090.xml
-	// valid_slash_all.xml
+	"valid_slash_all.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			item := feed.Channel.Items[0]
+			assert := assert.New(t)
+			assert.Equal("articles", *item.SlashSection)
+			assert.Equal("not-an-ocean-unless-there-are-lobsters", *item.SlashDepartment)
+			assert.Equal(177, *item.SlashComments)
+			assert.Equal("177,155,105,33,6,3,0", *item.SlashHitParade)
+		},
+	},
 	// valid_taxo_all.xml
 	// xml_utf-8_bom_with_ascii_declaration.xml
 	// xmlversion_10.xml
@@ -351,22 +427,20 @@ var rss20 = map[string]rssTestSuite{
 	"element-channel-image-description/image_no_description.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
-
-			assert.NotNil(t, feed.Channel.Image)
-			assert.Equal(t, "Valid image", feed.Channel.Image.Title)
-			assert.Equal(t, "http://purl.org/rss/2.0/", feed.Channel.Image.Link)
-			assert.Equal(t, "http://example.com/image.jpg", feed.Channel.Image.URL)
+			assert := assert.New(t)
+			assert.NotNil(feed.Channel.Image)
+			assert.Equal("Valid image", feed.Channel.Image.Title)
+			assert.Equal("http://purl.org/rss/2.0/", feed.Channel.Image.Link)
+			assert.Equal("http://example.com/image.jpg", feed.Channel.Image.URL)
 		},
 	},
 	"element-channel/multiple_category.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
-
-			assert.Len(t, feed.Channel.Categories, 2)
-			assert.Equal(t, "Weblogging", feed.Channel.Categories[0].String())
-			assert.Equal(t, "Navel-gazing", feed.Channel.Categories[1].String())
+			assert := assert.New(t)
+			assert.Len(feed.Channel.Categories, 2)
+			assert.Equal("Weblogging", feed.Channel.Categories[0].String())
+			assert.Equal("Navel-gazing", feed.Channel.Categories[1].String())
 		},
 	},
 	"element-channel/missing_channel_description.xml":               {wantInvalid: true},
@@ -378,29 +452,54 @@ var rss20 = map[string]rssTestSuite{
 	"element-channel-link/link.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
-
 			assert.Equal(t, "http://purl.org/rss/2.0/", feed.Channel.GetLink())
 		},
 	},
 	"element-channel-link/link_contains_comma.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
-
 			assert.Equal(t, "http://www.wired.com/news/school/0,1383,54916,00.html", feed.Channel.GetLink())
 		},
 	},
 	"element-channel-link/link_ftp.xml": {
 		wantInvalid: false,
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
-
 			assert.Equal(t, "ftp://purl.org/rss/2.0/", feed.Channel.GetLink())
 		},
 	},
 	"element-rss/missing_channel.xml":           {wantInvalid: true},
 	"element-rss/missing_version_attribute.xml": {wantInvalid: true},
+	"element-channel-skipdays/invalid_skipDays_too_many_days.xml": {
+		wantInvalid: true,
+	},
+	"element-channel-skipdays/skipDays_7_days.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.EqualValues(
+				t,
+				feed.Channel.SkipDays.Day,
+				[]rss.SkipDaysDay{
+					rss.SkipFriday,
+					rss.SkipMonday,
+					rss.SkipWednesday,
+					rss.SkipThursday,
+					rss.SkipSunday,
+					rss.SkipSaturday,
+					rss.SkipTuesday,
+				},
+			)
+		},
+	},
+	"element-channel-skipdays/skipDays.xml": {
+		tests: func(t *testing.T, feed *rss.RSS) {
+			assert.EqualValues(
+				t,
+				feed.Channel.SkipDays.Day,
+				[]rss.SkipDaysDay{
+					rss.SkipMonday,
+				},
+			)
+		},
+	},
 }
 
 var rssMedia = map[string]rssTestSuite{
@@ -628,7 +727,6 @@ var rssSecXSS = map[string]rssTestSuite{
 	},
 	"02_obfuscated_urls.xml": {
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
 			assert := assert.New(t)
 			assert.Equal("x", feed.Channel.Items[0].GetDescription(), "javascript plain")
 			assert.Equal("x", *feed.Channel.Items[1].GetContent(), "javascript mixed case")
@@ -657,7 +755,6 @@ var rssSecXSS = map[string]rssTestSuite{
 	},
 	"03_svg_mathml_mxss.xml": {
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
 			assert := assert.New(t)
 			assert.Equal("<svg></svg>", feed.Channel.Items[0].GetDescription(), "svg script")
 			assert.Equal("<svg>x</svg>", *feed.Channel.Items[1].GetContent(), "svg xlink javascript")
@@ -678,7 +775,6 @@ var rssSecXSS = map[string]rssTestSuite{
 	},
 	"04_dangerous_elements.xml": {
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
 			assert := assert.New(t)
 			assert.Empty(feed.Channel.Items[0].GetDescription(), "iframe src")
 			assert.Nil(feed.Channel.Items[1].GetContent(), "iframe srcdoc")
@@ -721,7 +817,6 @@ var rssSecXSS = map[string]rssTestSuite{
 	},
 	"05_encoding_layers.xml": {
 		tests: func(t *testing.T, feed *rss.RSS) {
-			t.Helper()
 			assert := assert.New(t)
 			assert.Equal(`<img src="x">`, feed.Channel.Items[0].GetDescription(), "entity-escaped script (normal RSS)")
 			assert.NotContains(feed.Channel.Items[1].GetDescription(), "PWNED", "double escaped")
@@ -750,6 +845,22 @@ var rssTests = map[string]map[string]rssTestSuite{
 	"../test/feedsec/fields":                    rssSecFields,
 	"../test/feedsec/malformed":                 rssSecMalformed,
 	"../test/feedsec/xss":                       rssSecXSS,
+}
+
+// getFailedValidations extracts the validation errors from the given error object and converts them into a map of the
+// struct field name and validation tags that failed. Test helpers use this format to check that specific validation
+// rules have passed or failed.
+func getFailedValidations(err error) (map[string][]string, error) {
+	failedValidations := make(map[string][]string)
+	if invalidValidationError, ok := errors.AsType[*validator.InvalidValidationError](err); ok {
+		return nil, invalidValidationError
+	}
+	if validateErrs, ok := errors.AsType[*validation.Errors](err); ok && validateErrs != nil {
+		for e := range slices.Values(validateErrs.Fields) {
+			failedValidations[e.StructNamespace] = append(failedValidations[e.StructNamespace], e.Tag)
+		}
+	}
+	return failedValidations, nil
 }
 
 func TestNewFeedFromBytesRSS(t *testing.T) {

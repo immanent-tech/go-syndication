@@ -406,7 +406,7 @@ components:
           x-oapi-codegen-extra-tags:
             xml: "day"
             validate: "omitempty,dive,oneof=Monday Tuesday Wednesday Thursday Friday Saturday Sunday"
-          # x-go-type-skip-optional-pointer: true
+          x-go-type-skip-optional-pointer: true
       x-oapi-codegen-extra-tags:
         xml: "skipDays"
         json: "skip_days"
