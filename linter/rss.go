@@ -260,6 +260,18 @@ var RSSRuleSets RuleSet[rss.Channel] = map[string][]Rule[rss.Channel]{
 		{
 			Check: func(c rss.Channel) Result {
 				metadata := metadata{
+					ID:          "channel-category-count",
+					Description: "Channel category count should be reasonable",
+				}
+				if len(c.GetCategories()) > 100 {
+					return fail(metadata, "channel has too many categories (has %d > 100)", len(c.GetCategories()))
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(c rss.Channel) Result {
+				metadata := metadata{
 					ID:          "channel-should-provide-copyright",
 					Description: "Channel should supply copyright information so consumers understand sharing and distribution rights of the published content",
 				}

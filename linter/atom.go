@@ -56,6 +56,18 @@ var AtomRuleSets RuleSet[atom.Feed] = map[string][]Rule[atom.Feed]{
 		{
 			Check: func(f atom.Feed) Result {
 				metadata := metadata{
+					ID:          "feed-category-count",
+					Description: "Feed category count should be reasonable",
+				}
+				if len(f.GetCategories()) > 100 {
+					return fail(metadata, "feed has too many categories (has %d > 100)", len(f.GetCategories()))
+				}
+				return pass(metadata)
+			},
+		},
+		{
+			Check: func(f atom.Feed) Result {
+				metadata := metadata{
 					ID:          "update-period",
 					Description: "Feed should supply an update period for consumers to poll for updates. Without one, consumers may excessively poll the feed for updates.",
 				}
